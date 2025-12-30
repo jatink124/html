@@ -1,0 +1,299 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Anil's 22 | Professional Pet Shop & Grooming – Chandigarh</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="description" content="Anil's 22 – Premium pet shop & grooming services in Chandigarh. Trusted by 1300+ customers. Visit Sector 22C today." />
+
+  <script src="https://cdn.tailwindcss.com"></script>
+
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            brand: '#15803d',
+            brandSoft: '#dcfce7',
+            dark: '#0f172a'
+          }
+        }
+      }
+    }
+  </script>
+  <style>
+  .fade-up {
+    opacity: 0;
+    transform: translateY(24px);
+    animation: fadeUp .8s ease forwards;
+  }
+
+  .fade-delay-1 { animation-delay: .15s; }
+  .fade-delay-2 { animation-delay: .3s; }
+  .fade-delay-3 { animation-delay: .45s; }
+
+  @keyframes fadeUp {
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+</style>
+
+</head>
+
+<body class="bg-slate-100 text-slate-800 antialiased">
+
+<!-- ================= HEADER ================= -->
+<header class="bg-white border-b sticky top-0 z-50">
+  <div class="max-w-7xl mx-auto px-4 py-4 flex items-center justify-between">
+    <div>
+      <h1 class="text-xl font-bold text-brand">Anil's 22</h1>
+      <p class="text-xs text-slate-500">Pet Shop & Groomers</p>
+    </div>
+
+    <nav class="hidden md:flex gap-8 text-sm font-medium">
+      <a href="#services" class="hover:text-brand">Services</a>
+      <a href="#gallery" class="hover:text-brand">Gallery</a>
+      <a href="#reviews" class="hover:text-brand">Reviews</a>
+      <a href="#contact" class="hover:text-brand">Contact</a>
+    </nav>
+
+    <a href="tel:9815712245"
+       class="bg-brand text-white px-5 py-2.5 rounded-lg font-semibold shadow hover:shadow-md">
+      Call Now
+    </a>
+  </div>
+</header>
+
+<!-- ================= HERO ================= -->
+<section class="bg-gradient-to-br from-green-50 to-emerald-100 border-b">
+  <div class="max-w-7xl mx-auto px-4 py-20 grid md:grid-cols-2 gap-12 items-center">
+
+    <div>
+      <span class="inline-block bg-brandSoft text-brand text-sm font-semibold px-3 py-1 rounded-full mb-4">
+        Trusted Local Pet Care
+      </span>
+
+      <h2 class="text-4xl md:text-5xl font-bold leading-tight mb-6">
+        Professional Pet Grooming <br />& Care in Chandigarh
+      </h2>
+
+      <p class="text-lg text-slate-600 mb-8 max-w-xl">
+        Anil's 22 is a well-established pet shop offering hygienic grooming,
+        premium pet food, and trusted care services for your pets.
+      </p>
+
+      <div class="flex flex-wrap gap-4">
+        <a href="tel:9815712245"
+           class="bg-brand text-white px-7 py-3 rounded-lg font-semibold shadow-lg hover:shadow-xl">
+          Book Grooming
+        </a>
+        <a href="#contact"
+           class="bg-white border border-slate-300 px-7 py-3 rounded-lg font-semibold hover:bg-slate-50">
+          Visit Store
+        </a>
+      </div>
+
+      <!-- Trust Stats -->
+      <div class="grid grid-cols-3 gap-6 mt-10 max-w-md">
+        <div>
+          <p class="text-2xl font-bold">4.1★</p>
+          <p class="text-sm text-slate-500">Google Rating</p>
+        </div>
+        <div>
+          <p class="text-2xl font-bold">1300+</p>
+          <p class="text-sm text-slate-500">Reviews</p>
+        </div>
+        <div>
+          <p class="text-2xl font-bold">10AM+</p>
+          <p class="text-sm text-slate-500">Daily Open</p>
+        </div>
+      </div>
+    </div>
+
+    <div class="relative">
+      <div class="bg-white rounded-2xl shadow-xl p-4">
+        <img src="https://images.unsplash.com/photo-1548199973-03cce0bbc87b"
+             class="rounded-xl h-96 w-full object-cover"
+             alt="Pet Grooming Service">
+      </div>
+    </div>
+
+  </div>
+</section>
+
+<!-- ================= SERVICES ================= -->
+<section id="services" class="py-20 bg-white">
+  <div class="max-w-7xl mx-auto px-4">
+
+    <div class="text-center mb-14">
+      <h3 class="text-3xl font-bold mb-3">Our Core Services</h3>
+      <p class="text-slate-600 max-w-xl mx-auto">
+        Everything your pet needs, under one trusted roof.
+      </p>
+    </div>
+
+    <div class="grid md:grid-cols-3 gap-8">
+      <div class="bg-slate-50 rounded-xl p-8 shadow-sm hover:shadow-md transition">
+        <h4 class="text-xl font-semibold mb-3">Pet Grooming</h4>
+        <p class="text-slate-600">
+          Professional grooming services ensuring hygiene, comfort, and care.
+        </p>
+      </div>
+
+      <div class="bg-slate-50 rounded-xl p-8 shadow-sm hover:shadow-md transition">
+        <h4 class="text-xl font-semibold mb-3">Bath & Styling</h4>
+        <p class="text-slate-600">
+          Coat trimming, bathing, nail care, and styling by experienced groomers.
+        </p>
+      </div>
+
+      <div class="bg-slate-50 rounded-xl p-8 shadow-sm hover:shadow-md transition">
+        <h4 class="text-xl font-semibold mb-3">Pet Food & Accessories</h4>
+        <p class="text-slate-600">
+          Trusted brands of pet food, toys, grooming kits, and accessories.
+        </p>
+      </div>
+    </div>
+
+  </div>
+</section>
+
+<!-- ================= GALLERY ================= -->
+<section id="gallery" class="py-20 bg-slate-100">
+  <div class="max-w-7xl mx-auto px-4">
+    <h3 class="text-3xl font-bold text-center mb-12">Our Store & Pets</h3>
+
+    <div class="grid grid-cols-2 md:grid-cols-4 gap-6">
+      <img class="rounded-xl h-44 w-full object-cover shadow" src="https://images.unsplash.com/photo-1518717758536-85ae29035b6d" />
+      <img class="rounded-xl h-44 w-full object-cover shadow" src="https://images.unsplash.com/photo-1601758123927-1964b6bcd96c" />
+      <img class="rounded-xl h-44 w-full object-cover shadow" src="https://images.unsplash.com/photo-1583511655826-05700d52f4d9" />
+      <img class="rounded-xl h-44 w-full object-cover shadow" src="https://images.unsplash.com/photo-1558944351-cbc1fdb9b8d9" />
+    </div>
+  </div>
+</section>
+
+<!-- ================= REVIEWS ================= -->
+<section id="reviews" class="py-20 bg-white">
+  <div class="max-w-5xl mx-auto px-4 text-center">
+    <h3 class="text-3xl font-bold mb-10">Why Customers Trust Us</h3>
+
+    <div class="bg-slate-50 rounded-2xl p-10 shadow-sm">
+      <p class="text-lg italic text-slate-700">
+        “One of the most reliable pet grooming shops in Chandigarh. Clean, professional,
+        and very friendly with pets.”
+      </p>
+      <p class="mt-6 font-semibold">⭐⭐⭐⭐☆ 4.1 / 5 Rating</p>
+    </div>
+  </div>
+</section>
+
+<section class="py-20 bg-white">
+  <div class="max-w-7xl mx-auto px-4">
+    <div class="text-center mb-14">
+      <h3 class="text-3xl font-bold mb-3">Why Choose Anil's 22</h3>
+      <p class="text-slate-600 max-w-xl mx-auto">
+        Trusted by pet owners across Chandigarh for quality, hygiene, and care.
+      </p>
+    </div>
+
+    <div class="grid md:grid-cols-4 gap-8">
+      <div class="bg-slate-50 p-6 rounded-xl shadow-sm fade-up">
+        <h4 class="font-semibold text-lg mb-2">Experienced Care</h4>
+        <p class="text-sm text-slate-600">Years of hands-on experience handling pets safely.</p>
+      </div>
+
+      <div class="bg-slate-50 p-6 rounded-xl shadow-sm fade-up fade-delay-1">
+        <h4 class="font-semibold text-lg mb-2">Hygienic Process</h4>
+        <p class="text-sm text-slate-600">Clean tools, safe products, pet-friendly environment.</p>
+      </div>
+
+      <div class="bg-slate-50 p-6 rounded-xl shadow-sm fade-up fade-delay-2">
+        <h4 class="font-semibold text-lg mb-2">Local Trust</h4>
+        <p class="text-sm text-slate-600">1300+ reviews from real Chandigarh customers.</p>
+      </div>
+
+      <div class="bg-slate-50 p-6 rounded-xl shadow-sm fade-up fade-delay-3">
+        <h4 class="font-semibold text-lg mb-2">Affordable Pricing</h4>
+        <p class="text-sm text-slate-600">Quality service without premium overpricing.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="py-20 bg-slate-100">
+  <div class="max-w-7xl mx-auto px-4">
+    <div class="text-center mb-14">
+      <h3 class="text-3xl font-bold">Our Simple Process</h3>
+    </div>
+
+    <div class="grid md:grid-cols-3 gap-10">
+      <div class="text-center fade-up">
+        <div class="text-4xl font-bold text-brand mb-3">01</div>
+        <h4 class="font-semibold mb-2">Contact Us</h4>
+        <p class="text-slate-600 text-sm">Call or visit our store to discuss your pet’s needs.</p>
+      </div>
+
+      <div class="text-center fade-up fade-delay-1">
+        <div class="text-4xl font-bold text-brand mb-3">02</div>
+        <h4 class="font-semibold mb-2">Professional Grooming</h4>
+        <p class="text-slate-600 text-sm">Our experts groom your pet with care and hygiene.</p>
+      </div>
+
+      <div class="text-center fade-up fade-delay-2">
+        <div class="text-4xl font-bold text-brand mb-3">03</div>
+        <h4 class="font-semibold mb-2">Happy Pet</h4>
+        <p class="text-slate-600 text-sm">You leave with a clean, healthy, and happy pet.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="py-16 bg-brand text-white">
+  <div class="max-w-7xl mx-auto px-4 text-center fade-up">
+    <h3 class="text-3xl font-bold mb-4">
+      Looking for Trusted Pet Grooming in Chandigarh?
+    </h3>
+    <p class="mb-6 text-green-100">
+      Call now and give your pet the care they deserve.
+    </p>
+    <a href="tel:9815712245"
+       class="inline-block bg-white text-brand px-8 py-3 rounded-lg font-semibold shadow">
+      Call Anil's 22
+    </a>
+  </div>
+</section>
+
+<!-- ================= CONTACT ================= -->
+<section id="contact" class="py-20 bg-dark text-slate-200">
+  <div class="max-w-7xl mx-auto px-4 grid md:grid-cols-2 gap-12 items-center">
+
+    <div>
+      <h3 class="text-3xl font-bold text-white mb-6">Visit Anil's 22</h3>
+      <p class="mb-3">📍 33, Sector 22C, Chandigarh – 160022</p>
+      <p class="mb-3">📞 <a href="tel:9815712245" class="underline">+91 98157 12245</a></p>
+      <p class="mb-6">🕙 Open from 10:00 AM (Holiday hours may vary)</p>
+
+      <a href="tel:9815712245"
+         class="inline-block bg-brand text-white px-6 py-3 rounded-lg font-semibold shadow">
+        Call for Appointment
+      </a>
+    </div>
+
+    <iframe
+      class="w-full h-72 rounded-xl border"
+      loading="lazy"
+      src="https://www.google.com/maps?q=33%20Sector%2022C%20Chandigarh&output=embed">
+    </iframe>
+
+  </div>
+</section>
+
+<!-- ================= FOOTER ================= -->
+<footer class="bg-black text-slate-400 text-center py-6 text-sm">
+  © 2025 Anil's 22 – The Pet Shop & Pet Groomers. All rights reserved.
+</footer>
+
+</body>
+</html>

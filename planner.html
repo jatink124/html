@@ -1,0 +1,246 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>🗓️ Daily Planner – Web Dev + Trading</title>
+  <style>
+    body {
+      font-family: 'Segoe UI', Tahoma, sans-serif;
+      background: #f0f4f9;
+      margin: 0;
+      padding: 20px;
+      color: #333;
+    }
+    .container {
+      max-width: 1100px;
+      margin: auto;
+    }
+    h1 {
+      text-align: center;
+      margin-bottom: 10px;
+      font-size: 2rem;
+      color: #1e293b;
+    }
+    #todayDisplay {
+      text-align: center;
+      margin-bottom: 20px;
+      color: #64748b;
+    }
+    .summary {
+      background: #fffbe6;
+      padding: 16px;
+      border: 1px solid #fde047;
+      border-radius: 12px;
+      margin-bottom: 20px;
+    }
+    .summary h3 {
+      margin-top: 0;
+    }
+    .progress-bar {
+      background: #e2e8f0;
+      border-radius: 10px;
+      overflow: hidden;
+      height: 12px;
+      margin-bottom: 10px;
+    }
+    .progress-fill {
+      background: #22c55e;
+      height: 100%;
+      width: 0%;
+      transition: width 0.3s;
+    }
+    .card {
+      background: #fff;
+      padding: 20px;
+      border-radius: 14px;
+      margin-bottom: 20px;
+      box-shadow: 0 4px 16px rgba(0,0,0,0.08);
+    }
+    h2 {
+      margin-top: 0;
+      border-bottom: 2px solid #e2e8f0;
+      padding-bottom: 6px;
+      color: #0f172a;
+    }
+    .task {
+      margin: 10px 0;
+      display: flex;
+      align-items: center;
+      flex-wrap: wrap;
+    }
+    .task input[type="checkbox"] {
+      margin-right: 10px;
+      transform: scale(1.2);
+    }
+    .task input[type="text"] {
+      margin-left: 8px;
+      padding: 6px 10px;
+      border: 1px solid #cbd5e1;
+      border-radius: 6px;
+      flex: 1;
+      min-width: 200px;
+    }
+    .note {
+      font-size: 14px;
+      color: #475569;
+      margin-top: 12px;
+      background: #f1f5f9;
+      padding: 10px;
+      border-radius: 8px;
+    }
+    .controls {
+      margin-top: 16px;
+    }
+    button {
+      margin-right: 10px;
+      padding: 8px 16px;
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+      font-weight: 500;
+    }
+    .reset { background: #ef4444; color: #fff; }
+    .reset:hover { background: #dc2626; }
+    .pending { color: #b91c1c; font-weight: 500; }
+    .done { color: #15803d; font-weight: 500; }
+    ul { margin: 6px 0 12px 20px; }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>🗓️ Daily Planner</h1>
+    <div id="todayDisplay"></div>
+
+    <!-- Progress Viewer -->
+    <div class="summary">
+      <h3>📌 Progress Overview</h3>
+      <div class="progress-bar"><div id="progressFill" class="progress-fill"></div></div>
+      <div id="progressData">Loading saved data...</div>
+    </div>
+
+    <!-- Web Dev Checklist -->
+    <section class="card">
+      <h2>🌐 Web Development</h2>
+      <div class="task"><input id="web-1" type="checkbox" data-key="web-1"><label for="web-1">Stay focused only on web dev tasks</label></div>
+      <div class="task"><input id="web-2" type="checkbox" data-key="web-2"><label for="web-2">Work at least 2 focused hours</label></div>
+      <div class="task"><label>Project:<input id="web-project" type="text" placeholder="e.g. Trading Journal App" data-key="web-project"></label></div>
+      <div class="task"><label>Problem:<input id="web-problem" type="text" placeholder="What problem does it solve?" data-key="web-problem"></label></div>
+      <div class="task"><label>Target User:<input id="web-user" type="text" placeholder="Who is this for?" data-key="web-user"></label></div>
+      <div class="task"><input id="web-6" type="checkbox" data-key="web-6"><label for="web-6">Define today’s MVP tasks</label></div>
+      <div class="task"><input id="web-7" type="checkbox" data-key="web-7"><label for="web-7">Code one complete feature</label></div>
+      <div class="task"><input id="web-8" type="checkbox" data-key="web-8"><label for="web-8">Test & debug immediately</label></div>
+      <div class="task"><input id="web-9" type="checkbox" data-key="web-9"><label for="web-9">Log today’s progress</label></div>
+      <div class="task"><input id="web-10" type="checkbox" data-key="web-10"><label for="web-10">Plan next step for tomorrow</label></div>
+      <div class="task"><input id="web-11" type="checkbox" data-key="web-11"><label for="web-11">Push changes to GitHub</label></div>
+      <div class="task"><input id="web-12" type="checkbox" data-key="web-12"><label for="web-12">No trading apps during work</label></div>
+      <div class="task"><input id="web-13" type="checkbox" data-key="web-13"><label for="web-13">Use Pomodoro (25m focus)</label></div>
+      <div class="note">🎯 Reward: Only after finishing coding → allow trading/research</div>
+      <div class="controls"><button class="reset" id="resetWeb">Reset Web Dev</button></div>
+    </section>
+
+    <!-- Trading Checklist -->
+    <section class="card">
+      <h2>📊 Trading</h2>
+      <div class="task"><input id="tr-1" type="checkbox" data-key="tr-1"><label for="tr-1">Calm, focused mindset</label></div>
+      <div class="task"><input id="tr-2" type="checkbox" data-key="tr-2"><label for="tr-2">Reviewed today’s trading plan</label></div>
+      <div class="task"><label>Max risk %:<input id="tr-risk" type="text" placeholder="e.g. 2" data-key="tr-risk"></label></div>
+      <div class="task"><label>Max trades:<input id="tr-maxtrades" type="text" placeholder="e.g. 3" data-key="tr-maxtrades"></label></div>
+      <div class="task"><input id="tr-4" type="checkbox" data-key="tr-4"><label for="tr-4">Checked news/events</label></div>
+      <div class="task"><input id="tr-5" type="checkbox" data-key="tr-5"><label for="tr-5">Marked support & resistance</label></div>
+      <div class="task"><input id="tr-6" type="checkbox" data-key="tr-6"><label for="tr-6">Identified market trend</label></div>
+      <div class="task"><input id="tr-7" type="checkbox" data-key="tr-7"><label for="tr-7">Reviewed option chain/OI</label></div>
+      <div class="task"><input id="tr-8" type="checkbox" data-key="tr-8"><label for="tr-8">Wait for valid setup</label></div>
+      <div class="task"><input id="tr-9" type="checkbox" data-key="tr-9"><label for="tr-9">Ensure R:R ≥ 1:2</label></div>
+      <div class="task"><input id="tr-10" type="checkbox" data-key="tr-10"><label for="tr-10">Set stop-loss immediately</label></div>
+      <div class="task"><input id="tr-11" type="checkbox" data-key="tr-11"><label for="tr-11">Avoid overtrading</label></div>
+      <div class="task"><input id="tr-12" type="checkbox" data-key="tr-12"><label for="tr-12">No averaging losers</label></div>
+      <div class="task"><input id="tr-13" type="checkbox" data-key="tr-13"><label for="tr-13">Correct position sizing</label></div>
+      <div class="task"><input id="tr-14" type="checkbox" data-key="tr-14"><label for="tr-14">Exit at target/SL without emotion</label></div>
+      <div class="task"><input id="tr-15" type="checkbox" data-key="tr-15"><label for="tr-15">Book partial profits if planned</label></div>
+      <div class="task"><input id="tr-16" type="checkbox" data-key="tr-16"><label for="tr-16">Journal trades (Entry/Exit/P&L)</label></div>
+      <div class="task"><input id="tr-17" type="checkbox" data-key="tr-17"><label for="tr-17">Note mistakes & lessons</label></div>
+      <div class="task"><input id="tr-18" type="checkbox" data-key="tr-18"><label for="tr-18">Score rule-following (0–100%)</label></div>
+      <div class="note">⚖ Golden Rule: Web Dev hours = Build. Trading hours = Follow rules only.</div>
+      <div class="controls"><button class="reset" id="resetTrading">Reset Trading</button> <button class="reset" id="resetAll">Reset All</button></div>
+    </section>
+  </div>
+
+  <script>
+    const today = new Date();
+    document.getElementById("todayDisplay").textContent = today.toDateString();
+
+    const STORAGE_KEY = "dailyPlanner.v3";
+    const allCheckboxes = document.querySelectorAll("input[type='checkbox']");
+    const allTextInputs = document.querySelectorAll("input[type='text']");
+    const progressFill = document.getElementById("progressFill");
+
+    function saveState() {
+      const state = {};
+      allCheckboxes.forEach(cb => state[cb.dataset.key] = cb.checked);
+      allTextInputs.forEach(inp => state[inp.dataset.key] = inp.value);
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
+      updateProgressViewer(state);
+    }
+
+    function loadState() {
+      const raw = localStorage.getItem(STORAGE_KEY);
+      if (!raw) return;
+      const state = JSON.parse(raw);
+      allCheckboxes.forEach(cb => cb.checked = !!state[cb.dataset.key]);
+      allTextInputs.forEach(inp => inp.value = state[inp.dataset.key] || "");
+      updateProgressViewer(state);
+    }
+
+    function resetSection(prefix) {
+      allCheckboxes.forEach(cb => { if (cb.dataset.key.startsWith(prefix)) cb.checked = false; });
+      allTextInputs.forEach(inp => { if (inp.dataset.key.startsWith(prefix)) inp.value = ""; });
+      saveState();
+    }
+
+    function resetAll() {
+      allCheckboxes.forEach(cb => cb.checked = false);
+      allTextInputs.forEach(inp => inp.value = "");
+      saveState();
+    }
+
+    function updateProgressViewer(state) {
+      let done = [], pending = [], filled = [];
+      allCheckboxes.forEach(cb => {
+        const label = cb.nextElementSibling ? cb.nextElementSibling.textContent.trim() : "";
+        if (state[cb.dataset.key]) done.push(label);
+        else pending.push(label);
+      });
+      allTextInputs.forEach(inp => {
+        if (state[inp.dataset.key] && state[inp.dataset.key].trim() !== "") {
+          filled.push(`${inp.previousSibling.textContent.trim()} ${state[inp.dataset.key]}`);
+        }
+      });
+
+      const total = allCheckboxes.length + allTextInputs.length;
+      const completed = done.length + filled.length;
+      const percent = Math.round((completed / total) * 100);
+      progressFill.style.width = percent + "%";
+
+      document.getElementById("progressData").innerHTML = `
+        <p><span class="done">✔ Completed:</span> ${completed} / ${total} (${percent}%)</p>
+        <p><span class="done">✔ Done:</span> ${done.length} tasks</p>
+        <ul>${done.map(t => `<li>✔ ${t}</li>`).join("")}</ul>
+        <p><span class="pending">✘ Pending:</span> ${pending.length} tasks</p>
+        <ul>${pending.map(t => `<li>✘ ${t}</li>`).join("")}</ul>
+        <p><span class="done">📝 Filled Inputs:</span></p>
+        <ul>${filled.map(t => `<li>${t}</li>`).join("") || "<li>None yet</li>"}</ul>
+      `;
+    }
+
+    // Event Listeners
+    allCheckboxes.forEach(cb => cb.addEventListener("change", saveState));
+    allTextInputs.forEach(inp => inp.addEventListener("input", saveState));
+    document.getElementById("resetWeb").addEventListener("click", () => resetSection("web-"));
+    document.getElementById("resetTrading").addEventListener("click", () => resetSection("tr-"));
+    document.getElementById("resetAll").addEventListener("click", resetAll);
+
+    loadState();
+  </script>
+</body>
+</html>

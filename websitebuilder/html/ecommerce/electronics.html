@@ -1,0 +1,617 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>TechTrove - Electronics Shop</title>
+  <style>
+    /* Base styles */
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    }
+    
+    body {
+      background-color: #f8f9fa;
+      color: #333;
+      line-height: 1.6;
+    }
+    
+    a {
+      text-decoration: none;
+      color: inherit;
+    }
+    
+    img {
+      max-width: 100%;
+    }
+    
+    .container {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 0 20px;
+    }
+    
+    /* Header */
+    header {
+      background-color: #fff;
+      box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+      position: sticky;
+      top: 0;
+      z-index: 100;
+    }
+    
+    .header-top {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 15px 0;
+    }
+    
+    .logo {
+      font-size: 24px;
+      font-weight: bold;
+      color: #0066cc;
+    }
+    
+    .logo span {
+      color: #ff6600;
+    }
+    
+    .search-bar {
+      flex-grow: 1;
+      max-width: 500px;
+      margin: 0 20px;
+    }
+    
+    .search-bar form {
+      display: flex;
+    }
+    
+    .search-bar input {
+      flex-grow: 1;
+      padding: 10px;
+      border: 1px solid #ddd;
+      border-radius: 4px 0 0 4px;
+      outline: none;
+    }
+    
+    .search-bar button {
+      background-color: #0066cc;
+      color: white;
+      border: none;
+      padding: 10px 15px;
+      border-radius: 0 4px 4px 0;
+      cursor: pointer;
+    }
+    
+    .user-actions {
+      display: flex;
+      align-items: center;
+      gap: 15px;
+    }
+    
+    .cart-icon {
+      position: relative;
+    }
+    
+    .cart-count {
+      position: absolute;
+      top: -8px;
+      right: -8px;
+      background-color: #ff6600;
+      color: white;
+      border-radius: 50%;
+      width: 20px;
+      height: 20px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 12px;
+    }
+    
+    /* Navigation */
+    nav {
+      background-color: #0066cc;
+      padding: 12px 0;
+    }
+    
+    .nav-links {
+      display: flex;
+      list-style-type: none;
+      gap: 25px;
+    }
+    
+    .nav-links li a {
+      color: white;
+      font-weight: 500;
+      padding: 5px 0;
+      transition: color 0.3s;
+    }
+    
+    .nav-links li a:hover {
+      color: #ffcc00;
+    }
+    
+    /* Hero section */
+    .hero {
+      background-image: linear-gradient(rgba(0,0,0,0.5), rgba(0,0,0,0.5)), url('https://images.unsplash.com/photo-1488590528505-98d2b5aba04b');
+      background-size: cover;
+      background-position: center;
+      color: white;
+      padding: 80px 0;
+      text-align: center;
+    }
+    
+    .hero h1 {
+      font-size: 48px;
+      margin-bottom: 20px;
+    }
+    
+    .hero p {
+      font-size: 18px;
+      max-width: 600px;
+      margin: 0 auto 30px;
+    }
+    
+    .btn {
+      display: inline-block;
+      padding: 12px 24px;
+      background-color: #ff6600;
+      color: white;
+      border-radius: 4px;
+      font-weight: 500;
+      transition: background-color 0.3s;
+    }
+    
+    .btn:hover {
+      background-color: #e65c00;
+    }
+    
+    /* Categories */
+    .section {
+      padding: 60px 0;
+    }
+    
+    .section-title {
+      text-align: center;
+      margin-bottom: 40px;
+      font-size: 32px;
+      color: #333;
+    }
+    
+    .categories {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+      gap: 20px;
+    }
+    
+    .category-card {
+      background-color: white;
+      border-radius: 8px;
+      overflow: hidden;
+      box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+      transition: transform 0.3s;
+    }
+    
+    .category-card:hover {
+      transform: translateY(-5px);
+    }
+    
+    .category-img {
+      height: 150px;
+      overflow: hidden;
+    }
+    
+    .category-img img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+    
+    .category-info {
+      padding: 15px;
+    }
+    
+    .category-info h3 {
+      margin-bottom: 8px;
+    }
+    
+    /* Featured Products */
+    .products {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+      gap: 25px;
+    }
+    
+    .product-card {
+      background-color: white;
+      border-radius: 8px;
+      overflow: hidden;
+      box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+      transition: transform 0.3s;
+    }
+    
+    .product-card:hover {
+      transform: translateY(-5px);
+    }
+    
+    .product-img {
+      height: 200px;
+      overflow: hidden;
+    }
+    
+    .product-img img {
+      width: 100%;
+      height: 100%;
+      object-fit: contain;
+      padding: 20px;
+    }
+    
+    .product-info {
+      padding: 15px;
+    }
+    
+    .product-title {
+      font-weight: 500;
+      margin-bottom: 8px;
+      height: 48px;
+      overflow: hidden;
+    }
+    
+    .product-price {
+      color: #0066cc;
+      font-weight: bold;
+      font-size: 18px;
+      margin-bottom: 12px;
+    }
+    
+    .product-card .btn {
+      width: 100%;
+      text-align: center;
+      padding: 10px;
+    }
+    
+    /* Special offers */
+    .offer-banner {
+      background-color: #ffcc00;
+      border-radius: 8px;
+      padding: 30px;
+      text-align: center;
+      margin-bottom: 40px;
+    }
+    
+    .offer-banner h2 {
+      font-size: 28px;
+      margin-bottom: 10px;
+    }
+    
+    /* Newsletter */
+    .newsletter {
+      background-color: #0066cc;
+      padding: 60px 0;
+      color: white;
+      text-align: center;
+    }
+    
+    .newsletter-content {
+      max-width: 600px;
+      margin: 0 auto;
+    }
+    
+    .newsletter h2 {
+      margin-bottom: 20px;
+    }
+    
+    .newsletter p {
+      margin-bottom: 25px;
+    }
+    
+    .newsletter-form {
+      display: flex;
+      margin: 0 auto;
+      max-width: 500px;
+    }
+    
+    .newsletter-form input {
+      flex-grow: 1;
+      padding: 12px;
+      border: none;
+      border-radius: 4px 0 0 4px;
+      outline: none;
+    }
+    
+    .newsletter-form button {
+      background-color: #ff6600;
+      color: white;
+      border: none;
+      padding: 12px 20px;
+      border-radius: 0 4px 4px 0;
+      cursor: pointer;
+    }
+    
+    /* Footer */
+    footer {
+      background-color: #333;
+      color: white;
+      padding: 60px 0 20px;
+    }
+    
+    .footer-content {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 30px;
+      margin-bottom: 40px;
+    }
+    
+    .footer-column h3 {
+      font-size: 18px;
+      margin-bottom: 20px;
+      color: #ffcc00;
+    }
+    
+    .footer-links {
+      list-style-type: none;
+    }
+    
+    .footer-links li {
+      margin-bottom: 10px;
+    }
+    
+    .footer-links a {
+      color: #ddd;
+      transition: color 0.3s;
+    }
+    
+    .footer-links a:hover {
+      color: #ffcc00;
+    }
+    
+    .footer-bottom {
+      text-align: center;
+      padding-top: 20px;
+      border-top: 1px solid #555;
+    }
+    
+    /* Responsive styles */
+    @media (max-width: 768px) {
+      .header-top {
+        flex-direction: column;
+        align-items: stretch;
+      }
+      
+      .logo {
+        margin-bottom: 15px;
+      }
+      
+      .search-bar {
+        margin: 15px 0;
+        max-width: 100%;
+      }
+      
+      .nav-links {
+        flex-direction: column;
+        gap: 10px;
+      }
+      
+      .hero h1 {
+        font-size: 32px;
+      }
+    }
+  </style>
+</head>
+
+<body>
+  <header>
+    <div class="container">
+      <div class="header-top">
+        <div class="logo">Tech<span>Trove</span></div>
+        
+        <div class="search-bar">
+          <form>
+            <input type="text" placeholder="Search for products...">
+            <button type="submit">Search</button>
+          </form>
+        </div>
+        
+        <div class="user-actions">
+          <a href="#account">My Account</a>
+          <a href="#cart" class="cart-icon">
+            Cart
+            <span class="cart-count">3</span>
+          </a>
+        </div>
+      </div>
+    </div>
+    
+    <nav>
+      <div class="container">
+        <ul class="nav-links">
+          <li><a href="#smartphones">Smartphones</a></li>
+          <li><a href="#laptops">Laptops & PCs</a></li>
+          <li><a href="#tablets">Tablets</a></li>
+          <li><a href="#audio">Audio</a></li>
+          <li><a href="#wearables">Wearables</a></li>
+          <li><a href="#accessories">Accessories</a></li>
+          <li><a href="#deals">Deals</a></li>
+        </ul>
+      </div>
+    </nav>
+  </header>
+  
+  <section class="hero">
+    <div class="container">
+      <h1>Next-Gen Tech at Your Fingertips</h1>
+      <p>Discover the latest electronics and gadgets with exclusive deals and premium service.</p>
+      <a href="#products" class="btn">Shop Now</a>
+    </div>
+  </section>
+  
+  <section class="section">
+    <div class="container">
+      <h2 class="section-title">Shop by Category</h2>
+      
+      <div class="categories">
+        <div class="category-card">
+          <div class="category-img">
+            <img src="https://images.unsplash.com/photo-1511707171634-5f897ff02aa9" alt="Smartphones">
+          </div>
+          <div class="category-info">
+            <h3>Smartphones</h3>
+            <p>Latest models from top brands</p>
+          </div>
+        </div>
+        
+        <div class="category-card">
+          <div class="category-img">
+            <img src="https://images.unsplash.com/photo-1496181133206-80ce9b88a853" alt="Laptops">
+          </div>
+          <div class="category-info">
+            <h3>Laptops & PCs</h3>
+            <p>For work and gaming</p>
+          </div>
+        </div>
+        
+        <div class="category-card">
+          <div class="category-img">
+            <img src="https://images.unsplash.com/photo-1600325829439-383693104ea9" alt="Tablets">
+          </div>
+          <div class="category-info">
+            <h3>Tablets</h3>
+            <p>Portable computing solutions</p>
+          </div>
+        </div>
+        
+        <div class="category-card">
+          <div class="category-img">
+            <img src="https://images.unsplash.com/photo-1546435770-a3e426bf472b" alt="Audio">
+          </div>
+          <div class="category-info">
+            <h3>Audio</h3>
+            <p>Headphones, speakers & more</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+  
+  <section class="section">
+    <div class="container">
+      <div class="offer-banner">
+        <h2>Summer Sale - Up to 40% Off!</h2>
+        <p>Limited time offer on selected electronics. Don't miss out!</p>
+        <a href="#deals" class="btn">View Deals</a>
+      </div>
+      
+      <h2 class="section-title">Featured Products</h2>
+      
+      <div class="products">
+        <div class="product-card">
+          <div class="product-img">
+            <img src="https://images.unsplash.com/photo-1598327105666-5b89351aff97" alt="Smartphone">
+          </div>
+          <div class="product-info">
+            <h3 class="product-title">Ultra Smart Phone X13</h3>
+            <div class="product-price">$899.99</div>
+            <a href="#" class="btn">Add to Cart</a>
+          </div>
+        </div>
+        
+        <div class="product-card">
+          <div class="product-img">
+            <img src="https://images.unsplash.com/photo-1593642632823-8f785ba67e45" alt="Laptop">
+          </div>
+          <div class="product-info">
+            <h3 class="product-title">ProBook Elite Laptop 15"</h3>
+            <div class="product-price">$1,299.99</div>
+            <a href="#" class="btn">Add to Cart</a>
+          </div>
+        </div>
+        
+        <div class="product-card">
+          <div class="product-img">
+            <img src="https://images.unsplash.com/photo-1600294037681-c80b4cb5b434" alt="Headphones">
+          </div>
+          <div class="product-info">
+            <h3 class="product-title">Noise Cancel Pro Headphones</h3>
+            <div class="product-price">$249.99</div>
+            <a href="#" class="btn">Add to Cart</a>
+          </div>
+        </div>
+        
+        <div class="product-card">
+          <div class="product-img">
+            <img src="https://images.unsplash.com/photo-1546868871-7041f2a55e12" alt="Smartwatch">
+          </div>
+          <div class="product-info">
+            <h3 class="product-title">FitWatch Smart Series 5</h3>
+            <div class="product-price">$199.99</div>
+            <a href="#" class="btn">Add to Cart</a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+  
+  <section class="newsletter">
+    <div class="container">
+      <div class="newsletter-content">
+        <h2>Stay Updated</h2>
+        <p>Subscribe to our newsletter and be the first to know about new products and exclusive offers.</p>
+        <form class="newsletter-form">
+          <input type="email" placeholder="Your email address">
+          <button type="submit">Subscribe</button>
+        </form>
+      </div>
+    </div>
+  </section>
+  
+  <footer>
+    <div class="container">
+      <div class="footer-content">
+        <div class="footer-column">
+          <h3>TechTrove</h3>
+          <p>Your one-stop shop for the latest technology and electronic devices.</p>
+        </div>
+        
+        <div class="footer-column">
+          <h3>Shop</h3>
+          <ul class="footer-links">
+            <li><a href="#smartphones">Smartphones</a></li>
+            <li><a href="#laptops">Laptops & PCs</a></li>
+            <li><a href="#tablets">Tablets</a></li>
+            <li><a href="#audio">Audio</a></li>
+            <li><a href="#wearables">Wearables</a></li>
+          </ul>
+        </div>
+        
+        <div class="footer-column">
+          <h3>Customer Service</h3>
+          <ul class="footer-links">
+            <li><a href="#contact">Contact Us</a></li>
+            <li><a href="#faq">FAQs</a></li>
+            <li><a href="#shipping">Shipping & Returns</a></li>
+            <li><a href="#warranty">Warranty Info</a></li>
+          </ul>
+        </div>
+        
+        <div class="footer-column">
+          <h3>About Us</h3>
+          <ul class="footer-links">
+            <li><a href="#about">Our Story</a></li>
+            <li><a href="#careers">Careers</a></li>
+            <li><a href="#news">News & Blog</a></li>
+            <li><a href="#locations">Store Locations</a></li>
+          </ul>
+        </div>
+      </div>
+      
+      <div class="footer-bottom">
+        <p>&copy; 2023 TechTrove Electronics. All Rights Reserved.</p>
+      </div>
+    </div>
+  </footer>
+</body>
+</html>

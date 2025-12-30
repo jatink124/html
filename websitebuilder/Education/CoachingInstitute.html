@@ -1,0 +1,2780 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>MindMentor | Education Coaching Institute</title>
+  <!-- Tailwind CSS via CDN -->
+  <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+  <!-- Font Awesome Icons -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <!-- Google Fonts -->
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&family=Playfair+Display:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --primary: #4f46e5;
+      --primary-dark: #4338ca;
+      --secondary: #0ea5e9;
+      --dark: #1e293b;
+      --light: #f8fafc;
+      --gray: #64748b;
+      --success: #10b981;
+      --warning: #f59e0b;
+      --danger: #ef4444;
+    }
+    
+    body {
+      font-family: 'Poppins', sans-serif;
+      scroll-behavior: smooth;
+    }
+    
+    h1, h2, h3, h4, h5, h6 {
+      font-family: 'Playfair Display', serif;
+    }
+    
+    .nav-link {
+      position: relative;
+    }
+    
+    .nav-link::after {
+      content: '';
+      position: absolute;
+      width: 0;
+      height: 2px;
+      bottom: -4px;
+      left: 0;
+      background-color: var(--primary);
+      transition: width 0.3s ease;
+    }
+    
+    .nav-link:hover::after {
+      width: 100%;
+    }
+    
+    .course-card {
+      transition: all 0.3s ease;
+      transform-origin: center;
+    }
+    
+    .course-card:hover {
+      transform: translateY(-10px);
+    }
+    
+    .tutor-card {
+      transition: all 0.3s ease;
+    }
+    
+    .tutor-card:hover {
+      transform: translateY(-5px);
+    }
+    
+    .tutor-card img {
+      transition: transform 0.5s ease;
+    }
+    
+    .tutor-card:hover img {
+      transform: scale(1.05);
+    }
+    
+    .feature-card {
+      transition: all 0.3s ease;
+      border: 2px solid transparent;
+    }
+    
+    .feature-card:hover {
+      transform: translateY(-5px);
+      border-color: var(--primary);
+    }
+    
+    .testimonial-card {
+      transition: all 0.3s ease;
+    }
+    
+    .testimonial-card:hover {
+      transform: translateY(-5px);
+    }
+    
+    .appear {
+      opacity: 0;
+      transform: translateY(30px);
+      transition: all 0.8s ease;
+    }
+    
+    .appear.visible {
+      opacity: 1;
+      transform: translateY(0);
+    }
+    
+    /* Course filter buttons */
+    .filter-btn {
+      transition: all 0.3s ease;
+    }
+    
+    .filter-btn.active {
+      background-color: var(--primary);
+      color: white;
+    }
+    
+    /* Dark mode toggle */
+    .theme-toggle {
+      position: relative;
+      width: 50px;
+      height: 24px;
+    }
+    
+    .theme-toggle input {
+      opacity: 0;
+      width: 0;
+      height: 0;
+    }
+    
+    .slider {
+      position: absolute;
+      cursor: pointer;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background-color: #ccc;
+      transition: .4s;
+      border-radius: 24px;
+    }
+    
+    .slider:before {
+      position: absolute;
+      content: "";
+      height: 18px;
+      width: 18px;
+      left: 3px;
+      bottom: 3px;
+      background-color: white;
+      transition: .4s;
+      border-radius: 50%;
+    }
+    
+    input:checked + .slider {
+      background-color: var(--primary);
+    }
+    
+    input:checked + .slider:before {
+      transform: translateX(26px);
+    }
+    
+    /* Dark mode styles */
+    .dark-mode {
+      background-color: var(--dark);
+      color: var(--light);
+    }
+    
+    .dark-mode .bg-white {
+      background-color: #1e1e30;
+    }
+    
+    .dark-mode .text-gray-800 {
+      color: #f1f5f9;
+    }
+    
+    .dark-mode .text-gray-600 {
+      color: #cbd5e1;
+    }
+    
+    .dark-mode .border-gray-200 {
+      border-color: #334155;
+    }
+    
+    .dark-mode .bg-gray-50 {
+      background-color: #1e293b;
+    }
+    
+    .dark-mode .bg-gray-100 {
+      background-color: #334155;
+    }
+    
+    /* Custom scrollbar */
+    ::-webkit-scrollbar {
+      width: 8px;
+    }
+    
+    ::-webkit-scrollbar-track {
+      background: #f1f1f1;
+    }
+    
+    ::-webkit-scrollbar-thumb {
+      background: #888;
+      border-radius: 10px;
+    }
+    
+    ::-webkit-scrollbar-thumb:hover {
+      background: #555;
+    }
+    
+    /* Progress Bars */
+    .progress-bar {
+      height: 8px;
+      background-color: #e5e7eb;
+      border-radius: 10px;
+      position: relative;
+      overflow: hidden;
+    }
+    
+    .progress-fill {
+      height: 100%;
+      border-radius: 10px;
+      position: absolute;
+      left: 0;
+      transition: width 1s ease;
+    }
+    
+    /* Date picker calendar */
+    .date-picker {
+      position: relative;
+    }
+    
+    .calendar {
+      position: absolute;
+      top: 100%;
+      left: 0;
+      z-index: 50;
+      width: 300px;
+      background-color: white;
+      border: 1px solid #e5e7eb;
+      border-radius: 0.5rem;
+      box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+      padding: 1rem;
+      display: none;
+    }
+    
+    .calendar.active {
+      display: block;
+    }
+    
+    .calendar-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 0.5rem;
+    }
+    
+    .calendar-grid {
+      display: grid;
+      grid-template-columns: repeat(7, 1fr);
+      gap: 0.25rem;
+    }
+    
+    .calendar-day {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 2rem;
+      width: 2rem;
+      border-radius: 50%;
+      cursor: pointer;
+    }
+    
+    .calendar-day:hover {
+      background-color: #f3f4f6;
+    }
+    
+    .calendar-day.selected {
+      background-color: var(--primary);
+      color: white;
+    }
+    
+    .calendar-day.disabled {
+      color: #9ca3af;
+      cursor: not-allowed;
+    }
+    
+    /* Floating Labels for Forms */
+    .form-floating {
+      position: relative;
+    }
+    
+    .form-floating input,
+    .form-floating textarea,
+    .form-floating select {
+      padding-top: 24px;
+      padding-bottom: 8px;
+    }
+    
+    .form-floating label {
+      position: absolute;
+      top: 0;
+      left: 12px;
+      height: 100%;
+      padding: 16px 0;
+      pointer-events: none;
+      transform-origin: 0 0;
+      transition: opacity .1s ease-in-out,transform .1s ease-in-out;
+    }
+    
+    .form-floating input:focus ~ label,
+    .form-floating input:not(:placeholder-shown) ~ label,
+    .form-floating textarea:focus ~ label,
+    .form-floating textarea:not(:placeholder-shown) ~ label,
+    .form-floating select:focus ~ label,
+    .form-floating select:not(:placeholder-shown) ~ label {
+      transform: scale(.85) translateY(-10px);
+      opacity: .65;
+    }
+    
+    /* Course detail tooltip */
+    .tooltip {
+      position: relative;
+      display: inline-block;
+    }
+    
+    .tooltip .tooltiptext {
+      visibility: hidden;
+      width: 200px;
+      background-color: #555;
+      color: #fff;
+      text-align: center;
+      border-radius: 6px;
+      padding: 10px;
+      position: absolute;
+      z-index: 1;
+      bottom: 125%;
+      left: 50%;
+      transform: translateX(-50%);
+      opacity: 0;
+      transition: opacity 0.3s;
+    }
+    
+    .tooltip .tooltiptext::after {
+      content: "";
+      position: absolute;
+      top: 100%;
+      left: 50%;
+      margin-left: -5px;
+      border-width: 5px;
+      border-style: solid;
+      border-color: #555 transparent transparent transparent;
+    }
+    
+    .tooltip:hover .tooltiptext {
+      visibility: visible;
+      opacity: 1;
+    }
+    
+    /* Interactive timeline */
+    .timeline {
+      position: relative;
+      max-width: 1200px;
+      margin: 0 auto;
+    }
+    
+    .timeline::after {
+      content: '';
+      position: absolute;
+      width: 6px;
+      background-color: #e5e7eb;
+      top: 0;
+      bottom: 0;
+      left: 50%;
+      margin-left: -3px;
+    }
+    
+    .timeline-container {
+      padding: 10px 40px;
+      position: relative;
+      background-color: inherit;
+      width: 50%;
+    }
+    
+    .timeline-container::after {
+      content: '';
+      position: absolute;
+      width: 25px;
+      height: 25px;
+      right: -12px;
+      background-color: white;
+      border: 4px solid var(--primary);
+      top: 15px;
+      border-radius: 50%;
+      z-index: 1;
+    }
+    
+    .left {
+      left: 0;
+    }
+    
+    .right {
+      left: 50%;
+    }
+    
+    .left::before {
+      content: " ";
+      height: 0;
+      position: absolute;
+      top: 22px;
+      width: 0;
+      z-index: 1;
+      right: 30px;
+      border: medium solid #f3f4f6;
+      border-width: 10px 0 10px 10px;
+      border-color: transparent transparent transparent #f3f4f6;
+    }
+    
+    .right::before {
+      content: " ";
+      height: 0;
+      position: absolute;
+      top: 22px;
+      width: 0;
+      z-index: 1;
+      left: 30px;
+      border: medium solid #f3f4f6;
+      border-width: 10px 10px 10px 0;
+      border-color: transparent #f3f4f6 transparent transparent;
+    }
+    
+    .right::after {
+      left: -12px;
+    }
+    
+    .timeline-content {
+      padding: 20px 30px;
+      background-color: #f3f4f6;
+      position: relative;
+      border-radius: 6px;
+    }
+    
+    @media screen and (max-width: 768px) {
+      .timeline::after {
+        left: 31px;
+      }
+      
+      .timeline-container {
+        width: 100%;
+        padding-left: 70px;
+        padding-right: 25px;
+      }
+      
+      .timeline-container::before {
+        left: 60px;
+        border: medium solid #f3f4f6;
+        border-width: 10px 10px 10px 0;
+        border-color: transparent #f3f4f6 transparent transparent;
+      }
+      
+      .left::after, .right::after {
+        left: 19px;
+      }
+      
+      .right {
+        left: 0%;
+      }
+    }
+    
+    /* FAQ accordion */
+    .accordion-item {
+      border-bottom: 1px solid #e5e7eb;
+    }
+    
+    .accordion-header {
+      padding: 1rem 0;
+      cursor: pointer;
+      user-select: none;
+    }
+    
+    .accordion-content {
+      max-height: 0;
+      overflow: hidden;
+      transition: max-height 0.3s ease;
+    }
+    
+    .accordion-content.open {
+      max-height: 500px;
+    }
+    
+    /* Chatbot widget */
+    .chatbot-widget {
+      position: fixed;
+      bottom: 20px;
+      right: 20px;
+      z-index: 100;
+    }
+    
+    .chatbot-button {
+      width: 60px;
+      height: 60px;
+      border-radius: 50%;
+      background-color: var(--primary);
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+      cursor: pointer;
+      transition: all 0.3s ease;
+    }
+    
+    .chatbot-button:hover {
+      transform: scale(1.1);
+    }
+    
+    .chatbot-container {
+      position: absolute;
+      bottom: 80px;
+      right: 0;
+      width: 350px;
+      height: 450px;
+      background-color: white;
+      border-radius: 1rem;
+      box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+      overflow: hidden;
+      display: none;
+    }
+    
+    .chatbot-header {
+      background-color: var(--primary);
+      color: white;
+      padding: 1rem;
+      font-weight: bold;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    
+    .chatbot-messages {
+      height: 350px;
+      padding: 1rem;
+      overflow-y: auto;
+    }
+    
+    .message {
+      margin-bottom: 1rem;
+      max-width: 80%;
+    }
+    
+    .message.bot {
+      background-color: #f3f4f6;
+      color: #1f2937;
+      padding: 0.75rem 1rem;
+      border-radius: 1rem 1rem 1rem 0;
+      margin-right: auto;
+    }
+    
+    .message.user {
+      background-color: var(--primary);
+      color: white;
+      padding: 0.75rem 1rem;
+      border-radius: 1rem 1rem 0 1rem;
+      margin-left: auto;
+    }
+    
+    .chatbot-input {
+      padding: 0.75rem;
+      border-top: 1px solid #e5e7eb;
+      display: flex;
+    }
+    
+    .chatbot-input input {
+      flex-grow: 1;
+      border: none;
+      outline: none;
+      padding: 0.5rem;
+    }
+    
+    .chatbot-input button {
+      background-color: var(--primary);
+      color: white;
+      border: none;
+      width: 40px;
+      border-radius: 0.5rem;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      cursor: pointer;
+    }
+    
+    /* Animations */
+    @keyframes pulse {
+      0%, 100% {
+        opacity: 1;
+      }
+      50% {
+        opacity: 0.5;
+      }
+    }
+    
+    .animate-pulse {
+      animation: pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+    }
+    
+    @keyframes bounce {
+      0%, 100% {
+        transform: translateY(0);
+      }
+      50% {
+        transform: translateY(-10px);
+      }
+    }
+    
+    .animate-bounce {
+      animation: bounce 2s infinite;
+    }
+    
+    @keyframes fadeIn {
+      from {
+        opacity: 0;
+        transform: translateY(20px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+    
+    .animate-fade-in {
+      animation: fadeIn 0.5s ease forwards;
+    }
+  </style>
+</head>
+<body class="antialiased">
+  <!-- Header with Navigation - Feature 1: Responsive Navigation -->
+  <header class="bg-white shadow-sm sticky top-0 z-50 transition-all duration-300">
+    <div class="container mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="flex justify-between items-center py-4">
+        <div class="flex items-center">
+          <a href="#" class="flex items-center">
+            <span class="text-3xl font-bold text-gray-900">Mind<span class="text-indigo-600">Mentor</span></span>
+          </a>
+        </div>
+        
+        <!-- Desktop Navigation -->
+        <nav class="hidden md:flex space-x-8">
+          <a href="#home" class="nav-link text-gray-800 hover:text-indigo-600 font-medium transition-colors">Home</a>
+          <a href="#about" class="nav-link text-gray-800 hover:text-indigo-600 font-medium transition-colors">About</a>
+          <a href="#courses" class="nav-link text-gray-800 hover:text-indigo-600 font-medium transition-colors">Courses</a>
+          <a href="#tutors" class="nav-link text-gray-800 hover:text-indigo-600 font-medium transition-colors">Tutors</a>
+          <a href="#testimonials" class="nav-link text-gray-800 hover:text-indigo-600 font-medium transition-colors">Testimonials</a>
+          <a href="#blog" class="nav-link text-gray-800 hover:text-indigo-600 font-medium transition-colors">Blog</a>
+          <a href="#contact" class="nav-link text-gray-800 hover:text-indigo-600 font-medium transition-colors">Contact</a>
+        </nav>
+        
+        <div class="flex items-center space-x-4">
+          <!-- Feature 2: Dark Mode Toggle -->
+          <label class="theme-toggle hidden md:block">
+            <input type="checkbox" id="theme-toggle">
+            <span class="slider"></span>
+          </label>
+          
+          <!-- Language Selector -->
+          <div class="hidden md:block relative">
+            <select class="appearance-none bg-transparent border border-gray-300 rounded px-3 py-1 pr-8 focus:outline-none focus:ring-2 focus:ring-indigo-600">
+              <option>English</option>
+              <option>Español</option>
+              <option>Français</option>
+              <option>Deutsch</option>
+            </select>
+            <div class="pointer-events-none absolute inset-y-0 right-0 flex items-center px-2 text-gray-700">
+              <i class="fas fa-chevron-down text-xs"></i>
+            </div>
+          </div>
+          
+          <a href="#enrollment" class="bg-indigo-600 hover:bg-indigo-700 text-white px-4 py-2 rounded-md transition-all duration-300 hidden md:block">
+            Enroll Now
+          </a>
+          
+          <!-- Mobile menu button -->
+          <div class="md:hidden">
+            <button id="mobile-menu-button" class="text-gray-800 focus:outline-none">
+              <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16" />
+              </svg>
+            </button>
+          </div>
+        </div>
+      </div>
+      
+      <!-- Mobile Navigation -->
+      <div id="mobile-menu" class="md:hidden hidden pb-4">
+        <div class="flex flex-col space-y-3">
+          <a href="#home" class="text-gray-800 hover:text-indigo-600 font-medium transition-colors py-2">Home</a>
+          <a href="#about" class="text-gray-800 hover:text-indigo-600 font-medium transition-colors py-2">About</a>
+          <a href="#courses" class="text-gray-800 hover:text-indigo-600 font-medium transition-colors py-2">Courses</a>
+          <a href="#tutors" class="text-gray-800 hover:text-indigo-600 font-medium transition-colors py-2">Tutors</a>
+          <a href="#testimonials" class="text-gray-800 hover:text-indigo-600 font-medium transition-colors py-2">Testimonials</a>
+          <a href="#blog" class="text-gray-800 hover:text-indigo-600 font-medium transition-colors py-2">Blog</a>
+          <a href="#contact" class="text-gray-800 hover:text-indigo-600 font-medium transition-colors py-2">Contact</a>
+          
+          <div class="flex items-center justify-between pt-3">
+            <label class="theme-toggle">
+              <input type="checkbox" id="mobile-theme-toggle">
+              <span class="slider"></span>
+            </label>
+            
+            <select class="appearance-none bg-transparent border border-gray-300 rounded px-3 py-1 focus:outline-none focus:ring-2 focus:ring-indigo-600">
+              <option>English</option>
+              <option>Español</option>
+              <option>Français</option>
+              <option>Deutsch</option>
+            </select>
+          </div>
+          
+          <a href="#enrollment" class="bg-indigo-600 hover:bg-indigo-700 text-white px-4 py-2 rounded-md transition-all duration-300 text-center mt-2">
+            Enroll Now
+          </a>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <!-- Hero Section - Feature 3: Dynamic Hero with Search -->
+  <section id="home" class="relative py-20 md:py-32 bg-gray-50">
+    <div class="absolute inset-0 bg-gradient-to-r from-indigo-500 to-blue-600 opacity-10"></div>
+    <div class="container mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
+      <div class="grid grid-cols-1 md:grid-cols-5 gap-12 items-center">
+        <div class="md:col-span-3 appear">
+          <span class="inline-block px-3 py-1 rounded-full bg-indigo-100 text-indigo-600 text-sm font-semibold mb-4">
+            Transform Your Education Journey
+          </span>
+          <h1 class="text-4xl md:text-5xl lg:text-6xl font-bold leading-tight mb-6 text-gray-900">
+            Unlock Your <span class="text-indigo-600">Potential</span> With Expert Coaching
+          </h1>
+          <p class="text-lg text-gray-600 mb-8 max-w-xl">
+            Personalized coaching, proven methodologies, and comprehensive resources to help you excel in your academic and competitive exams.
+          </p>
+          <div class="flex flex-col sm:flex-row gap-4">
+            <a href="#courses" class="bg-indigo-600 hover:bg-indigo-700 text-white px-6 py-3 rounded-md transition-all duration-300 text-center font-medium">
+              Explore Courses
+            </a>
+            <a href="#enrollment" class="bg-white hover:bg-gray-100 text-gray-800 border border-gray-300 px-6 py-3 rounded-md transition-all duration-300 text-center font-medium">
+              Free Consultation
+            </a>
+          </div>
+          
+          <div class="flex items-center mt-10 space-x-8">
+            <div class="flex -space-x-4">
+              <img class="w-10 h-10 rounded-full border-2 border-white" src="https://randomuser.me/api/portraits/women/32.jpg" alt="Student">
+              <img class="w-10 h-10 rounded-full border-2 border-white" src="https://randomuser.me/api/portraits/men/54.jpg" alt="Student">
+              <img class="w-10 h-10 rounded-full border-2 border-white" src="https://randomuser.me/api/portraits/women/67.jpg" alt="Student">
+              <div class="w-10 h-10 rounded-full bg-indigo-100 border-2 border-white flex items-center justify-center text-indigo-600 text-xs font-bold">
+                +2K
+              </div>
+            </div>
+            <div>
+              <p class="font-medium">Trusted by 2,000+ students</p>
+              <div class="flex text-yellow-400">
+                <i class="fas fa-star"></i>
+                <i class="fas fa-star"></i>
+                <i class="fas fa-star"></i>
+                <i class="fas fa-star"></i>
+                <i class="fas fa-star-half-alt"></i>
+                <span class="text-gray-600 ml-2">4.8/5</span>
+              </div>
+            </div>
+          </div>
+        </div>
+        
+        <div class="md:col-span-2 appear">
+          <!-- Course Search Form -->
+          <div class="bg-white rounded-xl p-6 shadow-xl">
+            <h2 class="text-xl font-bold mb-6">Find Your Perfect Course</h2>
+            <form action="#" method="POST">
+              <div class="space-y-4">
+                <div>
+                  <label for="course-category" class="block text-sm font-medium text-gray-700 mb-1">What do you want to learn?</label>
+                  <select id="course-category" name="course-category" class="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500">
+                    <option value="">Select a category</option>
+                    <option>Entrance Exams</option>
+                    <option>School Subjects</option>
+                    <option>Language Skills</option>
+                    <option>Competitive Exams</option>
+                    <option>Professional Courses</option>
+                  </select>
+                </div>
+                
+                <div>
+                  <label for="course-level" class="block text-sm font-medium text-gray-700 mb-1">Course Level</label>
+                  <select id="course-level" name="course-level" class="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500">
+                    <option value="">Select a level</option>
+                    <option>Beginner</option>
+                    <option>Intermediate</option>
+                    <option>Advanced</option>
+                  </select>
+                </div>
+                
+                <div>
+                  <label for="course-format" class="block text-sm font-medium text-gray-700 mb-1">Preferred Format</label>
+                  <select id="course-format" name="course-format" class="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500">
+                    <option value="">Select a format</option>
+                    <option>Online Classes</option>
+                    <option>In-Person</option>
+                    <option>Hybrid (Online + In-Person)</option>
+                    <option>Self-Paced</option>
+                  </select>
+                </div>
+                
+                <button type="submit" class="w-full bg-indigo-600 hover:bg-indigo-700 text-white py-3 rounded-md transition-all duration-300 font-medium">
+                  Search Courses
+                </button>
+              </div>
+            </form>
+            
+            <div class="mt-6 pt-6 border-t border-gray-200">
+              <p class="text-sm text-gray-500 mb-4">Popular searches:</p>
+              <div class="flex flex-wrap gap-2">
+                <a href="#" class="text-xs bg-gray-100 hover:bg-gray-200 py-1 px-3 rounded-full text-gray-800 transition-colors">
+                  IIT-JEE
+                </a>
+                <a href="#" class="text-xs bg-gray-100 hover:bg-gray-200 py-1 px-3 rounded-full text-gray-800 transition-colors">
+                  NEET
+                </a>
+                <a href="#" class="text-xs bg-gray-100 hover:bg-gray-200 py-1 px-3 rounded-full text-gray-800 transition-colors">
+                  SAT Prep
+                </a>
+                <a href="#" class="text-xs bg-gray-100 hover:bg-gray-200 py-1 px-3 rounded-full text-gray-800 transition-colors">
+                  AP Courses
+                </a>
+                <a href="#" class="text-xs bg-gray-100 hover:bg-gray-200 py-1 px-3 rounded-full text-gray-800 transition-colors">
+                  Mathematics
+                </a>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Statistics Section -->
+  <section class="py-12 bg-white">
+    <div class="container mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="grid grid-cols-2 md:grid-cols-4 gap-8 text-center">
+        <div>
+          <div class="text-4xl font-bold text-indigo-600 mb-2">94%</div>
+          <p class="text-gray-600">Success Rate</p>
+        </div>
+        <div>
+          <div class="text-4xl font-bold text-indigo-600 mb-2">2,000+</div>
+          <p class="text-gray-600">Students Enrolled</p>
+        </div>
+        <div>
+          <div class="text-4xl font-bold text-indigo-600 mb-2">50+</div>
+          <p class="text-gray-600">Expert Tutors</p>
+        </div>
+        <div>
+          <div class="text-4xl font-bold text-indigo-600 mb-2">15+</div>
+          <p class="text-gray-600">Years Experience</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- About Us Section -->
+  <section id="about" class="py-16 bg-gray-50">
+    <div class="container mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="text-center mb-12">
+        <span class="inline-block px-3 py-1 rounded-full bg-indigo-100 text-indigo-600 text-sm font-semibold">
+          About Us
+        </span>
+        <h2 class="text-3xl md:text-4xl font-bold mt-4 mb-6">Empowering Students Since 2008</h2>
+        <p class="text-lg text-gray-600 max-w-3xl mx-auto">
+          At MindMentor, we combine innovative teaching methodologies with personalized coaching to help students reach their full potential.
+        </p>
+      </div>
+      
+      <div class="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
+        <div class="grid grid-cols-2 gap-4 appear">
+          <img src="https://images.unsplash.com/photo-1523240795612-9a054b0db644?ixlib=rb-1.2.1&auto=format&fit=crop&w=1350&q=80" 
+               alt="Students in classroom" class="rounded-lg h-64 object-cover">
+          <img src="https://images.unsplash.com/photo-1432888498266-38ffec3eaf0a?ixlib=rb-1.2.1&auto=format&fit=crop&w=1350&q=80" 
+               alt="One-on-one tutoring" class="rounded-lg h-64 object-cover mt-8">
+          <img src="https://images.unsplash.com/photo-1519389950473-47ba0277781c?ixlib=rb-1.2.1&auto=format&fit=crop&w=1350&q=80" 
+               alt="Computer lab" class="rounded-lg h-64 object-cover col-span-2">
+        </div>
+        
+        <div class="appear">
+          <h3 class="text-2xl font-bold mb-4">Our Mission</h3>
+          <p class="text-gray-600 mb-6">
+            We are dedicated to helping students build strong academic foundations, develop critical thinking skills, and achieve their educational goals through personalized coaching and comprehensive learning resources.
+          </p>
+          
+          <h3 class="text-2xl font-bold mb-4">Why Choose MindMentor?</h3>
+          <div class="space-y-4">
+            <div class="flex items-start">
+              <div class="flex-shrink-0 w-10 h-10 rounded-full bg-indigo-100 flex items-center justify-center mr-4">
+                <i class="fas fa-chalkboard-teacher text-indigo-600"></i>
+              </div>
+              <div>
+                <h4 class="font-bold">Expert Tutors</h4>
+                <p class="text-gray-600">Our tutors are subject matter experts with years of teaching experience and proven success records.</p>
+              </div>
+            </div>
+            
+            <div class="flex items-start">
+              <div class="flex-shrink-0 w-10 h-10 rounded-full bg-indigo-100 flex items-center justify-center mr-4">
+                <i class="fas fa-user-graduate text-indigo-600"></i>
+              </div>
+              <div>
+                <h4 class="font-bold">Personalized Approach</h4>
+                <p class="text-gray-600">We tailor our teaching methods to match each student's learning style, strengths, and areas for improvement.</p>
+              </div>
+            </div>
+            
+            <div class="flex items-start">
+              <div class="flex-shrink-0 w-10 h-10 rounded-full bg-indigo-100 flex items-center justify-center mr-4">
+                <i class="fas fa-book-open text-indigo-600"></i>
+              </div>
+              <div>
+                <h4 class="font-bold">Comprehensive Resources</h4>
+                <p class="text-gray-600">Access to extensive study materials, practice questions, mock tests, and interactive learning tools.</p>
+              </div>
+            </div>
+            
+            <div class="flex items-start">
+              <div class="flex-shrink-0 w-10 h-10 rounded-full bg-indigo-100 flex items-center justify-center mr-4">
+                <i class="fas fa-chart-line text-indigo-600"></i>
+              </div>
+              <div>
+                <h4 class="font-bold">Progress Tracking</h4>
+                <p class="text-gray-600">Regular assessments and detailed progress reports to monitor improvement and adapt strategies.</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Features Section - Feature 4: Interactive Feature Cards -->
+  <section class="py-16 bg-white">
+    <div class="container mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="text-center mb-12">
+        <span class="inline-block px-3 py-1 rounded-full bg-indigo-100 text-indigo-600 text-sm font-semibold">
+          Our Approach
+        </span>
+        <h2 class="text-3xl md:text-4xl font-bold mt-4 mb-6">Key Features of Our Coaching</h2>
+        <p class="text-lg text-gray-600 max-w-3xl mx-auto">
+          Discover the unique elements of our coaching methodology that set us apart and drive student success.
+        </p>
+      </div>
+      
+      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+        <div class="feature-card bg-white rounded-xl p-6 shadow-md border border-gray-200 appear">
+          <div class="w-14 h-14 rounded-full bg-indigo-100 flex items-center justify-center mb-6">
+            <i class="fas fa-brain text-indigo-600 text-2xl"></i>
+          </div>
+          <h3 class="text-xl font-bold mb-3">Concept-Based Learning</h3>
+          <p class="text-gray-600">
+            We focus on building strong conceptual understanding rather than rote memorization, enabling students to solve even the most complex problems.
+          </p>
+        </div>
+        
+        <div class="feature-card bg-white rounded-xl p-6 shadow-md border border-gray-200 appear">
+          <div class="w-14 h-14 rounded-full bg-indigo-100 flex items-center justify-center mb-6">
+            <i class="fas fa-users text-indigo-600 text-2xl"></i>
+          </div>
+          <h3 class="text-xl font-bold mb-3">Small Batch Sizes</h3>
+          <p class="text-gray-600">
+            Limited students per batch ensure that each student receives personal attention and their queries are addressed effectively.
+          </p>
+        </div>
+        
+        <div class="feature-card bg-white rounded-xl p-6 shadow-md border border-gray-200 appear">
+          <div class="w-14 h-14 rounded-full bg-indigo-100 flex items-center justify-center mb-6">
+            <i class="fas fa-laptop text-indigo-600 text-2xl"></i>
+          </div>
+          <h3 class="text-xl font-bold mb-3">Blended Learning</h3>
+          <p class="text-gray-600">
+            A perfect mix of traditional classroom teaching and digital learning tools to maximize engagement and knowledge retention.
+          </p>
+        </div>
+        
+        <div class="feature-card bg-white rounded-xl p-6 shadow-md border border-gray-200 appear">
+          <div class="w-14 h-14 rounded-full bg-indigo-100 flex items-center justify-center mb-6">
+            <i class="fas fa-clipboard-check text-indigo-600 text-2xl"></i>
+          </div>
+          <h3 class="text-xl font-bold mb-3">Regular Assessments</h3>
+          <p class="text-gray-600">
+            Frequent tests and evaluations to identify strengths and weaknesses, allowing for targeted improvement strategies.
+          </p>
+        </div>
+        
+        <div class="feature-card bg-white rounded-xl p-6 shadow-md border border-gray-200 appear">
+          <div class="w-14 h-14 rounded-full bg-indigo-100 flex items-center justify-center mb-6">
+            <i class="fas fa-book text-indigo-600 text-2xl"></i>
+          </div>
+          <h3 class="text-xl font-bold mb-3">Comprehensive Materials</h3>
+          <p class="text-gray-600">
+            Meticulously crafted study materials, including textbooks, workbooks, and digital resources aligned with the latest curriculum.
+          </p>
+        </div>
+        
+        <div class="feature-card bg-white rounded-xl p-6 shadow-md border border-gray-200 appear">
+          <div class="w-14 h-14 rounded-full bg-indigo-100 flex items-center justify-center mb-6">
+            <i class="fas fa-headset text-indigo-600 text-2xl"></i>
+          </div>
+          <h3 class="text-xl font-bold mb-3">24/7 Doubt Resolution</h3>
+          <p class="text-gray-600">
+            Access to our online doubt-solving platform where tutors address your questions and clarify concepts anytime.
+          </p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Courses Section - Feature 5: Interactive Course Cards with Filtering -->
+  <section id="courses" class="py-16 bg-gray-50">
+    <div class="container mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="text-center mb-12">
+        <span class="inline-block px-3 py-1 rounded-full bg-indigo-100 text-indigo-600 text-sm font-semibold">
+          What We Offer
+        </span>
+        <h2 class="text-3xl md:text-4xl font-bold mt-4 mb-6">Popular Courses</h2>
+        <p class="text-lg text-gray-600 max-w-3xl mx-auto">
+          Explore our wide range of courses designed to help you excel in academics and competitive exams.
+        </p>
+      </div>
+      
+      <!-- Course Filter Buttons -->
+      <div class="flex flex-wrap justify-center gap-4 mb-12">
+        <button class="filter-btn active px-4 py-2 rounded-md border border-gray-300 font-medium" data-filter="all">
+          All Courses
+        </button>
+        <button class="filter-btn px-4 py-2 rounded-md border border-gray-300 font-medium" data-filter="entrance">
+          Entrance Exams
+        </button>
+        <button class="filter-btn px-4 py-2 rounded-md border border-gray-300 font-medium" data-filter="school">
+          School Subjects
+        </button>
+        <button class="filter-btn px-4 py-2 rounded-md border border-gray-300 font-medium" data-filter="language">
+          Language Skills
+        </button>
+        <button class="filter-btn px-4 py-2 rounded-md border border-gray-300 font-medium" data-filter="professional">
+          Professional
+        </button>
+      </div>
+      
+      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+        <!-- Course 1 -->
+        <div class="course-card bg-white rounded-xl overflow-hidden shadow-md appear" data-category="entrance">
+          <div class="relative h-48">
+            <img src="https://images.unsplash.com/photo-1434030216411-0b793f4b4173?ixlib=rb-1.2.1&auto=format&fit=crop&w=1350&q=80" 
+                 alt="IIT-JEE Preparation" class="w-full h-full object-cover">
+            <div class="absolute top-0 left-0 bg-indigo-600 text-white text-xs px-3 py-1 m-4 rounded-full">
+              Bestseller
+            </div>
+          </div>
+          <div class="p-6">
+            <div class="flex justify-between mb-2">
+              <h3 class="text-xl font-bold">IIT-JEE Complete Course</h3>
+              <div class="tooltip">
+                <span class="text-gray-500 text-sm"><i class="fas fa-info-circle"></i></span>
+                <div class="tooltiptext">
+                  <p class="text-sm mb-1">Comprehensive preparation for IIT-JEE Main & Advanced</p>
+                  <p class="text-sm mb-1">Physics, Chemistry & Mathematics</p>
+                  <p class="text-sm mb-1">Regular Mock Tests & Doubt Sessions</p>
+                </div>
+              </div>
+            </div>
+            <div class="flex flex-wrap gap-2 mb-3">
+              <span class="text-xs bg-gray-100 px-3 py-1 rounded-full">Physics</span>
+              <span class="text-xs bg-gray-100 px-3 py-1 rounded-full">Chemistry</span>
+              <span class="text-xs bg-gray-100 px-3 py-1 rounded-full">Mathematics</span>
+            </div>
+            <div class="flex items-center mb-4">
+              <div class="flex text-yellow-400 mr-1">
+                <i class="fas fa-star"></i>
+                <i class="fas fa-star"></i>
+                <i class="fas fa-star"></i>
+                <i class="fas fa-star"></i>
+                <i class="fas fa-star-half-alt"></i>
+              </div>
+              <span class="text-sm text-gray-500">4.8 (245 reviews)</span>
+            </div>
+            <div class="flex justify-between items-center mb-3">
+              <div>
+                <span class="text-sm text-gray-500"><i class="far fa-clock mr-1"></i> 12 months</span>
+              </div>
+              <div>
+                <span class="text-sm text-gray-500"><i class="fas fa-book mr-1"></i> 180 lessons</span>
+              </div>
+            </div>
+            <div class="flex justify-between items-center">
+              <div class="text-xl font-bold text-indigo-600">$899</div>
+              <a href="#enrollment" class="bg-indigo-600 hover:bg-indigo-700 text-white px-4 py-2 rounded-md transition-all duration-300">
+                Enroll Now
+              </a>
+            </div>
+          </div>
+        </div>
+        
+        <!-- Course 2 -->
+        <div class="course-card bg-white rounded-xl overflow-hidden shadow-md appear" data-category="entrance">
+          <div class="relative h-48">
+            <img src="https://images.unsplash.com/photo-1576091160550-2173dba999ef?ixlib=rb-1.2.1&auto=format&fit=crop&w=1350&q=80" 
+                 alt="NEET Preparation" class="w-full h-full object-cover">
+            <div class="absolute top-0 left-0 bg-green-500 text-white text-xs px-3 py-1 m-4 rounded-full">
+              New Batch
+            </div>
+          </div>
+          <div class="p-6">
+            <div class="flex justify-between mb-2">
+              <h3 class="text-xl font-bold">NEET Medical Entrance</h3>
+              <div class="tooltip">
+                <span class="text-gray-500 text-sm"><i class="fas fa-info-circle"></i></span>
+                <div class="tooltiptext">
+                  <p class="text-sm mb-1">Complete preparation for medical entrance</p>
+                  <p class="text-sm mb-1">Biology, Physics & Chemistry</p>
+                  <p class="text-sm mb-1">Practical sessions & Previous year papers</p>
+                </div>
+              </div>
+            </div>
+            <div class="flex flex-wrap gap-2 mb-3">
+              <span class="text-xs bg-gray-100 px-3 py-1 rounded-full">Biology</span>
+              <span class="text-xs bg-gray-100 px-3 py-1 rounded-full">Physics</span>
+              <span class="text-xs bg-gray-100 px-3 py-1 rounded-full">Chemistry</span>
+            </div>
+            <div class="flex items-center mb-4">
+              <div class="flex text-yellow-400 mr-1">
+                <i class="fas fa-star"></i>
+                <i class="fas fa-star"></i>
+                <i class="fas fa-star"></i>
+                <i class="fas fa-star"></i>
+                <i class="fas fa-star"></i>
+              </div>
+              <span class="text-sm text-gray-500">5.0 (189 reviews)</span>
+            </div>
+            <div class="flex justify-between items-center mb-3">
+              <div>
+                <span class="text-sm text-gray-500"><i class="far fa-clock mr-1"></i> 12 months</span>
+              </div>
+              <div>
+                <span class="text-sm text-gray-500"><i class="fas fa-book mr-1"></i> 175 lessons</span>
+              </div>
+            </div>
+            <div class="flex justify-between items-center">
+              <div class="text-xl font-bold text-indigo-600">$849</div>
+              <a href="#enrollment" class="bg-indigo-600 hover:bg-indigo-700 text-white px-4 py-2 rounded-md transition-all duration-300">
+                Enroll Now
+              </a>
+            </div>
+          </div>
+        </div>
+        
+        <!-- Course 3 -->
+        <div class="course-card bg-white rounded-xl overflow-hidden shadow-md appear" data-category="school">
+          <div class="relative h-48">
+            <img src="https://images.unsplash.com/photo-1635070041078-e363dbe005cb?ixlib=rb-1.2.1&auto=format&fit=crop&w=1350&q=80" 
+                 alt="High School Mathematics" class="w-full h-full object-cover">
+          </div>
+          <div class="p-6">
+            <div class="flex justify-between mb-2">
+              <h3 class="text-xl font-bold">Advanced Mathematics</h3>
+              <div class="tooltip">
+                <span class="text-gray-500 text-sm"><i class="fas fa-info-circle"></i></span>
+                <div class="tooltiptext">
+                  <p class="text-sm mb-1">Grade 11-12 Advanced Mathematics</p>
+                  <p class="text-sm mb-1">Calculus, Algebra & Trigonometry</p>
+                  <p class="text-sm mb-1">Problem-solving techniques & shortcuts</p>
+                </div>
+              </div>
+            </div>
+            <div class="flex flex-wrap gap-2 mb-3">
+              <span class="text-xs bg-gray-100 px-3 py-1 rounded-full">Calculus</span>
+              <span class="text-xs bg-gray-100 px-3 py-1 rounded-full">Algebra</span>
+              <span class="text-xs bg-gray-100 px-3 py-1 rounded-full">Trigonometry</span>
+            </div>
+            <div class="flex items-center mb-4">
+              <div class="flex text-yellow-400 mr-1">
+                <i class="fas fa-star"></i>
+                <i class="fas fa-star"></i>
+                <i class="fas fa-star"></i>
+                <i class="fas fa-star"></i>
+                <i class="fas fa-star-half-alt"></i>
+              </div>
+              <span class="text-sm text-gray-500">4.7 (156 reviews)</span>
+            </div>
+            <div class="flex justify-between items-center mb-3">
+              <div>
+                <span class="text-sm text-gray-500"><i class="far fa-clock mr-1"></i> 6 months</span>
+              </div>
+              <div>
+                <span class="text-sm text-gray-500"><i class="fas fa-book mr-1"></i> 90 lessons</span>
+              </div>
+            </div>
+            <div class="flex justify-between items-center">
+              <div class="text-xl font-bold text-indigo-600">$499</div>
+              <a href="#enrollment" class="bg-indigo-600 hover:bg-indigo-700 text-white px-4 py-2 rounded-md transition-all duration-300">
+                Enroll Now
+              </a>
+            </div>
+          </div>
+        </div>
+        
+        <!-- Course 4 -->
+        <div class="course-card bg-white rounded-xl overflow-hidden shadow-md appear" data-category="language">
+          <div class="relative h-48">
+            <img src="https://images.unsplash.com/photo-1546410531-bb4caa6b424d?ixlib=rb-1.2.1&auto=format&fit=crop&w=1350&q=80" 
+                 alt="English Language" class="w-full h-full object-cover">
+          </div>
+          <div class="p-6">
+            <div class="flex justify-between mb-2">
+              <h3 class="text-xl font-bold">English Language Mastery</h3>
+              <div class="tooltip">
+                <span class="text-gray-500 text-sm"><i class="fas fa-info-circle"></i></span>
+                <div class="tooltiptext">
+                  <p class="text-sm mb-1">English speaking, writing & reading</p>
+                  <p class="text-sm mb-1">Grammar & Vocabulary enhancement</p>
+                  <p class="text-sm mb-1">Public speaking & communication skills</p>
+                </div>
+              </div>
+            </div>
+            <div class="flex flex-wrap gap-2 mb-3">
+              <span class="text-xs bg-gray-100 px-3 py-1 rounded-full">Grammar</span>
+              <span class="text-xs bg-gray-100 px-3 py-1 rounded-full">Vocabulary</span>
+              <span class="text-xs bg-gray-100 px-3 py-1 rounded-full">Communication</span>
+            </div>
+            <div class="flex items-center mb-4">
+              <div class="flex text-yellow-400 mr-1">
+                <i class="fas fa-star"></i>
+                <i class="fas fa-star"></i>
+                <i class="fas fa-star"></i>
+                <i class="fas fa-star"></i>
+                <i class="fas fa-star"></i>
+              </div>
+              <span class="text-sm text-gray-500">4.9 (203 reviews)</span>
+            </div>
+            <div class="flex justify-between items-center mb-3">
+              <div>
+                <span class="text-sm text-gray-500"><i class="far fa-clock mr-1"></i> 3 months</span>
+              </div>
+              <div>
+                <span class="text-sm text-gray-500"><i class="fas fa-book mr-1"></i> 45 lessons</span>
+              </div>
+            </div>
+            <div class="flex justify-between items-center">
+              <div class="text-xl font-bold text-indigo-600">$299</div>
+              <a href="#enrollment" class="bg-indigo-600 hover:bg-indigo-700 text-white px-4 py-2 rounded-md transition-all duration-300">
+                Enroll Now
+              </a>
+            </div>
+          </div>
+        </div>
+        
+        <!-- Course 5 -->
+        <div class="course-card bg-white rounded-xl overflow-hidden shadow-md appear" data-category="school">
+          <div class="relative h-48">
+            <img src="https://images.unsplash.com/photo-1554475901-4538ddfbccc2?ixlib=rb-1.2.1&auto=format&fit=crop&w=1350&q=80" 
+                 alt="Physics" class="w-full h-full object-cover">
+          </div>
+          <div class="p-6">
+            <div class="flex justify-between mb-2">
+              <h3 class="text-xl font-bold">Physics Fundamentals</h3>
+              <div class="tooltip">
+                <span class="text-gray-500 text-sm"><i class="fas fa-info-circle"></i></span>
+                <div class="tooltiptext">
+                  <p class="text-sm mb-1">High school Physics curriculum</p>
+                  <p class="text-sm mb-1">Mechanics, Electricity & Modern Physics</p>
+                  <p class="text-sm mb-1">Practical experiments & problem solving</p>
+                </div>
+              </div>
+            </div>
+            <div class="flex flex-wrap gap-2 mb-3">
+              <span class="text-xs bg-gray-100 px-3 py-1 rounded-full">Mechanics</span>
+              <span class="text-xs bg-gray-100 px-3 py-1 rounded-full">Electricity</span>
+              <span class="text-xs bg-gray-100 px-3 py-1 rounded-full">Modern Physics</span>
+            </div>
+            <div class="flex items-center mb-4">
+              <div class="flex text-yellow-400 mr-1">
+                <i class="fas fa-star"></i>
+                <i class="fas fa-star"></i>
+                <i class="fas fa-star"></i>
+                <i class="fas fa-star"></i>
+                <i class="far fa-star"></i>
+              </div>
+              <span class="text-sm text-gray-500">4.0 (142 reviews)</span>
+            </div>
+            <div class="flex justify-between items-center mb-3">
+              <div>
+                <span class="text-sm text-gray-500"><i class="far fa-clock mr-1"></i> 6 months</span>
+              </div>
+              <div>
+                <span class="text-sm text-gray-500"><i class="fas fa-book mr-1"></i> 85 lessons</span>
+              </div>
+            </div>
+            <div class="flex justify-between items-center">
+              <div class="text-xl font-bold text-indigo-600">$449</div>
+              <a href="#enrollment" class="bg-indigo-600 hover:bg-indigo-700 text-white px-4 py-2 rounded-md transition-all duration-300">
+                Enroll Now
+              </a>
+            </div>
+          </div>
+        </div>
+        
+        <!-- Course 6 -->
+        <div class="course-card bg-white rounded-xl overflow-hidden shadow-md appear" data-category="professional">
+          <div class="relative h-48">
+            <img src="https://images.unsplash.com/photo-1486312338219-ce68d2c6f44d?ixlib=rb-1.2.1&auto=format&fit=crop&w=1350&q=80" 
+                 alt="Coding" class="w-full h-full object-cover">
+          </div>
+          <div class="p-6">
+            <div class="flex justify-between mb-2">
+              <h3 class="text-xl font-bold">Coding for Beginners</h3>
+              <div class="tooltip">
+                <span class="text-gray-500 text-sm"><i class="fas fa-info-circle"></i></span>
+                <div class="tooltiptext">
+                  <p class="text-sm mb-1">Python & Java programming basics</p>
+                  <p class="text-sm mb-1">Web development introduction</p>
+                  <p class="text-sm mb-1">Hands-on projects & practical exercises</p>
+                </div>
+              </div>
+            </div>
+            <div class="flex flex-wrap gap-2 mb-3">
+              <span class="text-xs bg-gray-100 px-3 py-1 rounded-full">Python</span>
+              <span class="text-xs bg-gray-100 px-3 py-1 rounded-full">Java</span>
+              <span class="text-xs bg-gray-100 px-3 py-1 rounded-full">Web Development</span>
+            </div>
+            <div class="flex items-center mb-4">
+              <div class="flex text-yellow-400 mr-1">
+                <i class="fas fa-star"></i>
+                <i class="fas fa-star"></i>
+                <i class="fas fa-star"></i>
+                <i class="fas fa-star"></i>
+                <i class="fas fa-star-half-alt"></i>
+              </div>
+              <span class="text-sm text-gray-500">4.7 (218 reviews)</span>
+            </div>
+            <div class="flex justify-between items-center mb-3">
+              <div>
+                <span class="text-sm text-gray-500"><i class="far fa-clock mr-1"></i> 4 months</span>
+              </div>
+              <div>
+                <span class="text-sm text-gray-500"><i class="fas fa-book mr-1"></i> 60 lessons</span>
+              </div>
+            </div>
+            <div class="flex justify-between items-center">
+              <div class="text-xl font-bold text-indigo-600">$399</div>
+              <a href="#enrollment" class="bg-indigo-600 hover:bg-indigo-700 text-white px-4 py-2 rounded-md transition-all duration-300">
+                Enroll Now
+              </a>
+            </div>
+          </div>
+        </div>
+      </div>
+      
+      <div class="text-center mt-12">
+        <a href="#" class="inline-block bg-indigo-600 hover:bg-indigo-700 text-white px-6 py-3 rounded-md transition-all duration-300 font-medium">
+          View All Courses
+        </a>
+      </div>
+    </div>
+  </section>
+
+  <!-- Learning Journey - Feature 6: Interactive Timeline -->
+  <section class="py-16 bg-white">
+    <div class="container mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="text-center mb-16">
+        <span class="inline-block px-3 py-1 rounded-full bg-indigo-100 text-indigo-600 text-sm font-semibold">
+          Your Path to Success
+        </span>
+        <h2 class="text-3xl md:text-4xl font-bold mt-4 mb-6">How Our Learning Journey Works</h2>
+        <p class="text-lg text-gray-600 max-w-3xl mx-auto">
+          From enrollment to mastery, we guide you every step of the way with our structured learning approach.
+        </p>
+      </div>
+      
+      <div class="timeline">
+        <!-- Step 1 -->
+        <div class="timeline-container left appear">
+          <div class="timeline-content">
+            <div class="flex items-center mb-4">
+              <div class="w-12 h-12 rounded-full bg-indigo-100 flex items-center justify-center mr-4">
+                <i class="fas fa-clipboard-list text-indigo-600"></i>
+              </div>
+              <h3 class="text-xl font-bold">Assessment</h3>
+            </div>
+            <p class="text-gray-600">
+              We begin with a thorough assessment to understand your current knowledge level, learning style, strengths, and areas for improvement.
+            </p>
+          </div>
+        </div>
+        
+        <!-- Step 2 -->
+        <div class="timeline-container right appear">
+          <div class="timeline-content">
+            <div class="flex items-center mb-4">
+              <div class="w-12 h-12 rounded-full bg-indigo-100 flex items-center justify-center mr-4">
+                <i class="fas fa-route text-indigo-600"></i>
+              </div>
+              <h3 class="text-xl font-bold">Personalized Plan</h3>
+            </div>
+            <p class="text-gray-600">
+              Based on your assessment, we create a customized learning plan with specific goals, milestones, and timelines tailored to your needs.
+            </p>
+          </div>
+        </div>
+        
+        <!-- Step 3 -->
+        <div class="timeline-container left appear">
+          <div class="timeline-content">
+            <div class="flex items-center mb-4">
+              <div class="w-12 h-12 rounded-full bg-indigo-100 flex items-center justify-center mr-4">
+                <i class="fas fa-chalkboard-teacher text-indigo-600"></i>
+              </div>
+              <h3 class="text-xl font-bold">Guided Learning</h3>
+            </div>
+            <p class="text-gray-600">
+              Participate in expert-led classes, workshops, and practice sessions that focus on building strong conceptual understanding and application skills.
+            </p>
+          </div>
+        </div>
+        
+        <!-- Step 4 -->
+        <div class="timeline-container right appear">
+          <div class="timeline-content">
+            <div class="flex items-center mb-4">
+              <div class="w-12 h-12 rounded-full bg-indigo-100 flex items-center justify-center mr-4">
+                <i class="fas fa-tasks text-indigo-600"></i>
+              </div>
+              <h3 class="text-xl font-bold">Regular Practice</h3>
+            </div>
+            <p class="text-gray-600">
+              Reinforce your learning through regular assignments, practice questions, and mock tests designed to strengthen your skills and build confidence.
+            </p>
+          </div>
+        </div>
+        
+        <!-- Step 5 -->
+        <div class="timeline-container left appear">
+          <div class="timeline-content">
+            <div class="flex items-center mb-4">
+              <div class="w-12 h-12 rounded-full bg-indigo-100 flex items-center justify-center mr-4">
+                <i class="fas fa-chart-line text-indigo-600"></i>
+              </div>
+              <h3 class="text-xl font-bold">Progress Tracking</h3>
+            </div>
+            <p class="text-gray-600">
+              Receive detailed performance analytics and progress reports that highlight your improvements and identify areas that need additional focus.
+            </p>
+          </div>
+        </div>
+        
+        <!-- Step 6 -->
+        <div class="timeline-container right appear">
+          <div class="timeline-content">
+            <div class="flex items-center mb-4">
+              <div class="w-12 h-12 rounded-full bg-indigo-100 flex items-center justify-center mr-4">
+                <i class="fas fa-trophy text-indigo-600"></i>
+              </div>
+              <h3 class="text-xl font-bold">Mastery & Achievement</h3>
+            </div>
+            <p class="text-gray-600">
+              Celebrate your successes as you master concepts, reach milestones, and ultimately achieve your educational goals with confidence.
+            </p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Tutors Section - Feature 7: Interactive Tutor Cards -->
+  <section id="tutors" class="py-16 bg-gray-50">
+    <div class="container mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="text-center mb-12">
+        <span class="inline-block px-3 py-1 rounded-full bg-indigo-100 text-indigo-600 text-sm font-semibold">
+          Expert Faculty
+        </span>
+        <h2 class="text-3xl md:text-4xl font-bold mt-4 mb-6">Meet Our Expert Tutors</h2>
+        <p class="text-lg text-gray-600 max-w-3xl mx-auto">
+          Learn from the best in the field with our team of experienced and dedicated educators.
+        </p>
+      </div>
+      
+      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
+        <!-- Tutor 1 -->
+        <div class="tutor-card bg-white rounded-xl overflow-hidden shadow-md appear">
+          <div class="h-64 overflow-hidden">
+            <img src="https://randomuser.me/api/portraits/men/32.jpg" alt="Dr. Robert Chen" class="w-full h-full object-cover">
+          </div>
+          <div class="p-6">
+            <h3 class="text-xl font-bold mb-1">Dr. Robert Chen</h3>
+            <p class="text-indigo-600 mb-3">Physics Expert</p>
+            <p class="text-gray-600 text-sm mb-4">
+              PhD in Theoretical Physics with 15+ years of teaching experience. Specializes in preparing students for competitive exams.
+            </p>
+            <div class="flex justify-between items-center">
+              <div class="flex text-yellow-400">
+                <i class="fas fa-star"></i>
+                <i class="fas fa-star"></i>
+                <i class="fas fa-star"></i>
+                <i class="fas fa-star"></i>
+                <i class="fas fa-star"></i>
+              </div>
+              <div class="flex space-x-2">
+                <a href="#" class="text-gray-400 hover:text-indigo-600 transition-colors">
+                  <i class="fab fa-linkedin-in"></i>
+                </a>
+                <a href="#" class="text-gray-400 hover:text-indigo-600 transition-colors">
+                  <i class="fas fa-envelope"></i>
+                </a>
+              </div>
+            </div>
+          </div>
+        </div>
+        
+        <!-- Tutor 2 -->
+        <div class="tutor-card bg-white rounded-xl overflow-hidden shadow-md appear">
+          <div class="h-64 overflow-hidden">
+            <img src="https://randomuser.me/api/portraits/women/44.jpg" alt="Prof. Sarah Johnson" class="w-full h-full object-cover">
+          </div>
+          <div class="p-6">
+            <h3 class="text-xl font-bold mb-1">Prof. Sarah Johnson</h3>
+            <p class="text-indigo-600 mb-3">Mathematics Expert</p>
+            <p class="text-gray-600 text-sm mb-4">
+              Master's in Applied Mathematics with expertise in Calculus and Algebra. Known for making complex concepts simple.
+            </p>
+            <div class="flex justify-between items-center">
+              <div class="flex text-yellow-400">
+                <i class="fas fa-star"></i>
+                <i class="fas fa-star"></i>
+                <i class="fas fa-star"></i>
+                <i class="fas fa-star"></i>
+                <i class="fas fa-star-half-alt"></i>
+              </div>
+              <div class="flex space-x-2">
+                <a href="#" class="text-gray-400 hover:text-indigo-600 transition-colors">
+                  <i class="fab fa-linkedin-in"></i>
+                </a>
+                <a href="#" class="text-gray-400 hover:text-indigo-600 transition-colors">
+                  <i class="fas fa-envelope"></i>
+                </a>
+              </div>
+            </div>
+          </div>
+        </div>
+        
+        <!-- Tutor 3 -->
+        <div class="tutor-card bg-white rounded-xl overflow-hidden shadow-md appear">
+          <div class="h-64 overflow-hidden">
+            <img src="https://randomuser.me/api/portraits/men/62.jpg" alt="Dr. Michael Patel" class="w-full h-full object-cover">
+          </div>
+          <div class="p-6">
+            <h3 class="text-xl font-bold mb-1">Dr. Michael Patel</h3>
+            <p class="text-indigo-600 mb-3">Chemistry Expert</p>
+            <p class="text-gray-600 text-sm mb-4">
+              PhD in Organic Chemistry with research experience. Passionate about making chemistry practical and engaging.
+            </p>
+            <div class="flex justify-between items-center">
+              <div class="flex text-yellow-400">
+                <i class="fas fa-star"></i>
+                <i class="fas fa-star"></i>
+                <i class="fas fa-star"></i>
+                <i class="fas fa-star"></i>
+                <i class="far fa-star"></i>
+              </div>
+              <div class="flex space-x-2">
+                <a href="#" class="text-gray-400 hover:text-indigo-600 transition-colors">
+                  <i class="fab fa-linkedin-in"></i>
+                </a>
+                <a href="#" class="text-gray-400 hover:text-indigo-600 transition-colors">
+                  <i class="fas fa-envelope"></i>
+                </a>
+              </div>
+            </div>
+          </div>
+        </div>
+        
+        <!-- Tutor 4 -->
+        <div class="tutor-card bg-white rounded-xl overflow-hidden shadow-md appear">
+          <div class="h-64 overflow-hidden">
+            <img src="https://randomuser.me/api/portraits/women/68.jpg" alt="Ms. Emma Williams" class="w-full h-full object-cover">
+          </div>
+          <div class="p-6">
+            <h3 class="text-xl font-bold mb-1">Ms. Emma Williams</h3>
+            <p class="text-indigo-600 mb-3">English Language Expert</p>
+            <p class="text-gray-600 text-sm mb-4">
+              MA in English Literature and certified TEFL instructor. Specializes in language skills and effective communication.
+            </p>
+            <div class="flex justify-between items-center">
+              <div class="flex text-yellow-400">
+                <i class="fas fa-star"></i>
+                <i class="fas fa-star"></i>
+                <i class="fas fa-star"></i>
+                <i class="fas fa-star"></i>
+                <i class="fas fa-star"></i>
+              </div>
+              <div class="flex space-x-2">
+                <a href="#" class="text-gray-400 hover:text-indigo-600 transition-colors">
+                  <i class="fab fa-linkedin-in"></i>
+                </a>
+                <a href="#" class="text-gray-400 hover:text-indigo-600 transition-colors">
+                  <i class="fas fa-envelope"></i>
+                </a>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      
+      <div class="text-center mt-12">
+        <a href="#" class="inline-block border border-indigo-600 text-indigo-600 hover:bg-indigo-50 px-6 py-3 rounded-md transition-all duration-300 font-medium">
+          View All Tutors
+        </a>
+      </div>
+    </div>
+  </section>
+
+  <!-- Success Metrics - Feature 8: Animated Progress Bars -->
+  <section class="py-16 bg-white">
+    <div class="container mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="text-center mb-12">
+        <span class="inline-block px-3 py-1 rounded-full bg-indigo-100 text-indigo-600 text-sm font-semibold">
+          Our Track Record
+        </span>
+        <h2 class="text-3xl md:text-4xl font-bold mt-4 mb-6">Success Metrics</h2>
+        <p class="text-lg text-gray-600 max-w-3xl mx-auto">
+          Our results speak volumes about our commitment to academic excellence and student success.
+        </p>
+      </div>
+      
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-12 appear">
+        <div>
+          <div class="mb-8">
+            <div class="flex justify-between mb-2">
+              <span class="font-medium">IIT-JEE Success Rate</span>
+              <span class="font-medium">92%</span>
+            </div>
+            <div class="progress-bar">
+              <div class="progress-fill bg-indigo-600" style="width: 92%"></div>
+            </div>
+          </div>
+          
+          <div class="mb-8">
+            <div class="flex justify-between mb-2">
+              <span class="font-medium">NEET Qualifiers</span>
+              <span class="font-medium">89%</span>
+            </div>
+            <div class="progress-bar">
+              <div class="progress-fill bg-indigo-600" style="width: 89%"></div>
+            </div>
+          </div>
+          
+          <div class="mb-8">
+            <div class="flex justify-between mb-2">
+              <span class="font-medium">Academic Improvement</span>
+              <span class="font-medium">95%</span>
+            </div>
+            <div class="progress-bar">
+              <div class="progress-fill bg-indigo-600" style="width: 95%"></div>
+            </div>
+          </div>
+          
+          <div class="mb-8">
+            <div class="flex justify-between mb-2">
+              <span class="font-medium">Scholarships Secured</span>
+              <span class="font-medium">78%</span>
+            </div>
+            <div class="progress-bar">
+              <div class="progress-fill bg-indigo-600" style="width: 78%"></div>
+            </div>
+          </div>
+        </div>
+        
+        <div>
+          <h3 class="text-2xl font-bold mb-6">Our Success Stories</h3>
+          <div class="space-y-6">
+            <div class="bg-gray-50 rounded-lg p-6 border border-gray-200">
+              <div class="flex items-center mb-4">
+                <img src="https://randomuser.me/api/portraits/men/75.jpg" alt="Student" class="w-12 h-12 rounded-full mr-4">
+                <div>
+                  <h4 class="font-bold">Rahul Sharma</h4>
+                  <p class="text-sm text-gray-500">IIT Delhi, Computer Science</p>
+                </div>
+              </div>
+              <p class="text-gray-600">
+                "MindMentor's structured approach and expert guidance helped me secure All India Rank 45 in IIT-JEE Advanced. The personalized attention was key to my success."
+              </p>
+            </div>
+            
+            <div class="bg-gray-50 rounded-lg p-6 border border-gray-200">
+              <div class="flex items-center mb-4">
+                <img src="https://randomuser.me/api/portraits/women/90.jpg" alt="Student" class="w-12 h-12 rounded-full mr-4">
+                <div>
+                  <h4 class="font-bold">Priya Singh</h4>
+                  <p class="text-sm text-gray-500">AIIMS Delhi, Medicine</p>
+                </div>
+              </div>
+              <p class="text-gray-600">
+                "The NEET preparation at MindMentor was comprehensive and focused. Their mock tests and doubt sessions were invaluable in helping me achieve my dream of studying at AIIMS."
+              </p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Testimonials - Feature 9: Testimonial Carousel -->
+  <section id="testimonials" class="py-16 bg-gray-50">
+    <div class="container mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="text-center mb-12">
+        <span class="inline-block px-3 py-1 rounded-full bg-indigo-100 text-indigo-600 text-sm font-semibold">
+          Student Voices
+        </span>
+        <h2 class="text-3xl md:text-4xl font-bold mt-4 mb-6">What Our Students Say</h2>
+        <p class="text-lg text-gray-600 max-w-3xl mx-auto">
+          Hear from the students who have transformed their academic journey with MindMentor.
+        </p>
+      </div>
+      
+      <div class="max-w-4xl mx-auto">
+        <div class="testimonial-slider">
+          <!-- Testimonial 1 -->
+          <div class="testimonial-card bg-white p-8 rounded-xl shadow-md border border-gray-200 appear active">
+            <div class="flex items-center mb-4">
+              <div class="text-yellow-400 flex mr-2">
+                <i class="fas fa-star"></i>
+                <i class="fas fa-star"></i>
+                <i class="fas fa-star"></i>
+                <i class="fas fa-star"></i>
+                <i class="fas fa-star"></i>
+              </div>
+              <span class="text-sm text-gray-500">5.0</span>
+            </div>
+            <blockquote class="text-xl italic text-gray-800 mb-6">
+              "MindMentor transformed my approach to studying physics. The concepts I struggled with for years suddenly became clear with their unique teaching methods. I've improved my grades from a C to an A within just one semester!"
+            </blockquote>
+            <div class="flex items-center">
+              <img src="https://randomuser.me/api/portraits/men/33.jpg" alt="Student" class="w-12 h-12 rounded-full mr-4">
+              <div>
+                <h4 class="font-bold">Alex Johnson</h4>
+                <p class="text-sm text-gray-500">High School Senior</p>
+              </div>
+            </div>
+          </div>
+          
+          <!-- Testimonial 2 (hidden by default) -->
+          <div class="testimonial-card bg-white p-8 rounded-xl shadow-md border border-gray-200 appear hidden">
+            <div class="flex items-center mb-4">
+              <div class="text-yellow-400 flex mr-2">
+                <i class="fas fa-star"></i>
+                <i class="fas fa-star"></i>
+                <i class="fas fa-star"></i>
+                <i class="fas fa-star"></i>
+                <i class="fas fa-star-half-alt"></i>
+              </div>
+              <span class="text-sm text-gray-500">4.5</span>
+            </div>
+            <blockquote class="text-xl italic text-gray-800 mb-6">
+              "The IIT-JEE coaching at MindMentor is exceptional. The practice material and mock tests are perfectly aligned with the actual exam pattern. Their time management strategies helped me complete the paper with confidence."
+            </blockquote>
+            <div class="flex items-center">
+              <img src="https://randomuser.me/api/portraits/women/54.jpg" alt="Student" class="w-12 h-12 rounded-full mr-4">
+              <div>
+                <h4 class="font-bold">Neha Patel</h4>
+                <p class="text-sm text-gray-500">IIT-JEE Aspirant</p>
+              </div>
+            </div>
+          </div>
+          
+          <!-- Testimonial 3 (hidden by default) -->
+          <div class="testimonial-card bg-white p-8 rounded-xl shadow-md border border-gray-200 appear hidden">
+            <div class="flex items-center mb-4">
+              <div class="text-yellow-400 flex mr-2">
+                <i class="fas fa-star"></i>
+                <i class="fas fa-star"></i>
+                <i class="fas fa-star"></i>
+                <i class="fas fa-star"></i>
+                <i class="fas fa-star"></i>
+              </div>
+              <span class="text-sm text-gray-500">5.0</span>
+            </div>
+            <blockquote class="text-xl italic text-gray-800 mb-6">
+              "As a parent, I've seen my daughter's confidence grow tremendously since joining MindMentor. The regular progress reports keep me informed about her development, and the tutors are always accessible to address our concerns."
+            </blockquote>
+            <div class="flex items-center">
+              <img src="https://randomuser.me/api/portraits/women/67.jpg" alt="Parent" class="w-12 h-12 rounded-full mr-4">
+              <div>
+                <h4 class="font-bold">Lisa Thompson</h4>
+                <p class="text-sm text-gray-500">Parent</p>
+              </div>
+            </div>
+          </div>
+        </div>
+        
+        <div class="flex justify-center mt-8">
+          <button class="testimonial-dot active mx-1 w-3 h-3 rounded-full bg-gray-300" data-index="0"></button>
+          <button class="testimonial-dot mx-1 w-3 h-3 rounded-full bg-gray-300" data-index="1"></button>
+          <button class="testimonial-dot mx-1 w-3 h-3 rounded-full bg-gray-300" data-index="2"></button>
+        </div>
+        
+        <div class="flex justify-center mt-8">
+          <button class="testimonial-prev bg-white border border-gray-300 rounded-full w-10 h-10 flex items-center justify-center mr-4 hover:bg-gray-100 transition-colors">
+            <i class="fas fa-chevron-left"></i>
+          </button>
+          <button class="testimonial-next bg-white border border-gray-300 rounded-full w-10 h-10 flex items-center justify-center hover:bg-gray-100 transition-colors">
+            <i class="fas fa-chevron-right"></i>
+          </button>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Blog Section -->
+  <section id="blog" class="py-16 bg-white">
+    <div class="container mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="text-center mb-12">
+        <span class="inline-block px-3 py-1 rounded-full bg-indigo-100 text-indigo-600 text-sm font-semibold">
+          Educational Resources
+        </span>
+        <h2 class="text-3xl md:text-4xl font-bold mt-4 mb-6">Latest from Our Blog</h2>
+        <p class="text-lg text-gray-600 max-w-3xl mx-auto">
+          Explore our articles, tips, and insights to enhance your learning journey.
+        </p>
+      </div>
+      
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+        <!-- Blog Post 1 -->
+        <div class="bg-white rounded-xl overflow-hidden shadow-md appear">
+          <img src="https://images.unsplash.com/photo-1434030216411-0b793f4b4173?ixlib=rb-1.2.1&auto=format&fit=crop&w=1350&q=80" 
+               alt="Blog Post" class="w-full h-48 object-cover">
+          <div class="p-6">
+            <div class="flex items-center text-gray-500 text-sm mb-2">
+              <i class="far fa-calendar-alt mr-2"></i>
+              <span>May 15, 2023</span>
+              <span class="mx-2">•</span>
+              <i class="far fa-clock mr-2"></i>
+              <span>5 min read</span>
+            </div>
+            <h3 class="text-xl font-bold mb-3">10 Effective Study Techniques for Academic Success</h3>
+            <p class="text-gray-600 mb-4">
+              Discover proven study methods that can help you retain information better and improve your exam performance.
+            </p>
+            <a href="#" class="text-indigo-600 hover:text-indigo-700 font-medium">
+              Read More <i class="fas fa-arrow-right ml-1"></i>
+            </a>
+          </div>
+        </div>
+        
+        <!-- Blog Post 2 -->
+        <div class="bg-white rounded-xl overflow-hidden shadow-md appear">
+          <img src="https://images.unsplash.com/photo-1632571401005-458e9d244591?ixlib=rb-1.2.1&auto=format&fit=crop&w=1350&q=80" 
+               alt="Blog Post" class="w-full h-48 object-cover">
+          <div class="p-6">
+            <div class="flex items-center text-gray-500 text-sm mb-2">
+              <i class="far fa-calendar-alt mr-2"></i>
+              <span>May 10, 2023</span>
+              <span class="mx-2">•</span>
+              <i class="far fa-clock mr-2"></i>
+              <span>7 min read</span>
+            </div>
+            <h3 class="text-xl font-bold mb-3">How to Prepare for Competitive Exams: A Comprehensive Guide</h3>
+            <p class="text-gray-600 mb-4">
+              Learn the strategies, time management techniques, and mental preparation needed to excel in competitive examinations.
+            </p>
+            <a href="#" class="text-indigo-600 hover:text-indigo-700 font-medium">
+              Read More <i class="fas fa-arrow-right ml-1"></i>
+            </a>
+          </div>
+        </div>
+        
+        <!-- Blog Post 3 -->
+        <div class="bg-white rounded-xl overflow-hidden shadow-md appear">
+          <img src="https://images.unsplash.com/photo-1523240795612-9a054b0db644?ixlib=rb-1.2.1&auto=format&fit=crop&w=1350&q=80" 
+               alt="Blog Post" class="w-full h-48 object-cover">
+          <div class="p-6">
+            <div class="flex items-center text-gray-500 text-sm mb-2">
+              <i class="far fa-calendar-alt mr-2"></i>
+              <span>May 5, 2023</span>
+              <span class="mx-2">•</span>
+              <i class="far fa-clock mr-2"></i>
+              <span>6 min read</span>
+            </div>
+            <h3 class="text-xl font-bold mb-3">The Role of Technology in Modern Education</h3>
+            <p class="text-gray-600 mb-4">
+              Explore how digital tools and platforms are revolutionizing learning experiences and educational outcomes.
+            </p>
+            <a href="#" class="text-indigo-600 hover:text-indigo-700 font-medium">
+              Read More <i class="fas fa-arrow-right ml-1"></i>
+            </a>
+          </div>
+        </div>
+      </div>
+      
+      <div class="text-center mt-12">
+        <a href="#" class="inline-block border border-indigo-600 text-indigo-600 hover:bg-indigo-50 px-6 py-3 rounded-md transition-all duration-300 font-medium">
+          View All Articles
+        </a>
+      </div>
+    </div>
+  </section>
+
+  <!-- FAQ Section - Feature 10: Interactive Accordion -->
+  <section class="py-16 bg-gray-50">
+    <div class="container mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="text-center mb-12">
+        <span class="inline-block px-3 py-1 rounded-full bg-indigo-100 text-indigo-600 text-sm font-semibold">
+          Have Questions?
+        </span>
+        <h2 class="text-3xl md:text-4xl font-bold mt-4 mb-6">Frequently Asked Questions</h2>
+        <p class="text-lg text-gray-600 max-w-3xl mx-auto">
+          Find answers to common questions about our courses, teaching methods, and enrollment process.
+        </p>
+      </div>
+      
+      <div class="max-w-3xl mx-auto">
+        <div class="accordion">
+          <!-- FAQ Item 1 -->
+          <div class="accordion-item appear">
+            <div class="accordion-header flex justify-between items-center cursor-pointer">
+              <h3 class="font-bold text-lg">What makes MindMentor different from other coaching institutes?</h3>
+              <i class="fas fa-chevron-down text-gray-500 transition-transform"></i>
+            </div>
+            <div class="accordion-content">
+              <div class="py-4 text-gray-600">
+                MindMentor stands out with our personalized approach to education. We maintain small batch sizes, provide customized learning plans, offer regular assessments with detailed feedback, and employ experienced tutors who are experts in their fields. Our integrated use of technology and traditional teaching methods creates an optimal learning environment.
+              </div>
+            </div>
+          </div>
+          
+          <!-- FAQ Item 2 -->
+          <div class="accordion-item appear">
+            <div class="accordion-header flex justify-between items-center cursor-pointer">
+              <h3 class="font-bold text-lg">How are the batches organized?</h3>
+              <i class="fas fa-chevron-down text-gray-500 transition-transform"></i>
+            </div>
+            <div class="accordion-content">
+              <div class="py-4 text-gray-600">
+                We organize batches based on students' current knowledge levels and learning pace rather than just age or grade. This ensures that each student is appropriately challenged and can progress effectively. Our batch sizes are limited to 15-20 students to ensure personalized attention.
+              </div>
+            </div>
+          </div>
+          
+          <!-- FAQ Item 3 -->
+          <div class="accordion-item appear">
+            <div class="accordion-header flex justify-between items-center cursor-pointer">
+              <h3 class="font-bold text-lg">Do you offer online classes?</h3>
+              <i class="fas fa-chevron-down text-gray-500 transition-transform"></i>
+            </div>
+            <div class="accordion-content">
+              <div class="py-4 text-gray-600">
+                Yes, we offer both online and in-person classes. Our online platform provides a comprehensive learning experience with live interactive sessions, recorded lectures for review, digital study materials, and online assessments. Students can choose the format that best suits their learning style and schedule.
+              </div>
+            </div>
+          </div>
+          
+          <!-- FAQ Item 4 -->
+          <div class="accordion-item appear">
+            <div class="accordion-header flex justify-between items-center cursor-pointer">
+              <h3 class="font-bold text-lg">How do you track and report student progress?</h3>
+              <i class="fas fa-chevron-down text-gray-500 transition-transform"></i>
+            </div>
+            <div class="accordion-content">
+              <div class="py-4 text-gray-600">
+                We conduct regular assessments, including weekly quizzes, monthly tests, and comprehensive exams. Students and parents receive detailed progress reports highlighting strengths, areas for improvement, and specific action plans. We also hold regular parent-teacher meetings to discuss progress and address concerns.
+              </div>
+            </div>
+          </div>
+          
+          <!-- FAQ Item 5 -->
+          <div class="accordion-item appear">
+            <div class="accordion-header flex justify-between items-center cursor-pointer">
+              <h3 class="font-bold text-lg">What study materials are provided?</h3>
+              <i class="fas fa-chevron-down text-gray-500 transition-transform"></i>
+            </div>
+            <div class="accordion-content">
+              <div class="py-4 text-gray-600">
+                Students receive comprehensive study materials, including textbooks, workbooks, practice question banks, and digital resources. Our materials are regularly updated to align with the latest curriculum and exam patterns. Additionally, students get access to our online learning platform with video lessons, interactive exercises, and supplementary resources.
+              </div>
+            </div>
+          </div>
+          
+          <!-- FAQ Item 6 -->
+          <div class="accordion-item appear">
+            <div class="accordion-header flex justify-between items-center cursor-pointer">
+              <h3 class="font-bold text-lg">What is your fee structure and payment policy?</h3>
+              <i class="fas fa-chevron-down text-gray-500 transition-transform"></i>
+            </div>
+            <div class="accordion-content">
+              <div class="py-4 text-gray-600">
+                Our fees vary based on the course, duration, and format (online vs. in-person). We offer flexible payment options including full payment, term-wise payments, and monthly installments. We also have merit-based scholarships for deserving students. Detailed fee structures are available during the enrollment process.
+              </div>
+            </div>
+          </div>
+        </div>
+        
+        <div class="text-center mt-8">
+          <p class="text-gray-600 mb-4">Still have questions? We're here to help.</p>
+          <a href="#contact" class="inline-block bg-indigo-600 hover:bg-indigo-700 text-white px-6 py-3 rounded-md transition-all duration-300 font-medium">
+            Contact Us
+          </a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Enrollment Form - Feature 11: Interactive Form with Floating Labels -->
+  <section id="enrollment" class="py-16 bg-white">
+    <div class="container mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
+        <div class="appear">
+          <span class="inline-block px-3 py-1 rounded-full bg-indigo-100 text-indigo-600 text-sm font-semibold mb-4">
+            Start Your Journey
+          </span>
+          <h2 class="text-3xl md:text-4xl font-bold mb-6">Enroll Now or Request Information</h2>
+          <p class="text-lg text-gray-600 mb-8 max-w-xl">
+            Fill out the form to enroll in a course or schedule a free consultation with our academic advisors.
+          </p>
+          
+          <div class="space-y-6 mb-8">
+            <div class="flex items-start">
+              <div class="flex-shrink-0 w-10 h-10 rounded-full bg-indigo-100 flex items-center justify-center mr-4">
+                <i class="fas fa-comment-dots text-indigo-600"></i>
+              </div>
+              <div>
+                <h4 class="font-bold text-lg">Free Academic Consultation</h4>
+                <p class="text-gray-600">Get personalized advice to identify the best course for your educational goals.</p>
+              </div>
+            </div>
+            
+            <div class="flex items-start">
+              <div class="flex-shrink-0 w-10 h-10 rounded-full bg-indigo-100 flex items-center justify-center mr-4">
+                <i class="fas fa-book-open text-indigo-600"></i>
+              </div>
+              <div>
+                <h4 class="font-bold text-lg">Diagnostic Assessment</h4>
+                <p class="text-gray-600">Take a comprehensive test to evaluate your current knowledge level and learning needs.</p>
+              </div>
+            </div>
+            
+            <div class="flex items-start">
+              <div class="flex-shrink-0 w-10 h-10 rounded-full bg-indigo-100 flex items-center justify-center mr-4">
+                <i class="fas fa-file-alt text-indigo-600"></i>
+              </div>
+              <div>
+                <h4 class="font-bold text-lg">Customized Learning Plan</h4>
+                <p class="text-gray-600">Receive a tailored study plan designed to address your specific strengths and areas for improvement.</p>
+              </div>
+            </div>
+          </div>
+          
+          <div class="bg-indigo-50 rounded-lg p-6 border border-indigo-100">
+            <div class="flex items-center mb-4">
+              <div class="flex-shrink-0 w-10 h-10 rounded-full bg-indigo-500 flex items-center justify-center mr-4">
+                <i class="fas fa-info text-white"></i>
+              </div>
+              <h4 class="font-bold text-lg">Merit-Based Scholarships Available</h4>
+            </div>
+            <p class="text-gray-600">
+              We offer scholarships of up to 50% for deserving students based on their academic performance and financial needs.
+            </p>
+          </div>
+        </div>
+        
+        <div class="bg-white rounded-xl p-8 shadow-lg border border-gray-200 appear">
+          <form action="#" method="POST">
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-6 mb-6">
+              <div class="form-floating">
+                <input type="text" id="first-name" name="first-name" placeholder=" " required class="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500">
+                <label for="first-name" class="text-gray-500">First Name</label>
+              </div>
+              
+              <div class="form-floating">
+                <input type="text" id="last-name" name="last-name" placeholder=" " required class="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500">
+                <label for="last-name" class="text-gray-500">Last Name</label>
+              </div>
+            </div>
+            
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-6 mb-6">
+              <div class="form-floating">
+                <input type="email" id="email" name="email" placeholder=" " required class="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500">
+                <label for="email" class="text-gray-500">Email Address</label>
+              </div>
+              
+              <div class="form-floating">
+                <input type="tel" id="phone" name="phone" placeholder=" " required class="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500">
+                <label for="phone" class="text-gray-500">Phone Number</label>
+              </div>
+            </div>
+            
+            <div class="mb-6 form-floating">
+              <select id="course-interest" name="course-interest" placeholder=" " required class="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500">
+                <option value="">Select a course</option>
+                <option>IIT-JEE Preparation</option>
+                <option>NEET Medical Entrance</option>
+                <option>Advanced Mathematics</option>
+                <option>English Language Mastery</option>
+                <option>Physics Fundamentals</option>
+                <option>Chemistry Comprehensive</option>
+                <option>Biology Excellence</option>
+                <option>Coding for Beginners</option>
+              </select>
+              <label for="course-interest" class="text-gray-500">Course of Interest</label>
+            </div>
+            
+            <div class="mb-6 form-floating">
+              <select id="current-grade" name="current-grade" placeholder=" " required class="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500">
+                <option value="">Select your grade</option>
+                <option>Grade 8</option>
+                <option>Grade 9</option>
+                <option>Grade 10</option>
+                <option>Grade 11</option>
+                <option>Grade 12</option>
+                <option>College Student</option>
+                <option>Working Professional</option>
+              </select>
+              <label for="current-grade" class="text-gray-500">Current Grade/Level</label>
+            </div>
+            
+            <div class="mb-6 form-floating">
+              <textarea id="message" name="message" rows="4" placeholder=" " class="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500"></textarea>
+              <label for="message" class="text-gray-500">Additional Information (Optional)</label>
+            </div>
+            
+            <div class="flex items-center mb-6">
+              <input type="checkbox" id="consent" name="consent" class="h-4 w-4 text-indigo-600 border-gray-300 rounded" required>
+              <label for="consent" class="ml-2 text-sm text-gray-600">
+                I agree to receive communication from MindMentor about courses and educational resources.
+              </label>
+            </div>
+            
+            <button type="submit" class="w-full bg-indigo-600 hover:bg-indigo-700 text-white py-3 rounded-md transition-all duration-300 font-medium">
+              Submit Enrollment Request
+            </button>
+          </form>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Contact Section -->
+  <section id="contact" class="py-16 bg-gray-50">
+    <div class="container mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="text-center mb-12">
+        <span class="inline-block px-3 py-1 rounded-full bg-indigo-100 text-indigo-600 text-sm font-semibold">
+          Get In Touch
+        </span>
+        <h2 class="text-3xl md:text-4xl font-bold mt-4 mb-6">Contact Us</h2>
+        <p class="text-lg text-gray-600 max-w-3xl mx-auto">
+          Have questions or need more information? Reach out to our team and we'll get back to you promptly.
+        </p>
+      </div>
+      
+      <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+        <div class="lg:col-span-1 appear">
+          <div class="bg-white rounded-xl p-8 shadow-md border border-gray-200 h-full">
+            <h3 class="text-xl font-bold mb-6">Contact Information</h3>
+            <div class="space-y-6">
+              <div class="flex items-start">
+                <div class="flex-shrink-0 w-10 h-10 rounded-full bg-indigo-100 flex items-center justify-center mr-4">
+                  <i class="fas fa-map-marker-alt text-indigo-600"></i>
+                </div>
+                <div>
+                  <h4 class="font-bold">Main Campus</h4>
+                  <p class="text-gray-600">
+                    123 Education Avenue, Suite 200<br>
+                    New York, NY 10001
+                  </p>
+                </div>
+              </div>
+              
+              <div class="flex items-start">
+                <div class="flex-shrink-0 w-10 h-10 rounded-full bg-indigo-100 flex items-center justify-center mr-4">
+                  <i class="fas fa-phone-alt text-indigo-600"></i>
+                </div>
+                <div>
+                  <h4 class="font-bold">Phone</h4>
+                  <p class="text-gray-600">
+                    +1 (800) 123-4567<br>
+                    +1 (212) 555-6789
+                  </p>
+                </div>
+              </div>
+              
+              <div class="flex items-start">
+                <div class="flex-shrink-0 w-10 h-10 rounded-full bg-indigo-100 flex items-center justify-center mr-4">
+                  <i class="fas fa-envelope text-indigo-600"></i>
+                </div>
+                <div>
+                  <h4 class="font-bold">Email</h4>
+                  <p class="text-gray-600">
+                    info@mindmentor.com<br>
+                    admissions@mindmentor.com
+                  </p>
+                </div>
+              </div>
+              
+              <div class="flex items-start">
+                <div class="flex-shrink-0 w-10 h-10 rounded-full bg-indigo-100 flex items-center justify-center mr-4">
+                  <i class="fas fa-clock text-indigo-600"></i>
+                </div>
+                <div>
+                  <h4 class="font-bold">Office Hours</h4>
+                  <p class="text-gray-600">
+                    Monday-Friday: 9AM-7PM<br>
+                    Saturday: 9AM-5PM<br>
+                    Sunday: Closed
+                  </p>
+                </div>
+              </div>
+            </div>
+            
+            <div class="mt-8 pt-8 border-t border-gray-200">
+              <h4 class="font-bold mb-4">Connect With Us</h4>
+              <div class="flex space-x-4">
+                <a href="#" class="w-10 h-10 rounded-full bg-indigo-100 flex items-center justify-center hover:bg-indigo-200 transition-colors">
+                  <i class="fab fa-facebook-f text-indigo-600"></i>
+                </a>
+                <a href="#" class="w-10 h-10 rounded-full bg-indigo-100 flex items-center justify-center hover:bg-indigo-200 transition-colors">
+                  <i class="fab fa-twitter text-indigo-600"></i>
+                </a>
+                <a href="#" class="w-10 h-10 rounded-full bg-indigo-100 flex items-center justify-center hover:bg-indigo-200 transition-colors">
+                  <i class="fab fa-instagram text-indigo-600"></i>
+                </a>
+                <a href="#" class="w-10 h-10 rounded-full bg-indigo-100 flex items-center justify-center hover:bg-indigo-200 transition-colors">
+                  <i class="fab fa-linkedin-in text-indigo-600"></i>
+                </a>
+                <a href="#" class="w-10 h-10 rounded-full bg-indigo-100 flex items-center justify-center hover:bg-indigo-200 transition-colors">
+                  <i class="fab fa-youtube text-indigo-600"></i>
+                </a>
+              </div>
+            </div>
+          </div>
+        </div>
+        
+        <div class="lg:col-span-2 appear">
+          <div class="bg-white rounded-xl p-8 shadow-md border border-gray-200 h-full">
+            <h3 class="text-xl font-bold mb-6">Send Us a Message</h3>
+            <form action="#" method="POST">
+              <div class="grid grid-cols-1 sm:grid-cols-2 gap-6 mb-6">
+                <div class="form-floating">
+                  <input type="text" id="contact-name" name="contact-name" placeholder=" " required class="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500">
+                  <label for="contact-name" class="text-gray-500">Your Name</label>
+                </div>
+                
+                <div class="form-floating">
+                  <input type="email" id="contact-email" name="contact-email" placeholder=" " required class="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500">
+                  <label for="contact-email" class="text-gray-500">Your Email</label>
+                </div>
+              </div>
+              
+              <div class="grid grid-cols-1 sm:grid-cols-2 gap-6 mb-6">
+                <div class="form-floating">
+                  <input type="tel" id="contact-phone" name="contact-phone" placeholder=" " class="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500">
+                  <label for="contact-phone" class="text-gray-500">Phone Number (Optional)</label>
+                </div>
+                
+                <div class="form-floating">
+                  <select id="contact-subject" name="contact-subject" placeholder=" " required class="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500">
+                    <option value="">Select a subject</option>
+                    <option>Course Inquiry</option>
+                    <option>Admission Process</option>
+                    <option>Fee Structure</option>
+                    <option>Schedule Consultation</option>
+                    <option>Technical Support</option>
+                    <option>Other</option>
+                  </select>
+                  <label for="contact-subject" class="text-gray-500">Subject</label>
+                </div>
+              </div>
+              
+              <div class="mb-6 form-floating">
+                <textarea id="contact-message" name="contact-message" rows="5" placeholder=" " required class="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500"></textarea>
+                <label for="contact-message" class="text-gray-500">Your Message</label>
+              </div>
+              
+              <button type="submit" class="bg-indigo-600 hover:bg-indigo-700 text-white px-6 py-3 rounded-md transition-all duration-300 font-medium">
+                Send Message
+              </button>
+            </form>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Find Us Section -->
+  <section class="py-16 bg-white">
+    <div class="container mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="text-center mb-12">
+        <span class="inline-block px-3 py-1 rounded-full bg-indigo-100 text-indigo-600 text-sm font-semibold">
+          Find Us
+        </span>
+        <h2 class="text-3xl md:text-4xl font-bold mt-4 mb-6">Visit Our Campuses</h2>
+        <p class="text-lg text-gray-600 max-w-3xl mx-auto">
+          Stop by one of our locations to see our facilities and meet our team in person.
+        </p>
+      </div>
+      
+      <div class="bg-gray-50 rounded-xl overflow-hidden">
+        <iframe src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3022.9153521824994!2d-73.98784688459556!3d40.74844897932878!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x89c259a9b30eac9f%3A0xaca05ca48ab5ac2c!2sEmpire%20State%20Building!5e0!3m2!1sen!2sus!4v1622840307551!5m2!1sen!2sus" width="100%" height="500" style="border:0;" allowfullscreen="" loading="lazy"></iframe>
+      </div>
+    </div>
+  </section>
+
+  <!-- Newsletter - Feature 12: Interactive Newsletter Form -->
+  <section class="py-16 bg-gradient-to-r from-indigo-600 to-blue-600 text-white">
+    <div class="container mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="grid grid-cols-1 lg:grid-cols-5 gap-12 items-center">
+        <div class="lg:col-span-3 appear">
+          <h2 class="text-3xl md:text-4xl font-bold mb-6">Subscribe to Our Newsletter</h2>
+          <p class="text-xl mb-8">
+            Stay updated with our latest educational resources, study tips, and upcoming events. Empower your learning journey with valuable insights delivered directly to your inbox.
+          </p>
+          
+          <form action="#" method="POST" class="flex flex-col sm:flex-row gap-4">
+            <div class="form-floating flex-1">
+              <input type="email" id="newsletter-email" name="newsletter-email" placeholder=" " required class="w-full px-4 py-3 rounded-md border-0 focus:outline-none focus:ring-2 focus:ring-white/50 text-gray-800">
+              <label for="newsletter-email" class="text-gray-500">Your Email Address</label>
+            </div>
+            <button type="submit" class="bg-white hover:bg-gray-100 text-indigo-600 px-6 py-3 rounded-md transition-all duration-300 whitespace-nowrap font-medium">
+              Subscribe Now
+            </button>
+          </form>
+          
+          <div class="flex items-center space-x-2 mt-6">
+            <i class="fas fa-shield-alt"></i>
+            <span class="text-sm text-white/90">We respect your privacy and will never share your information.</span>
+          </div>
+        </div>
+        
+        <div class="lg:col-span-2 appear">
+          <div class="bg-white/10 rounded-xl p-8 border border-white/20">
+            <h3 class="text-xl font-bold mb-6">Why Subscribe?</h3>
+            <ul class="space-y-4">
+              <li class="flex items-start">
+                <i class="fas fa-check-circle mt-1 mr-3"></i>
+                <span>Educational articles and student success stories</span>
+              </li>
+              <li class="flex items-start">
+                <i class="fas fa-check-circle mt-1 mr-3"></i>
+                <span>Exam preparation tips and study resources</span>
+              </li>
+              <li class="flex items-start">
+                <i class="fas fa-check-circle mt-1 mr-3"></i>
+                <span>Updates on new courses and workshops</span>
+              </li>
+              <li class="flex items-start">
+                <i class="fas fa-check-circle mt-1 mr-3"></i>
+                <span>Early registration for events and webinars</span>
+              </li>
+              <li class="flex items-start">
+                <i class="fas fa-check-circle mt-1 mr-3"></i>
+                <span>Exclusive discounts and scholarship opportunities</span>
+              </li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Footer -->
+  <footer class="bg-gray-900 text-white pt-16 pb-6">
+    <div class="container mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-8 mb-12">
+        <div class="lg:col-span-2">
+          <a href="#" class="inline-block mb-6">
+            <span class="text-3xl font-bold">Mind<span class="text-indigo-400">Mentor</span></span>
+          </a>
+          <p class="text-gray-400 mb-6 max-w-md">
+            MindMentor is dedicated to empowering students with personalized coaching, comprehensive resources, and proven methodologies to achieve academic excellence and succeed in competitive exams.
+          </p>
+          <div class="flex space-x-4">
+            <a href="#" class="text-gray-400 hover:text-white transition-colors">
+              <i class="fab fa-facebook-f"></i>
+            </a>
+            <a href="#" class="text-gray-400 hover:text-white transition-colors">
+              <i class="fab fa-twitter"></i>
+            </a>
+            <a href="#" class="text-gray-400 hover:text-white transition-colors">
+              <i class="fab fa-instagram"></i>
+            </a>
+            <a href="#" class="text-gray-400 hover:text-white transition-colors">
+              <i class="fab fa-linkedin-in"></i>
+            </a>
+            <a href="#" class="text-gray-400 hover:text-white transition-colors">
+              <i class="fab fa-youtube"></i>
+            </a>
+          </div>
+        </div>
+        
+        <div>
+          <h4 class="text-lg font-bold mb-6">Courses</h4>
+          <ul class="space-y-3">
+            <li><a href="#" class="text-gray-400 hover:text-white transition-colors">IIT-JEE Preparation</a></li>
+            <li><a href="#" class="text-gray-400 hover:text-white transition-colors">NEET Medical Entrance</a></li>
+            <li><a href="#" class="text-gray-400 hover:text-white transition-colors">Advanced Mathematics</a></li>
+            <li><a href="#" class="text-gray-400 hover:text-white transition-colors">Physics Fundamentals</a></li>
+            <li><a href="#" class="text-gray-400 hover:text-white transition-colors">Chemistry Comprehensive</a></li>
+            <li><a href="#" class="text-gray-400 hover:text-white transition-colors">English Language Mastery</a></li>
+          </ul>
+        </div>
+        
+        <div>
+          <h4 class="text-lg font-bold mb-6">Resources</h4>
+          <ul class="space-y-3">
+            <li><a href="#" class="text-gray-400 hover:text-white transition-colors">Blog & Articles</a></li>
+            <li><a href="#" class="text-gray-400 hover:text-white transition-colors">Study Materials</a></li>
+            <li><a href="#" class="text-gray-400 hover:text-white transition-colors">Video Lessons</a></li>
+            <li><a href="#" class="text-gray-400 hover:text-white transition-colors">Practice Tests</a></li>
+            <li><a href="#" class="text-gray-400 hover:text-white transition-colors">Success Stories</a></li>
+            <li><a href="#" class="text-gray-400 hover:text-white transition-colors">Events & Webinars</a></li>
+          </ul>
+        </div>
+        
+        <div>
+          <h4 class="text-lg font-bold mb-6">Information</h4>
+          <ul class="space-y-3">
+            <li><a href="#" class="text-gray-400 hover:text-white transition-colors">About Us</a></li>
+            <li><a href="#" class="text-gray-400 hover:text-white transition-colors">Our Tutors</a></li>
+            <li><a href="#" class="text-gray-400 hover:text-white transition-colors">Admission Process</a></li>
+            <li><a href="#" class="text-gray-400 hover:text-white transition-colors">Fee Structure</a></li>
+            <li><a href="#" class="text-gray-400 hover:text-white transition-colors">Scholarships</a></li>
+            <li><a href="#" class="text-gray-400 hover:text-white transition-colors">Contact Us</a></li>
+          </ul>
+        </div>
+      </div>
+      
+      <div class="border-t border-gray-800 pt-8">
+        <div class="flex flex-col md:flex-row justify-between items-center">
+          <p class="text-gray-400 text-sm text-center md:text-left mb-4 md:mb-0">
+            &copy; 2023 MindMentor Education Institute. All rights reserved.
+          </p>
+          <div class="flex flex-wrap justify-center gap-4">
+            <a href="#" class="text-gray-400 hover:text-white text-sm transition-colors">Privacy Policy</a>
+            <a href="#" class="text-gray-400 hover:text-white text-sm transition-colors">Terms of Service</a>
+            <a href="#" class="text-gray-400 hover:text-white text-sm transition-colors">Cookie Policy</a>
+            <a href="#" class="text-gray-400 hover:text-white text-sm transition-colors">Accessibility</a>
+          </div>
+        </div>
+        
+        <div class="mt-6 text-center text-sm text-gray-400">
+          <p>Designed with ❤️ for education excellence.</p>
+        </div>
+      </div>
+    </div>
+  </footer>
+
+  <!-- Chatbot Widget - Feature 12: Interactive Chatbot -->
+  <div class="chatbot-widget">
+    <div class="chatbot-button" id="chatbot-toggle">
+      <i class="fas fa-comment-dots text-white text-2xl"></i>
+    </div>
+    
+    <div class="chatbot-container" id="chatbot-container">
+      <div class="chatbot-header">
+        <div>MindMentor Assistant</div>
+        <button id="chatbot-close" class="text-white hover:text-gray-300">
+          <i class="fas fa-times"></i>
+        </button>
+      </div>
+      
+      <div class="chatbot-messages" id="chatbot-messages">
+        <div class="message bot">
+          Hello! 👋 Welcome to MindMentor. How can I help you today?
+        </div>
+        <div class="message bot">
+          You can ask me about courses, admission process, or schedule a consultation.
+        </div>
+      </div>
+      
+      <div class="chatbot-input">
+        <input type="text" id="chatbot-input-text" placeholder="Type your message..." class="flex-1">
+        <button id="chatbot-send">
+          <i class="fas fa-paper-plane"></i>
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Back to top button -->
+  <button id="back-to-top" class="fixed bottom-6 right-6 bg-indigo-600 hover:bg-indigo-700 text-white p-3 rounded-full shadow-lg opacity-0 invisible transition-all duration-300 z-30">
+    <i class="fas fa-arrow-up"></i>
+  </button>
+
+  <!-- Scripts -->
+  <script>
+    // Mobile menu toggle
+    const mobileMenuButton = document.getElementById('mobile-menu-button');
+    const mobileMenu = document.getElementById('mobile-menu');
+    
+    mobileMenuButton.addEventListener('click', () => {
+      mobileMenu.classList.toggle('hidden');
+    });
+    
+    // Dark mode toggle
+    const themeToggle = document.getElementById('theme-toggle');
+    const mobileThemeToggle = document.getElementById('mobile-theme-toggle');
+    const body = document.body;
+    
+    function toggleDarkMode() {
+      body.classList.toggle('dark-mode');
+    }
+    
+    themeToggle.addEventListener('change', toggleDarkMode);
+    mobileThemeToggle.addEventListener('change', toggleDarkMode);
+    
+    // Smooth scroll
+    document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+      anchor.addEventListener('click', function(e) {
+        e.preventDefault();
+        
+        const targetId = this.getAttribute('href');
+        if (targetId === '#') return;
+        
+        const targetElement = document.querySelector(targetId);
+        if (targetElement) {
+          window.scrollTo({
+            top: targetElement.offsetTop - 80,
+            behavior: 'smooth'
+          });
+          
+          // Close mobile menu if open
+          if (!mobileMenu.classList.contains('hidden')) {
+            mobileMenu.classList.add('hidden');
+          }
+        }
+      });
+    });
+    
+    // Back to top button
+    const backToTopButton = document.getElementById('back-to-top');
+    
+    window.addEventListener('scroll', () => {
+      if (window.scrollY > 300) {
+        backToTopButton.classList.remove('opacity-0', 'invisible');
+        backToTopButton.classList.add('opacity-100', 'visible');
+      } else {
+        backToTopButton.classList.remove('opacity-100', 'visible');
+        backToTopButton.classList.add('opacity-0', 'invisible');
+      }
+      
+      // Add shadow to header on scroll
+      const header = document.querySelector('header');
+      if (window.scrollY > 50) {
+        header.classList.add('shadow-md');
+      } else {
+        header.classList.remove('shadow-md');
+      }
+    });
+    
+    backToTopButton.addEventListener('click', () => {
+      window.scrollTo({
+        top: 0,
+        behavior: 'smooth'
+      });
+    });
+    
+    // Course filtering
+    const filterButtons = document.querySelectorAll('.filter-btn');
+    const courseCards = document.querySelectorAll('.course-card');
+    
+    filterButtons.forEach(button => {
+      button.addEventListener('click', () => {
+        // Remove active class from all buttons
+        filterButtons.forEach(btn => btn.classList.remove('active'));
+        
+        // Add active class to clicked button
+        button.classList.add('active');
+        
+        // Get filter value
+        const filterValue = button.getAttribute('data-filter');
+        
+        // Filter course cards
+        courseCards.forEach(card => {
+          if (filterValue === 'all' || card.getAttribute('data-category') === filterValue) {
+            card.style.display = 'block';
+          } else {
+            card.style.display = 'none';
+          }
+        });
+      });
+    });
+    
+    // Testimonial carousel
+    const testimonials = document.querySelectorAll('.testimonial-slider > div');
+    const dots = document.querySelectorAll('.testimonial-dot');
+    const prevButton = document.querySelector('.testimonial-prev');
+    const nextButton = document.querySelector('.testimonial-next');
+    
+    let currentTestimonial = 0;
+    
+    function showTestimonial(index) {
+      // Hide all testimonials
+      testimonials.forEach(testimonial => {
+        testimonial.classList.add('hidden');
+        testimonial.classList.remove('active');
+      });
+      
+      // Remove active class from all dots
+      dots.forEach(dot => {
+        dot.classList.remove('active', 'bg-indigo-600');
+        dot.classList.add('bg-gray-300');
+      });
+      
+      // Show the current testimonial
+      testimonials[index].classList.remove('hidden');
+      testimonials[index].classList.add('active');
+      
+      // Add active class to current dot
+      dots[index].classList.add('active', 'bg-indigo-600');
+      dots[index].classList.remove('bg-gray-300');
+      
+      // Update current testimonial index
+      currentTestimonial = index;
+    }
+    
+    // Add event listeners to dots
+    dots.forEach((dot, index) => {
+      dot.addEventListener('click', () => {
+        showTestimonial(index);
+      });
+    });
+    
+    // Add event listeners to prev/next buttons
+    prevButton.addEventListener('click', () => {
+      let prevIndex = currentTestimonial - 1;
+      if (prevIndex < 0) prevIndex = testimonials.length - 1;
+      showTestimonial(prevIndex);
+    });
+    
+    nextButton.addEventListener('click', () => {
+      let nextIndex = currentTestimonial + 1;
+      if (nextIndex >= testimonials.length) nextIndex = 0;
+      showTestimonial(nextIndex);
+    });
+    
+    // Auto-rotate testimonials
+    let testimonialInterval = setInterval(() => {
+      let nextIndex = currentTestimonial + 1;
+      if (nextIndex >= testimonials.length) nextIndex = 0;
+      showTestimonial(nextIndex);
+    }, 5000);
+    
+    // Pause auto-rotation when interacting with testimonials
+    const testimonialSlider = document.querySelector('.testimonial-slider');
+    if (testimonialSlider) {
+      testimonialSlider.addEventListener('mouseenter', () => {
+        clearInterval(testimonialInterval);
+      });
+      
+      testimonialSlider.addEventListener('mouseleave', () => {
+        testimonialInterval = setInterval(() => {
+          let nextIndex = currentTestimonial + 1;
+          if (nextIndex >= testimonials.length) nextIndex = 0;
+          showTestimonial(nextIndex);
+        }, 5000);
+      });
+    }
+    
+    // Accordion functionality
+    const accordionHeaders = document.querySelectorAll('.accordion-header');
+    
+    accordionHeaders.forEach(header => {
+      header.addEventListener('click', () => {
+        const accordionItem = header.parentElement;
+        const accordionContent = header.nextElementSibling;
+        const icon = header.querySelector('i');
+        
+        // Toggle current item
+        accordionContent.classList.toggle('open');
+        icon.style.transform = accordionContent.classList.contains('open') ? 'rotate(180deg)' : 'rotate(0)';
+      });
+    });
+    
+    // Chatbot functionality
+    const chatbotToggle = document.getElementById('chatbot-toggle');
+    const chatbotContainer = document.getElementById('chatbot-container');
+    const chatbotClose = document.getElementById('chatbot-close');
+    const chatbotMessages = document.getElementById('chatbot-messages');
+    const chatbotInput = document.getElementById('chatbot-input-text');
+    const chatbotSend = document.getElementById('chatbot-send');
+    
+    chatbotToggle.addEventListener('click', () => {
+      chatbotContainer.style.display = 'block';
+    });
+    
+    chatbotClose.addEventListener('click', () => {
+      chatbotContainer.style.display = 'none';
+    });
+    
+    function sendMessage() {
+      const message = chatbotInput.value.trim();
+      if (message === '') return;
+      
+      // Add user message
+      const userMessage = document.createElement('div');
+      userMessage.className = 'message user';
+      userMessage.textContent = message;
+      chatbotMessages.appendChild(userMessage);
+      
+      // Clear input
+      chatbotInput.value = '';
+      
+      // Scroll to bottom
+      chatbotMessages.scrollTop = chatbotMessages.scrollHeight;
+      
+      // Simulate bot response after a short delay
+      setTimeout(() => {
+        const botMessage = document.createElement('div');
+        botMessage.className = 'message bot';
+        
+        // Simple response logic - in a real app, this would be more sophisticated
+        if (message.toLowerCase().includes('course') || message.toLowerCase().includes('class')) {
+          botMessage.textContent = "We offer a variety of courses including IIT-JEE preparation, NEET coaching, advanced mathematics, and more. Would you like information about a specific course?";
+        } else if (message.toLowerCase().includes('fee') || message.toLowerCase().includes('cost') || message.toLowerCase().includes('price')) {
+          botMessage.textContent = "Our course fees vary based on the program and duration. For detailed fee information, please check the specific course page or contact our admissions team.";
+        } else if (message.toLowerCase().includes('admission') || message.toLowerCase().includes('enroll') || message.toLowerCase().includes('join')) {
+          botMessage.textContent = "To enroll in our courses, you can fill out the enrollment form on our website, visit our campus, or call our admissions office at (800) 123-4567.";
+        } else if (message.toLowerCase().includes('location') || message.toLowerCase().includes('address') || message.toLowerCase().includes('where')) {
+          botMessage.textContent = "Our main campus is located at 123 Education Avenue, Suite 200, New York, NY 10001. We also have smaller centers in Brooklyn, Queens, and New Jersey.";
+        } else {
+          botMessage.textContent = "Thank you for your message. One of our academic advisors will get back to you shortly. Can I help you with anything else?";
+        }
+        
+        chatbotMessages.appendChild(botMessage);
+        chatbotMessages.scrollTop = chatbotMessages.scrollHeight;
+      }, 1000);
+    }
+    
+    chatbotSend.addEventListener('click', sendMessage);
+    
+    chatbotInput.addEventListener('keypress', (e) => {
+      if (e.key === 'Enter') {
+        sendMessage();
+      }
+    });
+    
+    // Animated progress bars
+    const progressBars = document.querySelectorAll('.progress-bar');
+    
+    function animateProgressBars() {
+      progressBars.forEach(bar => {
+        const progressFill = bar.querySelector('.progress-fill');
+        const width = progressFill.style.width;
+        progressFill.style.width = '0';
+        setTimeout(() => {
+          progressFill.style.width = width;
+        }, 300);
+      });
+    }
+    
+    // Scroll animations
+    const appearElements = document.querySelectorAll('.appear');
+    
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          entry.target.classList.add('visible');
+          
+          // Animate progress bars when they come into view
+          if (entry.target.querySelector('.progress-bar')) {
+            animateProgressBars();
+          }
+        }
+      });
+    }, {
+      threshold: 0.1
+    });
+    
+    appearElements.forEach(element => {
+      observer.observe(element);
+    });
+  </script>
+</body>
+</html>

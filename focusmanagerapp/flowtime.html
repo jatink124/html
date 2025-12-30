@@ -1,0 +1,862 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <title>FlowTime – Time Management for Freelancers</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+    <!-- Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=JetBrains+Mono:wght@400;600&display=swap"
+      rel="stylesheet"
+    />
+
+    <!-- Tailwind CDN with custom config -->
+    <script>
+      tailwind = window.tailwind || {};
+      tailwind.config = {
+        theme: {
+          extend: {
+            colors: {
+              "ft-bg": "#050816",
+              "ft-bg-soft": "rgba(15,23,42,0.9)",
+              "ft-card": "rgba(15,23,42,0.85)",
+              "ft-border": "rgba(148,163,184,0.35)",
+              "ft-teal": "#14b8a6",
+            },
+            fontFamily: {
+              sans: ['"DM Sans"', "system-ui", "sans-serif"],
+              mono: ['"JetBrains Mono"', "ui-monospace", "SFMono-Regular"],
+            },
+            boxShadow: {
+              "glow-teal": "0 0 30px rgba(45,212,191,0.35)",
+            },
+            backdropBlur: {
+              xs: "2px",
+            },
+          },
+        },
+      };
+    </script>
+    <script src="https://cdn.tailwindcss.com"></script>
+
+    <style>
+      :root {
+        color-scheme: dark;
+      }
+      body {
+        font-family: "DM Sans", system-ui, -apple-system, BlinkMacSystemFont,
+          "Segoe UI", sans-serif;
+        background-color: #050816;
+        color: #e5e7eb;
+      }
+      body::before {
+        content: "";
+        position: fixed;
+        inset: 0;
+        background: radial-gradient(circle at top left, #22c1c3 0, transparent 55%),
+          radial-gradient(circle at bottom right, #0f172a 0, transparent 60%);
+        opacity: 0.25;
+        pointer-events: none;
+        z-index: -1;
+      }
+    </style>
+
+    <!-- React + ReactDOM + Babel -->
+    <script
+      crossorigin
+      src="https://unpkg.com/react@18/umd/react.development.js"
+    ></script>
+    <script
+      crossorigin
+      src="https://unpkg.com/react-dom@18/umd/react-dom.development.js"
+    ></script>
+    <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+  </head>
+  <body class="bg-ft-bg text-slate-50">
+    <div id="root"></div>
+
+    <script type="text/babel">
+      const { useState, useEffect, useMemo } = React;
+
+      // ------------------ Helpers & Hooks ------------------
+
+      function createId() {
+        if (window.crypto && crypto.randomUUID) return crypto.randomUUID();
+        return (
+          Date.now().toString(36) + Math.random().toString(36).slice(2)
+        );
+      }
+
+      function useLocalStorageState(key, defaultValue) {
+        const [value, setValue] = useState(() => {
+          try {
+            const raw = window.localStorage.getItem(key);
+            return raw ? JSON.parse(raw) : defaultValue;
+          } catch {
+            return defaultValue;
+          }
+        });
+
+        useEffect(() => {
+          try {
+            window.localStorage.setItem(key, JSON.stringify(value));
+          } catch {
+            // ignore
+          }
+        }, [key, value]);
+
+        return [value, setValue];
+      }
+
+      // ------------------ FocusTimer ------------------
+
+      const MODE_DURATIONS = {
+        focus: 25 * 60,
+        shortBreak: 5 * 60,
+        longBreak: 15 * 60,
+      };
+
+      const MODE_LABELS = {
+        focus: "Focus",
+        shortBreak: "Short Break",
+        longBreak: "Long Break",
+      };
+
+      const MODE_COLORS = {
+        focus: "stroke-ft-teal",
+        shortBreak: "stroke-sky-400",
+        longBreak: "stroke-purple-400",
+      };
+
+      function FocusTimer({ timer, setTimer }) {
+        // Tick logic
+        useEffect(() => {
+          if (!timer.isRunning) return;
+
+          const interval = setInterval(() => {
+            setTimer((prev) => {
+              if (!prev.isRunning) return prev;
+
+              if (prev.remainingSeconds <= 1) {
+                const isFocus = prev.mode === "focus";
+                return {
+                  ...prev,
+                  isRunning: false,
+                  remainingSeconds: MODE_DURATIONS[prev.mode],
+                  completedSessions: isFocus
+                    ? prev.completedSessions + 1
+                    : prev.completedSessions,
+                };
+              }
+
+              return {
+                ...prev,
+                remainingSeconds: prev.remainingSeconds - 1,
+              };
+            });
+          }, 1000);
+
+          return () => clearInterval(interval);
+        }, [timer.isRunning, timer.mode, setTimer]);
+
+        const totalSeconds = MODE_DURATIONS[timer.mode];
+        const progress = 1 - timer.remainingSeconds / totalSeconds;
+
+        const timeDisplay = useMemo(() => {
+          const m = Math.floor(timer.remainingSeconds / 60);
+          const s = timer.remainingSeconds % 60;
+          return (
+            m.toString().padStart(2, "0") +
+            ":" +
+            s.toString().padStart(2, "0")
+          );
+        }, [timer.remainingSeconds]);
+
+        const radius = 80;
+        const circumference = 2 * Math.PI * radius;
+        const dashOffset = circumference * (1 - progress);
+
+        const handleModeChange = (mode) => {
+          setTimer({
+            mode,
+            isRunning: false,
+            remainingSeconds: MODE_DURATIONS[mode],
+            completedSessions: timer.completedSessions,
+          });
+        };
+
+        const handlePlayPause = () => {
+          setTimer((prev) => ({ ...prev, isRunning: !prev.isRunning }));
+        };
+
+        const handleReset = () => {
+          setTimer((prev) => ({
+            ...prev,
+            isRunning: false,
+            remainingSeconds: MODE_DURATIONS[prev.mode],
+          }));
+        };
+
+        return (
+          <div className="bg-ft-card/80 border border-ft-border rounded-2xl p-5 backdrop-blur-md shadow-glow-teal">
+            <div className="flex items-center justify-between mb-4">
+              <h2 className="text-sm font-semibold tracking-wide uppercase text-slate-200">
+                FlowTime Timer
+              </h2>
+              <span className="text-[11px] text-slate-400 font-mono">
+                Sessions: {timer.completedSessions}
+              </span>
+            </div>
+
+            {/* Modes */}
+            <div className="flex gap-2 mb-4">
+              {["focus", "shortBreak", "longBreak"].map((mode) => {
+                const active = timer.mode === mode;
+                return (
+                  <button
+                    key={mode}
+                    onClick={() => handleModeChange(mode)}
+                    className={
+                      "flex-1 rounded-full px-3 py-1.5 text-xs font-medium transition border " +
+                      (active
+                        ? "bg-ft-teal/20 border-ft-teal text-ft-teal shadow-glow-teal"
+                        : "bg-slate-900/60 border-slate-800 text-slate-400 hover:bg-slate-900")
+                    }
+                  >
+                    {MODE_LABELS[mode]}
+                  </button>
+                );
+              })}
+            </div>
+
+            {/* Circular timer */}
+            <div className="flex flex-col items-center justify-center">
+              <div className="relative w-48 h-48 mb-3">
+                <svg className="w-full h-full -rotate-90">
+                  <circle
+                    cx="50%"
+                    cy="50%"
+                    r={radius}
+                    className="stroke-slate-800 fill-transparent"
+                    strokeWidth="10"
+                  />
+                  <circle
+                    cx="50%"
+                    cy="50%"
+                    r={radius}
+                    className={
+                      "fill-transparent transition-all duration-500 ease-out " +
+                      MODE_COLORS[timer.mode]
+                    }
+                    strokeWidth="10"
+                    strokeDasharray={circumference}
+                    strokeDashoffset={dashOffset}
+                    strokeLinecap="round"
+                  />
+                </svg>
+                <div className="absolute inset-0 flex flex-col items-center justify-center">
+                  <span className="font-mono text-3xl tracking-tight">
+                    {timeDisplay}
+                  </span>
+                  <span className="text-[11px] text-slate-400">
+                    {MODE_LABELS[timer.mode]}
+                  </span>
+                </div>
+              </div>
+
+              {/* Controls */}
+              <div className="flex items-center gap-3 mt-1">
+                <button
+                  onClick={handlePlayPause}
+                  className="px-4 py-1.5 rounded-full bg-ft-teal/90 text-slate-950 text-xs font-semibold flex items-center gap-1 shadow-glow-teal hover:bg-ft-teal transition"
+                >
+                  {timer.isRunning ? "Pause" : "Start"}
+                </button>
+                <button
+                  onClick={handleReset}
+                  className="px-3 py-1.5 rounded-full border border-slate-700 text-xs text-slate-300 hover:bg-slate-900 transition"
+                >
+                  Reset
+                </button>
+              </div>
+            </div>
+          </div>
+        );
+      }
+
+      // ------------------ TaskList ------------------
+
+      const priorityStyles = {
+        high: "bg-rose-500/80 text-rose-50",
+        medium: "bg-amber-500/80 text-slate-950",
+        low: "bg-slate-500/80 text-slate-50",
+      };
+
+      function TaskList({ tasks, setTasks }) {
+        const [title, setTitle] = useState("");
+        const [description, setDescription] = useState("");
+        const [estimate, setEstimate] = useState("");
+        const [priority, setPriority] = useState("medium");
+        const [category, setCategory] = useState("");
+
+        const handleAddTask = (e) => {
+          e.preventDefault();
+          if (!title.trim()) return;
+
+          const newTask = {
+            id: createId(),
+            title: title.trim(),
+            description: description.trim() || undefined,
+            estimateMinutes: Number(estimate) || 25,
+            priority,
+            category: category.trim() || undefined,
+            completed: false,
+            createdAt: new Date().toISOString(),
+          };
+
+          setTasks((prev) => [newTask, ...prev]);
+          setTitle("");
+          setDescription("");
+          setEstimate("");
+          setPriority("medium");
+          setCategory("");
+        };
+
+        const toggleTaskCompletion = (id) => {
+          setTasks((prev) =>
+            prev.map((t) =>
+              t.id === id ? { ...t, completed: !t.completed } : t
+            )
+          );
+        };
+
+        const deleteTask = (id) => {
+          setTasks((prev) => prev.filter((t) => t.id !== id));
+        };
+
+        const incomplete = tasks.filter((t) => !t.completed);
+        const complete = tasks.filter((t) => t.completed);
+
+        return (
+          <div className="bg-ft-card/80 border border-ft-border rounded-2xl p-5 backdrop-blur-md flex flex-col h-full">
+            <div className="flex items-center justify-between mb-4">
+              <h2 className="text-sm font-semibold tracking-wide uppercase text-slate-200">
+                Tasks
+              </h2>
+              <span className="text-[11px] text-slate-400">
+                {incomplete.length} active · {complete.length} done
+              </span>
+            </div>
+
+            {/* Add Task */}
+            <form onSubmit={handleAddTask} className="space-y-2 mb-4 text-xs">
+              <input
+                className="w-full bg-slate-950/60 border border-slate-700 rounded-lg px-2 py-1.5 text-xs placeholder:text-slate-500 focus:outline-none focus:border-ft-teal"
+                placeholder="Task title (e.g. Design client hero section)"
+                value={title}
+                onChange={(e) => setTitle(e.target.value)}
+              />
+              <textarea
+                className="w-full bg-slate-950/60 border border-slate-800 rounded-lg px-2 py-1.5 text-[11px] resize-none h-14 placeholder:text-slate-500 focus:outline-none focus:border-ft-teal/70"
+                placeholder="Short description (optional)"
+                value={description}
+                onChange={(e) => setDescription(e.target.value)}
+              />
+              <div className="grid grid-cols-3 gap-2">
+                <div className="space-y-1">
+                  <label className="text-[11px] text-slate-400">Estimate</label>
+                  <input
+                    type="number"
+                    min={5}
+                    step={5}
+                    value={estimate}
+                    onChange={(e) => setEstimate(e.target.value)}
+                    className="w-full bg-slate-950/60 border border-slate-700 rounded-lg px-2 py-1 text-[11px] focus:outline-none focus:border-ft-teal"
+                    placeholder="min"
+                  />
+                </div>
+                <div className="space-y-1">
+                  <label className="text-[11px] text-slate-400">Priority</label>
+                  <select
+                    value={priority}
+                    onChange={(e) => setPriority(e.target.value)}
+                    className="w-full bg-slate-950/60 border border-slate-700 rounded-lg px-2 py-1 text-[11px] focus:outline-none focus:border-ft-teal"
+                  >
+                    <option value="high">High</option>
+                    <option value="medium">Medium</option>
+                    <option value="low">Low</option>
+                  </select>
+                </div>
+                <div className="space-y-1">
+                  <label className="text-[11px] text-slate-400">Category</label>
+                  <input
+                    value={category}
+                    onChange={(e) => setCategory(e.target.value)}
+                    className="w-full bg-slate-950/60 border border-slate-700 rounded-lg px-2 py-1 text-[11px] focus:outline-none focus:border-ft-teal"
+                    placeholder="Client / Admin"
+                  />
+                </div>
+              </div>
+              <button
+                type="submit"
+                className="w-full mt-1 bg-ft-teal/90 hover:bg-ft-teal text-slate-950 text-xs font-semibold py-1.5 rounded-lg shadow-glow-teal transition"
+              >
+                Add Task
+              </button>
+            </form>
+
+            {/* Task List */}
+            <div className="flex-1 overflow-y-auto space-y-2 pr-1 text-xs">
+              {incomplete.length === 0 && complete.length === 0 && (
+                <p className="text-[11px] text-slate-500">
+                  No tasks yet. Add what you want to focus on today.
+                </p>
+              )}
+
+              {incomplete.map((task) => (
+                <TaskRow
+                  key={task.id}
+                  task={task}
+                  onToggle={toggleTaskCompletion}
+                  onDelete={deleteTask}
+                />
+              ))}
+
+              {complete.length > 0 && (
+                <>
+                  <div className="pt-2 border-t border-slate-800 mt-2 text-[10px] text-slate-500">
+                    Completed
+                  </div>
+                  {complete.map((task) => (
+                    <TaskRow
+                      key={task.id}
+                      task={task}
+                      onToggle={toggleTaskCompletion}
+                      onDelete={deleteTask}
+                    />
+                  ))}
+                </>
+              )}
+            </div>
+          </div>
+        );
+      }
+
+      function TaskRow({ task, onToggle, onDelete }) {
+        return (
+          <div className="group flex items-start gap-2 bg-slate-950/60 border border-slate-800 rounded-lg px-2.5 py-2 hover:border-ft-teal/60 transition">
+            <button
+              onClick={() => onToggle(task.id)}
+              className={
+                "mt-0.5 w-4 h-4 rounded-full border flex items-center justify-center text-[10px] " +
+                (task.completed
+                  ? "bg-ft-teal border-ft-teal text-slate-950"
+                  : "border-slate-600 bg-slate-900")
+              }
+            >
+              {task.completed ? "✓" : ""}
+            </button>
+            <div className="flex-1 space-y-0.5">
+              <div className="flex items-center justify-between gap-2">
+                <div className="flex items-center gap-2">
+                  <span
+                    className={
+                      "px-1.5 py-0.5 rounded-full text-[10px] font-medium " +
+                      priorityStyles[task.priority]
+                    }
+                  >
+                    {task.priority}
+                  </span>
+                  <p
+                    className={
+                      "text-xs " +
+                      (task.completed ? "line-through text-slate-500" : "")
+                    }
+                  >
+                    {task.title}
+                  </p>
+                </div>
+                <span className="font-mono text-[11px] text-slate-400">
+                  {task.estimateMinutes}m
+                </span>
+              </div>
+              {task.description && (
+                <p className="text-[11px] text-slate-400 line-clamp-2">
+                  {task.description}
+                </p>
+              )}
+              {task.category && (
+                <span className="inline-flex px-1.5 py-0.5 rounded-full bg-slate-800/80 text-[10px] text-slate-300">
+                  {task.category}
+                </span>
+              )}
+            </div>
+            <button
+              onClick={() => onDelete(task.id)}
+              className="opacity-0 group-hover:opacity-100 text-[10px] text-slate-500 hover:text-rose-400 transition"
+            >
+              ✕
+            </button>
+          </div>
+        );
+      }
+
+      // ------------------ Dashboard ------------------
+
+      function Dashboard({ tasks, completedSessions }) {
+        const totalPlanned = tasks.reduce(
+          (sum, t) => sum + (t.estimateMinutes || 0),
+          0
+        );
+        const completedTasks = tasks.filter((t) => t.completed);
+        const completedMinutes = completedTasks.reduce(
+          (sum, t) => sum + (t.estimateMinutes || 0),
+          0
+        );
+
+        const progress = totalPlanned
+          ? Math.min(1, completedMinutes / totalPlanned)
+          : 0;
+
+        const categoryStats = getCategoryStats(tasks);
+
+        return (
+          <div className="bg-ft-card/80 border border-ft-border rounded-2xl p-5 backdrop-blur-md h-full flex flex-col gap-4">
+            <div className="flex items-center justify-between">
+              <h2 className="text-sm font-semibold tracking-wide uppercase text-slate-200">
+                Day Progress
+              </h2>
+              <span className="text-[11px] text-slate-400">
+                {new Date().toLocaleDateString()}
+              </span>
+            </div>
+
+            {/* Progress bar */}
+            <div>
+              <div className="flex items-center justify-between mb-1">
+                <span className="text-xs text-slate-300">Time Progress</span>
+                <span className="font-mono text-xs text-slate-400">
+                  {Math.round(progress * 100)}%
+                </span>
+              </div>
+              <div className="w-full h-2 rounded-full bg-slate-900 overflow-hidden">
+                <div
+                  className="h-2 bg-ft-teal/90 transition-all duration-500"
+                  style={{ width: progress * 100 + "%" }}
+                />
+              </div>
+              <div className="flex justify-between text-[11px] text-slate-500 mt-1.5 font-mono">
+                <span>{completedMinutes}m done</span>
+                <span>{totalPlanned || 0}m planned</span>
+              </div>
+            </div>
+
+            {/* Stats cards */}
+            <div className="grid grid-cols-3 gap-3 text-xs">
+              <StatCard
+                label="Tasks Done"
+                value={String(completedTasks.length)}
+                icon="✓"
+              />
+              <StatCard
+                label="Active Tasks"
+                value={String(tasks.filter((t) => !t.completed).length)}
+                icon="⚡"
+              />
+              <StatCard
+                label="Focus Sessions"
+                value={String(completedSessions)}
+                icon="⏱"
+              />
+            </div>
+
+            {/* Category breakdown */}
+            <div className="mt-1">
+              <p className="text-[11px] text-slate-400 mb-1">By Category</p>
+              <div className="space-y-1 max-h-32 overflow-y-auto pr-1">
+                {categoryStats.map((c) => (
+                  <div
+                    key={c.category}
+                    className="flex items-center justify-between text-[11px]"
+                  >
+                    <span className="text-slate-300">{c.category}</span>
+                    <span className="font-mono text-slate-400">
+                      {c.totalMinutes}m · {c.count} tasks
+                    </span>
+                  </div>
+                ))}
+                {categoryStats.length === 0 && (
+                  <p className="text-[11px] text-slate-500">
+                    Add categories to see breakdown.
+                  </p>
+                )}
+              </div>
+            </div>
+          </div>
+        );
+      }
+
+      function StatCard({ label, value, icon }) {
+        return (
+          <div className="bg-slate-950/70 border border-slate-800 rounded-xl px-3 py-2 flex flex-col justify-between shadow-sm">
+            <div className="flex items-center justify-between mb-1">
+              <span className="text-[10px] text-slate-400">{label}</span>
+              <span className="text-[13px]">{icon}</span>
+            </div>
+            <span className="font-mono text-lg text-slate-50">{value}</span>
+          </div>
+        );
+      }
+
+      function getCategoryStats(tasks) {
+        const map = new Map();
+        for (const t of tasks) {
+          const cat = t.category || "Uncategorized";
+          const prev = map.get(cat) || { totalMinutes: 0, count: 0 };
+          prev.totalMinutes += t.estimateMinutes || 0;
+          prev.count += 1;
+          map.set(cat, prev);
+        }
+        return Array.from(map.entries()).map(([category, v]) => ({
+          category,
+          ...v,
+        }));
+      }
+
+      // ------------------ TimeSchedule ------------------
+
+      const DAY_START = 6 * 60; // 6 AM
+      const DAY_END = 22 * 60; // 10 PM
+      const WORK_START = 9 * 60; // 9 AM
+      const WORK_END = 21 * 60; // 9 PM
+
+      function TimeSchedule({ tasks }) {
+        const incomplete = useMemo(
+          () =>
+            tasks
+              .filter((t) => !t.completed)
+              .sort((a, b) => a.createdAt.localeCompare(b.createdAt)),
+          [tasks]
+        );
+
+        const blocks = useMemo(() => {
+          const schedule = [];
+          let current = WORK_START;
+
+          for (const task of incomplete) {
+            const duration = task.estimateMinutes || 25;
+            const end = current + duration;
+            if (end > WORK_END) break;
+
+            schedule.push({
+              taskId: task.id,
+              startMinutes: current,
+              endMinutes: end,
+            });
+            current = end;
+          }
+
+          return schedule;
+        }, [incomplete]);
+
+        const now = new Date();
+        const nowMinutes = now.getHours() * 60 + now.getMinutes();
+        const showNow =
+          nowMinutes >= DAY_START && nowMinutes <= DAY_END
+            ? ((nowMinutes - DAY_START) / (DAY_END - DAY_START)) * 100
+            : null;
+
+        const timelineHours = [];
+        for (let h = 6; h <= 22; h++) {
+          timelineHours.push(h);
+        }
+
+        const getTaskById = (id) => tasks.find((t) => t.id === id);
+
+        return (
+          <div className="bg-ft-card/80 border border-ft-border rounded-2xl p-5 backdrop-blur-md h-full flex flex-col">
+            <div className="flex items-center justify-between mb-3">
+              <h2 className="text-sm font-semibold tracking-wide uppercase text-slate-200">
+                Time Blocks
+              </h2>
+              <span className="text-[11px] text-slate-400 font-mono">
+                {now.toLocaleTimeString([], {
+                  hour: "2-digit",
+                  minute: "2-digit",
+                })}
+              </span>
+            </div>
+
+            {/* Horizontal timeline */}
+            <div className="relative mb-3">
+              <div className="w-full h-1 bg-slate-900 rounded-full overflow-hidden relative">
+                {blocks.map((b) => {
+                  const span = DAY_END - DAY_START;
+                  const left = ((b.startMinutes - DAY_START) / span) * 100;
+                  const width =
+                    ((b.endMinutes - b.startMinutes) / span) * 100;
+                  const task = getTaskById(b.taskId);
+                  return (
+                    <div
+                      key={b.taskId + "-" + b.startMinutes}
+                      className="absolute top-0 h-1 rounded-full bg-ft-teal/80"
+                      style={{ left: left + "%", width: width + "%" }}
+                      title={task ? task.title : ""}
+                    />
+                  );
+                })}
+              </div>
+              {/* Current time indicator */}
+              {showNow !== null && (
+                <div
+                  className="absolute -top-1 bottom-0 w-px bg-rose-500"
+                  style={{ left: showNow + "%" }}
+                >
+                  <div className="w-2 h-2 rounded-full bg-rose-500 -translate-x-1/2 -translate-y-1" />
+                </div>
+              )}
+            </div>
+
+            {/* Hour ticks */}
+            <div className="flex justify-between text-[10px] text-slate-500 mb-4 font-mono">
+              {timelineHours.map((h) => (
+                <span key={h}>
+                  {((h + 11) % 12) + 1}
+                  {h < 12 ? "a" : "p"}
+                </span>
+              ))}
+            </div>
+
+            {/* Blocks list */}
+            <div className="flex-1 overflow-y-auto space-y-2 text-xs pr-1">
+              {blocks.length === 0 && (
+                <p className="text-[11px] text-slate-500">
+                  No blocks scheduled yet. Add tasks with estimates to see your
+                  day mapped from 9AM onwards.
+                </p>
+              )}
+
+              {blocks.map((b) => {
+                const task = getTaskById(b.taskId);
+                if (!task) return null;
+                return (
+                  <div
+                    key={b.taskId + "-" + b.startMinutes}
+                    className="group bg-slate-950/70 border border-slate-800 rounded-lg px-2.5 py-2 flex items-start justify-between hover:border-ft-teal/70 hover:bg-slate-900/80 transition"
+                  >
+                    <div>
+                      <p className="text-xs text-slate-50">{task.title}</p>
+                      <p className="text-[11px] text-slate-400">
+                        {formatMinutes(b.startMinutes)} –{" "}
+                        {formatMinutes(b.endMinutes)}
+                        {task.category && " · " + task.category}
+                      </p>
+                    </div>
+                    <span className="font-mono text-[11px] text-slate-400 group-hover:text-ft-teal">
+                      {task.estimateMinutes}m
+                    </span>
+                  </div>
+                );
+              })}
+            </div>
+          </div>
+        );
+      }
+
+      function formatMinutes(totalMinutes) {
+        const h = Math.floor(totalMinutes / 60);
+        const m = totalMinutes % 60;
+        const hh = ((h + 11) % 12) + 1;
+        const suffix = h < 12 ? "AM" : "PM";
+        return hh + ":" + String(m).padStart(2, "0") + " " + suffix;
+      }
+
+      // ------------------ App Shell ------------------
+
+      function App() {
+        const [tasks, setTasks] = useLocalStorageState(
+          "flowtime_html_tasks",
+          []
+        );
+        const [timer, setTimer] = useLocalStorageState(
+          "flowtime_html_timer",
+          {
+            mode: "focus",
+            isRunning: false,
+            remainingSeconds: MODE_DURATIONS["focus"],
+            completedSessions: 0,
+          }
+        );
+
+        const now = new Date();
+
+        return (
+          <div className="min-h-screen">
+            <div className="max-w-6xl mx-auto px-4 py-6">
+              {/* Header */}
+              <header className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 mb-6">
+                <div>
+                  <h1 className="text-2xl font-semibold tracking-tight flex items-center gap-2">
+                    <span className="inline-flex items-center justify-center w-7 h-7 rounded-xl bg-ft-teal/20 border border-ft-teal/60 shadow-glow-teal">
+                      <span className="text-xs font-mono text-ft-teal">
+                        FT
+                      </span>
+                    </span>
+                    <span>FlowTime</span>
+                  </h1>
+                  <p className="text-sm text-slate-400 mt-1 max-w-md">
+                    A time OS for freelancers. Turn tasks into a real,
+                    time-based schedule and stay in flow.
+                  </p>
+                </div>
+                <div className="text-right text-[11px] text-slate-500">
+                  <p className="font-mono">
+                    {now.toLocaleString(undefined, {
+                      weekday: "short",
+                      month: "short",
+                      day: "2-digit",
+                    })}
+                  </p>
+                  <p className="font-mono">
+                    {now.toLocaleTimeString([], {
+                      hour: "2-digit",
+                      minute: "2-digit",
+                    })}
+                  </p>
+                </div>
+              </header>
+
+              {/* Layout */}
+              <main className="grid gap-4 md:gap-5 lg:gap-6 md:grid-cols-3">
+                {/* Column 1: Timer + Tasks */}
+                <div className="space-y-4 md:col-span-1">
+                  <FocusTimer timer={timer} setTimer={setTimer} />
+                  <TaskList tasks={tasks} setTasks={setTasks} />
+                </div>
+
+                {/* Column 2: Dashboard */}
+                <div className="space-y-4 md:col-span-1">
+                  <Dashboard
+                    tasks={tasks}
+                    completedSessions={timer.completedSessions}
+                  />
+                </div>
+
+                {/* Column 3: Schedule */}
+                <div className="space-y-4 md:col-span-1">
+                  <TimeSchedule tasks={tasks} />
+                </div>
+              </main>
+            </div>
+          </div>
+        );
+      }
+
+      const root = ReactDOM.createRoot(document.getElementById("root"));
+      root.render(<App />);
+    </script>
+  </body>
+</html>

@@ -1,0 +1,401 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Prompts & Answers — Tabs (HTML)</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <style>
+    /* small helper to truncate lines in the sidebar preview */
+    .line-clamp-2 {
+      display: -webkit-box;
+      -webkit-line-clamp: 2;
+      -webkit-box-orient: vertical;
+      overflow: hidden;
+    }
+  </style>
+</head>
+<body class="min-h-screen bg-gray-50 p-6">
+  <div class="max-w-7xl mx-auto bg-white shadow rounded-lg overflow-hidden flex">
+    <!-- Sidebar -->
+    <aside class="w-80 border-r">
+      <div class="p-4">
+        <div class="flex items-center gap-2">
+          <input id="searchInput" placeholder="Search prompts & answers..." class="w-full px-3 py-2 border rounded focus:outline-none" />
+        </div>
+
+        <div class="mt-3 flex gap-2">
+          <button id="btnNew" class="px-3 py-1 rounded bg-indigo-600 text-white text-sm">New</button>
+          <button id="btnExport" class="px-3 py-1 rounded border text-sm">Export</button>
+          <label class="px-3 py-1 rounded border cursor-pointer text-sm inline-flex items-center">
+            Import
+            <input id="fileInput" type="file" accept="application/json" class="hidden" />
+          </label>
+        </div>
+      </div>
+
+      <nav id="listNav" class="overflow-auto h-[70vh] p-2"></nav>
+    </aside>
+
+    <!-- Main -->
+    <main class="flex-1 p-6">
+      <div id="emptyState" class="text-center text-gray-500">Select a tab or add a new note.</div>
+
+      <div id="editor" class="hidden">
+        <div class="flex justify-between items-start">
+          <div>
+            <h1 id="activeTitle" class="text-2xl font-semibold"></h1>
+            <p class="text-sm text-gray-500 mt-1">Prompt summary and assistant answer</p>
+          </div>
+        </div>
+
+        <div class="mt-6 grid grid-cols-1 gap-4">
+          <div>
+            <label class="block text-xs font-medium text-gray-600">Title</label>
+            <input id="titleInput" class="mt-1 w-full p-3 border rounded" />
+          </div>
+
+          <div>
+            <label class="block text-xs font-medium text-gray-600">Prompt</label>
+            <textarea id="promptInput" class="mt-1 w-full h-28 p-3 border rounded"></textarea>
+          </div>
+
+          <div>
+            <label class="block text-xs font-medium text-gray-600">Assistant answer</label>
+            <textarea id="answerInput" class="mt-1 w-full h-48 p-3 border rounded"></textarea>
+          </div>
+
+          <div class="flex gap-2">
+            <button id="btnCopy" class="px-3 py-1 rounded border">Copy JSON</button>
+            <button id="btnDelete" class="px-3 py-1 rounded border text-red-600">Delete</button>
+          </div>
+        </div>
+      </div>
+    </main>
+  </div>
+
+  <div class="max-w-7xl mx-auto mt-4 text-xs text-gray-500">
+    Tip: Use Export to save a backup of your prompts and answers, or Import to load a prepared JSON file (array of {id,title,prompt,answer}).
+  </div>
+
+  <script>
+  (function () {
+    // -----------------------
+    // Initial data (same as React version)
+    // -----------------------
+    const initialData = [
+      {
+        id: "1",
+        title: "Paper trading app: entry/exit P&L",
+        prompt:
+          "In paper trading app, for Nifty difference between entry and exit should be multiplied by number of lots; 1 lot = 75; calculate P&L accordingly; provide full rephrased code.",
+        answer:
+          "Provided a complete rephrased HTML/React implementation for the paper trading journal that multiplies price difference by lot size (1 lot = 75) to compute profit and loss and updates journal entries accordingly. Includes form inputs, validation and local persistence."
+      },
+      {
+        id: "2",
+        title: "Trading app features from book quotes",
+        prompt:
+          "Use ideas from 'Trading Without Gambling' quotes and make a web app useful for BTC/Nifty trading.",
+        answer:
+          "Suggested a trading-assistant app centered on rules, discipline and journaling: watchlists, strategy templates, risk controls, trade planning modal, and post-trade analysis; recommended features for BTC and index options."
+      },
+      {
+        id: "3",
+        title: "Reading to improve focus and memory",
+        prompt:
+          "I have low focus/memory — can reading (including ChatGPT prompts) help?",
+        answer:
+          "Explained how structured reading builds attention and memory: active reading techniques, spaced repetition, summarization, and how reading ChatGPT answers can help if used with deliberate practice and recall exercises."
+      },
+      {
+        id: "4",
+        title: "Monthly budget & trading allocation app",
+        prompt:
+          "Monthly cash flows (25,000 INR) split across credit, trading, RDs — build growth & finance app and plan funds for trading.",
+        answer:
+          "Outlined an app to track recurring allocations, net available for discretionary trading, automated alerts when trading budget is depleted, and simple visualizations for cash flows and reserves."
+      },
+      {
+        id: "5",
+        title: "CSV/JSON import and front-end analyzer",
+        prompt:
+          "Provide import JSON, analyze CSV thoroughly and make a front-end web app to analyze trading mistakes, map Date/Symbol/P&L.",
+        answer:
+          "Delivered a front-end plan and UI: CSV mapping step, validation, summary statistics, loss/profit patterns, trade-level notes, and downloadable analyzed reports. Gave guidance on storing images in JSON (base64 or URLs)."
+      },
+      {
+        id: "6",
+        title: "Template manager & prototypes",
+        prompt:
+          "Create a template manager where users can browse templates and edit color/design; show multiple prototypes in tabs.",
+        answer:
+          "Created multiple UI prototype recommendations, including a left-side tabbed selector and previews with in-place color and layout editing. Provided two additional prototype variations then five more on request."
+      }
+    ];
+
+    // -----------------------
+    // Storage & state
+    // -----------------------
+    const STORAGE_KEY = "prompts_answers_items_v1";
+
+    let items = loadItems();
+    let activeId = items.length ? items[0].id : null;
+    let query = "";
+
+    // -----------------------
+    // DOM refs
+    // -----------------------
+    const listNav = document.getElementById("listNav");
+    const searchInput = document.getElementById("searchInput");
+    const btnNew = document.getElementById("btnNew");
+    const btnExport = document.getElementById("btnExport");
+    const fileInput = document.getElementById("fileInput");
+
+    const editor = document.getElementById("editor");
+    const emptyState = document.getElementById("emptyState");
+    const activeTitle = document.getElementById("activeTitle");
+    const titleInput = document.getElementById("titleInput");
+    const promptInput = document.getElementById("promptInput");
+    const answerInput = document.getElementById("answerInput");
+    const btnCopy = document.getElementById("btnCopy");
+    const btnDelete = document.getElementById("btnDelete");
+
+    // -----------------------
+    // Helpers
+    // -----------------------
+    function loadItems() {
+      try {
+        const raw = localStorage.getItem(STORAGE_KEY);
+        if (!raw) {
+          localStorage.setItem(STORAGE_KEY, JSON.stringify(initialData, null, 2));
+          return initialData.slice();
+        }
+        const parsed = JSON.parse(raw);
+        if (!Array.isArray(parsed)) throw new Error("Saved data is invalid");
+        return parsed;
+      } catch (err) {
+        console.error("Load failed:", err);
+        localStorage.removeItem(STORAGE_KEY);
+        localStorage.setItem(STORAGE_KEY, JSON.stringify(initialData, null, 2));
+        return initialData.slice();
+      }
+    }
+
+    function saveItems() {
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(items, null, 2));
+    }
+
+    function uid() {
+      return Date.now().toString(36) + "-" + Math.random().toString(36).slice(2,8);
+    }
+
+    function getFiltered() {
+      const q = (query || "").trim().toLowerCase();
+      if (!q) return items;
+      return items.filter(it =>
+        (it.title || "").toLowerCase().includes(q) ||
+        (it.prompt || "").toLowerCase().includes(q) ||
+        (it.answer || "").toLowerCase().includes(q)
+      );
+    }
+
+    // -----------------------
+    // Rendering
+    // -----------------------
+    function renderList() {
+      const list = getFiltered();
+      listNav.innerHTML = "";
+      if (!list.length) {
+        listNav.innerHTML = '<div class="p-3 text-sm text-gray-500">No results</div>';
+        return;
+      }
+      list.forEach(it => {
+        const node = document.createElement("div");
+        node.className = `p-3 mb-2 rounded cursor-pointer ${it.id === activeId ? 'bg-indigo-50 border-l-4 border-indigo-600' : 'hover:bg-gray-50'}`;
+        node.tabIndex = 0;
+        node.innerHTML = `
+          <div class="font-medium text-sm">${escapeHtml(it.title)}</div>
+          <div class="text-xs text-gray-500 truncate line-clamp-2">${escapeHtml(it.prompt)}</div>
+        `;
+        node.addEventListener("click", () => {
+          setActiveId(it.id);
+        });
+        node.addEventListener("keydown", (e) => {
+          if (e.key === "Enter") setActiveId(it.id);
+        });
+        listNav.appendChild(node);
+      });
+    }
+
+    function renderActive() {
+      const active = items.find(it => it.id === activeId) || null;
+      if (!active) {
+        editor.classList.add("hidden");
+        emptyState.classList.remove("hidden");
+        return;
+      }
+      editor.classList.remove("hidden");
+      emptyState.classList.add("hidden");
+
+      activeTitle.textContent = active.title || "Untitled";
+      titleInput.value = active.title || "";
+      promptInput.value = active.prompt || "";
+      answerInput.value = active.answer || "";
+    }
+
+    // -----------------------
+    // Actions
+    // -----------------------
+    function setActiveId(id) {
+      activeId = id;
+      // if active is not in filtered (search), still allow it; UI chooses first filtered in absence of active
+      // but maintain deterministic behaviour: if passed null or id missing, derive new active:
+      const filtered = getFiltered();
+      if (activeId && !items.find(i => i.id === activeId)) {
+        // item deleted or missing
+        activeId = filtered.length ? filtered[0].id : null;
+      }
+      if (!activeId && filtered.length) activeId = filtered[0].id;
+      renderList();
+      renderActive();
+    }
+
+    function addNote() {
+      const next = { id: uid(), title: "New note", prompt: "", answer: "" };
+      items = [next, ...items];
+      saveItems();
+      setActiveId(next.id);
+    }
+
+    function updateActiveField(field, value) {
+      if (!activeId) return;
+      items = items.map(it => it.id === activeId ? { ...it, [field]: value } : it);
+      saveItems();
+      renderList();
+      renderActive();
+    }
+
+    function deleteActive() {
+      if (!activeId) return;
+      if (!confirm("Delete this note? This action cannot be undone.")) return;
+      items = items.filter(it => it.id !== activeId);
+      saveItems();
+      const filtered = getFiltered();
+      const nextId = filtered.length ? filtered[0].id : (items.length ? items[0].id : null);
+      setActiveId(nextId);
+    }
+
+    function exportJSON() {
+      try {
+        const blob = new Blob([JSON.stringify(items, null, 2)], { type: "application/json" });
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement("a");
+        a.href = url;
+        a.download = "prompts_answers_export.json";
+        document.body.appendChild(a);
+        a.click();
+        a.remove();
+        URL.revokeObjectURL(url);
+      } catch (err) {
+        console.error(err);
+        alert("Export failed: " + (err.message || err));
+      }
+    }
+
+    function importJSONFile(file) {
+      if (!file) return;
+      const reader = new FileReader();
+      reader.onload = (ev) => {
+        try {
+          const parsed = JSON.parse(ev.target.result);
+          if (!Array.isArray(parsed)) throw new Error("Invalid format: expected array");
+          const normalized = parsed.map((p, idx) => ({
+            id: String(p.id ?? `imp-${Date.now()}-${idx}`),
+            title: p.title || "Untitled",
+            prompt: p.prompt || "",
+            answer: p.answer || ""
+          }));
+          items = normalized;
+          saveItems();
+          setActiveId(items[0]?.id || null);
+        } catch (err) {
+          alert("Import failed: " + (err.message || err));
+        }
+      };
+      reader.readAsText(file);
+    }
+
+    function copyActiveJSON() {
+      const active = items.find(it => it.id === activeId);
+      if (!active) return alert("No active note to copy.");
+      const txt = JSON.stringify(active, null, 2);
+      navigator.clipboard.writeText(txt).then(() => {
+        alert("Copied active item JSON to clipboard.");
+      }, (err) => {
+        console.error(err);
+        alert("Copy failed.");
+      });
+    }
+
+    // -----------------------
+    // Utils
+    // -----------------------
+    function escapeHtml(str) {
+      if (!str) return "";
+      return String(str)
+        .replaceAll("&", "&amp;")
+        .replaceAll("<", "&lt;")
+        .replaceAll(">", "&gt;");
+    }
+
+    // -----------------------
+    // Wire events
+    // -----------------------
+    searchInput.addEventListener("input", (e) => {
+      query = e.target.value || "";
+      // When search changes, if the activeId is not in filtered, set to first filtered
+      const filtered = getFiltered();
+      if (filtered.length && !filtered.find(f => f.id === activeId)) {
+        activeId = filtered[0].id;
+      } else if (!filtered.length) {
+        // keep activeId as-is (user may still want to edit it), but UI will show "No results" in list.
+      }
+      renderList();
+      renderActive();
+    });
+
+    btnNew.addEventListener("click", addNote);
+    btnExport.addEventListener("click", exportJSON);
+    fileInput.addEventListener("change", (e) => {
+      const f = e.target.files[0];
+      importJSONFile(f);
+      e.target.value = null;
+    });
+
+    titleInput.addEventListener("input", (e) => {
+      updateActiveField("title", e.target.value);
+    });
+    promptInput.addEventListener("input", (e) => {
+      updateActiveField("prompt", e.target.value);
+    });
+    answerInput.addEventListener("input", (e) => {
+      updateActiveField("answer", e.target.value);
+    });
+
+    btnCopy.addEventListener("click", copyActiveJSON);
+    btnDelete.addEventListener("click", deleteActive);
+
+    // -----------------------
+    // Initial render
+    // -----------------------
+    renderList();
+    renderActive();
+
+    // If there is no active and there are items, pick first
+    if (!activeId && items.length) setActiveId(items[0].id);
+
+  })();
+  </script>
+</body>
+</html>

@@ -1,0 +1,286 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dynamic Property Feature Tracker</title>
+    <!-- Load Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Use Inter font family -->
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@100..900&display=swap');
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #f7f9fb; /* Light background */
+        }
+        .app-container {
+            min-height: 100vh;
+        }
+        /* Custom styles for Real Estate theme (Blue/Teal) */
+        .header-bg {
+            background-color: #f0f9ff; /* Blue-50 */
+        }
+        .primary-color {
+            color: #0ea5e9; /* Sky Blue-500 */
+        }
+        .secondary-color {
+            color: #10b981; /* Emerald-500 */
+        }
+        .primary-action {
+            background-color: #0ea5e9; /* Sky Blue-500 */
+        }
+        .primary-action:hover {
+            background-color: #0284c7; /* Sky Blue-600 */
+        }
+        .focus-ring-color:focus {
+            --tw-ring-color: #0ea5e9; /* Sky Blue-500 */
+        }
+        .custom-modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.5);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+        }
+        .custom-modal-content {
+            background: white;
+            padding: 2rem;
+            border-radius: 12px;
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
+            max-width: 90%;
+            min-width: 350px;
+        }
+    </style>
+</head>
+<body class="selection:bg-sky-200 selection:text-sky-900">
+
+    <div class="app-container p-4 sm:p-8">
+        <!-- Header -->
+        <header class="mb-8 p-4 header-bg shadow-lg rounded-xl border-l-4 border-sky-500">
+            <h1 class="text-3xl font-bold text-gray-800">Dynamic Property Feature Tracker</h1>
+            <p class="text-gray-600 mt-1">Easily log standard and custom features for residential and commercial listings.</p>
+        </header>
+
+        <!-- Dynamic Form: Property Details & Custom Features -->
+        <section class="bg-white p-6 rounded-xl shadow-lg mb-8">
+            <h2 class="text-xl font-semibold text-gray-700 mb-4 flex items-center">
+                <svg class="w-6 h-6 mr-2 primary-color" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-3 7h3m-3 4h3m-6-4h.01M9 16h.01"></path>
+                </svg>
+                Add/Edit Property Listing
+            </h2>
+            <form id="propertyForm" class="grid grid-cols-1 md:grid-cols-4 gap-4">
+                <input type="hidden" id="propertyId">
+
+                <!-- Standard Fields -->
+                <div class="col-span-2">
+                    <label for="address" class="block text-sm font-medium text-gray-700">Full Address</label>
+                    <input type="text" id="address" placeholder="123 Main St, Anytown, CA" required class="mt-1 p-2 w-full border border-gray-300 rounded-lg shadow-sm focus-ring-color focus:ring-1 focus:border-sky-500">
+                </div>
+                
+                <div class="col-span-1">
+                    <label for="price" class="block text-sm font-medium text-gray-700">Price (₹)</label>
+                    <input type="number" id="price" required step="1000" placeholder="50,00,000" class="mt-1 p-2 w-full border border-gray-300 rounded-lg shadow-sm focus-ring-color focus:ring-1 focus:border-sky-500">
+                </div>
+
+                <div class="col-span-1">
+                    <label for="listingDate" class="block text-sm font-medium text-gray-700">Listing Date</label>
+                    <input type="date" id="listingDate" required class="mt-1 p-2 w-full border border-gray-300 rounded-lg shadow-sm focus-ring-color focus:ring-1 focus:border-sky-500">
+                </div>
+                
+                <div class="col-span-1">
+                    <label for="beds" class="block text-sm font-medium text-gray-700">Bedrooms</label>
+                    <input type="number" id="beds" step="1" min="1" placeholder="3" class="mt-1 p-2 w-full border border-gray-300 rounded-lg shadow-sm focus-ring-color focus:ring-1 focus:border-sky-500">
+                </div>
+
+                <div class="col-span-1">
+                    <label for="baths" class="block text-sm font-medium text-gray-700">Bathrooms</label>
+                    <input type="number" id="baths" step="0.5" min="1" placeholder="2.5" class="mt-1 p-2 w-full border border-gray-300 rounded-lg shadow-sm focus-ring-color focus:ring-1 focus:border-sky-500">
+                </div>
+                
+                <div class="col-span-2">
+                    <label for="type" class="block text-sm font-medium text-gray-700">Property Type</label>
+                    <select id="type" required class="mt-1 p-2 w-full border border-gray-300 rounded-lg shadow-sm focus-ring-color focus:ring-1 focus:border-sky-500">
+                        <option value="">-- Select Type --</option>
+                        <option value="Residential">Residential</option>
+                        <option value="Commercial">Commercial</option>
+                        <option value="Land">Land/Plot</option>
+                    </select>
+                </div>
+
+                <!-- Dynamic Custom Fields Container (for inputs) -->
+                <div id="customFieldsContainer" class="col-span-1 md:col-span-4 grid grid-cols-1 md:grid-cols-4 gap-4 border-t pt-4 mt-4">
+                    <!-- Dynamic fields (e.g., Year Built, HOA Fees, Has Pool) will be rendered here by JS -->
+                    <div class="col-span-1">
+                        <label class="block text-sm font-medium text-gray-700">Year Built</label>
+                        <input type="number" value="1998" disabled class="mt-1 p-2 w-full border border-gray-300 rounded-lg shadow-sm bg-gray-50">
+                    </div>
+                    <div class="col-span-1 flex items-center pt-2">
+                        <input type="checkbox" checked disabled class="h-4 w-4 text-emerald-500 border-gray-300 rounded focus:ring-emerald-500">
+                        <label class="block text-sm font-medium text-gray-700 ml-2">Has Pool</label>
+                    </div>
+                    <div class="col-span-2">
+                        <label class="block text-sm font-medium text-gray-700">HOA Notes</label>
+                        <input type="text" value="Mandatory club membership" disabled class="mt-1 p-2 w-full border border-gray-300 rounded-lg shadow-sm bg-gray-50">
+                    </div>
+                </div>
+
+                <!-- Submit Button -->
+                <div class="md:col-span-4 pt-4 flex justify-end space-x-4">
+                    <button type="submit" class="w-full md:w-auto px-6 py-2 primary-action text-white font-medium rounded-lg shadow-md hover:bg-sky-700 transition duration-150 ease-in-out">
+                        Save Listing
+                    </button>
+                    <button type="button" id="resetFormButton" class="w-full md:w-auto px-6 py-2 border border-gray-300 text-gray-700 bg-white font-medium rounded-lg shadow-sm hover:bg-gray-50 transition duration-150 ease-in-out">
+                        Clear Form
+                    </button>
+                </div>
+            </form>
+
+            <!-- Custom Field Addition & Management -->
+            <div class="mt-8 border-t pt-4">
+                <h3 class="text-lg font-medium text-gray-700 mb-3">Custom Feature Management</h3>
+                <div class="flex flex-col sm:flex-row space-y-3 sm:space-y-0 sm:space-x-4 mb-6">
+                    <input type="text" id="newFieldName" placeholder="Enter new field name (e.g., Garage Spots)" class="p-2 flex-grow border border-gray-300 rounded-lg shadow-sm focus-ring-color focus:ring-1 focus:border-emerald-500">
+                    
+                    <!-- Field Type Dropdown (from previous app) -->
+                    <select id="newFieldType" class="p-2 border border-gray-300 rounded-lg shadow-sm focus-ring-color focus:ring-1 focus:border-emerald-500 w-full sm:w-auto">
+                        <option value="text">Text (Notes/Tags)</option>
+                        <option value="number">Number (Quantity/Area)</option>
+                        <option value="textarea">Long Text (Details)</option>
+                        <option value="checkbox">Checkbox (Yes/No Feature)</option>
+                        <option value="date">Date Picker</option>
+                        <option value="time">Time Input</option>
+                        <option value="dropdown">Dropdown (Predefined Value)</option>
+                    </select>
+                    
+                    <button type="button" onclick="addCustomField()" class="px-4 py-2 bg-emerald-500 text-white font-medium rounded-lg shadow-md hover:bg-emerald-600 transition duration-150 ease-in-out">
+                        Add Feature Field
+                    </button>
+                </div>
+
+                <!-- List of existing custom fields for removal -->
+                <div id="fieldManagementList" class="flex flex-wrap gap-2">
+                    <span class="flex items-center space-x-1 px-3 py-1 bg-gray-200 text-gray-700 text-sm font-medium rounded-full shadow-sm">Year Built (number)</span>
+                    <span class="flex items-center space-x-1 px-3 py-1 bg-gray-200 text-gray-700 text-sm font-medium rounded-full shadow-sm">Has Pool (checkbox)</span>
+                    <span class="flex items-center space-x-1 px-3 py-1 bg-gray-200 text-gray-700 text-sm font-medium rounded-full shadow-sm">HOA Notes (text)</span>
+                </div>
+            </div>
+        </section>
+
+        <!-- Listing Table -->
+        <section class="bg-white p-6 rounded-xl shadow-lg">
+            <h2 class="text-xl font-semibold text-gray-700 mb-4">Current Property Listings</h2>
+            <div class="overflow-x-auto">
+                <table class="min-w-full divide-y divide-gray-200">
+                    <thead class="bg-sky-50" id="listingsTableHead">
+                        <tr>
+                            <th scope="col" class="px-3 py-3 text-left text-xs font-medium text-sky-700 uppercase tracking-wider">Address</th>
+                            <th scope="col" class="px-3 py-3 text-left text-xs font-medium text-sky-700 uppercase tracking-wider">Price</th>
+                            <th scope="col" class="px-3 py-3 text-left text-xs font-medium text-sky-700 uppercase tracking-wider">Beds/Baths</th>
+                            <th scope="col" class="px-3 py-3 text-left text-xs font-medium text-sky-700 uppercase tracking-wider">Year Built</th>
+                            <th scope="col" class="px-3 py-3 text-left text-xs font-medium text-sky-700 uppercase tracking-wider">Has Pool</th>
+                            <th scope="col" class="px-3 py-3 text-left text-xs font-medium text-sky-700 uppercase tracking-wider">HOA Notes</th>
+                            <th scope="col" class="px-3 py-3 text-left text-xs font-medium text-sky-700 uppercase tracking-wider">Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody class="bg-white divide-y divide-gray-200" id="listingsTableBody">
+                        <!-- Mock Listing Rows -->
+                        <tr>
+                            <td class="px-3 py-4 text-sm font-medium text-gray-900">789 Lakeview Dr, Dallas</td>
+                            <td class="px-3 py-4 whitespace-nowrap text-sm font-semibold secondary-color">₹ 75,00,000</td>
+                            <td class="px-3 py-4 whitespace-nowrap text-sm text-gray-500">4 / 3.0</td>
+                            <td class="px-3 py-4 whitespace-nowrap text-sm text-gray-500">2010</td>
+                            <td class="px-3 py-4 whitespace-nowrap text-sm text-gray-500"><span class="text-green-500">Yes ✅</span></td>
+                            <td class="px-3 py-4 max-w-xs overflow-hidden text-sm text-gray-500">Annual fee required.</td>
+                            <td class="px-3 py-4 whitespace-nowrap text-right text-sm font-medium space-x-2">
+                                <button onclick="editListing('L1')" class="text-indigo-600 hover:text-indigo-900 transition duration-150">Edit</button>
+                                <button onclick="handleDeleteListing('L1')" class="text-red-600 hover:text-red-900 transition duration-150">Delete</button>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td class="px-3 py-4 text-sm font-medium text-gray-900">101 Commerce Rd, Mumbai</td>
+                            <td class="px-3 py-4 whitespace-nowrap text-sm font-semibold secondary-color">₹ 1,50,00,000</td>
+                            <td class="px-3 py-4 whitespace-nowrap text-sm text-gray-500">N/A</td>
+                            <td class="px-3 py-4 whitespace-nowrap text-sm text-gray-500">1985</td>
+                            <td class="px-3 py-4 whitespace-nowrap text-sm text-gray-500"><span class="text-red-500">No ❌</span></td>
+                            <td class="px-3 py-4 max-w-xs overflow-hidden text-sm text-gray-500">-</td>
+                            <td class="px-3 py-4 whitespace-nowrap text-right text-sm font-medium space-x-2">
+                                <button onclick="editListing('L2')" class="text-indigo-600 hover:text-indigo-900 transition duration-150">Edit</button>
+                                <button onclick="handleDeleteListing('L2')" class="text-red-600 hover:text-red-900 transition duration-150">Delete</button>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+            <p id="noListingsMessage" class="text-center text-gray-500 p-4 hidden">No listings logged yet. Start by adding one above!</p>
+        </section>
+    </div>
+
+    <!-- Custom Modal (Mock for Confirmation/Alert) -->
+    <div id="customModal" class="custom-modal-overlay hidden">
+        <div class="custom-modal-content">
+            <h3 id="modalTitle" class="text-xl font-semibold text-gray-800 mb-4"></h3>
+            <p id="modalMessage" class="text-gray-600 mb-6"></p>
+            <div id="modalActions" class="flex justify-end space-x-3">
+                <!-- Buttons will be dynamically added here -->
+            </div>
+        </div>
+    </div>
+
+    <!-- JavaScript MOCK Logic (Simplified to demonstrate design) -->
+    <script>
+        // MOCK functions to demonstrate UX flow
+        function addCustomField() {
+            const fieldName = document.getElementById('newFieldName').value;
+            const fieldType = document.getElementById('newFieldType').value;
+            if (fieldName) {
+                showModal({ title: 'Dynamic Field Added Mockup', message: `Field "${fieldName}" (${fieldType}) added permanently to the list.` });
+            } else {
+                 showModal({ title: 'Input Error', message: 'Field name cannot be empty.' });
+            }
+        }
+        function editListing(id) { 
+            showModal({ title: 'Edit Listing Mockup', message: `Editing Listing ID: ${id}. Data would load into the form above.` });
+        }
+        function handleDeleteListing(id) { 
+            showModal({ title: 'Confirm Deletion Mockup', message: `Deleting Listing ID: ${id}. This action is permanent.` });
+        }
+        function exportData() {
+            showModal({ title: 'Export Mockup', message: 'All listing data and custom fields would be exported here as a JSON file.' });
+        }
+        function importData() {
+            showModal({ title: 'Import Mockup', message: 'A JSON file would be processed here to load new listings.' });
+        }
+        
+        function showModal({ title, message, type = 'alert', onConfirm, onCancel }) {
+            const modal = document.getElementById('customModal');
+            document.getElementById('modalTitle').textContent = title;
+            document.getElementById('modalMessage').textContent = message;
+            
+            const actions = document.getElementById('modalActions');
+            actions.innerHTML = `<button onclick="document.getElementById('customModal').classList.add('hidden')" class="px-4 py-2 primary-action text-white font-medium rounded-lg shadow-md hover:bg-sky-700">OK</button>`;
+            
+            modal.classList.remove('hidden');
+        }
+
+        function resetForm() {
+            document.getElementById('propertyForm').reset();
+            showModal({ title: 'Form Cleared', message: 'All input fields have been reset.' });
+        }
+        
+        // INITIALIZATION
+        window.onload = function() {
+            document.getElementById('propertyForm').addEventListener('submit', function(e) {
+                e.preventDefault();
+                showModal({ title: 'Save Listing Mockup', message: 'In a real app, this data (including dynamic fields) would be saved to Local Storage.' });
+            });
+            document.getElementById('resetFormButton').addEventListener('click', resetForm);
+        }
+    </script>
+</body>
+</html>

@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<title>TradeMirror — CSV Trade Analyzer</title>
+<script src="https://cdn.tailwindcss.com"></script>
+<script src="https://cdn.jsdelivr.net/npm/papaparse@5.4.1/papaparse.min.js"></script>
+</head>
+
+<body class="bg-slate-900 text-slate-100 min-h-screen p-6">
+
+<h1 class="text-2xl font-bold mb-4">TradeMirror — Trading Behavior Analyzer</h1>
+
+<div class="mb-6">
+  <input type="file" id="csvFile" accept=".csv"
+    class="block w-full text-sm text-slate-300
+           file:mr-4 file:py-2 file:px-4
+           file:rounded file:border-0
+           file:bg-blue-600 file:text-white"/>
+</div>
+
+<!-- Metrics -->
+<div id="metrics" class="grid grid-cols-2 md:grid-cols-4 gap-4 mb-6"></div>
+
+<!-- Warnings -->
+<div id="warnings" class="mb-6"></div>
+
+<!-- Table -->
+<div class="overflow-auto max-h-[60vh] border border-slate-700 rounded">
+<table class="min-w-full text-sm">
+<thead class="bg-slate-800 sticky top-0">
+<tr>
+<th class="px-3 py-2 text-left">Date</th>
+<th class="px-3 py-2 text-left">Instrument</th>
+<th class="px-3 py-2 text-left">Type</th>
+<th class="px-3 py-2 text-right">Qty</th>
+<th class="px-3 py-2 text-right">Price</th>
+</tr>
+</thead>
+<tbody id="tradeTable"></tbody>
+</table>
+</div>
+
+<script>
+document.getElementById('csvFile').addEventListener('change', function(e) {
+  Papa.parse(e.target.files[0], {
+    header: true,
+    skipEmptyLines: true,
+    complete: function(results) {
+      analyze(results.data);
+    }
+  });
+});
+
+function analyze(data) {
+  let totalTrades = data.length;
+  let callCount = 0, putCount = 0;
+  let quantities = [];
+  let tradesPerDay = {};
+
+  data.forEach(row => {
+    let name = row["Scrip Name"] || "";
+    if (name.includes("CALL")) callCount++;
+    if (name.includes("PUT")) putCount++;
+
+    let qty = Number(row["Quantity"]);
+    quantities.push(qty);
+
+    let date = row["Date"];
+    tradesPerDay[date] = (tradesPerDay[date] || 0) + 1;
+  });
+
+  renderMetrics({
+    totalTrades,
+    callCount,
+    putCount,
+    avgQty: Math.round(quantities.reduce((a,b)=>a+b,0)/quantities.length),
+    maxQty: Math.max(...quantities)
+  });
+
+  renderWarnings(tradesPerDay);
+  renderTable(data);
+}
+
+function renderMetrics(m) {
+  document.getElementById('metrics').innerHTML = `
+    <div class="bg-slate-800 p-4 rounded">Total Trades<br><b>${m.totalTrades}</b></div>
+    <div class="bg-slate-800 p-4 rounded">CALL %<br><b>${Math.round(m.callCount/m.totalTrades*100)}%</b></div>
+    <div class="bg-slate-800 p-4 rounded">PUT %<br><b>${Math.round(m.putCount/m.totalTrades*100)}%</b></div>
+    <div class="bg-slate-800 p-4 rounded">Avg Qty<br><b>${m.avgQty}</b></div>
+    <div class="bg-slate-800 p-4 rounded">Max Qty Used<br><b>${m.maxQty}</b></div>
+  `;
+}
+
+function renderWarnings(tradesPerDay) {
+  let warnings = Object.entries(tradesPerDay)
+    .filter(([_,count]) => count > 20)
+    .map(([date,count]) => `⚠ ${date}: ${count} trades`);
+
+  document.getElementById('warnings').innerHTML = warnings.length
+    ? `<div class="bg-red-900/40 p-4 rounded">
+         <b>Overtrading Alerts</b><br>${warnings.join("<br>")}
+       </div>`
+    : "";
+}
+
+function renderTable(data) {
+  document.getElementById('tradeTable').innerHTML = data.map(row => `
+    <tr class="border-b border-slate-700">
+      <td class="px-3 py-1">${row["Date"]}</td>
+      <td class="px-3 py-1">${row["Scrip Name"]}</td>
+      <td class="px-3 py-1">${row["Order Type"]}</td>
+      <td class="px-3 py-1 text-right">${row["Quantity"]}</td>
+      <td class="px-3 py-1 text-right">${row["Trade Price"]}</td>
+    </tr>
+  `).join("");
+}
+</script>
+
+</body>
+</html>

@@ -1,0 +1,559 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Trade Predictor</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        
+        body {
+            background-color: #0f172a;
+            color: #e2e8f0;
+            padding: 20px;
+            line-height: 1.6;
+        }
+        
+        .container {
+            max-width: 1000px;
+            margin: 0 auto;
+        }
+        
+        header {
+            text-align: center;
+            margin-bottom: 30px;
+            padding: 20px;
+            background: linear-gradient(135deg, #1e3a8a 0%, #0f172a 100%);
+            border-radius: 10px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+        
+        h1 {
+            font-size: 2.5rem;
+            margin-bottom: 10px;
+            background: linear-gradient(90deg, #60a5fa, #34d399);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+        
+        .subtitle {
+            font-size: 1.1rem;
+            color: #94a3b8;
+        }
+        
+        .content {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 30px;
+        }
+        
+        @media (max-width: 768px) {
+            .content {
+                grid-template-columns: 1fr;
+            }
+        }
+        
+        .input-section, .result-section {
+            background-color: #1e293b;
+            padding: 25px;
+            border-radius: 10px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+        
+        h2 {
+            font-size: 1.5rem;
+            margin-bottom: 20px;
+            color: #60a5fa;
+            border-bottom: 2px solid #334155;
+            padding-bottom: 10px;
+        }
+        
+        .input-group {
+            margin-bottom: 20px;
+        }
+        
+        label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 600;
+            color: #cbd5e1;
+        }
+        
+        .yes-no-buttons {
+            display: flex;
+            gap: 10px;
+        }
+        
+        .yes-no-btn {
+            flex: 1;
+            padding: 12px;
+            background-color: #334155;
+            border: 2px solid #475569;
+            border-radius: 5px;
+            color: #e2e8f0;
+            font-size: 1rem;
+            cursor: pointer;
+            text-align: center;
+            transition: all 0.3s ease;
+        }
+        
+        .yes-no-btn:hover {
+            background-color: #475569;
+        }
+        
+        .yes-no-btn.active {
+            border-color: #60a5fa;
+            background-color: #1e40af;
+        }
+        
+        .yes-btn.active {
+            background-color: #10b981;
+            border-color: #10b981;
+        }
+        
+        .no-btn.active {
+            background-color: #ef4444;
+            border-color: #ef4444;
+        }
+        
+        button {
+            width: 100%;
+            padding: 14px;
+            background: linear-gradient(135deg, #3b82f6 0%, #1d4ed8 100%);
+            color: white;
+            border: none;
+            border-radius: 5px;
+            font-size: 1.1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            margin-top: 10px;
+        }
+        
+        button:hover {
+            background: linear-gradient(135deg, #1d4ed8 0%, #1e40af 100%);
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+        }
+        
+        .result-box {
+            text-align: center;
+            padding: 30px;
+            border-radius: 10px;
+            margin-top: 20px;
+            background-color: #334155;
+            min-height: 200px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+        }
+        
+        .prediction {
+            font-size: 2rem;
+            font-weight: 700;
+            margin: 20px 0;
+        }
+        
+        .buy {
+            color: #10b981;
+        }
+        
+        .sell {
+            color: #ef4444;
+        }
+        
+        .neutral {
+            color: #f59e0b;
+        }
+        
+        .confidence {
+            font-size: 1.2rem;
+            margin-top: 10px;
+            color: #94a3b8;
+        }
+        
+        .indicators {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+            margin-top: 20px;
+        }
+        
+        .indicator {
+            background-color: #334155;
+            padding: 15px;
+            border-radius: 8px;
+            text-align: center;
+        }
+        
+        .indicator-value {
+            font-size: 1.5rem;
+            font-weight: 700;
+            margin-top: 5px;
+        }
+        
+        .positive {
+            color: #10b981;
+        }
+        
+        .negative {
+            color: #ef4444;
+        }
+        
+        .explanation {
+            margin-top: 30px;
+            background-color: #1e293b;
+            padding: 20px;
+            border-radius: 10px;
+        }
+        
+        .explanation h3 {
+            color: #60a5fa;
+            margin-bottom: 15px;
+        }
+        
+        .explanation p {
+            margin-bottom: 15px;
+        }
+        
+        footer {
+            text-align: center;
+            margin-top: 40px;
+            padding: 20px;
+            color: #64748b;
+            font-size: 0.9rem;
+        }
+        
+        .recommendation {
+            margin-top: 20px;
+            padding: 15px;
+            border-radius: 8px;
+            background-color: #1e293b;
+        }
+        
+        .recommendation h3 {
+            color: #60a5fa;
+            margin-bottom: 10px;
+        }
+        
+        .call-put {
+            display: flex;
+            justify-content: space-around;
+            margin-top: 15px;
+        }
+        
+        .call, .put {
+            padding: 10px 20px;
+            border-radius: 5px;
+            font-weight: bold;
+            text-align: center;
+            flex: 1;
+            margin: 0 5px;
+        }
+        
+        .call {
+            background-color: rgba(16, 185, 129, 0.2);
+            border: 2px solid #10b981;
+            color: #10b981;
+        }
+        
+        .put {
+            background-color: rgba(239, 68, 68, 0.2);
+            border: 2px solid #ef4444;
+            color: #ef4444;
+        }
+        
+        .highlight {
+            background-color: rgba(96, 165, 250, 0.3);
+            padding: 5px 10px;
+            border-radius: 5px;
+            font-weight: bold;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>Trade Predictor</h1>
+            <p class="subtitle">Answer yes/no questions to get trading recommendations</p>
+        </header>
+        
+        <div class="content">
+            <div class="input-section">
+                <h2>Market Indicators</h2>
+                
+                <div class="input-group">
+                    <label>Is the current price above the 21 EMA?</label>
+                    <div class="yes-no-buttons">
+                        <div class="yes-no-btn yes-btn" data-id="ema">Yes</div>
+                        <div class="yes-no-btn no-btn" data-id="ema">No</div>
+                    </div>
+                </div>
+                
+                <div class="input-group">
+                    <label>Is the current price above the PDH (Previous Day High)?</label>
+                    <div class="yes-no-buttons">
+                        <div class="yes-no-btn yes-btn" data-id="pdh">Yes</div>
+                        <div class="yes-no-btn no-btn" data-id="pdh">No</div>
+                    </div>
+                </div>
+                
+                <div class="input-group">
+                    <label>Is the current price above the PDL (Previous Day Low)?</label>
+                    <div class="yes-no-buttons">
+                        <div class="yes-no-btn yes-btn" data-id="pdl">Yes</div>
+                        <div class="yes-no-btn no-btn" data-id="pdl">No</div>
+                    </div>
+                </div>
+                
+                <div class="input-group">
+                    <label>Is the current price above the CPR (Central Pivot Range)?</label>
+                    <div class="yes-no-buttons">
+                        <div class="yes-no-btn yes-btn" data-id="cpr">Yes</div>
+                        <div class="yes-no-btn no-btn" data-id="cpr">No</div>
+                    </div>
+                </div>
+                
+                <div class="input-group">
+                    <label>Has the price broken the trendline from above?</label>
+                    <div class="yes-no-buttons">
+                        <div class="yes-no-btn yes-btn" data-id="trendline">Yes</div>
+                        <div class="yes-no-btn no-btn" data-id="trendline">No</div>
+                    </div>
+                </div>
+                
+                <button id="predict-btn">Predict Trade</button>
+            </div>
+            
+            <div class="result-section">
+                <h2>Prediction Result</h2>
+                
+                <div class="result-box">
+                    <p>Answer the questions and click "Predict Trade"</p>
+                    <div class="prediction" id="prediction-text">-</div>
+                    <div class="confidence" id="confidence-text">Confidence: -</div>
+                    
+                    <div class="indicators">
+                        <div class="indicator">
+                            <div>Price vs 21 EMA</div>
+                            <div class="indicator-value" id="ema-indicator">-</div>
+                        </div>
+                        <div class="indicator">
+                            <div>Price vs PDH</div>
+                            <div class="indicator-value" id="pdh-indicator">-</div>
+                        </div>
+                        <div class="indicator">
+                            <div>Price vs CPR</div>
+                            <div class="indicator-value" id="cpr-indicator">-</div>
+                        </div>
+                        <div class="indicator">
+                            <div>Trendline Break</div>
+                            <div class="indicator-value" id="trendline-indicator">-</div>
+                        </div>
+                    </div>
+                    
+                    <div class="recommendation">
+                        <h3>Trading Recommendation</h3>
+                        <p id="recommendation-text">Based on your inputs, the recommendation will appear here.</p>
+                        <div class="call-put">
+                            <div class="call" id="call-text">CALL: -</div>
+                            <div class="put" id="put-text">PUT: -</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="explanation">
+            <h3>How the Trade Predictor Works</h3>
+            <p>This predictor analyzes your yes/no answers to generate trading suggestions:</p>
+            <p><strong>21 EMA:</strong> If the current price is above the 21-period Exponential Moving Average, it suggests a bullish trend.</p>
+            <p><strong>PDH:</strong> If the price is above the Previous Day High, it indicates strength and potential for upward movement.</p>
+            <p><strong>PDL:</strong> If the price is above the Previous Day Low but below the PDH, it suggests neutral sentiment.</p>
+            <p><strong>CPR:</strong> The Central Pivot Range is a key indicator for intraday trading. Price above CPR suggests bullish sentiment.</p>
+            <p><strong>Trendline Break:</strong> Breaking above a trendline indicates potential upward momentum.</p>
+            <p>The predictor combines these factors to generate a <span class="highlight">BUY (CALL)</span> or <span class="highlight">SELL (PUT)</span> recommendation.</p>
+        </div>
+        
+        <footer>
+            <p>Disclaimer: This tool is for educational purposes only. Trading involves risk, and past performance is not indicative of future results.</p>
+            <p>© 2023 Trade Predictor App</p>
+        </footer>
+    </div>
+
+    <script>
+        // Initialize yes/no buttons
+        document.querySelectorAll('.yes-no-btn').forEach(button => {
+            button.addEventListener('click', function() {
+                const groupId = this.getAttribute('data-id');
+                const buttons = document.querySelectorAll(`.yes-no-btn[data-id="${groupId}"]`);
+                
+                // Remove active class from all buttons in the group
+                buttons.forEach(btn => btn.classList.remove('active'));
+                
+                // Add active class to clicked button
+                this.classList.add('active');
+            });
+        });
+        
+        document.getElementById('predict-btn').addEventListener('click', function() {
+            // Get values from yes/no buttons
+            const emaValue = getButtonValue('ema');
+            const pdhValue = getButtonValue('pdh');
+            const pdlValue = getButtonValue('pdl');
+            const cprValue = getButtonValue('cpr');
+            const trendlineValue = getButtonValue('trendline');
+            
+            // Check if all questions are answered
+            if (emaValue === null || pdhValue === null || pdlValue === null || 
+                cprValue === null || trendlineValue === null) {
+                alert('Please answer all questions before predicting');
+                return;
+            }
+            
+            // Calculate score (0-100)
+            let score = 0;
+            let buySignals = 0;
+            let totalSignals = 5; // Total number of indicators
+            
+            // EMA factor
+            if (emaValue) {
+                score += 20;
+                buySignals++;
+            }
+            
+            // PDH factor
+            if (pdhValue) {
+                score += 20;
+                buySignals++;
+            }
+            
+            // PDL factor (only considered if PDH is no)
+            if (pdlValue && !pdhValue) {
+                score += 10;
+                buySignals += 0.5;
+            } else if (!pdlValue && !pdhValue) {
+                // Price below PDL is bearish
+                buySignals -= 0.5;
+            }
+            
+            // CPR factor
+            if (cprValue) {
+                score += 20;
+                buySignals++;
+            }
+            
+            // Trendline factor
+            if (trendlineValue) {
+                score += 20;
+                buySignals++;
+            }
+            
+            // Adjust score based on PDL if needed
+            if (pdlValue && !pdhValue) {
+                score += 10;
+            }
+            
+            // Ensure score is within bounds
+            score = Math.max(0, Math.min(100, score));
+            
+            // Determine prediction
+            let prediction, predictionClass, confidence;
+            let callStrength = "NEUTRAL";
+            let putStrength = "NEUTRAL";
+            
+            if (score >= 80) {
+                prediction = "STRONG BUY SIGNAL";
+                predictionClass = "buy";
+                confidence = "Very High";
+                callStrength = "STRONG";
+                putStrength = "AVOID";
+            } else if (score >= 60) {
+                prediction = "BUY SIGNAL";
+                predictionClass = "buy";
+                confidence = "High";
+                callStrength = "MODERATE";
+                putStrength = "WEAK";
+            } else if (score >= 40) {
+                prediction = "NEUTRAL / HOLD";
+                predictionClass = "neutral";
+                confidence = "Medium";
+                callStrength = "MILD";
+                putStrength = "MILD";
+            } else if (score >= 20) {
+                prediction = "SELL SIGNAL";
+                predictionClass = "sell";
+                confidence = "High";
+                callStrength = "WEAK";
+                putStrength = "MODERATE";
+            } else {
+                prediction = "STRONG SELL SIGNAL";
+                predictionClass = "sell";
+                confidence = "Very High";
+                callStrength = "AVOID";
+                putStrength = "STRONG";
+            }
+            
+            // Update prediction display
+            const predictionElement = document.getElementById('prediction-text');
+            predictionElement.textContent = prediction;
+            predictionElement.className = `prediction ${predictionClass}`;
+            
+            // Update confidence
+            document.getElementById('confidence-text').textContent = `Confidence: ${confidence} (${Math.round(score)}/100)`;
+            
+            // Update indicator values
+            document.getElementById('ema-indicator').textContent = emaValue ? "YES" : "NO";
+            document.getElementById('ema-indicator').className = `indicator-value ${emaValue ? 'positive' : 'negative'}`;
+            
+            document.getElementById('pdh-indicator').textContent = pdhValue ? "YES" : "NO";
+            document.getElementById('pdh-indicator').className = `indicator-value ${pdhValue ? 'positive' : 'negative'}`;
+            
+            document.getElementById('cpr-indicator').textContent = cprValue ? "YES" : "NO";
+            document.getElementById('cpr-indicator').className = `indicator-value ${cprValue ? 'positive' : 'negative'}`;
+            
+            document.getElementById('trendline-indicator').textContent = trendlineValue ? "YES" : "NO";
+            document.getElementById('trendline-indicator').className = `indicator-value ${trendlineValue ? 'positive' : 'negative'}`;
+            
+            // Update recommendation text
+            let recommendationText = "";
+            if (score >= 60) {
+                recommendationText = `Based on your inputs, ${buySignals} out of ${totalSignals} indicators suggest a BUY signal. Consider a CALL option with ${confidence.toLowerCase()} confidence.`;
+            } else if (score <= 40) {
+                recommendationText = `Based on your inputs, only ${buySignals} out of ${totalSignals} indicators suggest a BUY signal. Consider a PUT option with ${confidence.toLowerCase()} confidence.`;
+            } else {
+                recommendationText = `The signals are mixed with ${buySignals} out of ${totalSignals} indicators suggesting BUY. It's recommended to wait for clearer signals or use smaller position sizes.`;
+            }
+            
+            document.getElementById('recommendation-text').textContent = recommendationText;
+            
+            // Update call/put indicators
+            document.getElementById('call-text').textContent = `CALL: ${callStrength}`;
+            document.getElementById('put-text').textContent = `PUT: ${putStrength}`;
+        });
+        
+        function getButtonValue(indicatorId) {
+            const activeButton = document.querySelector(`.yes-no-btn[data-id="${indicatorId}"].active`);
+            if (!activeButton) return null;
+            
+            return activeButton.classList.contains('yes-btn');
+        }
+        
+        // Set default values for demonstration
+        window.onload = function() {
+            // Set some default "yes" values for demonstration
+            document.querySelector(`.yes-no-btn[data-id="ema"].yes-btn`).classList.add('active');
+            document.querySelector(`.yes-no-btn[data-id="pdh"].yes-btn`).classList.add('active');
+            document.querySelector(`.yes-no-btn[data-id="pdl"].yes-btn`).classList.add('active');
+            document.querySelector(`.yes-no-btn[data-id="cpr"].yes-btn`).classList.add('active');
+            document.querySelector(`.yes-no-btn[data-id="trendline"].no-btn`).classList.add('active');
+        };
+    </script>
+</body>
+</html>

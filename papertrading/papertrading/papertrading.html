@@ -1,0 +1,613 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <title>Paper Trading Journal</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@100..900&display=swap');
+        body { font-family: 'Inter', sans-serif; background-color: #f7f9fb; }
+        ::-webkit-scrollbar { width: 8px; }
+        ::-webkit-scrollbar-track { background: #e2e8f0; }
+        ::-webkit-scrollbar-thumb { background: #94a3b8; border-radius: 4px; }
+        .app-container { min-height: 100vh; }
+        .custom-modal-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); display:flex; justify-content:center; align-items:center; z-index:1000; }
+        .custom-modal-content { background: white; padding: 2rem; border-radius: 12px; box-shadow: 0 10px 25px rgba(0,0,0,0.2); max-width: 90%; min-width: 350px; }
+    </style>
+</head>
+<body class="selection:bg-indigo-200 selection:text-indigo-900">
+<div class="app-container p-4 sm:p-8">
+    <header class="mb-8 p-4 bg-white shadow-lg rounded-xl">
+        <h1 class="text-3xl font-bold text-gray-800">Paper Trading Journal</h1>
+        <p class="text-gray-500 mt-1">Track, analyze, and learn from your simulated trades.</p>
+    </header>
+
+    <section class="bg-white p-6 rounded-xl shadow-lg mb-8">
+        <h2 class="text-xl font-semibold text-gray-700 mb-4">Add / Edit Trade</h2>
+
+        <form id="tradeForm" class="grid grid-cols-1 md:grid-cols-3 gap-4">
+            <input type="hidden" id="tradeId">
+
+            <div>
+                <label for="instrumentType" class="block text-sm font-medium text-gray-700">Instrument Type</label>
+                <select id="instrumentType" class="mt-1 p-2 w-full border border-gray-300 rounded-lg shadow-sm focus:ring-indigo-500 focus:border-indigo-500">
+                    <option value="Nifty">Nifty</option>
+                    <option value="Stock">Stock</option>
+                    <option value="Option">Option</option>
+                    <option value="Other">Other</option>
+                </select>
+            </div>
+
+            <div>
+                <label for="instrument" class="block text-sm font-medium text-gray-700">Instrument (name)</label>
+                <input type="text" id="instrument" placeholder="e.g., Nifty 23000 CE, Reliance" required class="mt-1 p-2 w-full border border-gray-300 rounded-lg shadow-sm focus:ring-indigo-500 focus:border-indigo-500">
+            </div>
+
+            <div>
+                <label for="lots" class="block text-sm font-medium text-gray-700">Lots</label>
+                <input type="number" id="lots" value="1" min="1" step="1" required class="mt-1 p-2 w-full border border-gray-300 rounded-lg shadow-sm focus:ring-indigo-500 focus:border-indigo-500">
+                <p class="text-xs text-gray-400 mt-1">For Nifty, 1 lot = 75 units (multiplied automatically).</p>
+            </div>
+
+            <div>
+                <label for="entryPrice" class="block text-sm font-medium text-gray-700">Entry Price (₹)</label>
+                <input type="number" id="entryPrice" required step="0.01" class="mt-1 p-2 w-full border border-gray-300 rounded-lg shadow-sm focus:ring-indigo-500 focus:border-indigo-500">
+            </div>
+
+            <div>
+                <label for="exitPrice" class="block text-sm font-medium text-gray-700">Exit Price (₹)</label>
+                <input type="number" id="exitPrice" required step="0.01" class="mt-1 p-2 w-full border border-gray-300 rounded-lg shadow-sm focus:ring-indigo-500 focus:border-indigo-500">
+            </div>
+
+            <div>
+                <label for="lotMultiplierPreview" class="block text-sm font-medium text-gray-700">Lot Multiplier</label>
+                <input type="text" id="lotMultiplierPreview" readonly class="mt-1 p-2 w-full border border-gray-200 rounded-lg bg-gray-50 text-gray-600">
+            </div>
+
+            <div class="md:col-span-3">
+                <label for="strategy" class="block text-sm font-medium text-gray-700">Strategy Used</label>
+                <textarea id="strategy" rows="2" class="mt-1 p-2 w-full border border-gray-300 rounded-lg shadow-sm focus:ring-indigo-500 focus:border-indigo-500"></textarea>
+            </div>
+
+            <div class="md:col-span-3">
+                <label for="emotion" class="block text-sm font-medium text-gray-700">Emotion During Trade</label>
+                <input type="text" id="emotion" class="mt-1 p-2 w-full border border-gray-300 rounded-lg shadow-sm focus:ring-indigo-500 focus:border-indigo-500">
+            </div>
+
+            <div id="customFieldsContainer" class="col-span-1 md:col-span-3 grid grid-cols-1 md:grid-cols-3 gap-4"></div>
+
+            <div class="md:col-span-3 pt-4 flex justify-end space-x-4">
+                <button type="submit" class="w-full md:w-auto px-6 py-2 bg-indigo-600 text-white font-medium rounded-lg shadow-md hover:bg-indigo-700 transition duration-150 ease-in-out">
+                    Save Trade
+                </button>
+                <button type="button" id="resetFormButton" class="w-full md:w-auto px-6 py-2 border border-gray-300 text-gray-700 bg-white font-medium rounded-lg shadow-sm hover:bg-gray-50 transition duration-150 ease-in-out">
+                    Clear Form
+                </button>
+            </div>
+        </form>
+
+        <div class="mt-8 border-t pt-4">
+            <h3 class="text-lg font-medium text-gray-700 mb-3">Custom Field Management</h3>
+            <div class="flex flex-col sm:flex-row space-y-3 sm:space-y-0 sm:space-x-4 mb-6">
+                <input type="text" id="newFieldName" placeholder="Enter new field name (e.g., Position Size)" class="p-2 flex-grow border border-gray-300 rounded-lg shadow-sm focus:ring-green-500 focus:border-green-500">
+                <select id="newFieldType" class="p-2 border border-gray-300 rounded-lg shadow-sm focus:ring-green-500 focus:border-green-500 w-full sm:w-auto">
+                    <option value="text">Text (Short Answer)</option>
+                    <option value="number">Number (Quantity, Size)</option>
+                    <option value="textarea">Long Text (Journal Entry)</option>
+                    <option value="checkbox">Checkbox (Yes/No)</option>
+                    <option value="date">Date Picker</option>
+                    <option value="time">Time Input</option>
+                    <option value="dropdown">Dropdown (Simple Tag)</option>
+                </select>
+                <button type="button" onclick="addCustomField()" class="px-4 py-2 bg-green-500 text-white font-medium rounded-lg shadow-md hover:bg-green-600 transition duration-150 ease-in-out">Add Field</button>
+            </div>
+            <div id="fieldManagementList" class="flex flex-wrap gap-2"></div>
+        </div>
+    </section>
+
+    <section class="bg-white p-6 rounded-xl shadow-lg mb-8">
+        <h2 class="text-xl font-semibold text-gray-700 mb-4">Data Management (JSON)</h2>
+        <div class="flex flex-col md:flex-row space-y-4 md:space-y-0 md:space-x-4">
+            <button onclick="exportData()" class="flex-1 px-6 py-2 bg-blue-600 text-white font-medium rounded-lg shadow-md hover:bg-blue-700 transition duration-150 ease-in-out">
+                Export All Trades to JSON
+            </button>
+            <input type="file" id="importFile" accept=".json" class="hidden" onchange="importData(event)">
+            <button onclick="document.getElementById('importFile').click()" class="flex-1 px-6 py-2 border border-blue-600 text-blue-600 bg-white font-medium rounded-lg shadow-sm hover:bg-blue-50 transition duration-150 ease-in-out">
+                Import Trades from JSON
+            </button>
+        </div>
+    </section>
+
+    <section class="bg-white p-6 rounded-xl shadow-lg">
+        <h2 class="text-xl font-semibold text-gray-700 mb-4">Trade History</h2>
+        <div class="overflow-x-auto">
+            <table class="min-w-full divide-y divide-gray-200">
+                <thead class="bg-gray-50" id="tradesTableHead"></thead>
+                <tbody class="bg-white divide-y divide-gray-200" id="tradesTableBody"></tbody>
+            </table>
+        </div>
+        <p id="noTradesMessage" class="text-center text-gray-500 p-4 hidden">No trades logged yet. Start by adding one above!</p>
+    </section>
+</div>
+
+<div id="customModal" class="custom-modal-overlay hidden">
+    <div class="custom-modal-content">
+        <h3 id="modalTitle" class="text-xl font-semibold text-gray-800 mb-4"></h3>
+        <p id="modalMessage" class="text-gray-600 mb-6"></p>
+        <div id="modalActions" class="flex justify-end space-x-3"></div>
+    </div>
+</div>
+
+<script>
+    // Global state
+    let trades = [];
+    let customFields = [];
+    const TRANSACTION_TAX = 43.0; // fixed tax/brokerage per trade
+
+    // Defaults for custom fields
+    const DEFAULT_CUSTOM_FIELDS = [{ name: 'Notes', type: 'textarea' }];
+
+    // Utils
+    function generateId() {
+        return Date.now().toString(36) + '-' + Math.random().toString(36).substr(2, 5);
+    }
+
+    function showModal({ title, message, type = 'alert', onConfirm, onCancel }) {
+        const modal = document.getElementById('customModal');
+        document.getElementById('modalTitle').textContent = title;
+        document.getElementById('modalMessage').textContent = message;
+        const actions = document.getElementById('modalActions');
+        actions.innerHTML = '';
+
+        const closeModal = () => modal.classList.add('hidden');
+
+        if (type === 'alert' || type === 'success') {
+            const button = document.createElement('button');
+            button.textContent = type === 'success' ? 'OK' : 'Close';
+            const className = type === 'success' ? 'bg-indigo-600 text-white' : 'border border-gray-300 text-gray-700 bg-white';
+            button.className = `px-4 py-2 font-medium rounded-lg shadow-sm transition duration-150 ease-in-out ${className}`;
+            button.addEventListener('click', closeModal);
+            actions.appendChild(button);
+        } else if (type === 'confirm') {
+            const cancelBtn = document.createElement('button');
+            cancelBtn.textContent = 'Cancel';
+            cancelBtn.className = 'px-4 py-2 border border-gray-300 text-gray-700 bg-white font-medium rounded-lg shadow-sm hover:bg-gray-50 transition duration-150 ease-in-out';
+            cancelBtn.addEventListener('click', () => { closeModal(); if (onCancel) onCancel(); });
+            actions.appendChild(cancelBtn);
+
+            const confirmBtn = document.createElement('button');
+            confirmBtn.textContent = 'Confirm';
+            confirmBtn.className = 'px-4 py-2 bg-red-600 text-white font-medium rounded-lg shadow-md hover:bg-red-700 transition duration-150 ease-in-out';
+            confirmBtn.addEventListener('click', () => { closeModal(); if (onConfirm) onConfirm(); });
+            actions.appendChild(confirmBtn);
+        }
+
+        modal.classList.remove('hidden');
+    }
+
+    // Storage
+    function loadFromLocalStorage() {
+        try {
+            const storedTrades = localStorage.getItem('paperTrades');
+            trades = storedTrades ? JSON.parse(storedTrades) : [];
+
+            const storedCustom = localStorage.getItem('customFields');
+            customFields = storedCustom ? JSON.parse(storedCustom) : DEFAULT_CUSTOM_FIELDS.slice();
+        } catch (err) {
+            console.error("Error loading from localStorage:", err);
+            trades = [];
+            customFields = DEFAULT_CUSTOM_FIELDS.slice();
+        }
+    }
+
+    function saveTrades() {
+        try { localStorage.setItem('paperTrades', JSON.stringify(trades)); } catch (e) { console.error(e); }
+    }
+
+    function saveCustomFields() {
+        try { localStorage.setItem('customFields', JSON.stringify(customFields)); } catch (e) { console.error(e); }
+    }
+
+    // Helpers for custom fields
+    function fieldNameToId(fieldName) {
+        return 'custom-' + fieldName.replace(/[^a-zA-Z0-9]/g, '-').toLowerCase();
+    }
+
+    function renderCustomFormFields() {
+        const container = document.getElementById('customFieldsContainer');
+        container.innerHTML = '';
+        customFields.forEach(field => {
+            const fieldId = fieldNameToId(field.name);
+            let div = document.createElement('div');
+            div.className = (field.type === 'textarea') ? 'col-span-1 md:col-span-3' : 'col-span-1';
+
+            if (field.type === 'checkbox') {
+                div.className = 'col-span-1 flex items-center pt-2';
+                div.innerHTML = `
+                    <input type="checkbox" id="${fieldId}" name="${fieldId}" class="h-4 w-4 text-indigo-600 border-gray-300 rounded focus:ring-indigo-500">
+                    <label for="${fieldId}" class="block text-sm font-medium text-gray-700 ml-2">${field.name}</label>
+                `;
+            } else if (field.type === 'textarea') {
+                div.innerHTML = `
+                    <label for="${fieldId}" class="block text-sm font-medium text-gray-700">${field.name}</label>
+                    <textarea id="${fieldId}" name="${fieldId}" rows="2" class="mt-1 p-2 w-full border border-gray-300 rounded-lg shadow-sm focus:ring-indigo-500 focus:border-indigo-500"></textarea>
+                `;
+            } else {
+                const inputType = (field.type === 'dropdown') ? 'text' : field.type;
+                const placeholder = field.type === 'dropdown' ? 'e.g., Breakout, Range' : '';
+                div.innerHTML = `
+                    <label for="${fieldId}" class="block text-sm font-medium text-gray-700">${field.name}</label>
+                    <input type="${inputType}" id="${fieldId}" name="${fieldId}" placeholder="${placeholder}" class="mt-1 p-2 w-full border border-gray-300 rounded-lg shadow-sm focus:ring-indigo-500 focus:border-indigo-500">
+                `;
+            }
+
+            container.appendChild(div);
+        });
+    }
+
+    function renderFieldManagement() {
+        const container = document.getElementById('fieldManagementList');
+        container.innerHTML = '';
+        customFields.forEach(field => {
+            const btn = document.createElement('button');
+            btn.type = 'button';
+            btn.className = 'flex items-center space-x-1 px-3 py-1 bg-gray-200 text-gray-700 text-sm font-medium rounded-full shadow-sm hover:bg-red-200 transition duration-150 ease-in-out group';
+            btn.innerHTML = `<span>${field.name} (${field.type})</span>
+                <svg onclick="removeCustomField('${field.name}')" class="w-4 h-4 text-gray-500 group-hover:text-red-600 cursor-pointer" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+                </svg>`;
+            container.appendChild(btn);
+        });
+    }
+
+    function addCustomField() {
+        const fieldNameInput = document.getElementById('newFieldName');
+        let newFieldName = fieldNameInput.value.trim();
+        const newFieldType = document.getElementById('newFieldType').value;
+
+        if (newFieldName === '') {
+            showModal({ title: 'Input Error', message: 'Field name cannot be empty.', type: 'alert' });
+            return;
+        }
+
+        const sanitizedName = newFieldName.charAt(0).toUpperCase() + newFieldName.slice(1).replace(/\s+/g, ' ');
+        if (customFields.some(f => f.name === sanitizedName)) {
+            showModal({ title: 'Input Error', message: `Field "${sanitizedName}" already exists.`, type: 'alert' });
+            return;
+        }
+
+        customFields.push({ name: sanitizedName, type: newFieldType });
+        saveCustomFields();
+        renderCustomFormFields();
+        renderFieldManagement();
+        renderTrades();
+        fieldNameInput.value = '';
+        showModal({ title: 'Success', message: `Custom field "${sanitizedName}" (${newFieldType}) added successfully!`, type: 'success' });
+    }
+
+    function removeCustomField(fieldName) {
+        showModal({
+            title: 'Confirm Removal',
+            message: `Are you sure you want to permanently remove the field: "${fieldName}"? This will delete all saved data for this field in all existing trades.`,
+            type: 'confirm',
+            onConfirm: () => {
+                customFields = customFields.filter(f => f.name !== fieldName);
+                saveCustomFields();
+                const fieldId = fieldNameToId(fieldName);
+                trades.forEach(t => { if (t.hasOwnProperty(fieldId)) delete t[fieldId]; });
+                saveTrades();
+                renderCustomFormFields();
+                renderFieldManagement();
+                renderTrades();
+                showModal({ title: 'Success', message: `Custom field "${fieldName}" and its data have been removed.`, type: 'success' });
+            }
+        });
+    }
+
+    // PnL calculation with lots and multiplier
+    function getLotMultiplierForType(type) {
+        // For Nifty, 1 lot = 75; adjust as required for other types
+        if (!type) return 1;
+        if (type.toLowerCase() === 'nifty') return 75;
+        // If Option should also be per-lot sized differently, adjust here
+        return 1;
+    }
+
+    function calculatePnL(entry, exit, lots, instrumentType) {
+        const entryVal = parseFloat(entry);
+        const exitVal = parseFloat(exit);
+        const lotCount = parseInt(lots, 10);
+        if (isNaN(entryVal) || isNaN(exitVal) || isNaN(lotCount) || lotCount < 1) return 0;
+
+        const lotMultiplier = getLotMultiplierForType(instrumentType);
+        const grossPnL = (exitVal - entryVal) * lotCount * lotMultiplier;
+        const netPnL = grossPnL - TRANSACTION_TAX;
+        // Return numeric (not string) for further formatting
+        return Number(netPnL.toFixed(2));
+    }
+
+    // Date formatting helper
+    function formatTradeDate(id) {
+        let timestamp;
+        if (id && id.includes('-')) {
+            timestamp = parseInt(id.split('-')[0], 36);
+        } else {
+            timestamp = parseInt((id || '').substring(0, 13)) || Date.now();
+        }
+        return new Date(timestamp).toLocaleDateString('en-IN', {
+            year: 'numeric', month: 'short', day: 'numeric', hour: '2-digit', minute: '2-digit'
+        });
+    }
+
+    // Render trades table
+    function renderTrades() {
+        const tableHead = document.getElementById('tradesTableHead');
+        const tableBody = document.getElementById('tradesTableBody');
+        const noTradesMessage = document.getElementById('noTradesMessage');
+
+        const standardHeaders = ['Date/Time', 'Instrument', 'Type', 'Lots', 'Entry Price', 'Exit Price', 'P&L (Net)', 'Strategy', 'Emotion'];
+        const customHeaders = customFields.map(f => f.name);
+        const allHeaders = standardHeaders.concat(customHeaders).concat(['Actions']);
+
+        tableHead.innerHTML = `<tr>${allHeaders.map(h => `<th scope="col" class="px-3 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">${h}</th>`).join('')}</tr>`;
+
+        if (trades.length === 0) {
+            tableBody.innerHTML = '';
+            noTradesMessage.classList.remove('hidden');
+            return;
+        } else {
+            noTradesMessage.classList.add('hidden');
+        }
+
+        tableBody.innerHTML = trades.map(trade => {
+            const pnl = parseFloat(trade.pnl) || 0;
+            const pnlClass = pnl >= 0 ? 'text-green-600 font-semibold' : 'text-red-600 font-semibold';
+            const tradeDateTime = formatTradeDate(trade.id);
+
+            const customCells = customFields.map(field => {
+                const fieldId = fieldNameToId(field.name);
+                let value = trade[fieldId] ?? '-';
+                if (field.type === 'checkbox') {
+                    value = (value === true || value === 'true') ? '<span class="text-green-500">Yes ✅</span>' : (value === false || value === 'false' ? '<span class="text-red-500">No ❌</span>' : '-');
+                } else if (value === '') {
+                    value = '-';
+                }
+                return `<td class="px-3 py-4 whitespace-nowrap text-sm text-gray-500">${value}</td>`;
+            }).join('');
+
+            const lotMultiplier = getLotMultiplierForType(trade.instrumentType);
+            const multiplierDisplay = lotMultiplier > 1 ? ` (x${lotMultiplier})` : '';
+
+            return `
+                <tr class="hover:bg-gray-50 transition duration-100 ease-in-out">
+                    <td class="px-3 py-4 whitespace-nowrap text-sm font-medium text-gray-900">${tradeDateTime}</td>
+                    <td class="px-3 py-4 whitespace-nowrap text-sm text-gray-500">${trade.instrument}</td>
+                    <td class="px-3 py-4 whitespace-nowrap text-sm text-gray-500">${trade.instrumentType}</td>
+                    <td class="px-3 py-4 whitespace-nowrap text-sm text-gray-500">${trade.lots}${multiplierDisplay}</td>
+                    <td class="px-3 py-4 whitespace-nowrap text-sm text-gray-500">₹${trade.entryPrice}</td>
+                    <td class="px-3 py-4 whitespace-nowrap text-sm text-gray-500">₹${trade.exitPrice}</td>
+                    <td class="px-3 py-4 whitespace-nowrap text-sm ${pnlClass}">₹${pnl.toLocaleString('en-IN')}</td>
+                    <td class="px-3 py-4 max-w-xs overflow-hidden text-sm text-gray-500">${(trade.strategy || '').substring(0,30)}${(trade.strategy||'').length > 30 ? '...' : ''}</td>
+                    <td class="px-3 py-4 whitespace-nowrap text-sm text-gray-500">${trade.emotion || ''}</td>
+                    ${customCells}
+                    <td class="px-3 py-4 whitespace-nowrap text-right text-sm font-medium space-x-2">
+                        <button onclick="editTrade('${trade.id}')" class="text-indigo-600 hover:text-indigo-900 transition duration-150">Edit</button>
+                        <button onclick="handleDeleteTrade('${trade.id}')" class="text-red-600 hover:text-red-900 transition duration-150">Delete</button>
+                    </td>
+                </tr>
+            `;
+        }).join('');
+    }
+
+    // Form submission - create/update trade
+    function handleSubmit(event) {
+        event.preventDefault();
+
+        const tradeId = document.getElementById('tradeId').value;
+        const instrumentType = document.getElementById('instrumentType').value;
+        const instrument = document.getElementById('instrument').value.trim();
+        const entryPrice = parseFloat(document.getElementById('entryPrice').value);
+        const exitPrice = parseFloat(document.getElementById('exitPrice').value);
+        const lots = parseInt(document.getElementById('lots').value, 10);
+        const strategy = document.getElementById('strategy').value.trim();
+        const emotion = document.getElementById('emotion').value.trim();
+
+        // Validations
+        if (isNaN(entryPrice) || isNaN(exitPrice)) {
+            showModal({ title: 'Validation Error', message: 'Entry and Exit prices must be valid numbers.', type: 'alert' });
+            return;
+        }
+        if (!instrument || !strategy) {
+            showModal({ title: 'Validation Error', message: 'Instrument and Strategy fields are required.', type: 'alert' });
+            return;
+        }
+        if (isNaN(lots) || lots < 1) {
+            showModal({ title: 'Validation Error', message: 'Lots must be a number >= 1.', type: 'alert' });
+            return;
+        }
+
+        const pnlValue = calculatePnL(entryPrice, exitPrice, lots, instrumentType);
+
+        let tradeData = {
+            instrumentType,
+            instrument,
+            lots,
+            entryPrice,
+            exitPrice,
+            pnl: pnlValue,
+            strategy,
+            emotion,
+            tax: TRANSACTION_TAX
+        };
+
+        // Add custom field values
+        customFields.forEach(field => {
+            const fieldId = fieldNameToId(field.name);
+            const customInput = document.getElementById(fieldId);
+            if (!customInput) return;
+            if (field.type === 'checkbox') {
+                tradeData[fieldId] = customInput.checked;
+            } else {
+                tradeData[fieldId] = customInput.value ? customInput.value.trim() : '';
+            }
+        });
+
+        if (tradeId) {
+            const idx = trades.findIndex(t => t.id === tradeId);
+            if (idx !== -1) {
+                trades[idx] = { ...trades[idx], ...tradeData };
+                showModal({ title: 'Update Successful', message: 'Trade updated successfully!', type: 'success' });
+            }
+        } else {
+            tradeData.id = generateId();
+            trades.unshift(tradeData);
+            showModal({ title: 'Trade Logged', message: 'New trade added successfully!', type: 'success' });
+        }
+
+        saveTrades();
+        renderTrades();
+        resetForm();
+    }
+
+    function editTrade(id) {
+        const trade = trades.find(t => t.id === id);
+        if (!trade) return;
+        document.getElementById('tradeId').value = trade.id;
+        document.getElementById('instrumentType').value = trade.instrumentType || 'Nifty';
+        document.getElementById('instrument').value = trade.instrument || '';
+        document.getElementById('lots').value = trade.lots || 1;
+        document.getElementById('entryPrice').value = trade.entryPrice || '';
+        document.getElementById('exitPrice').value = trade.exitPrice || '';
+        document.getElementById('strategy').value = trade.strategy || '';
+        document.getElementById('emotion').value = trade.emotion || '';
+
+        customFields.forEach(field => {
+            const fieldId = fieldNameToId(field.name);
+            const customInput = document.getElementById(fieldId);
+            if (!customInput) return;
+            const value = trade[fieldId];
+            if (field.type === 'checkbox') {
+                customInput.checked = (value === true || value === 'true');
+            } else {
+                customInput.value = value || '';
+            }
+        });
+
+        document.querySelector('#tradeForm button[type="submit"]').textContent = 'Update Trade';
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+        updateLotMultiplierPreview();
+    }
+
+    function handleDeleteTrade(id) {
+        showModal({
+            title: 'Confirm Deletion',
+            message: 'Are you sure you want to delete this trade log? This action cannot be undone.',
+            type: 'confirm',
+            onConfirm: () => {
+                trades = trades.filter(t => t.id !== id);
+                saveTrades();
+                renderTrades();
+                showModal({ title: 'Trade Deleted', message: 'Trade log successfully removed.', type: 'success' });
+            }
+        });
+    }
+
+    function resetForm() {
+        document.getElementById('tradeForm').reset();
+        document.getElementById('tradeId').value = '';
+        document.querySelector('#tradeForm button[type="submit"]').textContent = 'Save Trade';
+        customFields.forEach(field => {
+            const fieldId = fieldNameToId(field.name);
+            const customInput = document.getElementById(fieldId);
+            if (!customInput) return;
+            if (field.type === 'checkbox') customInput.checked = false;
+            else customInput.value = '';
+        });
+        updateLotMultiplierPreview();
+    }
+
+    // Import / Export
+    function exportData() {
+        const dataToExport = {
+            metadata: { appName: "Paper Trading Journal", version: 2, timestamp: new Date().toISOString() },
+            customFields,
+            trades
+        };
+        const jsonString = JSON.stringify(dataToExport, null, 2);
+        const blob = new Blob([jsonString], { type: 'application/json' });
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = `paper_trades_export_${new Date().toISOString().slice(0,10)}.json`;
+        document.body.appendChild(a);
+        a.click();
+        document.body.removeChild(a);
+        URL.revokeObjectURL(url);
+        showModal({ title: 'Export Complete', message: 'All trade data saved to your device as JSON.', type: 'success' });
+    }
+
+    function importData(event) {
+        const file = event.target.files[0];
+        if (!file) return;
+        const reader = new FileReader();
+        reader.onload = function(e) {
+            try {
+                const importedData = JSON.parse(e.target.result);
+                if (!importedData.trades || !Array.isArray(importedData.trades)) throw new Error("Invalid JSON structure. Missing 'trades' array.");
+                const importedCustomFields = Array.isArray(importedData.customFields) ? importedData.customFields.filter(f => f.name && f.type) : DEFAULT_CUSTOM_FIELDS.slice();
+
+                showModal({
+                    title: 'Confirm Import',
+                    message: `Do you want to overwrite your existing ${trades.length} trades with ${importedData.trades.length} trades from the imported file?`,
+                    type: 'confirm',
+                    onConfirm: () => {
+                        trades = importedData.trades;
+                        customFields = importedCustomFields;
+                        saveTrades();
+                        saveCustomFields();
+                        renderCustomFormFields();
+                        renderFieldManagement();
+                        renderTrades();
+                        showModal({ title: 'Import Successful', message: `${trades.length} trades imported!`, type: 'success' });
+                    }
+                });
+
+            } catch (err) {
+                console.error("Import Error:", err);
+                showModal({ title: 'Import Failed', message: `Could not process file: ${err.message}`, type: 'alert' });
+            }
+        };
+        reader.readAsText(file);
+        event.target.value = '';
+    }
+
+    // Update lot multiplier preview based on selected instrument type
+    function updateLotMultiplierPreview() {
+        const type = document.getElementById('instrumentType').value;
+        const multiplier = getLotMultiplierForType(type);
+        const preview = document.getElementById('lotMultiplierPreview');
+        preview.value = multiplier > 1 ? `${multiplier} units per lot` : `1 unit per lot`;
+    }
+
+    // Init
+    function initApp() {
+        loadFromLocalStorage();
+        renderCustomFormFields();
+        renderFieldManagement();
+        renderTrades();
+
+        document.getElementById('tradeForm').addEventListener('submit', handleSubmit);
+        document.getElementById('resetFormButton').addEventListener('click', resetForm);
+        document.getElementById('instrumentType').addEventListener('change', updateLotMultiplierPreview);
+        document.getElementById('lots').addEventListener('input', () => {
+            const v = parseInt(document.getElementById('lots').value, 10);
+            if (isNaN(v) || v < 1) document.getElementById('lots').value = 1;
+        });
+        updateLotMultiplierPreview();
+    }
+
+    window.onload = initApp;
+</script>
+</body>
+</html>

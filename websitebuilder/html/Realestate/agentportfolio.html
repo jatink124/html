@@ -1,0 +1,2268 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Elite Property Agents | Professional Property Management</title>
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700&family=Roboto:wght@300;400;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root {
+            --primary: #2c3e50;
+            --secondary: #3498db;
+            --accent: #e74c3c;
+            --light: #f8f9fa;
+            --dark: #343a40;
+            --success: #28a745;
+            --gray: #6c757d;
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Roboto', sans-serif;
+            line-height: 1.6;
+            color: var(--dark);
+            background-color: #f5f5f5;
+        }
+        
+        h1, h2, h3, h4 {
+            font-family: 'Playfair Display', serif;
+            margin-bottom: 1rem;
+        }
+        
+        .container {
+            width: 100%;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 15px;
+        }
+        
+        .btn {
+            display: inline-block;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            text-decoration: none;
+            transition: all 0.3s ease;
+            font-weight: 700;
+        }
+        
+        .btn-primary {
+            background-color: var(--primary);
+            color: white;
+        }
+        
+        .btn-primary:hover {
+            background-color: #1a252f;
+        }
+        
+        .btn-secondary {
+            background-color: var(--secondary);
+            color: white;
+        }
+        
+        .btn-secondary:hover {
+            background-color: #2980b9;
+        }
+        
+        .btn-accent {
+            background-color: var(--accent);
+            color: white;
+        }
+        
+        .btn-accent:hover {
+            background-color: #c0392b;
+        }
+        
+        /* Header */
+        header {
+            background-color: white;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+            position: fixed;
+            width: 100%;
+            z-index: 1000;
+        }
+        
+        .header-container {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 15px 0;
+        }
+        
+        .logo {
+            font-family: 'Playfair Display', serif;
+            font-size: 1.8rem;
+            font-weight: 700;
+            color: var(--primary);
+            text-decoration: none;
+        }
+        
+        .logo span {
+            color: var(--accent);
+        }
+        
+        .nav-menu {
+            display: flex;
+            list-style: none;
+        }
+        
+        .nav-item {
+            margin-left: 30px;
+        }
+        
+        .nav-link {
+            text-decoration: none;
+            color: var(--dark);
+            font-weight: 500;
+            transition: color 0.3s;
+        }
+        
+        .nav-link:hover {
+            color: var(--accent);
+        }
+        
+        .mobile-menu-btn {
+            display: none;
+            font-size: 1.5rem;
+            color: var(--primary);
+            background: none;
+            border: none;
+            cursor: pointer;
+        }
+        
+        /* Hero Section */
+        .hero {
+            background: linear-gradient(rgba(0, 0, 0, 0.6), rgba(0, 0, 0, 0.6)), url('https://images.unsplash.com/photo-1560518883-ce09059eeffa?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1073&q=80') no-repeat center center/cover;
+            height: 100vh;
+            display: flex;
+            align-items: center;
+            text-align: center;
+            color: white;
+            padding-top: 80px;
+        }
+        
+        .hero-content {
+            max-width: 800px;
+            margin: 0 auto;
+        }
+        
+        .hero-title {
+            font-size: 3.5rem;
+            margin-bottom: 1.5rem;
+        }
+        
+        .hero-subtitle {
+            font-size: 1.5rem;
+            margin-bottom: 2rem;
+            font-weight: 300;
+        }
+        
+        .hero-buttons {
+            display: flex;
+            justify-content: center;
+            gap: 20px;
+        }
+        
+        /* About Section */
+        .about {
+            padding: 100px 0;
+            background-color: white;
+        }
+        
+        .about-content {
+            display: flex;
+            align-items: center;
+            gap: 50px;
+        }
+        
+        .about-image {
+            flex: 1;
+            border-radius: 10px;
+            overflow: hidden;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+        }
+        
+        .about-image img {
+            width: 100%;
+            height: auto;
+            display: block;
+        }
+        
+        .about-text {
+            flex: 1;
+        }
+        
+        .section-title {
+            font-size: 2.5rem;
+            color: var(--primary);
+            position: relative;
+            padding-bottom: 15px;
+            margin-bottom: 30px;
+        }
+        
+        .section-title::after {
+            content: '';
+            position: absolute;
+            left: 0;
+            bottom: 0;
+            width: 100px;
+            height: 3px;
+            background-color: var(--accent);
+        }
+        
+        .about-text p {
+            margin-bottom: 20px;
+            font-size: 1.1rem;
+            color: var(--gray);
+        }
+        
+        .stats {
+            display: flex;
+            margin-top: 30px;
+            gap: 30px;
+            text-align: center;
+        }
+        
+        .stat-item {
+            flex: 1;
+        }
+        
+        .stat-number {
+            font-size: 2.5rem;
+            font-weight: 700;
+            color: var(--accent);
+            margin-bottom: 5px;
+        }
+        
+        .stat-text {
+            font-size: 1rem;
+            font-weight: 500;
+        }
+        
+        /* Services Section */
+        .services {
+            padding: 100px 0;
+            background-color: #f8f9fa;
+        }
+        
+        .services-header {
+            text-align: center;
+            margin-bottom: 60px;
+        }
+        
+        .services-title {
+            font-size: 2.5rem;
+            color: var(--primary);
+            margin-bottom: 20px;
+        }
+        
+        .services-subtitle {
+            font-size: 1.2rem;
+            color: var(--gray);
+            max-width: 700px;
+            margin: 0 auto;
+        }
+        
+        .services-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 30px;
+        }
+        
+        .service-card {
+            background-color: white;
+            border-radius: 10px;
+            overflow: hidden;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
+            transition: transform 0.3s, box-shadow 0.3s;
+        }
+        
+        .service-card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 15px 30px rgba(0, 0, 0, 0.1);
+        }
+        
+        .service-icon {
+            height: 100px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 2.5rem;
+            color: var(--secondary);
+            background-color: rgba(52, 152, 219, 0.1);
+        }
+        
+        .service-content {
+            padding: 30px;
+        }
+        
+        .service-title {
+            font-size: 1.5rem;
+            margin-bottom: 15px;
+            color: var(--primary);
+        }
+        
+        .service-description {
+            color: var(--gray);
+            margin-bottom: 20px;
+        }
+        
+        /* Properties Section */
+        .properties {
+            padding: 100px 0;
+            background-color: white;
+        }
+        
+        .properties-header {
+            text-align: center;
+            margin-bottom: 60px;
+        }
+        
+        .properties-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+            gap: 30px;
+        }
+        
+        .property-card {
+            border-radius: 10px;
+            overflow: hidden;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
+            transition: transform 0.3s, box-shadow 0.3s;
+            background-color: white;
+        }
+        
+        .property-card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 15px 30px rgba(0, 0, 0, 0.1);
+        }
+        
+        .property-image {
+            height: 250px;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .property-image img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: transform 0.5s;
+        }
+        
+        .property-card:hover .property-image img {
+            transform: scale(1.1);
+        }
+        
+        .property-badge {
+            position: absolute;
+            top: 20px;
+            left: 20px;
+            background-color: var(--primary);
+            color: white;
+            padding: 5px 10px;
+            border-radius: 5px;
+            font-size: 0.8rem;
+            font-weight: 700;
+        }
+        
+        .property-content {
+            padding: 20px;
+        }
+        
+        .property-title {
+            font-size: 1.3rem;
+            margin-bottom: 10px;
+            color: var(--primary);
+        }
+        
+        .property-location {
+            display: flex;
+            align-items: center;
+            color: var(--gray);
+            margin-bottom: 15px;
+            font-size: 0.9rem;
+        }
+        
+        .property-location i {
+            margin-right: 5px;
+            color: var(--accent);
+        }
+        
+        .property-features {
+            display: flex;
+            justify-content: space-between;
+            padding: 15px 0;
+            border-top: 1px solid #eee;
+            border-bottom: 1px solid #eee;
+            margin-bottom: 15px;
+        }
+        
+        .property-feature {
+            display: flex;
+            align-items: center;
+            font-size: 0.9rem;
+        }
+        
+        .property-feature i {
+            margin-right: 5px;
+            color: var(--secondary);
+        }
+        
+        .property-price {
+            font-size: 1.3rem;
+            font-weight: 700;
+            color: var(--accent);
+            margin-bottom: 15px;
+        }
+        
+        .property-actions {
+            display: flex;
+            justify-content: space-between;
+        }
+        
+        /* Agents Section */
+        .agents {
+            padding: 100px 0;
+            background-color: #f8f9fa;
+        }
+        
+        .agents-header {
+            text-align: center;
+            margin-bottom: 60px;
+        }
+        
+        .agents-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 30px;
+        }
+        
+        .agent-card {
+            background-color: white;
+            border-radius: 10px;
+            overflow: hidden;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
+            transition: transform 0.3s, box-shadow 0.3s;
+        }
+        
+        .agent-card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 15px 30px rgba(0, 0, 0, 0.1);
+        }
+        
+        .agent-image {
+            height: 300px;
+            overflow: hidden;
+        }
+        
+        .agent-image img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: transform 0.5s;
+        }
+        
+        .agent-card:hover .agent-image img {
+            transform: scale(1.1);
+        }
+        
+        .agent-content {
+            padding: 20px;
+            text-align: center;
+        }
+        
+        .agent-name {
+            font-size: 1.5rem;
+            color: var(--primary);
+            margin-bottom: 5px;
+        }
+        
+        .agent-title {
+            color: var(--secondary);
+            font-style: italic;
+            margin-bottom: 15px;
+        }
+        
+        .agent-contact {
+            margin-bottom: 15px;
+        }
+        
+        .agent-contact a {
+            display: block;
+            color: var(--gray);
+            text-decoration: none;
+            margin-bottom: 5px;
+            transition: color 0.3s;
+        }
+        
+        .agent-contact a:hover {
+            color: var(--accent);
+        }
+        
+        .agent-contact i {
+            margin-right: 5px;
+            color: var(--secondary);
+        }
+        
+        .agent-social {
+            display: flex;
+            justify-content: center;
+            gap: 10px;
+        }
+        
+        .social-link {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background-color: var(--light);
+            color: var(--dark);
+            transition: all 0.3s;
+        }
+        
+        .social-link:hover {
+            background-color: var(--secondary);
+            color: white;
+        }
+        
+        /* Testimonials Section */
+        .testimonials {
+            padding: 100px 0;
+            background-color: white;
+        }
+        
+        .testimonials-header {
+            text-align: center;
+            margin-bottom: 60px;
+        }
+        
+        .testimonials-slider {
+            max-width: 900px;
+            margin: 0 auto;
+            position: relative;
+        }
+        
+        .testimonial {
+            background-color: #f8f9fa;
+            border-radius: 10px;
+            padding: 40px;
+            text-align: center;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
+        }
+        
+        .testimonial-text {
+            font-size: 1.1rem;
+            color: var(--gray);
+            font-style: italic;
+            line-height: 1.8;
+            margin-bottom: 30px;
+        }
+        
+        .testimonial-author {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .testimonial-author-image {
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            overflow: hidden;
+            margin-right: 15px;
+        }
+        
+        .testimonial-author-image img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+        
+        .testimonial-author-name {
+            font-weight: 700;
+            color: var(--primary);
+            margin-bottom: 5px;
+        }
+        
+        .testimonial-author-title {
+            font-size: 0.9rem;
+            color: var(--secondary);
+        }
+        
+        .slider-controls {
+            display: flex;
+            justify-content: center;
+            margin-top: 30px;
+            gap: 10px;
+        }
+        
+        .slider-btn {
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            background-color: white;
+            color: var(--primary);
+            border: 1px solid #eee;
+            cursor: pointer;
+            transition: all 0.3s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.2rem;
+        }
+        
+        .slider-btn:hover {
+            background-color: var(--primary);
+            color: white;
+        }
+        
+        /* Contact Section */
+        .contact {
+            padding: 100px 0;
+            background-color: #f8f9fa;
+        }
+        
+        .contact-container {
+            display: flex;
+            gap: 50px;
+        }
+        
+        .contact-info {
+            flex: 1;
+        }
+        
+        .contact-form {
+            flex: 1;
+            background-color: white;
+            padding: 40px;
+            border-radius: 10px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
+        }
+        
+        .contact-title {
+            font-size: 2rem;
+            color: var(--primary);
+            margin-bottom: 20px;
+        }
+        
+        .contact-text {
+            color: var(--gray);
+            margin-bottom: 30px;
+        }
+        
+        .contact-details {
+            margin-bottom: 30px;
+        }
+        
+        .contact-detail {
+            display: flex;
+            align-items: flex-start;
+            margin-bottom: 20px;
+        }
+        
+        .contact-icon {
+            margin-right: 15px;
+            font-size: 1.5rem;
+            color: var(--secondary);
+        }
+        
+        .contact-info-content h4 {
+            color: var(--primary);
+            margin-bottom: 5px;
+        }
+        
+        .contact-info-content p, 
+        .contact-info-content a {
+            color: var(--gray);
+            text-decoration: none;
+            transition: color 0.3s;
+        }
+        
+        .contact-info-content a:hover {
+            color: var(--accent);
+        }
+        
+        .form-group {
+            margin-bottom: 20px;
+        }
+        
+        .form-label {
+            display: block;
+            margin-bottom: 5px;
+            color: var(--primary);
+            font-weight: 500;
+        }
+        
+        .form-control {
+            width: 100%;
+            padding: 12px 15px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            font-family: inherit;
+            font-size: 1rem;
+            transition: border-color 0.3s;
+        }
+        
+        .form-control:focus {
+            outline: none;
+            border-color: var(--secondary);
+        }
+        
+        textarea.form-control {
+            resize: vertical;
+            min-height: 150px;
+        }
+        
+        /* CTA Section */
+        .cta {
+            padding: 80px 0;
+            background: linear-gradient(rgba(0, 0, 0, 0.8), rgba(0, 0, 0, 0.8)), url('https://images.unsplash.com/photo-1560520031-3a4dc4e9de0c?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1073&q=80') no-repeat center center/cover;
+            text-align: center;
+            color: white;
+        }
+        
+        .cta-title {
+            font-size: 2.5rem;
+            margin-bottom: 20px;
+        }
+        
+        .cta-text {
+            font-size: 1.2rem;
+            margin-bottom: 30px;
+            max-width: 700px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+        
+        /* Property Management Portal */
+        .portal {
+            padding: 100px 0;
+            background-color: white;
+        }
+        
+        .portal-content {
+            display: flex;
+            align-items: center;
+            gap: 50px;
+        }
+        
+        .portal-image {
+            flex: 1;
+            border-radius: 10px;
+            overflow: hidden;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+        }
+        
+        .portal-image img {
+            width: 100%;
+            height: auto;
+            display: block;
+        }
+        
+        .portal-text {
+            flex: 1;
+        }
+        
+        .portal-features {
+            margin-top: 30px;
+        }
+        
+        .portal-feature {
+            display: flex;
+            align-items: flex-start;
+            margin-bottom: 20px;
+        }
+        
+        .portal-feature-icon {
+            margin-right: 15px;
+            font-size: 1.5rem;
+            color: var(--success);
+        }
+        
+        .portal-feature-text h4 {
+            color: var(--primary);
+            margin-bottom: 5px;
+        }
+        
+        .portal-feature-text p {
+            color: var(--gray);
+        }
+        
+        /* Calculator */
+        .calculator {
+            padding: 100px 0;
+            background-color: #f8f9fa;
+        }
+        
+        .calculator-container {
+            display: flex;
+            gap: 50px;
+        }
+        
+        .calculator-content {
+            flex: 1;
+        }
+        
+        .calculator-form {
+            flex: 1;
+            background-color: white;
+            padding: 40px;
+            border-radius: 10px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
+        }
+        
+        .result-box {
+            background-color: var(--primary);
+            color: white;
+            padding: 20px;
+            border-radius: 10px;
+            margin-top: 30px;
+        }
+        
+        .result-title {
+            font-size: 1.5rem;
+            margin-bottom: 15px;
+        }
+        
+        .result-item {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 10px;
+            padding-bottom: 10px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.2);
+        }
+        
+        .result-item:last-child {
+            border-bottom: none;
+        }
+        
+        .result-label {
+            font-weight: 500;
+        }
+        
+        .result-value {
+            font-weight: 700;
+        }
+        
+        /* Map */
+        .map-section {
+            padding: 100px 0;
+            background-color: white;
+        }
+        
+        .map-container {
+            height: 500px;
+            border-radius: 10px;
+            overflow: hidden;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
+        }
+        
+        /* Blog Section */
+        .blog {
+            padding: 100px 0;
+            background-color: #f8f9fa;
+        }
+        
+        .blog-header {
+            text-align: center;
+            margin-bottom: 60px;
+        }
+        
+        .blog-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 30px;
+        }
+        
+        .blog-card {
+            background-color: white;
+            border-radius: 10px;
+            overflow: hidden;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
+            transition: transform 0.3s, box-shadow 0.3s;
+        }
+        
+        .blog-card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 15px 30px rgba(0, 0, 0, 0.1);
+        }
+        
+        .blog-image {
+            height: 200px;
+            overflow: hidden;
+        }
+        
+        .blog-image img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: transform 0.5s;
+        }
+        
+        .blog-card:hover .blog-image img {
+            transform: scale(1.1);
+        }
+        
+        .blog-content {
+            padding: 20px;
+        }
+        
+        .blog-date {
+            font-size: 0.9rem;
+            color: var(--secondary);
+            margin-bottom: 10px;
+        }
+        
+        .blog-title {
+            font-size: 1.3rem;
+            color: var(--primary);
+            margin-bottom: 10px;
+        }
+        
+        .blog-excerpt {
+            color: var(--gray);
+            margin-bottom: 15px;
+        }
+        
+        /* Newsletter */
+        .newsletter {
+            padding: 80px 0;
+            background-color: var(--primary);
+            color: white;
+            text-align: center;
+        }
+        
+        .newsletter-title {
+            font-size: 2rem;
+            margin-bottom: 20px;
+        }
+        
+        .newsletter-text {
+            font-size: 1.1rem;
+            margin-bottom: 30px;
+            max-width: 700px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+        
+        .newsletter-form {
+            display: flex;
+            max-width: 500px;
+            margin: 0 auto;
+        }
+        
+        .newsletter-input {
+            flex: 1;
+            padding: 15px;
+            border: none;
+            border-radius: 5px 0 0 5px;
+            font-size: 1rem;
+        }
+        
+        .newsletter-btn {
+            padding: 0 30px;
+            background-color: var(--accent);
+            color: white;
+            border: none;
+            border-radius: 0 5px 5px 0;
+            cursor: pointer;
+            font-size: 1rem;
+            font-weight: 700;
+            transition: background-color 0.3s;
+        }
+        
+        .newsletter-btn:hover {
+            background-color: #c0392b;
+        }
+        
+        /* Virtual Tour */
+        .virtual-tour {
+            padding: 100px 0;
+            background-color: white;
+        }
+        
+        .virtual-tour-content {
+            display: flex;
+            align-items: center;
+            gap: 50px;
+        }
+        
+        .virtual-tour-text {
+            flex: 1;
+        }
+        
+        .tour-preview {
+            flex: 1;
+            position: relative;
+            border-radius: 10px;
+            overflow: hidden;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+        }
+        
+        .tour-preview img {
+            width: 100%;
+            height: auto;
+            display: block;
+        }
+        
+        .tour-overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.3);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .play-btn {
+            width: 80px;
+            height: 80px;
+            background-color: white;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 2rem;
+            color: var(--accent);
+            cursor: pointer;
+            transition: transform 0.3s;
+        }
+        
+        .play-btn:hover {
+            transform: scale(1.1);
+        }
+        
+        /* Footer */
+        footer {
+            background-color: var(--dark);
+            color: white;
+            padding-top: 80px;
+        }
+        
+        .footer-container {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 30px;
+        }
+        
+        .footer-col h3 {
+            font-size: 1.5rem;
+            margin-bottom: 20px;
+            padding-bottom: 10px;
+            position: relative;
+        }
+        
+        .footer-col h3::after {
+            content: '';
+            position: absolute;
+            left: 0;
+            bottom: 0;
+            width: 50px;
+            height: 2px;
+            background-color: var(--accent);
+        }
+        
+        .company-info p {
+            margin-bottom: 20px;
+            color: #ccc;
+        }
+        
+        .social-links {
+            display: flex;
+            gap: 10px;
+        }
+        
+        .footer-links ul {
+            list-style: none;
+        }
+        
+        .footer-links li {
+            margin-bottom: 10px;
+        }
+        
+        .footer-links a {
+            text-decoration: none;
+            color: #ccc;
+            transition: color 0.3s;
+        }
+        
+        .footer-links a:hover {
+            color: var(--secondary);
+        }
+        
+        .footer-contact-item {
+            display: flex;
+            align-items: flex-start;
+            margin-bottom: 20px;
+        }
+        
+        .footer-contact-icon {
+            margin-right: 15px;
+            color: var(--secondary);
+        }
+        
+        .footer-contact-text {
+            color: #ccc;
+        }
+        
+        .instagram-feed {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 10px;
+        }
+        
+        .instagram-item {
+            border-radius: 5px;
+            overflow: hidden;
+        }
+        
+        .instagram-item img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: transform 0.3s;
+        }
+        
+        .instagram-item:hover img {
+            transform: scale(1.1);
+        }
+        
+        .footer-bottom {
+            text-align: center;
+            padding: 20px 0;
+            margin-top: 60px;
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        
+        .copyright {
+            color: #ccc;
+        }
+        
+        /* Property Comparison Tool */
+        .comparison-tool {
+            background-color: white;
+            padding: 100px 0;
+        }
+        
+        .comparison-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 40px;
+            border-radius: 10px;
+            overflow: hidden;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
+        }
+        
+        .comparison-table th,
+        .comparison-table td {
+            padding: 15px;
+            text-align: left;
+            border-bottom: 1px solid #eee;
+        }
+        
+        .comparison-table th {
+            background-color: var(--primary);
+            color: white;
+        }
+        
+        .comparison-table tr:last-child td {
+            border-bottom: none;
+        }
+        
+        .comparison-table tr:nth-child(even) {
+            background-color: #f8f9fa;
+        }
+        
+        .comparison-feature {
+            font-weight: 700;
+            color: var(--primary);
+        }
+        
+        .check-icon {
+            color: var(--success);
+            font-size: 1.2rem;
+        }
+        
+        .x-icon {
+            color: var(--accent);
+            font-size: 1.2rem;
+        }
+        
+        /* Responsive Styles */
+        @media (max-width: 1024px) {
+            .agents-grid {
+                grid-template-columns: repeat(3, 1fr);
+            }
+            
+            .blog-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+            
+            .footer-container {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+        
+        @media (max-width: 768px) {
+            .container {
+                padding: 0 20px;
+            }
+            
+            .mobile-menu-btn {
+                display: block;
+            }
+            
+            .nav-menu {
+                position: fixed;
+                top: 80px;
+                left: -100%;
+                width: 100%;
+                height: calc(100vh - 80px);
+                background-color: white;
+                flex-direction: column;
+                align-items: center;
+                padding: 40px 0;
+                transition: left 0.3s;
+                box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+            }
+            
+            .nav-menu.active {
+                left: 0;
+            }
+            
+            .nav-item {
+                margin: 0 0 20px 0;
+            }
+            
+            .hero-title {
+                font-size: 2.5rem;
+            }
+            
+            .about-content,
+            .portal-content,
+            .virtual-tour-content,
+            .calculator-container,
+            .contact-container {
+                flex-direction: column;
+            }
+            
+            .services-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+            
+            .agents-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+            
+            .blog-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .properties-grid {
+                grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            }
+        }
+        
+        @media (max-width: 576px) {
+            .services-grid,
+            .agents-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .hero-buttons {
+                flex-direction: column;
+                gap: 10px;
+            }
+            
+            .newsletter-form {
+                flex-direction: column;
+            }
+            
+            .newsletter-input {
+                border-radius: 5px;
+                margin-bottom: 10px;
+            }
+            
+            .newsletter-btn {
+                border-radius: 5px;
+            }
+            
+            .footer-container {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Header Section -->
+    <header>
+        <div class="container">
+            <div class="header-container">
+                <a href="#" class="logo">Elite<span>Agents</span></a>
+                <button class="mobile-menu-btn" id="mobileMenuBtn">
+                    <i class="fas fa-bars"></i>
+                </button>
+                <ul class="nav-menu" id="navMenu">
+                    <li class="nav-item"><a href="#" class="nav-link">Home</a></li>
+                    <li class="nav-item"><a href="#about" class="nav-link">About</a></li>
+                    <li class="nav-item"><a href="#services" class="nav-link">Services</a></li>
+                    <li class="nav-item"><a href="#properties" class="nav-link">Properties</a></li>
+                    <li class="nav-item"><a href="#agents" class="nav-link">Agents</a></li>
+                    <li class="nav-item"><a href="#contact" class="nav-link">Contact</a></li>
+                </ul>
+            </div>
+        </div>
+    </header>
+
+    <!-- Hero Section -->
+    <section class="hero">
+        <div class="container">
+            <div class="hero-content">
+                <h1 class="hero-title">Find Your Perfect Property with Elite Agents</h1>
+                <p class="hero-subtitle">Professional property agents with premium management services for your investment</p>
+                <div class="hero-buttons">
+                    <a href="#properties" class="btn btn-primary">View Properties</a>
+                    <a href="#contact" class="btn btn-secondary">Contact Us</a>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- About Section -->
+    <section id="about" class="about">
+        <div class="container">
+            <div class="about-content">
+                <div class="about-image">
+                    <img src="https://images.unsplash.com/photo-1560518883-ce09059eeffa?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1073&q=80" alt="About Elite Agents">
+                </div>
+                <div class="about-text">
+                    <h2 class="section-title">About Elite Agents</h2>
+                    <p>Elite Agents is a premier real estate agency specializing in high-quality property management and agent representation. With over 15 years of experience in the industry, we've built a reputation for excellence, integrity, and results.</p>
+                    <p>Our team of professional agents are experts in their respective markets, providing personalized service and deep local knowledge to ensure our clients make informed decisions about their real estate investments.</p>
+                    <div class="stats">
+                        <div class="stat-item">
+                            <div class="stat-number">15+</div>
+                            <div class="stat-text">Years Experience</div>
+                        </div>
+                        <div class="stat-item">
+                            <div class="stat-number">1200+</div>
+                            <div class="stat-text">Properties Managed</div>
+                        </div>
+                        <div class="stat-item">
+                            <div class="stat-number">98%</div>
+                            <div class="stat-text">Client Satisfaction</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Services Section -->
+    <section id="services" class="services">
+        <div class="container">
+            <div class="services-header">
+                <h2 class="services-title">Our Services</h2>
+                <p class="services-subtitle">We offer comprehensive real estate and property management services tailored to meet your specific needs</p>
+            </div>
+            <div class="services-grid">
+                <div class="service-card">
+                    <div class="service-icon">
+                        <i class="fas fa-home"></i>
+                    </div>
+                    <div class="service-content">
+                        <h3 class="service-title">Property Sales</h3>
+                        <p class="service-description">Expert guidance throughout the entire selling process, from property valuation to marketing and closing.</p>
+                        <a href="#" class="btn btn-primary">Learn More</a>
+                    </div>
+                </div>
+                <div class="service-card">
+                    <div class="service-icon">
+                        <i class="fas fa-key"></i>
+                    </div>
+                    <div class="service-content">
+                        <h3 class="service-title">Property Management</h3>
+                        <p class="service-description">Comprehensive management services including tenant screening, maintenance, rent collection, and more.</p>
+                        <a href="#" class="btn btn-primary">Learn More</a>
+                    </div>
+                </div>
+                <div class="service-card">
+                    <div class="service-icon">
+                        <i class="fas fa-search"></i>
+                    </div>
+                    <div class="service-content">
+                        <h3 class="service-title">Property Search</h3>
+                        <p class="service-description">Personalized property search based on your specific criteria, saved searches, and alerts for new listings.</p>
+                        <a href="#" class="btn btn-primary">Learn More</a>
+                    </div>
+                </div>
+                <div class="service-card">
+                    <div class="service-icon">
+                        <i class="fas fa-chart-line"></i>
+                    </div>
+                    <div class="service-content">
+                        <h3 class="service-title">Investment Advisory</h3>
+                        <p class="service-description">Expert advice on real estate investments, market analysis, and strategies to maximize returns.</p>
+                        <a href="#" class="btn btn-primary">Learn More</a>
+                    </div>
+                </div>
+                <div class="service-card">
+                    <div class="service-icon">
+                        <i class="fas fa-file-contract"></i>
+                    </div>
+                    <div class="service-content">
+                        <h3 class="service-title">Legal Documentation</h3>
+                        <p class="service-description">Assistance with legal documentation, contracts, and compliance with real estate regulations.</p>
+                        <a href="#" class="btn btn-primary">Learn More</a>
+                    </div>
+                </div>
+                <div class="service-card">
+                    <div class="service-icon">
+                        <i class="fas fa-hand-holding-usd"></i>
+                    </div>
+                    <div class="service-content">
+                        <h3 class="service-title">Financial Planning</h3>
+                        <p class="service-description">Personalized financial planning for property investments, mortgages, and long-term wealth building.</p>
+                        <a href="#" class="btn btn-primary">Learn More</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Properties Section -->
+    <section id="properties" class="properties">
+        <div class="container">
+            <div class="properties-header">
+                <h2 class="section-title">Featured Properties</h2>
+                <p class="services-subtitle">Browse our selection of premium properties currently available for sale or rent</p>
+            </div>
+            <div class="properties-grid">
+                <div class="property-card">
+                    <div class="property-image">
+                        <img src="https://images.unsplash.com/photo-1600585154340-be6161a56a0c?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1170&q=80" alt="Modern Villa">
+                        <div class="property-badge">For Sale</div>
+                    </div>
+                    <div class="property-content">
+                        <h3 class="property-title">Modern Villa with Pool</h3>
+                        <div class="property-location">
+                            <i class="fas fa-map-marker-alt"></i> 123 Palm Street, Miami, FL
+                        </div>
+                        <div class="property-features">
+                            <div class="property-feature">
+                                <i class="fas fa-bed"></i> 4 Beds
+                            </div>
+                            <div class="property-feature">
+                                <i class="fas fa-bath"></i> 3 Baths
+                            </div>
+                            <div class="property-feature">
+                                <i class="fas fa-ruler-combined"></i> 2,500 sqft
+                            </div>
+                        </div>
+                        <div class="property-price">$850,000</div>
+                        <div class="property-actions">
+                            <a href="#" class="btn btn-primary">View Details</a>
+                            <button class="btn btn-secondary">
+                                <i class="far fa-heart"></i>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+                <div class="property-card">
+                    <div class="property-image">
+                        <img src="https://images.unsplash.com/photo-1613977257363-707ba9348227?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1170&q=80" alt="Luxury Apartment">
+                        <div class="property-badge">For Rent</div>
+                    </div>
+                    <div class="property-content">
+                        <h3 class="property-title">Luxury Downtown Apartment</h3>
+                        <div class="property-location">
+                            <i class="fas fa-map-marker-alt"></i> 456 Central Ave, New York, NY
+                        </div>
+                        <div class="property-features">
+                            <div class="property-feature">
+                                <i class="fas fa-bed"></i> 2 Beds
+                            </div>
+                            <div class="property-feature">
+                                <i class="fas fa-bath"></i> 2 Baths
+                            </div>
+                            <div class="property-feature">
+                                <i class="fas fa-ruler-combined"></i> 1,200 sqft
+                            </div>
+                        </div>
+                        <div class="property-price">$3,500/month</div>
+                        <div class="property-actions">
+                            <a href="#" class="btn btn-primary">View Details</a>
+                            <button class="btn btn-secondary">
+                                <i class="far fa-heart"></i>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+                <div class="property-card">
+                    <div class="property-image">
+                        <img src="https://images.unsplash.com/photo-1449158743715-0a90ebb6d2d8?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1170&q=80" alt="Commercial Space">
+                        <div class="property-badge">For Lease</div>
+                    </div>
+                    <div class="property-content">
+                        <h3 class="property-title">Prime Commercial Space</h3>
+                        <div class="property-location">
+                            <i class="fas fa-map-marker-alt"></i> 789 Business Park, Chicago, IL
+                        </div>
+                        <div class="property-features">
+                            <div class="property-feature">
+                                <i class="fas fa-door-open"></i> 5 Offices
+                            </div>
+                            <div class="property-feature">
+                                <i class="fas fa-car"></i> 10 Parking
+                            </div>
+                            <div class="property-feature">
+                                <i class="fas fa-ruler-combined"></i> 5,000 sqft
+                            </div>
+                        </div>
+                        <div class="property-price">$8,500/month</div>
+                        <div class="property-actions">
+                            <a href="#" class="btn btn-primary">View Details</a>
+                            <button class="btn btn-secondary">
+                                <i class="far fa-heart"></i>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Agents Section -->
+    <section id="agents" class="agents">
+        <div class="container">
+            <div class="agents-header">
+                <h2 class="section-title">Meet Our Agents</h2>
+                <p class="services-subtitle">Our team of expert agents are ready to help you with all your real estate needs</p>
+            </div>
+            <div class="agents-grid">
+                <div class="agent-card">
+                    <div class="agent-image">
+                        <img src="https://images.unsplash.com/photo-1560250097-0b93528c311a?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=687&q=80" alt="Agent John Doe">
+                    </div>
+                    <div class="agent-content">
+                        <h3 class="agent-name">John Doe</h3>
+                        <p class="agent-title">Senior Agent - Residential</p>
+                        <div class="agent-contact">
+                            <a href="tel:+11234567890"><i class="fas fa-phone"></i> (123) 456-7890</a>
+                            <a href="mailto:john@eliteagents.com"><i class="fas fa-envelope"></i> john@eliteagents.com</a>
+                        </div>
+                        <div class="agent-social">
+                            <a href="#" class="social-link"><i class="fab fa-facebook-f"></i></a>
+                            <a href="#" class="social-link"><i class="fab fa-twitter"></i></a>
+                            <a href="#" class="social-link"><i class="fab fa-instagram"></i></a>
+                            <a href="#" class="social-link"><i class="fab fa-linkedin-in"></i></a>
+                        </div>
+                    </div>
+                </div>
+                <div class="agent-card">
+                    <div class="agent-image">
+                        <img src="https://images.unsplash.com/photo-1573497019940-1c28c88b4f3e?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=687&q=80" alt="Agent Jane Smith">
+                    </div>
+                    <div class="agent-content">
+                        <h3 class="agent-name">Jane Smith</h3>
+                        <p class="agent-title">Senior Agent - Luxury</p>
+                        <div class="agent-contact">
+                            <a href="tel:+11234567891"><i class="fas fa-phone"></i> (123) 456-7891</a>
+                            <a href="mailto:jane@eliteagents.com"><i class="fas fa-envelope"></i> jane@eliteagents.com</a>
+                        </div>
+                        <div class="agent-social">
+                            <a href="#" class="social-link"><i class="fab fa-facebook-f"></i></a>
+                            <a href="#" class="social-link"><i class="fab fa-twitter"></i></a>
+                            <a href="#" class="social-link"><i class="fab fa-instagram"></i></a>
+                            <a href="#" class="social-link"><i class="fab fa-linkedin-in"></i></a>
+                        </div>
+                    </div>
+                </div>
+                <div class="agent-card">
+                    <div class="agent-image">
+                        <img src="https://images.unsplash.com/photo-1519085360753-af0119f7cbe7?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=687&q=80" alt="Agent Robert Johnson">
+                    </div>
+                    <div class="agent-content">
+                        <h3 class="agent-name">Robert Johnson</h3>
+                        <p class="agent-title">Senior Agent - Commercial</p>
+                        <div class="agent-contact">
+                            <a href="tel:+11234567892"><i class="fas fa-phone"></i> (123) 456-7892</a>
+                            <a href="mailto:robert@eliteagents.com"><i class="fas fa-envelope"></i> robert@eliteagents.com</a>
+                        </div>
+                        <div class="agent-social">
+                            <a href="#" class="social-link"><i class="fab fa-facebook-f"></i></a>
+                            <a href="#" class="social-link"><i class="fab fa-twitter"></i></a>
+                            <a href="#" class="social-link"><i class="fab fa-instagram"></i></a>
+                            <a href="#" class="social-link"><i class="fab fa-linkedin-in"></i></a>
+                        </div>
+                    </div>
+                </div>
+                <div class="agent-card">
+                    <div class="agent-image">
+                        <img src="https://images.unsplash.com/photo-1580894732444-8ecded7900cd?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1170&q=80" alt="Agent Emily Davis">
+                    </div>
+                    <div class="agent-content">
+                        <h3 class="agent-name">Emily Davis</h3>
+                        <p class="agent-title">Property Manager</p>
+                        <div class="agent-contact">
+                            <a href="tel:+11234567893"><i class="fas fa-phone"></i> (123) 456-7893</a>
+                            <a href="mailto:emily@eliteagents.com"><i class="fas fa-envelope"></i> emily@eliteagents.com</a>
+                        </div>
+                        <div class="agent-social">
+                            <a href="#" class="social-link"><i class="fab fa-facebook-f"></i></a>
+                            <a href="#" class="social-link"><i class="fab fa-twitter"></i></a>
+                            <a href="#" class="social-link"><i class="fab fa-instagram"></i></a>
+                            <a href="#" class="social-link"><i class="fab fa-linkedin-in"></i></a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Testimonials Section -->
+    <section class="testimonials">
+        <div class="container">
+            <div class="testimonials-header">
+                <h2 class="section-title">What Our Clients Say</h2>
+                <p class="services-subtitle">Read testimonials from satisfied clients who have worked with our expert agents</p>
+            </div>
+            <div class="testimonials-slider">
+                <div class="testimonial">
+                    <p class="testimonial-text">"Working with Elite Agents was the best decision we made when selling our home. Their expertise and market knowledge helped us secure a great price in just two weeks. John guided us through every step of the process, making it stress-free and efficient."</p>
+                    <div class="testimonial-author">
+                        <div class="testimonial-author-image">
+                            <img src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=687&q=80" alt="Michael Anderson">
+                        </div>
+                        <div class="testimonial-author-info">
+                            <h4 class="testimonial-author-name">Michael Anderson</h4>
+                            <p class="testimonial-author-title">Homeowner</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="slider-controls">
+                    <button class="slider-btn prev-btn">
+                        <i class="fas fa-chevron-left"></i>
+                    </button>
+                    <button class="slider-btn next-btn">
+                        <i class="fas fa-chevron-right"></i>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Property Management Portal -->
+    <section id="portal" class="portal">
+        <div class="container">
+            <div class="portal-content">
+                <div class="portal-text">
+                    <h2 class="section-title">Property Management Portal</h2>
+                    <p>Our state-of-the-art property management portal provides property owners with real-time access to all aspects of their investment properties. Stay informed and in control with our comprehensive management tools.</p>
+                    <div class="portal-features">
+                        <div class="portal-feature">
+                            <div class="portal-feature-icon">
+                                <i class="fas fa-chart-line"></i>
+                            </div>
+                            <div class="portal-feature-text">
+                                <h4>Performance Analytics</h4>
+                                <p>Track your property's performance with detailed analytics and financial reports.</p>
+                            </div>
+                        </div>
+                        <div class="portal-feature">
+                            <div class="portal-feature-icon">
+                                <i class="fas fa-file-invoice-dollar"></i>
+                            </div>
+                            <div class="portal-feature-text">
+                                <h4>Financial Management</h4>
+                                <p>Access rent collection records, expense tracking, and monthly statements.</p>
+                            </div>
+                        </div>
+                        <div class="portal-feature">
+                            <div class="portal-feature-icon">
+                                <i class="fas fa-tools"></i>
+                            </div>
+                            <div class="portal-feature-text">
+                                <h4>Maintenance Requests</h4>
+                                <p>View and approve maintenance requests, track progress, and manage expenses.</p>
+                            </div>
+                        </div>
+                        <div class="portal-feature">
+                            <div class="portal-feature-icon">
+                                <i class="fas fa-user-check"></i>
+                            </div>
+                            <div class="portal-feature-text">
+                                <h4>Tenant Management</h4>
+                                <p>Access tenant information, lease details, and communication history.</p>
+                            </div>
+                        </div>
+                    </div>
+                    <a href="#" class="btn btn-primary">Access Portal</a>
+                </div>
+                <div class="portal-image">
+                    <img src="https://images.unsplash.com/photo-1551288049-bebda4e38f71?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1170&q=80" alt="Property Management Portal">
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Investment Calculator -->
+    <section id="calculator" class="calculator">
+        <div class="container">
+            <div class="calculator-container">
+                <div class="calculator-content">
+                    <h2 class="section-title">Investment Calculator</h2>
+                    <p>Use our advanced property investment calculator to estimate potential returns on your real estate investments. Make informed decisions based on accurate financial projections.</p>
+                    <p>Enter your property details and investment parameters to receive a comprehensive analysis of your potential investment, including ROI, cash flow, and long-term appreciation estimates.</p>
+                </div>
+                <div class="calculator-form">
+                    <div class="form-group">
+                        <label for="property-price" class="form-label">Property Price ($)</label>
+                        <input type="number" id="property-price" class="form-control" placeholder="Enter property price" value="500000">
+                    </div>
+                    <div class="form-group">
+                        <label for="down-payment" class="form-label">Down Payment (%)</label>
+                        <input type="number" id="down-payment" class="form-control" placeholder="Enter down payment percentage" value="20">
+                    </div>
+                    <div class="form-group">
+                        <label for="interest-rate" class="form-label">Interest Rate (%)</label>
+                        <input type="number" id="interest-rate" class="form-control" placeholder="Enter interest rate" value="4.5" step="0.1">
+                    </div>
+                    <div class="form-group">
+                        <label for="loan-term" class="form-label">Loan Term (years)</label>
+                        <input type="number" id="loan-term" class="form-control" placeholder="Enter loan term" value="30">
+                    </div>
+                    <div class="form-group">
+                        <label for="monthly-rent" class="form-label">Expected Monthly Rent ($)</label>
+                        <input type="number" id="monthly-rent" class="form-control" placeholder="Enter expected monthly rent" value="3000">
+                    </div>
+                    <div class="form-group">
+                        <label for="annual-expenses" class="form-label">Annual Expenses ($)</label>
+                        <input type="number" id="annual-expenses" class="form-control" placeholder="Enter annual expenses" value="5000">
+                    </div>
+                    <button id="calculate-btn" class="btn btn-primary">Calculate Investment</button>
+                    
+                    <div class="result-box">
+                        <h3 class="result-title">Investment Analysis</h3>
+                        <div class="result-item">
+                            <span class="result-label">Monthly Mortgage</span>
+                            <span class="result-value" id="monthly-mortgage">$2,027.27</span>
+                        </div>
+                        <div class="result-item">
+                            <span class="result-label">Monthly Cash Flow</span>
+                            <span class="result-value" id="monthly-cash-flow">$639.40</span>
+                        </div>
+                        <div class="result-item">
+                            <span class="result-label">Annual Cash Flow</span>
+                            <span class="result-value" id="annual-cash-flow">$7,672.76</span>
+                        </div>
+                        <div class="result-item">
+                            <span class="result-label">Cap Rate</span>
+                            <span class="result-value" id="cap-rate">5.53%</span>
+                        </div>
+                        <div class="result-item">
+                            <span class="result-label">Cash on Cash Return</span>
+                            <span class="result-value" id="cash-on-cash">7.67%</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Map Section -->
+    <section class="map-section">
+        <div class="container">
+            <h2 class="section-title">Our Properties Map</h2>
+            <p class="services-subtitle mb-5">Explore our properties across the city with our interactive map</p>
+            <div class="map-container" id="map">
+                <!-- Map will be loaded here -->
+                <iframe src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d193595.15830869428!2d-74.11976397304903!3d40.69766374874431!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x89c24fa5d33f083b%3A0xc80b8f06e177fe62!2sNew%20York%2C%20NY%2C%20USA!5e0!3m2!1sen!2s!4v1678394427107!5m2!1sen!2s" width="100%" height="500" style="border:0;" allowfullscreen="" loading="lazy" referrerpolicy="no-referrer-when-downgrade"></iframe>
+            </div>
+        </div>
+    </section>
+
+    <!-- Virtual Tour Section -->
+    <section class="virtual-tour">
+        <div class="container">
+            <div class="virtual-tour-content">
+                <div class="virtual-tour-text">
+                    <h2 class="section-title">Virtual Property Tours</h2>
+                    <p>Experience our properties from the comfort of your home with our immersive virtual tours. Our cutting-edge 3D technology allows you to explore every corner of a property as if you were there in person.</p>
+                    <p>Virtual tours save you time and help you narrow down your options before scheduling in-person visits. They're available for most of our listed properties, with additional 360° photos and videos.</p>
+                    <a href="#" class="btn btn-primary mt-4">Browse Virtual Tours</a>
+                </div>
+                <div class="tour-preview">
+                    <img src="https://images.unsplash.com/photo-1484154218962-a197022b5858?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1174&q=80" alt="Virtual Tour Preview">
+                    <div class="tour-overlay">
+                        <div class="play-btn">
+                            <i class="fas fa-play"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Property Comparison Tool -->
+    <section class="comparison-tool">
+        <div class="container">
+            <h2 class="section-title">Property Comparison Tool</h2>
+            <p class="services-subtitle">Compare different properties side by side to make an informed decision</p>
+            
+            <div class="comparison-table-container">
+                <table class="comparison-table">
+                    <thead>
+                        <tr>
+                            <th>Features</th>
+                            <th>Modern Villa with Pool</th>
+                            <th>Luxury Downtown Apartment</th>
+                            <th>Prime Commercial Space</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td class="comparison-feature">Price</td>
+                            <td>$850,000</td>
+                            <td>$3,500/month</td>
+                            <td>$8,500/month</td>
+                        </tr>
+                        <tr>
+                            <td class="comparison-feature">Size</td>
+                            <td>2,500 sqft</td>
+                            <td>1,200 sqft</td>
+                            <td>5,000 sqft</td>
+                        </tr>
+                        <tr>
+                            <td class="comparison-feature">Bedrooms</td>
+                            <td>4</td>
+                            <td>2</td>
+                            <td>N/A</td>
+                        </tr>
+                        <tr>
+                            <td class="comparison-feature">Bathrooms</td>
+                            <td>3</td>
+                            <td>2</td>
+                            <td>2</td>
+                        </tr>
+                        <tr>
+                            <td class="comparison-feature">Swimming Pool</td>
+                            <td><i class="fas fa-check check-icon"></i></td>
+                            <td><i class="fas fa-times x-icon"></i></td>
+                            <td><i class="fas fa-times x-icon"></i></td>
+                        </tr>
+                        <tr>
+                            <td class="comparison-feature">Garden</td>
+                            <td><i class="fas fa-check check-icon"></i></td>
+                            <td><i class="fas fa-times x-icon"></i></td>
+                            <td><i class="fas fa-times x-icon"></i></td>
+                        </tr>
+                        <tr>
+                            <td class="comparison-feature">Parking</td>
+                            <td>2 Cars</td>
+                            <td>1 Car</td>
+                            <td>10 Cars</td>
+                        </tr>
+                        <tr>
+                            <td class="comparison-feature">Public Transport</td>
+                            <td>15 min walk</td>
+                            <td>5 min walk</td>
+                            <td>10 min walk</td>
+                        </tr>
+                        <tr>
+                            <td class="comparison-feature">Year Built</td>
+                            <td>2020</td>
+                            <td>2018</td>
+                            <td>2015</td>
+                        </tr>
+                        <tr>
+                            <td class="comparison-feature">Pet Friendly</td>
+                            <td><i class="fas fa-check check-icon"></i></td>
+                            <td><i class="fas fa-check check-icon"></i></td>
+                            <td><i class="fas fa-times x-icon"></i></td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </section>
+
+    <!-- Blog Section -->
+    <section class="blog">
+        <div class="container">
+            <div class="blog-header">
+                <h2 class="section-title">Latest from Our Blog</h2>
+                <p class="services-subtitle">Stay updated with the latest news, insights, and tips from our real estate experts</p>
+            </div>
+            <div class="blog-grid">
+                <div class="blog-card">
+                    <div class="blog-image">
+                        <img src="https://images.unsplash.com/photo-1626178793926-22b28830aa30?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1170&q=80" alt="Blog Post">
+                    </div>
+                    <div class="blog-content">
+                        <p class="blog-date">March 15, 2023</p>
+                        <h3 class="blog-title">5 Tips for First-Time Property Investors</h3>
+                        <p class="blog-excerpt">Learn the essential strategies every new property investor should know before making their first purchase...</p>
+                        <a href="#" class="btn btn-secondary">Read More</a>
+                    </div>
+                </div>
+                <div class="blog-card">
+                    <div class="blog-image">
+                        <img src="https://images.unsplash.com/photo-1486406146926-c627a92ad1ab?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1170&q=80" alt="Blog Post">
+                    </div>
+                    <div class="blog-content">
+                        <p class="blog-date">March 10, 2023</p>
+                        <h3 class="blog-title">Commercial Property Market Trends for 2023</h3>
+                        <p class="blog-excerpt">An in-depth analysis of the latest trends and predictions for the commercial real estate market...</p>
+                        <a href="#" class="btn btn-secondary">Read More</a>
+                    </div>
+                </div>
+                <div class="blog-card">
+                    <div class="blog-image">
+                        <img src="https://images.unsplash.com/photo-1531971589569-0d9370cbe1e5?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1481&q=80" alt="Blog Post">
+                    </div>
+                    <div class="blog-content">
+                        <p class="blog-date">March 5, 2023</p>
+                        <h3 class="blog-title">How to Maximize Your Property's Rental Income</h3>
+                        <p class="blog-excerpt">Discover proven strategies to increase the rental income from your investment properties...</p>
+                        <a href="#" class="btn btn-secondary">Read More</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Newsletter Section -->
+    <section class="newsletter">
+        <div class="container">
+            <h2 class="newsletter-title">Subscribe to Our Newsletter</h2>
+            <p class="newsletter-text">Stay updated with the latest properties, market insights, and investment opportunities by subscribing to our newsletter.</p>
+            <form class="newsletter-form">
+                <input type="email" class="newsletter-input" placeholder="Enter your email address" required>
+                <button type="submit" class="newsletter-btn">Subscribe</button>
+            </form>
+        </div>
+    </section>
+
+    <!-- Contact Section -->
+    <section id="contact" class="contact">
+        <div class="container">
+            <div class="contact-container">
+                <div class="contact-info">
+                    <h2 class="contact-title">Get in Touch</h2>
+                    <p class="contact-text">Have questions or need more information? Reach out to us and our team of experts will be happy to assist you.</p>
+                    <div class="contact-details">
+                        <div class="contact-detail">
+                            <div class="contact-icon">
+                                <i class="fas fa-map-marker-alt"></i>
+                            </div>
+                            <div class="contact-info-content">
+                                <h4>Our Office</h4>
+                                <p>123 Real Estate Avenue, New York, NY 10001</p>
+                            </div>
+                        </div>
+                        <div class="contact-detail">
+                            <div class="contact-icon">
+                                <i class="fas fa-phone-alt"></i>
+                            </div>
+                            <div class="contact-info-content">
+                                <h4>Phone</h4>
+                                <a href="tel:+11234567890">(123) 456-7890</a>
+                            </div>
+                        </div>
+                        <div class="contact-detail">
+                            <div class="contact-icon">
+                                <i class="fas fa-envelope"></i>
+                            </div>
+                            <div class="contact-info-content">
+                                <h4>Email</h4>
+                                <a href="mailto:info@eliteagents.com">info@eliteagents.com</a>
+                            </div>
+                        </div>
+                        <div class="contact-detail">
+                            <div class="contact-icon">
+                                <i class="fas fa-clock"></i>
+                            </div>
+                            <div class="contact-info-content">
+                                <h4>Working Hours</h4>
+                                <p>Monday - Friday: 9:00 AM - 6:00 PM</p>
+                                <p>Saturday: 10:00 AM - 4:00 PM</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="contact-form">
+                    <h3 class="contact-title">Send us a Message</h3>
+                    <form>
+                        <div class="form-group">
+                            <label for="name" class="form-label">Full Name</label>
+                            <input type="text" id="name" class="form-control" placeholder="Enter your name" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="email" class="form-label">Email Address</label>
+                            <input type="email" id="email" class="form-control" placeholder="Enter your email" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="phone" class="form-label">Phone Number</label>
+                            <input type="tel" id="phone" class="form-control" placeholder="Enter your phone number">
+                        </div>
+                        <div class="form-group">
+                            <label for="subject" class="form-label">Subject</label>
+                            <input type="text" id="subject" class="form-control" placeholder="Enter message subject">
+                        </div>
+                        <div class="form-group">
+                            <label for="message" class="form-label">Message</label>
+                            <textarea id="message" class="form-control" placeholder="Enter your message" required></textarea>
+                        </div>
+                        <button type="submit" class="btn btn-primary">Send Message</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- CTA Section -->
+    <section class="cta">
+        <div class="container">
+            <h2 class="cta-title">Ready to Find Your Perfect Property?</h2>
+            <p class="cta-text">Whether you're looking to buy, sell, or invest in real estate, our team of expert agents is here to guide you every step of the way.</p>
+            <div class="hero-buttons">
+                <a href="#properties" class="btn btn-primary">View Properties</a>
+                <a href="#contact" class="btn btn-secondary">Contact an Agent</a>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer>
+        <div class="container">
+            <div class="footer-container">
+                <div class="footer-col company-info">
+                    <h3>Elite Agents</h3>
+                    <p>Elite Agents is a premier real estate agency specializing in property management and agent representation. With over 15 years of experience, we provide exceptional service and expertise.</p>
+                    <div class="social-links">
+                        <a href="#" class="social-link"><i class="fab fa-facebook-f"></i></a>
+                        <a href="#" class="social-link"><i class="fab fa-twitter"></i></a>
+                        <a href="#" class="social-link"><i class="fab fa-instagram"></i></a>
+                        <a href="#" class="social-link"><i class="fab fa-linkedin-in"></i></a>
+                        <a href="#" class="social-link"><i class="fab fa-youtube"></i></a>
+                    </div>
+                </div>
+                <div class="footer-col footer-links">
+                    <h3>Quick Links</h3>
+                    <ul>
+                        <li><a href="#">Home</a></li>
+                        <li><a href="#about">About Us</a></li>
+                        <li><a href="#services">Services</a></li>
+                        <li><a href="#properties">Properties</a></li>
+                        <li><a href="#agents">Agents</a></li>
+                        <li><a href="#blog">Blog</a></li>
+                        <li><a href="#contact">Contact</a></li>
+                    </ul>
+                </div>
+                <div class="footer-col footer-links">
+                    <h3>Our Services</h3>
+                    <ul>
+                        <li><a href="#">Property Sales</a></li>
+                        <li><a href="#">Property Management</a></li>
+                        <li><a href="#">Property Search</a></li>
+                        <li><a href="#">Investment Advisory</a></li>
+                        <li><a href="#">Legal Documentation</a></li>
+                        <li><a href="#">Financial Planning</a></li>
+                    </ul>
+                </div>
+                <div class="footer-col">
+                    <h3>Contact Us</h3>
+                    <div class="footer-contact-item">
+                        <div class="footer-contact-icon">
+                            <i class="fas fa-map-marker-alt"></i>
+                        </div>
+                        <div class="footer-contact-text">
+                            123 Real Estate Avenue, New York, NY 10001
+                        </div>
+                    </div>
+                    <div class="footer-contact-item">
+                        <div class="footer-contact-icon">
+                            <i class="fas fa-phone-alt"></i>
+                        </div>
+                        <div class="footer-contact-text">
+                            (123) 456-7890
+                        </div>
+                    </div>
+                    <div class="footer-contact-item">
+                        <div class="footer-contact-icon">
+                            <i class="fas fa-envelope"></i>
+                        </div>
+                        <div class="footer-contact-text">
+                            info@eliteagents.com
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p class="copyright">© 2023 Elite Agents. All Rights Reserved.</p>
+            </div>
+        </div>
+    </footer>
+
+    <!-- JavaScript for Interactive Features -->
+    <script>
+        // Mobile Menu Toggle
+        const mobileMenuBtn = document.getElementById('mobileMenuBtn');
+        const navMenu = document.getElementById('navMenu');
+        
+        mobileMenuBtn.addEventListener('click', () => {
+            navMenu.classList.toggle('active');
+        });
+        
+        // Testimonial Slider
+        const testimonials = [
+            {
+                text: '"Working with Elite Agents was the best decision we made when selling our home. Their expertise and market knowledge helped us secure a great price in just two weeks. John guided us through every step of the process, making it stress-free and efficient."',
+                name: 'Michael Anderson',
+                title: 'Homeowner',
+                image: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=687&q=80'
+            },
+            {
+                text: '"I\'ve been using Elite Agents for property management for the past 3 years, and I couldn\'t be happier. They take care of everything, from finding quality tenants to handling maintenance issues. My rental income has increased by 15% since I started working with them."',
+                name: 'Sarah Johnson',
+                title: 'Property Investor',
+                image: 'https://images.unsplash.com/photo-1544005313-94ddf0286df2?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=688&q=80'
+            },
+            {
+                text: '"As a first-time homebuyer, I had so many questions and concerns. Jane from Elite Agents was incredibly patient and knowledgeable, guiding me through the entire process. She found me a perfect home that met all my criteria and negotiated a price well within my budget."',
+                name: 'David Williams',
+                title: 'First-time Homebuyer',
+                image: 'https://images.unsplash.com/photo-1500648767791-00dcc994a43e?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=687&q=80'
+            }
+        ];
+        
+        let currentTestimonialIndex = 0;
+        const testimonialElement = document.querySelector('.testimonial');
+        const prevBtn = document.querySelector('.prev-btn');
+        const nextBtn = document.querySelector('.next-btn');
+        
+        function updateTestimonial() {
+            const currentTestimonial = testimonials[currentTestimonialIndex];
+            testimonialElement.innerHTML = `
+                <p class="testimonial-text">"${currentTestimonial.text}"</p>
+                <div class="testimonial-author">
+                    <div class="testimonial-author-image">
+                        <img src="${currentTestimonial.image}" alt="${currentTestimonial.name}">
+                    </div>
+                    <div class="testimonial-author-info">
+                        <h4 class="testimonial-author-name">${currentTestimonial.name}</h4>
+                        <p class="testimonial-author-title">${currentTestimonial.title}</p>
+                    </div>
+                </div>
+            `;
+        }
+        
+        prevBtn.addEventListener('click', () => {
+            currentTestimonialIndex = (currentTestimonialIndex - 1 + testimonials.length) % testimonials.length;
+            updateTestimonial();
+        });
+        
+        nextBtn.addEventListener('click', () => {
+            currentTestimonialIndex = (currentTestimonialIndex + 1) % testimonials.length;
+            updateTestimonial();
+        });
+        
+        // Investment Calculator
+        const calculateBtn = document.getElementById('calculate-btn');
+        
+        function calculateInvestment() {
+            // Get input values
+            const propertyPrice = parseFloat(document.getElementById('property-price').value);
+            const downPaymentPercent = parseFloat(document.getElementById('down-payment').value);
+            const interestRate = parseFloat(document.getElementById('interest-rate').value);
+            const loanTerm = parseFloat(document.getElementById('loan-term').value);
+            const monthlyRent = parseFloat(document.getElementById('monthly-rent').value);
+            const annualExpenses = parseFloat(document.getElementById('annual-expenses').value);
+            
+            // Calculate mortgage
+            const downPayment = propertyPrice * (downPaymentPercent / 100);
+            const loanAmount = propertyPrice - downPayment;
+            const monthlyInterest = interestRate / 100 / 12;
+            const payments = loanTerm * 12;
+            
+            const monthlyMortgage = loanAmount * monthlyInterest * Math.pow(1 + monthlyInterest, payments) / (Math.pow(1 + monthlyInterest, payments) - 1);
+            
+            // Calculate cash flow
+            const monthlyExpenses = annualExpenses / 12;
+            const monthlyCashFlow = monthlyRent - monthlyMortgage - monthlyExpenses;
+            const annualCashFlow = monthlyCashFlow * 12;
+            
+            // Calculate cap rate and cash on cash return
+            const capRate = (annualCashFlow + annualExpenses) / propertyPrice * 100;
+            const cashOnCash = annualCashFlow / downPayment * 100;
+            
+            // Update results
+            document.getElementById('monthly-mortgage').textContent = '$' + monthlyMortgage.toFixed(2);
+            document.getElementById('monthly-cash-flow').textContent = '$' + monthlyCashFlow.toFixed(2);
+            document.getElementById('annual-cash-flow').textContent = '$' + annualCashFlow.toFixed(2);
+            document.getElementById('cap-rate').textContent = capRate.toFixed(2) + '%';
+            document.getElementById('cash-on-cash').textContent = cashOnCash.toFixed(2) + '%';
+        }
+        
+        calculateBtn.addEventListener('click', calculateInvestment);
+        
+        // Calculate investment on page load
+        calculateInvestment();
+        
+        // Property Favoriting
+        const favoriteButtons = document.querySelectorAll('.property-actions .btn-secondary');
+        
+        favoriteButtons.forEach(button => {
+            button.addEventListener('click', function() {
+                const icon = this.querySelector('i');
+                if (icon.classList.contains('far')) {
+                    icon.classList.remove('far');
+                    icon.classList.add('fas');
+                    icon.style.color = '#e74c3c';
+                } else {
+                    icon.classList.remove('fas');
+                    icon.classList.add('far');
+                    icon.style.color = '';
+                }
+            });
+        });
+        
+        // Smooth Scrolling for Navigation
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                e.preventDefault();
+                
+                const targetId = this.getAttribute('href');
+                if (targetId === '#') return;
+                
+                const targetElement = document.querySelector(targetId);
+                if (targetElement) {
+                    window.scrollTo({
+                        top: targetElement.offsetTop - 80,
+                        behavior: 'smooth'
+                    });
+                    
+                    // Close mobile menu if open
+                    if (navMenu.classList.contains('active')) {
+                        navMenu.classList.remove('active');
+                    }
+                }
+            });
+        });
+    </script>
+</body>
+</html>

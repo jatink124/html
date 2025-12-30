@@ -1,0 +1,1422 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>RentEase - Property Rental Platform</title>
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <style>
+        .property-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 20px rgba(0,0,0,0.1);
+        }
+        .image-gallery {
+            position: relative;
+            overflow: hidden;
+        }
+        .gallery-nav {
+            position: absolute;
+            top: 50%;
+            transform: translateY(-50%);
+            background: rgba(255,255,255,0.8);
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            z-index: 10;
+        }
+        .prev-img { left: 10px; }
+        .next-img { right: 10px; }
+        .favorite-btn {
+            position: absolute;
+            top: 15px;
+            right: 15px;
+            background: rgba(255,255,255,0.8);
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            z-index: 5;
+        }
+        .favorite-btn.active i {
+            color: #e53e3e;
+        }
+        .favorite-btn:hover {
+            background: white;
+        }
+        .price-range-slider .range-track {
+            height: 6px;
+            border-radius: 3px;
+            background: #e2e8f0;
+        }
+        .price-range-slider .range-track .range-progress {
+            height: 6px;
+            background: #4299e1;
+            border-radius: 3px;
+        }
+        .range-thumb {
+            width: 20px;
+            height: 20px;
+            border-radius: 50%;
+            background: white;
+            border: 2px solid #4299e1;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            cursor: pointer;
+        }
+        .virtual-tour-modal {
+            display: none;
+            position: fixed;
+            z-index: 50;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            overflow: auto;
+            background-color: rgba(0,0,0,0.7);
+        }
+        .virtual-tour-content {
+            margin: 5% auto;
+            padding: 20px;
+            width: 90%;
+            max-width: 1000px;
+            position: relative;
+        }
+        .close-modal {
+            position: absolute;
+            top: 15px;
+            right: 15px;
+            color: white;
+            font-size: 30px;
+            cursor: pointer;
+        }
+        .testimonial-slider {
+            overflow: hidden;
+            position: relative;
+        }
+        .testimonial-slide {
+            transition: transform 0.4s ease;
+        }
+        .compare-properties {
+            display: none;
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background: white;
+            z-index: 40;
+            box-shadow: 0 -5px 15px rgba(0,0,0,0.1);
+        }
+        .compare-property {
+            position: relative;
+        }
+        .remove-compare {
+            position: absolute;
+            top: 5px;
+            right: 5px;
+            cursor: pointer;
+            background: rgba(255,255,255,0.8);
+            width: 24px;
+            height: 24px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .map-container {
+            height: 500px;
+            width: 100%;
+            background-color: #f0f0f0;
+            position: relative;
+        }
+        .map-marker {
+            position: absolute;
+            transform: translate(-50%, -50%);
+            cursor: pointer;
+        }
+        .map-marker.house { background-color: #3182ce; }
+        .map-marker.apartment { background-color: #805ad5; }
+        .map-marker.condo { background-color: #dd6b20; }
+        .map-popup {
+            position: absolute;
+            width: 250px;
+            background: white;
+            border-radius: 0.5rem;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            padding: 1rem;
+            z-index: 10;
+            display: none;
+        }
+        .map-popup:after {
+            content: '';
+            position: absolute;
+            bottom: -10px;
+            left: 50%;
+            transform: translateX(-50%);
+            border-width: 10px 10px 0;
+            border-style: solid;
+            border-color: white transparent transparent;
+        }
+        .date-picker {
+            border: 1px solid #e2e8f0;
+            border-radius: 0.375rem;
+            padding: 0.5rem;
+            width: 100%;
+        }
+        .booking-timeline {
+            height: 80px;
+            background: #f7fafc;
+            position: relative;
+            border-radius: 0.375rem;
+            overflow: hidden;
+        }
+        .booking-period {
+            position: absolute;
+            height: 40px;
+            top: 20px;
+            background: #4299e1;
+            border-radius: 4px;
+        }
+        .booking-date {
+            position: absolute;
+            font-size: 10px;
+            white-space: nowrap;
+        }
+        .amenity-tag {
+            background: #ebf4ff;
+            color: #4299e1;
+            padding: 0.25rem 0.75rem;
+            border-radius: 9999px;
+            font-size: 0.75rem;
+            display: inline-block;
+            margin-right: 0.5rem;
+            margin-bottom: 0.5rem;
+        }
+        
+        /* Responsive adjustments */
+        @media (max-width: 768px) {
+            .virtual-tour-content {
+                margin: 15% auto;
+                width: 95%;
+            }
+        }
+    </style>
+</head>
+<body class="font-sans bg-gray-50">
+    <!-- Header Section -->
+    <header class="bg-white shadow-md sticky top-0 z-30">
+        <div class="container mx-auto px-4 py-4">
+            <div class="flex items-center justify-between">
+                <div class="flex items-center">
+                    <a href="#" class="text-2xl font-bold text-indigo-600">RentEase</a>
+                    <nav class="hidden md:flex ml-10 space-x-8">
+                        <a href="#" class="font-medium text-gray-700 hover:text-indigo-600">Home</a>
+                        <a href="#" class="font-medium text-gray-700 hover:text-indigo-600">Properties</a>
+                        <a href="#" class="font-medium text-gray-700 hover:text-indigo-600">Short-term</a>
+                        <a href="#" class="font-medium text-gray-700 hover:text-indigo-600">Long-term</a>
+                        <a href="#" class="font-medium text-gray-700 hover:text-indigo-600">About Us</a>
+                    </nav>
+                </div>
+                <div class="flex items-center space-x-4">
+                    <a href="#" class="hidden md:inline-block text-indigo-600 hover:text-indigo-800">Login</a>
+                    <a href="#" class="hidden md:inline-block bg-indigo-600 text-white px-4 py-2 rounded-md hover:bg-indigo-700 transition">List Your Property</a>
+                    <button class="md:hidden text-gray-700" id="mobile-menu-button">
+                        <i class="fas fa-bars text-xl"></i>
+                    </button>
+                </div>
+            </div>
+            <div id="mobile-menu" class="md:hidden hidden mt-4 pb-2">
+                <nav class="flex flex-col space-y-3">
+                    <a href="#" class="font-medium text-gray-700 hover:text-indigo-600 py-2">Home</a>
+                    <a href="#" class="font-medium text-gray-700 hover:text-indigo-600 py-2">Properties</a>
+                    <a href="#" class="font-medium text-gray-700 hover:text-indigo-600 py-2">Short-term</a>
+                    <a href="#" class="font-medium text-gray-700 hover:text-indigo-600 py-2">Long-term</a>
+                    <a href="#" class="font-medium text-gray-700 hover:text-indigo-600 py-2">About Us</a>
+                    <div class="flex space-x-4 pt-2">
+                        <a href="#" class="text-indigo-600 hover:text-indigo-800">Login</a>
+                        <a href="#" class="bg-indigo-600 text-white px-4 py-2 rounded-md hover:bg-indigo-700 transition">List Your Property</a>
+                    </div>
+                </nav>
+            </div>
+        </div>
+    </header>
+
+    <!-- Hero Section with Search -->
+    <section class="relative h-[500px] md:h-[600px] bg-cover bg-center" style="background-image: url('https://images.unsplash.com/photo-1560448204-e02f11c3d0e2?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=2000&q=80');">
+        <div class="absolute inset-0 bg-black opacity-50"></div>
+        <div class="container mx-auto px-4 h-full flex items-center justify-center relative z-10">
+            <div class="text-center max-w-4xl">
+                <h1 class="text-4xl md:text-5xl lg:text-6xl font-bold text-white mb-6">Find Your Perfect Rental</h1>
+                <p class="text-xl text-white mb-8">Discover amazing properties for short-term or long-term rental that fit your lifestyle and budget</p>
+                
+                <!-- Property Search Form -->
+                <div class="bg-white rounded-lg shadow-lg p-6 w-full max-w-4xl mx-auto">
+                    <div class="flex flex-wrap -mx-2">
+                        <div class="w-full md:w-1/4 px-2 mb-4 md:mb-0">
+                            <label class="block text-gray-700 text-sm font-medium mb-2">Location</label>
+                            <input type="text" placeholder="City or Zip Code" class="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500">
+                        </div>
+                        <div class="w-full md:w-1/4 px-2 mb-4 md:mb-0">
+                            <label class="block text-gray-700 text-sm font-medium mb-2">Check In</label>
+                            <input type="date" class="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500 date-picker">
+                        </div>
+                        <div class="w-full md:w-1/4 px-2 mb-4 md:mb-0">
+                            <label class="block text-gray-700 text-sm font-medium mb-2">Check Out</label>
+                            <input type="date" class="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500 date-picker">
+                        </div>
+                        <div class="w-full md:w-1/4 px-2">
+                            <label class="block text-gray-700 text-sm font-medium mb-2">Rental Type</label>
+                            <select class="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500">
+                                <option value="">Any Type</option>
+                                <option value="short">Short-term</option>
+                                <option value="long">Long-term</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="flex justify-center mt-6">
+                        <button class="bg-indigo-600 text-white px-8 py-3 rounded-md hover:bg-indigo-700 transition flex items-center">
+                            <i class="fas fa-search mr-2"></i> Find Rentals
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Rental Types Section -->
+    <section class="py-16 bg-white">
+        <div class="container mx-auto px-4">
+            <h2 class="text-3xl font-bold text-center mb-12">Find Your Perfect Stay</h2>
+            
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
+                <div class="bg-gray-50 rounded-lg overflow-hidden shadow-md hover:shadow-lg transition-shadow duration-300">
+                    <img src="https://images.unsplash.com/photo-1522708323590-d24dbb6b0267?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=800&q=80" alt="Apartments" class="w-full h-48 object-cover">
+                    <div class="p-6">
+                        <h3 class="text-xl font-semibold mb-2">Apartments</h3>
+                        <p class="text-gray-600 mb-4">Modern living spaces in prime locations with amenities</p>
+                        <a href="#" class="text-indigo-600 hover:text-indigo-800 font-medium">Browse Apartments</a>
+                    </div>
+                </div>
+                
+                <div class="bg-gray-50 rounded-lg overflow-hidden shadow-md hover:shadow-lg transition-shadow duration-300">
+                    <img src="https://images.unsplash.com/photo-1600585154340-be6161a56a0c?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=800&q=80" alt="Houses" class="w-full h-48 object-cover">
+                    <div class="p-6">
+                        <h3 class="text-xl font-semibold mb-2">Houses</h3>
+                        <p class="text-gray-600 mb-4">Spacious homes perfect for families and long-term stays</p>
+                        <a href="#" class="text-indigo-600 hover:text-indigo-800 font-medium">Browse Houses</a>
+                    </div>
+                </div>
+                
+                <div class="bg-gray-50 rounded-lg overflow-hidden shadow-md hover:shadow-lg transition-shadow duration-300">
+                    <img src="https://images.unsplash.com/photo-1610641818989-c2051b5e2cfd?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=800&q=80" alt="Vacation Rentals" class="w-full h-48 object-cover">
+                    <div class="p-6">
+                        <h3 class="text-xl font-semibold mb-2">Vacation Rentals</h3>
+                        <p class="text-gray-600 mb-4">Perfect getaways for short stays and vacations</p>
+                        <a href="#" class="text-indigo-600 hover:text-indigo-800 font-medium">Browse Vacation Rentals</a>
+                    </div>
+                </div>
+                
+                <div class="bg-gray-50 rounded-lg overflow-hidden shadow-md hover:shadow-lg transition-shadow duration-300">
+                    <img src="https://images.unsplash.com/photo-1577415124269-fc1140a69e91?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=800&q=80" alt="Shared Spaces" class="w-full h-48 object-cover">
+                    <div class="p-6">
+                        <h3 class="text-xl font-semibold mb-2">Shared Spaces</h3>
+                        <p class="text-gray-600 mb-4">Affordable co-living options with community amenities</p>
+                        <a href="#" class="text-indigo-600 hover:text-indigo-800 font-medium">Browse Shared Spaces</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Property Filter Section -->
+    <section class="bg-gray-50 py-12">
+        <div class="container mx-auto px-4">
+            <h2 class="text-3xl font-bold text-center mb-10">Find Your Perfect Rental</h2>
+            
+            <div class="bg-white rounded-lg p-6 shadow-md">
+                <div class="grid grid-cols-1 md:grid-cols-4 gap-6">
+                    <div>
+                        <label class="block text-gray-700 text-sm font-medium mb-2">Rental Duration</label>
+                        <div class="flex gap-4">
+                            <label class="inline-flex items-center">
+                                <input type="checkbox" class="form-checkbox h-5 w-5 text-indigo-600" checked>
+                                <span class="ml-2 text-gray-700">Short-term</span>
+                            </label>
+                            <label class="inline-flex items-center">
+                                <input type="checkbox" class="form-checkbox h-5 w-5 text-indigo-600">
+                                <span class="ml-2 text-gray-700">Long-term</span>
+                            </label>
+                        </div>
+                    </div>
+                    
+                    <div>
+                        <label class="block text-gray-700 text-sm font-medium mb-2">Property Type</label>
+                        <select class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500">
+                            <option value="">All Types</option>
+                            <option value="apartment">Apartments</option>
+                            <option value="house">Houses</option>
+                            <option value="condo">Condos</option>
+                            <option value="vacation">Vacation Homes</option>
+                            <option value="shared">Shared Spaces</option>
+                        </select>
+                    </div>
+                    
+                    <div>
+                        <label class="block text-gray-700 text-sm font-medium mb-2">Bedrooms</label>
+                        <select class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500">
+                            <option value="">Any</option>
+                            <option value="studio">Studio</option>
+                            <option value="1">1</option>
+                            <option value="2">2</option>
+                            <option value="3">3</option>
+                            <option value="4">4+</option>
+                        </select>
+                    </div>
+                    
+                    <div>
+                        <label class="block text-gray-700 text-sm font-medium mb-2">Bathrooms</label>
+                        <select class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500">
+                            <option value="">Any</option>
+                            <option value="1">1</option>
+                            <option value="1.5">1.5</option>
+                            <option value="2">2</option>
+                            <option value="2.5">2.5+</option>
+                        </select>
+                    </div>
+                </div>
+                
+                <div class="mt-6">
+                    <label class="block text-gray-700 text-sm font-medium mb-2">Price Range: $500 - $5,000 per month</label>
+                    <div class="price-range-slider relative mt-4 mx-4">
+                        <div class="range-track">
+                            <div class="range-progress" style="left: 10%; right: 20%"></div>
+                        </div>
+                        <div class="range-thumb absolute top-0 mt-[-7px]" style="left: 10%"></div>
+                        <div class="range-thumb absolute top-0 mt-[-7px]" style="left: 80%"></div>
+                    </div>
+                </div>
+                
+                <div class="mt-8">
+                    <h3 class="text-gray-700 text-sm font-medium mb-3">Amenities</h3>
+                    <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
+                        <label class="inline-flex items-center">
+                            <input type="checkbox" class="form-checkbox h-5 w-5 text-indigo-600">
+                            <span class="ml-2 text-gray-700">Wi-Fi</span>
+                        </label>
+                        <label class="inline-flex items-center">
+                            <input type="checkbox" class="form-checkbox h-5 w-5 text-indigo-600">
+                            <span class="ml-2 text-gray-700">Air Conditioning</span>
+                        </label>
+                        <label class="inline-flex items-center">
+                            <input type="checkbox" class="form-checkbox h-5 w-5 text-indigo-600">
+                            <span class="ml-2 text-gray-700">Swimming Pool</span>
+                        </label>
+                        <label class="inline-flex items-center">
+                            <input type="checkbox" class="form-checkbox h-5 w-5 text-indigo-600">
+                            <span class="ml-2 text-gray-700">Gym</span>
+                        </label>
+                        <label class="inline-flex items-center">
+                            <input type="checkbox" class="form-checkbox h-5 w-5 text-indigo-600">
+                            <span class="ml-2 text-gray-700">Parking</span>
+                        </label>
+                        <label class="inline-flex items-center">
+                            <input type="checkbox" class="form-checkbox h-5 w-5 text-indigo-600">
+                            <span class="ml-2 text-gray-700">Pet Friendly</span>
+                        </label>
+                        <label class="inline-flex items-center">
+                            <input type="checkbox" class="form-checkbox h-5 w-5 text-indigo-600">
+                            <span class="ml-2 text-gray-700">Furnished</span>
+                        </label>
+                        <label class="inline-flex items-center">
+                            <input type="checkbox" class="form-checkbox h-5 w-5 text-indigo-600">
+                            <span class="ml-2 text-gray-700">Laundry</span>
+                        </label>
+                    </div>
+                </div>
+                
+                <div class="flex flex-wrap items-center justify-between mt-8">
+                    <button class="bg-white border border-gray-300 text-gray-700 px-4 py-2 rounded-md hover:bg-gray-50 transition">
+                        Reset Filters
+                    </button>
+                    <button class="bg-indigo-600 text-white px-6 py-2 rounded-md hover:bg-indigo-700 transition">
+                        Apply Filters
+                    </button>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Featured Rentals Section -->
+    <section class="py-16 bg-white">
+        <div class="container mx-auto px-4">
+            <div class="flex justify-between items-center mb-10">
+                <h2 class="text-3xl font-bold">Featured Rentals</h2>
+                <div class="flex space-x-2">
+                    <button class="bg-white border border-gray-300 text-gray-700 w-10 h-10 flex items-center justify-center rounded-full hover:bg-gray-50 transition">
+                        <i class="fas fa-chevron-left"></i>
+                    </button>
+                    <button class="bg-white border border-gray-300 text-gray-700 w-10 h-10 flex items-center justify-center rounded-full hover:bg-gray-50 transition">
+                        <i class="fas fa-chevron-right"></i>
+                    </button>
+                </div>
+            </div>
+            
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+                <!-- Property Card 1 -->
+                <div class="bg-white rounded-lg overflow-hidden shadow-md transition-transform duration-300 property-card">
+                    <div class="relative image-gallery">
+                        <div class="favorite-btn" onclick="toggleFavorite(this)">
+                            <i class="far fa-heart text-gray-600"></i>
+                        </div>
+                        <img src="https://images.unsplash.com/photo-1560185007-c5ca9d2c014d?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=800&q=80" alt="Property Image" class="w-full h-64 object-cover">
+                        <div class="absolute bottom-0 left-0 bg-purple-600 text-white py-1 px-3">
+                            Short-term
+                        </div>
+                        <div class="gallery-nav prev-img">
+                            <i class="fas fa-chevron-left"></i>
+                        </div>
+                        <div class="gallery-nav next-img">
+                            <i class="fas fa-chevron-right"></i>
+                        </div>
+                    </div>
+                    <div class="p-6">
+                        <h3 class="text-xl font-semibold mb-2">Luxury Beachfront Condo</h3>
+                        <p class="text-gray-500 mb-4">123 Ocean Drive, Miami Beach, FL</p>
+                        <div class="flex justify-between mb-4">
+                            <span class="text-2xl font-bold text-indigo-600">$250/night</span>
+                            <button class="text-indigo-600 hover:underline" onclick="addToCompare(1)">Compare</button>
+                        </div>
+                        <div class="flex flex-wrap mb-4">
+                            <span class="amenity-tag">Wi-Fi</span>
+                            <span class="amenity-tag">Pool</span>
+                            <span class="amenity-tag">Ocean View</span>
+                            <span class="amenity-tag">Gym</span>
+                        </div>
+                        <div class="flex justify-between text-gray-600 mb-6">
+                            <span><i class="fas fa-bed mr-2"></i>2 Beds</span>
+                            <span><i class="fas fa-bath mr-2"></i>2 Baths</span>
+                            <span><i class="fas fa-ruler-combined mr-2"></i>1,200 Sq Ft</span>
+                        </div>
+                        <div class="flex space-x-3">
+                            <button class="flex-1 bg-indigo-600 text-white py-2 px-4 rounded-md hover:bg-indigo-700 transition">View Details</button>
+                            <button class="bg-white border border-indigo-600 text-indigo-600 py-2 px-4 rounded-md hover:bg-indigo-50 transition" onclick="openVirtualTour()">
+                                <i class="fas fa-vr-cardboard mr-2"></i>Virtual Tour
+                            </button>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Property Card 2 -->
+                <div class="bg-white rounded-lg overflow-hidden shadow-md transition-transform duration-300 property-card">
+                    <div class="relative image-gallery">
+                        <div class="favorite-btn" onclick="toggleFavorite(this)">
+                            <i class="far fa-heart text-gray-600"></i>
+                        </div>
+                        <img src="https://images.unsplash.com/photo-1586023492125-27b2c045efd7?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=800&q=80" alt="Property Image" class="w-full h-64 object-cover">
+                        <div class="absolute bottom-0 left-0 bg-blue-600 text-white py-1 px-3">
+                            Long-term
+                        </div>
+                        <div class="gallery-nav prev-img">
+                            <i class="fas fa-chevron-left"></i>
+                        </div>
+                        <div class="gallery-nav next-img">
+                            <i class="fas fa-chevron-right"></i>
+                        </div>
+                    </div>
+                    <div class="p-6">
+                        <h3 class="text-xl font-semibold mb-2">Modern Downtown Apartment</h3>
+                        <p class="text-gray-500 mb-4">456 Central Avenue, Chicago, IL</p>
+                        <div class="flex justify-between mb-4">
+                            <span class="text-2xl font-bold text-indigo-600">$2,200/month</span>
+                            <button class="text-indigo-600 hover:underline" onclick="addToCompare(2)">Compare</button>
+                        </div>
+                        <div class="flex flex-wrap mb-4">
+                            <span class="amenity-tag">Wi-Fi</span>
+                            <span class="amenity-tag">Parking</span>
+                            <span class="amenity-tag">Furnished</span>
+                            <span class="amenity-tag">Laundry</span>
+                        </div>
+                        <div class="flex justify-between text-gray-600 mb-6">
+                            <span><i class="fas fa-bed mr-2"></i>1 Bed</span>
+                            <span><i class="fas fa-bath mr-2"></i>1 Bath</span>
+                            <span><i class="fas fa-ruler-combined mr-2"></i>850 Sq Ft</span>
+                        </div>
+                        <div class="flex space-x-3">
+                            <button class="flex-1 bg-indigo-600 text-white py-2 px-4 rounded-md hover:bg-indigo-700 transition">View Details</button>
+                            <button class="bg-white border border-indigo-600 text-indigo-600 py-2 px-4 rounded-md hover:bg-indigo-50 transition" onclick="openVirtualTour()">
+                                <i class="fas fa-vr-cardboard mr-2"></i>Virtual Tour
+                            </button>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Property Card 3 -->
+                <div class="bg-white rounded-lg overflow-hidden shadow-md transition-transform duration-300 property-card">
+                    <div class="relative image-gallery">
+                        <div class="favorite-btn" onclick="toggleFavorite(this)">
+                            <i class="far fa-heart text-gray-600"></i>
+                        </div>
+                        <img src="https://images.unsplash.com/photo-1600607687939-ce8a6c25118c?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=800&q=80" alt="Property Image" class="w-full h-64 object-cover">
+                        <div class="absolute bottom-0 left-0 bg-blue-600 text-white py-1 px-3">
+                            Long-term
+                        </div>
+                        <div class="gallery-nav prev-img">
+                            <i class="fas fa-chevron-left"></i>
+                        </div>
+                        <div class="gallery-nav next-img">
+                            <i class="fas fa-chevron-right"></i>
+                        </div>
+                    </div>
+                    <div class="p-6">
+                        <h3 class="text-xl font-semibold mb-2">Family Home with Garden</h3>
+                        <p class="text-gray-500 mb-4">789 Maple Street, Seattle, WA</p>
+                        <div class="flex justify-between mb-4">
+                            <span class="text-2xl font-bold text-indigo-600">$3,500/month</span>
+                            <button class="text-indigo-600 hover:underline" onclick="addToCompare(3)">Compare</button>
+                        </div>
+                        <div class="flex flex-wrap mb-4">
+                            <span class="amenity-tag">Backyard</span>
+                            <span class="amenity-tag">Garage</span>
+                            <span class="amenity-tag">Pet Friendly</span>
+                            <span class="amenity-tag">Fireplace</span>
+                        </div>
+                        <div class="flex justify-between text-gray-600 mb-6">
+                            <span><i class="fas fa-bed mr-2"></i>3 Beds</span>
+                            <span><i class="fas fa-bath mr-2"></i>2.5 Baths</span>
+                            <span><i class="fas fa-ruler-combined mr-2"></i>2,200 Sq Ft</span>
+                        </div>
+                        <div class="flex space-x-3">
+                            <button class="flex-1 bg-indigo-600 text-white py-2 px-4 rounded-md hover:bg-indigo-700 transition">View Details</button>
+                            <button class="bg-white border border-indigo-600 text-indigo-600 py-2 px-4 rounded-md hover:bg-indigo-50 transition" onclick="openVirtualTour()">
+                                <i class="fas fa-vr-cardboard mr-2"></i>Virtual Tour
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="text-center mt-12">
+                <a href="#" class="inline-block bg-white border border-indigo-600 text-indigo-600 px-6 py-3 rounded-md hover:bg-indigo-50 transition">
+                    View All Properties
+                </a>
+            </div>
+        </div>
+    </section>
+
+    <!-- Availability Calendar Section -->
+    <section class="py-16 bg-gray-50">
+        <div class="container mx-auto px-4">
+            <h2 class="text-3xl font-bold text-center mb-12">Booking Availability</h2>
+            
+            <div class="bg-white rounded-lg shadow-md p-8">
+                <div class="grid grid-cols-1 lg:grid-cols-2 gap-12">
+                    <div>
+                        <h3 class="text-xl font-semibold mb-4">Luxury Beachfront Condo</h3>
+                        <p class="text-gray-600 mb-6">Check the availability and book your stay online. Instant confirmation.</p>
+                        
+                        <div class="mb-8">
+                            <div class="flex justify-between items-center mb-4">
+                                <h4 class="font-medium">August 2023</h4>
+                                <div class="flex space-x-2">
+                                    <button class="text-gray-500 hover:text-gray-700">
+                                        <i class="fas fa-chevron-left"></i>
+                                    </button>
+                                    <button class="text-gray-500 hover:text-gray-700">
+                                        <i class="fas fa-chevron-right"></i>
+                                    </button>
+                                </div>
+                            </div>
+                            
+                            <div class="grid grid-cols-7 gap-2 text-center">
+                                <div class="text-xs text-gray-500 font-medium">Sun</div>
+                                <div class="text-xs text-gray-500 font-medium">Mon</div>
+                                <div class="text-xs text-gray-500 font-medium">Tue</div>
+                                <div class="text-xs text-gray-500 font-medium">Wed</div>
+                                <div class="text-xs text-gray-500 font-medium">Thu</div>
+                                <div class="text-xs text-gray-500 font-medium">Fri</div>
+                                <div class="text-xs text-gray-500 font-medium">Sat</div>
+                                
+                                <div></div>
+                                <div></div>
+                                <div class="p-2 text-sm text-gray-400">1</div>
+                                <div class="p-2 text-sm text-gray-400">2</div>
+                                <div class="p-2 text-sm text-gray-400">3</div>
+                                <div class="p-2 text-sm text-gray-400">4</div>
+                                <div class="p-2 text-sm text-gray-400">5</div>
+                                
+                                <div class="p-2 text-sm text-gray-400">6</div>
+                                <div class="p-2 text-sm text-gray-400">7</div>
+                                <div class="p-2 text-sm text-gray-400">8</div>
+                                <div class="p-2 text-sm text-gray-800 cursor-pointer hover:bg-indigo-50 rounded">9</div>
+                                <div class="p-2 text-sm text-gray-800 cursor-pointer hover:bg-indigo-50 rounded">10</div>
+                                <div class="p-2 text-sm text-gray-800 cursor-pointer hover:bg-indigo-50 rounded">11</div>
+                                <div class="p-2 text-sm text-gray-800 cursor-pointer hover:bg-indigo-50 rounded">12</div>
+                                
+                                <div class="p-2 text-sm text-gray-800 cursor-pointer hover:bg-indigo-50 rounded">13</div>
+                                <div class="p-2 text-sm text-gray-800 cursor-pointer hover:bg-indigo-50 rounded">14</div>
+                                <div class="p-2 text-sm text-gray-800 cursor-pointer hover:bg-indigo-50 rounded">15</div>
+                                <div class="p-2 text-sm text-gray-800 cursor-pointer hover:bg-indigo-50 rounded">16</div>
+                                <div class="p-2 text-sm text-gray-800 cursor-pointer hover:bg-indigo-50 rounded">17</div>
+                                <div class="p-2 text-sm text-gray-800 cursor-pointer hover:bg-indigo-50 rounded">18</div>
+                                <div class="p-2 text-sm text-gray-800 cursor-pointer hover:bg-indigo-50 rounded">19</div>
+                                
+                                <div class="p-2 text-sm text-gray-400 bg-red-50 rounded">20</div>
+                                <div class="p-2 text-sm text-gray-400 bg-red-50 rounded">21</div>
+                                <div class="p-2 text-sm text-gray-400 bg-red-50 rounded">22</div>
+                                <div class="p-2 text-sm text-gray-400 bg-red-50 rounded">23</div>
+                                <div class="p-2 text-sm text-gray-800 cursor-pointer hover:bg-indigo-50 rounded">24</div>
+                                <div class="p-2 text-sm text-gray-800 cursor-pointer hover:bg-indigo-50 rounded">25</div>
+                                <div class="p-2 text-sm text-gray-800 cursor-pointer hover:bg-indigo-50 rounded">26</div>
+                                
+                                <div class="p-2 text-sm text-gray-800 cursor-pointer hover:bg-indigo-50 rounded">27</div>
+                                <div class="p-2 text-sm text-gray-800 cursor-pointer hover:bg-indigo-50 rounded">28</div>
+                                <div class="p-2 text-sm text-gray-800 cursor-pointer hover:bg-indigo-50 rounded">29</div>
+                                <div class="p-2 text-sm text-gray-800 cursor-pointer hover:bg-indigo-50 rounded">30</div>
+                                <div class="p-2 text-sm text-gray-800 cursor-pointer hover:bg-indigo-50 rounded">31</div>
+                                <div></div>
+                                <div></div>
+                            </div>
+                            
+                            <div class="flex items-center mt-4 text-xs text-gray-500">
+                                <span class="inline-block w-3 h-3 bg-red-50 rounded-full mr-2"></span>
+                                <span>Booked</span>
+                                <span class="inline-block w-3 h-3 bg-white border border-gray-200 rounded-full ml-4 mr-2"></span>
+                                <span>Available</span>
+                            </div>
+                        </div>
+                        
+                        <div class="mt-6">
+                            <h4 class="font-medium mb-2">Upcoming Availability</h4>
+                            <div class="booking-timeline relative">
+                                <div class="booking-period" style="left: 10%; width: 15%"></div>
+                                <div class="booking-period" style="left: 35%; width: 20%"></div>
+                                <div class="booking-period" style="left: 65%; width: 10%"></div>
+                                <div class="booking-date" style="left: 0%; bottom: 0">Aug 1</div>
+                                <div class="booking-date" style="left: 25%; bottom: 0">Aug 8</div>
+                                <div class="booking-date" style="left: 50%; bottom: 0">Aug 15</div>
+                                <div class="booking-date" style="left: 75%; bottom: 0">Aug 22</div>
+                                <div class="booking-date" style="right: 0%; bottom: 0">Aug 31</div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div>
+                        <h3 class="text-xl font-semibold mb-4">Book Your Stay</h3>
+                        <form>
+                            <div class="space-y-4">
+                                <div>
+                                    <label class="block text-gray-700 text-sm font-medium mb-2">Check-in Date</label>
+                                    <input type="date" class="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500">
+                                </div>
+                                <div>
+                                    <label class="block text-gray-700 text-sm font-medium mb-2">Check-out Date</label>
+                                    <input type="date" class="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500">
+                                </div>
+                                <div>
+                                    <label class="block text-gray-700 text-sm font-medium mb-2">Number of Guests</label>
+                                    <select class="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500">
+                                        <option>1 Guest</option>
+                                        <option>2 Guests</option>
+                                        <option>3 Guests</option>
+                                        <option>4 Guests</option>
+                                        <option>5+ Guests</option>
+                                    </select>
+                                </div>
+                                
+                                <div class="bg-gray-50 p-4 rounded-md">
+                                    <h4 class="font-medium mb-3">Price Breakdown</h4>
+                                    <div class="space-y-2">
+                                        <div class="flex justify-between">
+                                            <span class="text-gray-600">$250 x 5 nights</span>
+                                            <span>$1,250</span>
+                                        </div>
+                                        <div class="flex justify-between">
+                                            <span class="text-gray-600">Cleaning fee</span>
+                                            <span>$100</span>
+                                        </div>
+                                        <div class="flex justify-between">
+                                            <span class="text-gray-600">Service fee</span>
+                                            <span>$75</span>
+                                        </div>
+                                        <div class="flex justify-between pt-2 border-t border-gray-200">
+                                            <span class="font-medium">Total</span>
+                                            <span class="font-medium">$1,425</span>
+                                        </div>
+                                    </div>
+                                </div>
+                                
+                                <button type="submit" class="w-full bg-indigo-600 text-white py-3 rounded-md hover:bg-indigo-700 transition">
+                                    Book Now
+                                </button>
+                                
+                                <p class="text-xs text-gray-500 text-center">You won't be charged yet. Cancellation is free up to 48 hours before check-in.</p>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Map View Section -->
+    <section class="py-16 bg-white">
+        <div class="container mx-auto px-4">
+            <h2 class="text-3xl font-bold text-center mb-12">Explore Rentals on Map</h2>
+            
+            <div class="map-container rounded-lg overflow-hidden border border-gray-200">
+                <!-- This would connect to a real map API in production -->
+                <div class="w-full h-full bg-gray-100 flex items-center justify-center">
+                    <!-- Simulated map markers -->
+                    <div class="map-marker house w-6 h-6 rounded-full flex items-center justify-center text-white" style="top: 30%; left: 40%;" onmouseover="showMapPopup(1)" onmouseout="hideMapPopup(1)">
+                        <i class="fas fa-home"></i>
+                        <div id="map-popup-1" class="map-popup">
+                            <div class="flex items-start">
+                                <img src="https://images.unsplash.com/photo-1560185007-c5ca9d2c014d?ixlib=rb-4.0.3&auto=format&fit=crop&w=100&q=80" alt="Property" class="w-16 h-16 object-cover rounded mr-3">
+                                <div>
+                                    <h4 class="text-sm font-semibold">Luxury Beachfront Condo</h4>
+                                    <p class="text-xs text-gray-500">Miami Beach, FL</p>
+                                    <p class="text-sm font-bold text-indigo-600">$250/night</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="map-marker apartment w-6 h-6 rounded-full flex items-center justify-center text-white" style="top: 45%; left: 60%;" onmouseover="showMapPopup(2)" onmouseout="hideMapPopup(2)">
+                        <i class="fas fa-building"></i>
+                        <div id="map-popup-2" class="map-popup">
+                            <div class="flex items-start">
+                                <img src="https://images.unsplash.com/photo-1586023492125-27b2c045efd7?ixlib=rb-4.0.3&auto=format&fit=crop&w=100&q=80" alt="Property" class="w-16 h-16 object-cover rounded mr-3">
+                                <div>
+                                    <h4 class="text-sm font-semibold">Modern Downtown Apartment</h4>
+                                    <p class="text-xs text-gray-500">Chicago, IL</p>
+                                    <p class="text-sm font-bold text-indigo-600">$2,200/month</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="map-marker condo w-6 h-6 rounded-full flex items-center justify-center text-white" style="top: 60%; left: 30%;" onmouseover="showMapPopup(3)" onmouseout="hideMapPopup(3)">
+                        <i class="fas fa-city"></i>
+                        <div id="map-popup-3" class="map-popup">
+                            <div class="flex items-start">
+                                <img src="https://images.unsplash.com/photo-1600607687939-ce8a6c25118c?ixlib=rb-4.0.3&auto=format&fit=crop&w=100&q=80" alt="Property" class="w-16 h-16 object-cover rounded mr-3">
+                                <div>
+                                    <h4 class="text-sm font-semibold">Family Home with Garden</h4>
+                                    <p class="text-xs text-gray-500">Seattle, WA</p>
+                                    <p class="text-sm font-bold text-indigo-600">$3,500/month</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <p class="text-gray-500">Interactive map would be integrated here</p>
+                </div>
+                
+                <div class="bg-white border-t border-gray-200 p-4 flex flex-wrap items-center justify-between">
+                    <div class="flex space-x-6">
+                        <label class="inline-flex items-center">
+                            <input type="checkbox" class="form-checkbox h-5 w-5 text-indigo-600" checked>
+                            <span class="ml-2 text-gray-700 flex items-center">
+                                <span class="inline-block w-3 h-3 bg-blue-600 rounded-full mr-2"></span>Short-term
+                            </span>
+                        </label>
+                        <label class="inline-flex items-center">
+                            <input type="checkbox" class="form-checkbox h-5 w-5 text-indigo-600" checked>
+                            <span class="ml-2 text-gray-700 flex items-center">
+                                <span class="inline-block w-3 h-3 bg-purple-600 rounded-full mr-2"></span>Long-term
+                            </span>
+                        </label>
+                    </div>
+                    <div class="mt-4 md:mt-0">
+                        <select class="px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500">
+                            <option>All Property Types</option>
+                            <option>Apartments Only</option>
+                            <option>Houses Only</option>
+                            <option>Condos Only</option>
+                        </select>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Rental Payment Calculator Section -->
+    <section class="py-16 bg-gray-50">
+        <div class="container mx-auto px-4">
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-12">
+                <div class="bg-white rounded-lg shadow-md p-8">
+                    <h2 class="text-2xl font-bold mb-6">Rental Payments Calculator</h2>
+                    <div class="space-y-6">
+                        <div>
+                            <label class="block text-gray-700 text-sm font-medium mb-2">Monthly Rent</label>
+                            <div class="flex">
+                                <span class="inline-flex items-center px-3 border border-r-0 border-gray-300 bg-gray-50 text-gray-500 rounded-l-md">
+                                    $
+                                </span>
+                                <input type="text" value="2000" class="flex-1 px-4 py-2 border border-gray-300 rounded-r-md focus:outline-none focus:ring-2 focus:ring-indigo-500" id="monthly-rent">
+                            </div>
+                        </div>
+                        
+                        <div>
+                            <label class="block text-gray-700 text-sm font-medium mb-2">Security Deposit</label>
+                            <div class="flex">
+                                <span class="inline-flex items-center px-3 border border-r-0 border-gray-300 bg-gray-50 text-gray-500 rounded-l-md">
+                                    $
+                                </span>
+                                <input type="text" value="2000" class="flex-1 px-4 py-2 border border-gray-300 rounded-r-md focus:outline-none focus:ring-2 focus:ring-indigo-500" id="security-deposit">
+                            </div>
+                        </div>
+                        
+                        <div>
+                            <label class="block text-gray-700 text-sm font-medium mb-2">Lease Term</label>
+                            <select class="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500" id="lease-term">
+                                <option value="12">12 Months</option>
+                                <option value="6">6 Months</option>
+                                <option value="3">3 Months</option>
+                                <option value="1">Month-to-Month</option>
+                            </select>
+                        </div>
+                        
+                        <div>
+                            <label class="block text-gray-700 text-sm font-medium mb-2">Monthly Utilities (Estimated)</label>
+                            <input type="text" value="250" class="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500" id="monthly-utilities">
+                        </div>
+                        
+                        <button onclick="calculateRentalPayments()" class="w-full bg-indigo-600 text-white py-3 rounded-md hover:bg-indigo-700 transition">
+                            Calculate
+                        </button>
+                    </div>
+                </div>
+                
+                <div class="bg-white rounded-lg shadow-md p-8">
+                    <h2 class="text-2xl font-bold mb-6">Cost Summary</h2>
+                    <div class="text-center mb-8">
+                        <p class="text-gray-600 mb-2">Total Monthly Expenses</p>
+                        <p class="text-4xl font-bold text-indigo-600" id="monthly-total">$2,250</p>
+                    </div>
+                    
+                    <div class="space-y-4">
+                        <div class="flex justify-between pb-2 border-b border-gray-200">
+                            <span class="text-gray-600">Monthly Rent</span>
+                            <span class="font-medium" id="rent-value">$2,000</span>
+                        </div>
+                        <div class="flex justify-between pb-2 border-b border-gray-200">
+                            <span class="text-gray-600">Utilities (est.)</span>
+                            <span class="font-medium" id="utilities-value">$250</span>
+                        </div>
+                        <div class="flex justify-between pb-2 border-b border-gray-200">
+                            <span class="text-gray-600">Renter's Insurance (est.)</span>
+                            <span class="font-medium" id="insurance-value">$25</span>
+                        </div>
+                    </div>
+                    
+                    <div class="mt-8">
+                        <h3 class="font-semibold mb-4">Initial Costs</h3>
+                        <div class="space-y-4">
+                            <div class="flex justify-between pb-2 border-b border-gray-200">
+                                <span class="text-gray-600">First Month's Rent</span>
+                                <span class="font-medium">$2,000</span>
+                            </div>
+                            <div class="flex justify-between pb-2 border-b border-gray-200">
+                                <span class="text-gray-600">Security Deposit</span>
+                                <span class="font-medium">$2,000</span>
+                            </div>
+                            <div class="flex justify-between pb-2 border-b border-gray-200">
+                                <span class="text-gray-600">Application Fee</span>
+                                <span class="font-medium">$50</span>
+                            </div>
+                            <div class="flex justify-between font-semibold">
+                                <span>Total Due at Signing</span>
+                                <span id="initial-total">$4,050</span>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="mt-8">
+                        <div class="bg-indigo-50 p-4 rounded-md">
+                            <h3 class="font-semibold text-indigo-800 mb-2">Affordability</h3>
+                            <p class="text-indigo-700 text-sm">For a monthly expense of $2,250, the recommended annual income is at least $81,000 (using the 30% rule).</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Virtual Tour Modal -->
+    <div id="virtual-tour-modal" class="virtual-tour-modal">
+        <div class="virtual-tour-content">
+            <span class="close-modal" onclick="closeVirtualTour()">&times;</span>
+            <div class="rounded-lg overflow-hidden bg-white">
+                <div style="padding-top:56.25%; position:relative; background-color: #000;">
+                    <div style="position:absolute; top:50%; left:50%; transform:translate(-50%, -50%); text-align:center; color:#fff;">
+                        <i class="fas fa-cube text-6xl mb-4"></i>
+                        <p>Virtual tour would be loaded here</p>
+                        <p class="text-sm mt-2">Interactive 3D walkthrough experience</p>
+                    </div>
+                </div>
+                <div class="p-6">
+                    <h3 class="text-2xl font-bold mb-2">Virtual Tour</h3>
+                    <p class="text-gray-600 mb-4">Experience this property from the comfort of your home with our interactive 3D virtual tour.</p>
+                    <div class="flex space-x-4">
+                        <button class="bg-indigo-600 text-white px-4 py-2 rounded-md hover:bg-indigo-700 transition">
+                            <i class="fas fa-vr-cardboard mr-2"></i>Enter VR Mode
+                        </button>
+                        <button class="bg-white border border-gray-300 text-gray-700 px-4 py-2 rounded-md hover:bg-gray-50 transition">
+                            <i class="fas fa-expand-arrows-alt mr-2"></i>Fullscreen
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Property Comparison Tool -->
+    <div id="compare-properties" class="compare-properties">
+        <div class="container mx-auto px-4 py-4">
+            <div class="flex items-center justify-between mb-4">
+                <h3 class="font-bold">Compare Properties</h3>
+                <div class="flex space-x-4">
+                    <button class="text-indigo-600 hover:underline text-sm">Clear All</button>
+                    <button class="bg-indigo-600 text-white px-4 py-1 text-sm rounded-md hover:bg-indigo-700 transition">Compare Now</button>
+                    <button onclick="hideCompareBar()" class="text-gray-500 hover:text-gray-700">
+                        <i class="fas fa-times"></i>
+                    </button>
+                </div>
+            </div>
+            <div class="grid grid-cols-4 gap-4" id="compare-list">
+                <!-- Compare items will be added dynamically -->
+            </div>
+        </div>
+    </div>
+
+    <!-- Tenant Review System -->
+    <section class="py-16 bg-white">
+        <div class="container mx-auto px-4">
+            <h2 class="text-3xl font-bold text-center mb-12">What Our Tenants Say</h2>
+            
+            <div class="relative testimonial-slider">
+                <div class="overflow-hidden">
+                    <div class="flex testimonial-slide">
+                        <!-- Testimonial 1 -->
+                        <div class="w-full md:w-1/3 px-4 flex-shrink-0">
+                            <div class="bg-gray-50 p-8 rounded-lg shadow-sm h-full">
+                                <div class="flex items-center mb-6">
+                                    <img src="https://randomuser.me/api/portraits/women/32.jpg" alt="Tenant" class="w-12 h-12 rounded-full mr-4">
+                                    <div>
+                                        <h4 class="font-semibold">Emily Johnson</h4>
+                                        <div class="flex text-yellow-400 mt-1">
+                                            <i class="fas fa-star"></i>
+                                            <i class="fas fa-star"></i>
+                                            <i class="fas fa-star"></i>
+                                            <i class="fas fa-star"></i>
+                                            <i class="fas fa-star"></i>
+                                        </div>
+                                    </div>
+                                </div>
+                                <p class="text-gray-600 italic">"I've been renting the beachfront condo for 3 months and the experience has been fantastic. The online booking process was smooth, and the property was exactly as advertised. The virtual tour feature was especially helpful in making my decision."</p>
+                            </div>
+                        </div>
+                        
+                        <!-- Testimonial 2 -->
+                        <div class="w-full md:w-1/3 px-4 flex-shrink-0">
+                            <div class="bg-gray-50 p-8 rounded-lg shadow-sm h-full">
+                                <div class="flex items-center mb-6">
+                                    <img src="https://randomuser.me/api/portraits/men/47.jpg" alt="Tenant" class="w-12 h-12 rounded-full mr-4">
+                                    <div>
+                                        <h4 class="font-semibold">Michael Rodriguez</h4>
+                                        <div class="flex text-yellow-400 mt-1">
+                                            <i class="fas fa-star"></i>
+                                            <i class="fas fa-star"></i>
+                                            <i class="fas fa-star"></i>
+                                            <i class="fas fa-star"></i>
+                                            <i class="fas fa-star-half-alt"></i>
+                                        </div>
+                                    </div>
+                                </div>
+                                <p class="text-gray-600 italic">"The downtown apartment has been my home for over a year now. The management is responsive and professional. The rent calculator on the website helped me budget properly, and the maintenance requests are always handled promptly."</p>
+                            </div>
+                        </div>
+                        
+                        <!-- Testimonial 3 -->
+                        <div class="w-full md:w-1/3 px-4 flex-shrink-0">
+                            <div class="bg-gray-50 p-8 rounded-lg shadow-sm h-full">
+                                <div class="flex items-center mb-6">
+                                    <img src="https://randomuser.me/api/portraits/women/65.jpg" alt="Tenant" class="w-12 h-12 rounded-full mr-4">
+                                    <div>
+                                        <h4 class="font-semibold">Sarah Thompson</h4>
+                                        <div class="flex text-yellow-400 mt-1">
+                                            <i class="fas fa-star"></i>
+                                            <i class="fas fa-star"></i>
+                                            <i class="fas fa-star"></i>
+                                            <i class="fas fa-star"></i>
+                                            <i class="fas fa-star"></i>
+                                        </div>
+                                    </div>
+                                </div>
+                                <p class="text-gray-600 italic">"We rented the family home when relocating to Seattle. The interactive map feature was incredibly useful for understanding the neighborhood. The comparison tool helped us narrow down our choices quickly. Highly recommend this platform!"</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <button class="absolute left-0 top-1/2 transform -translate-y-1/2 w-10 h-10 bg-white rounded-full shadow-md flex items-center justify-center text-gray-600 hover:text-indigo-600 focus:outline-none z-10 hidden md:flex" onclick="prevTestimonial()">
+                    <i class="fas fa-chevron-left"></i>
+                </button>
+                <button class="absolute right-0 top-1/2 transform -translate-y-1/2 w-10 h-10 bg-white rounded-full shadow-md flex items-center justify-center text-gray-600 hover:text-indigo-600 focus:outline-none z-10 hidden md:flex" onclick="nextTestimonial()">
+                    <i class="fas fa-chevron-right"></i>
+                </button>
+            </div>
+            
+            <div class="flex justify-center mt-8">
+                <span class="w-3 h-3 rounded-full bg-indigo-600 mx-1"></span>
+                <span class="w-3 h-3 rounded-full bg-gray-300 mx-1"></span>
+                <span class="w-3 h-3 rounded-full bg-gray-300 mx-1"></span>
+            </div>
+        </div>
+    </section>
+
+    <!-- Contact Form and Newsletter Section -->
+    <section class="py-16 bg-gray-50">
+        <div class="container mx-auto px-4">
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-12">
+                <!-- Contact Form -->
+                <div class="bg-white rounded-lg shadow-md p-8">
+                    <h2 class="text-2xl font-bold mb-6">Contact a Rental Specialist</h2>
+                    <form>
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
+                            <div>
+                                <label class="block text-gray-700 text-sm font-medium mb-2" for="name">Your Name</label>
+                                <input id="name" type="text" class="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500" placeholder="John Doe">
+                            </div>
+                            <div>
+                                <label class="block text-gray-700 text-sm font-medium mb-2" for="email">Your Email</label>
+                                <input id="email" type="email" class="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500" placeholder="john@example.com">
+                            </div>
+                            <div>
+                                <label class="block text-gray-700 text-sm font-medium mb-2" for="phone">Phone Number</label>
+                                <input id="phone" type="tel" class="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500" placeholder="(123) 456-7890">
+                            </div>
+                            <div>
+                                <label class="block text-gray-700 text-sm font-medium mb-2" for="interest">I'm Interested In</label>
+                                <select id="interest" class="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500">
+                                    <option>Short-term Rental</option>
+                                    <option>Long-term Rental</option>
+                                    <option>Viewing a Property</option>
+                                    <option>Rental Application Process</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="mb-6">
+                            <label class="block text-gray-700 text-sm font-medium mb-2" for="message">Message</label>
+                            <textarea id="message" rows="4" class="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500" placeholder="Tell us what you're looking for..."></textarea>
+                        </div>
+                        <div class="flex items-center mb-6">
+                            <input id="terms" type="checkbox" class="h-4 w-4 text-indigo-600 focus:ring-indigo-500 border-gray-300 rounded">
+                            <label for="terms" class="ml-2 block text-sm text-gray-700">
+                                I agree to the <a href="#" class="text-indigo-600 hover:underline">terms and conditions</a>
+                            </label>
+                        </div>
+                        <button type="submit" class="w-full bg-indigo-600 text-white py-3 rounded-md hover:bg-indigo-700 transition">
+                            Send Message
+                        </button>
+                    </form>
+                </div>
+                
+                <!-- Newsletter -->
+                <div>
+                    <div class="bg-indigo-600 rounded-lg shadow-md p-8 text-white mb-8">
+                        <h2 class="text-2xl font-bold mb-4">Subscribe to Our Newsletter</h2>
+                        <p class="mb-6">Stay updated with the latest rental properties, special offers, and rental tips</p>
+                        <form class="flex flex-col sm:flex-row gap-4">
+                            <input type="email" placeholder="Your email address" class="flex-1 px-4 py-3 rounded-md focus:outline-none text-gray-700">
+                            <button type="submit" class="bg-white text-indigo-600 px-6 py-3 rounded-md hover:bg-gray-100 transition">
+                                Subscribe
+                            </button>
+                        </form>
+                    </div>
+                    
+                    <div class="bg-white rounded-lg shadow-md p-8">
+                        <h3 class="text-xl font-bold mb-4">Our Rental Services</h3>
+                        <div class="space-y-4">
+                            <div class="flex items-start">
+                                <div class="flex-shrink-0 mt-1">
+                                    <i class="fas fa-home text-indigo-600 text-xl"></i>
+                                </div>
+                                <div class="ml-4">
+                                    <h4 class="font-medium">Property Management</h4>
+                                    <p class="text-gray-600 text-sm mt-1">Full-service management for property owners with 24/7 tenant support</p>
+                                </div>
+                            </div>
+                            <div class="flex items-start">
+                                <div class="flex-shrink-0 mt-1">
+                                    <i class="fas fa-key text-indigo-600 text-xl"></i>
+                                </div>
+                                <div class="ml-4">
+                                    <h4 class="font-medium">Tenant Placement</h4>
+                                    <p class="text-gray-600 text-sm mt-1">Find the perfect tenants for your property with our screening process</p>
+                                </div>
+                            </div>
+                            <div class="flex items-start">
+                                <div class="flex-shrink-0 mt-1">
+                                    <i class="fas fa-tools text-indigo-600 text-xl"></i>
+                                </div>
+                                <div class="ml-4">
+                                    <h4 class="font-medium">Maintenance Services</h4>
+                                    <p class="text-gray-600 text-sm mt-1">Quick and reliable maintenance response for all rental properties</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="bg-gray-800 text-white pt-16 pb-8">
+        <div class="container mx-auto px-4">
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8 mb-12">
+                <div>
+                    <h3 class="text-xl font-bold mb-4">RentEase</h3>
+                    <p class="text-gray-300 mb-4">Your trusted partner in finding the perfect rental property. We've been connecting tenants with their ideal rental homes since 2015.</p>
+                    <div class="flex space-x-4">
+                        <a href="#" class="text-gray-300 hover:text-white">
+                            <i class="fab fa-facebook-f"></i>
+                        </a>
+                        <a href="#" class="text-gray-300 hover:text-white">
+                            <i class="fab fa-twitter"></i>
+                        </a>
+                        <a href="#" class="text-gray-300 hover:text-white">
+                            <i class="fab fa-instagram"></i>
+                        </a>
+                        <a href="#" class="text-gray-300 hover:text-white">
+                            <i class="fab fa-linkedin-in"></i>
+                        </a>
+                    </div>
+                </div>
+                
+                <div>
+                    <h3 class="text-lg font-bold mb-4">Quick Links</h3>
+                    <ul class="space-y-2">
+                        <li><a href="#" class="text-gray-300 hover:text-white">Home</a></li>
+                        <li><a href="#" class="text-gray-300 hover:text-white">Properties</a></li>
+                        <li><a href="#" class="text-gray-300 hover:text-white">Short-term Rentals</a></li>
+                        <li><a href="#" class="text-gray-300 hover:text-white">Long-term Rentals</a></li>
+                        <li><a href="#" class="text-gray-300 hover:text-white">Contact Us</a></li>
+                    </ul>
+                </div>
+                
+                <div>
+                    <h3 class="text-lg font-bold mb-4">Rental Types</h3>
+                    <ul class="space-y-2">
+                        <li><a href="#" class="text-gray-300 hover:text-white">Apartments</a></li>
+                        <li><a href="#" class="text-gray-300 hover:text-white">Houses</a></li>
+                        <li><a href="#" class="text-gray-300 hover:text-white">Condos</a></li>
+                        <li><a href="#" class="text-gray-300 hover:text-white">Vacation Rentals</a></li>
+                        <li><a href="#" class="text-gray-300 hover:text-white">Shared Spaces</a></li>
+                    </ul>
+                </div>
+                
+                <div>
+                    <h3 class="text-lg font-bold mb-4">Contact Information</h3>
+                    <ul class="space-y-3">
+                        <li class="flex items-start">
+                            <i class="fas fa-map-marker-alt mt-1 mr-3 text-indigo-400"></i>
+                            <span>123 Rental Street<br>Los Angeles, CA 90001</span>
+                        </li>
+                        <li class="flex items-center">
+                            <i class="fas fa-phone-alt mr-3 text-indigo-400"></i>
+                            <span>(123) 456-7890</span>
+                        </li>
+                        <li class="flex items-center">
+                            <i class="fas fa-envelope mr-3 text-indigo-400"></i>
+                            <span>info@rentease.com</span>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+            
+            <div class="border-t border-gray-700 pt-8">
+                <div class="flex flex-col md:flex-row justify-between items-center">
+                    <p class="text-gray-400 text-sm mb-4 md:mb-0">&copy; 2023 RentEase Rental Services. All rights reserved.</p>
+                    <div class="flex space-x-6">
+                        <a href="#" class="text-gray-400 hover:text-white text-sm">Privacy Policy</a>
+                        <a href="#" class="text-gray-400 hover:text-white text-sm">Terms of Service</a>
+                        <a href="#" class="text-gray-400 hover:text-white text-sm">Sitemap</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <!-- JavaScript -->
+    <script>
+        // Mobile menu toggle
+        document.getElementById('mobile-menu-button').addEventListener('click', function() {
+            const mobileMenu = document.getElementById('mobile-menu');
+            mobileMenu.classList.toggle('hidden');
+        });
+        
+        // Property favoriting
+        function toggleFavorite(el) {
+            el.classList.toggle('active');
+            const icon = el.querySelector('i');
+            if (icon.classList.contains('far')) {
+                icon.classList.remove('far');
+                icon.classList.add('fas');
+                icon.style.color = '#e53e3e';
+            } else {
+                icon.classList.remove('fas');
+                icon.classList.add('far');
+                icon.style.color = '#718096';
+            }
+        }
+        
+        // Virtual tour modal
+        function openVirtualTour() {
+            document.getElementById('virtual-tour-modal').style.display = 'block';
+        }
+        
+        function closeVirtualTour() {
+            document.getElementById('virtual-tour-modal').style.display = 'none';
+        }
+        
+        // Close modal when clicking outside
+        window.onclick = function(event) {
+            const modal = document.getElementById('virtual-tour-modal');
+            if (event.target == modal) {
+                closeVirtualTour();
+            }
+        }
+        
+        // Property comparison tool
+        function addToCompare(propertyId) {
+            const compareList = document.getElementById('compare-list');
+            const compareBar = document.getElementById('compare-properties');
+            
+            // Check if property is already added
+            if (document.getElementById('compare-item-' + propertyId)) {
+                return;
+            }
+            
+            // Simple property data mapping (this would come from your database)
+            const properties = {
+                1: {
+                    title: "Luxury Beachfront Condo",
+                    price: "$250/night",
+                    image: "https://images.unsplash.com/photo-1560185007-c5ca9d2c014d?ixlib=rb-4.0.3&auto=format&fit=crop&w=120&q=80"
+                },
+                2: {
+                    title: "Modern Downtown Apartment",
+                    price: "$2,200/month",
+                    image: "https://images.unsplash.com/photo-1586023492125-27b2c045efd7?ixlib=rb-4.0.3&auto=format&fit=crop&w=120&q=80"
+                },
+                3: {
+                    title: "Family Home with Garden",
+                    price: "$3,500/month",
+                    image: "https://images.unsplash.com/photo-1600607687939-ce8a6c25118c?ixlib=rb-4.0.3&auto=format&fit=crop&w=120&q=80"
+                }
+            };
+            
+            const property = properties[propertyId];
+            
+            // Create comparison item
+            const item = document.createElement('div');
+            item.id = 'compare-item-' + propertyId;
+            item.className = 'compare-property bg-white rounded-lg shadow-sm overflow-hidden';
+            item.innerHTML = `
+                <div class="relative">
+                    <img src="${property.image}" alt="${property.title}" class="w-full h-24 object-cover">
+                    <button class="remove-compare" onclick="removeFromCompare(${propertyId})">
+                        <i class="fas fa-times"></i>
+                    </button>
+                </div>
+                <div class="p-3">
+                    <h4 class="font-medium text-sm">${property.title}</h4>
+                    <p class="text-indigo-600 font-bold">${property.price}</p>
+                </div>
+            `;
+            
+            compareList.appendChild(item);
+            compareBar.style.display = 'block';
+        }
+        
+        function removeFromCompare(propertyId) {
+            const item = document.getElementById('compare-item-' + propertyId);
+            item.remove();
+            
+            // Hide bar if no items left
+            const compareList = document.getElementById('compare-list');
+            if (compareList.children.length === 0) {
+                hideCompareBar();
+            }
+        }
+        
+        function hideCompareBar() {
+            document.getElementById('compare-properties').style.display = 'none';
+        }
+        
+        // Map popup functions
+        function showMapPopup(id) {
+            document.getElementById('map-popup-' + id).style.display = 'block';
+        }
+        
+        function hideMapPopup(id) {
+            document.getElementById('map-popup-' + id).style.display = 'none';
+        }
+        
+        // Testimonial slider
+        let testimonialIndex = 0;
+        
+        function showTestimonial(index) {
+            const slides = document.querySelector('.testimonial-slide');
+            testimonialIndex = index;
+            slides.style.transform = `translateX(-${index * 33.33}%)`;
+        }
+        
+        function nextTestimonial() {
+            if (testimonialIndex < 2) {
+                showTestimonial(testimonialIndex + 1);
+            } else {
+                showTestimonial(0);
+            }
+        }
+        
+        function prevTestimonial() {
+            if (testimonialIndex > 0) {
+                showTestimonial(testimonialIndex - 1);
+            } else {
+                showTestimonial(2);
+            }
+        }
+        
+        // Rental Payment Calculator
+        function calculateRentalPayments() {
+            const monthlyRent = parseFloat(document.getElementById('monthly-rent').value.replace(/,/g, ''));
+            const securityDeposit = parseFloat(document.getElementById('security-deposit').value.replace(/,/g, ''));
+            const leaseTerm = parseInt(document.getElementById('lease-term').value);
+            const utilities = parseFloat(document.getElementById('monthly-utilities').value.replace(/,/g, ''));
+            
+            // Insurance is estimated at about 1.5% of yearly rent monthly
+            const insurance = Math.round(monthlyRent * 0.015);
+            
+            const monthlyTotal = monthlyRent + utilities + insurance;
+            const initialTotal = monthlyRent + securityDeposit + 50; // Application fee
+            
+            document.getElementById('monthly-total').innerText = '$' + numberWithCommas(monthlyTotal);
+            document.getElementById('rent-value').innerText = '$' + numberWithCommas(monthlyRent);
+            document.getElementById('utilities-value').innerText = '$' + numberWithCommas(utilities);
+            document.getElementById('insurance-value').innerText = '$' + numberWithCommas(insurance);
+            document.getElementById('initial-total').innerText = '$' + numberWithCommas(initialTotal);
+        }
+        
+        // Helper function to format numbers with commas
+        function numberWithCommas(x) {
+            return x.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+        }
+    </script>
+</body>
+</html>

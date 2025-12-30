@@ -1,0 +1,1454 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Sports Yoga Studios</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <style>
+    /* 1. CSS Variables for consistent theming */
+    :root {
+      --primary-color: #8B5CF6;
+      --secondary-color: #7C3AED;
+      --accent-color: #FFC107;
+      --light-color: #F8F9FA;
+      --dark-color: #2D3748;
+      --text-color: #4A5568;
+      --transition: all 0.3s ease;
+      --box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+      --border-radius: 8px;
+    }
+    
+    /* 2. Global Styles + CSS Reset */
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    }
+    
+    html {
+      scroll-behavior: smooth;
+    }
+    
+    body {
+      background-color: var(--light-color);
+      color: var(--text-color);
+      line-height: 1.6;
+      overflow-x: hidden;
+    }
+    
+    /* 3. Responsive Navigation */
+    header {
+      background: linear-gradient(135deg, var(--primary-color) 0%, var(--secondary-color) 100%);
+      color: white;
+      padding: 1rem 2rem;
+      position: fixed;
+      width: 100%;
+      z-index: 1000;
+      box-shadow: var(--box-shadow);
+      transition: var(--transition);
+    }
+    
+    header.scroll {
+      padding: 0.5rem 2rem;
+      background: rgba(139, 92, 246, 0.9);
+      backdrop-filter: blur(10px);
+    }
+    
+    nav {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      max-width: 1200px;
+      margin: 0 auto;
+    }
+    
+    .logo {
+      font-size: 1.8rem;
+      font-weight: bold;
+      text-decoration: none;
+      color: white;
+      display: flex;
+      align-items: center;
+    }
+    
+    .logo i {
+      margin-right: 10px;
+    }
+    
+    .nav-links {
+      display: flex;
+      list-style: none;
+    }
+    
+    .nav-links li {
+      margin-left: 1.5rem;
+    }
+    
+    .nav-links a {
+      color: white;
+      text-decoration: none;
+      font-weight: 500;
+      transition: var(--transition);
+    }
+    
+    .nav-links a:hover {
+      color: var(--accent-color);
+    }
+    
+    .hamburger {
+      display: none;
+      cursor: pointer;
+      background: none;
+      border: none;
+      color: white;
+      font-size: 1.5rem;
+    }
+    
+    /* 4. Hero Section with Background Video & CTA */
+    .hero {
+      height: 100vh;
+      position: relative;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      color: white;
+      padding: 0 1rem;
+    }
+    
+    .hero-video {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      z-index: -1;
+    }
+    
+    .hero-overlay {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0,0,0,0.5);
+      z-index: -1;
+    }
+    
+    .hero-content {
+      max-width: 800px;
+      z-index: 1;
+      animation: fadeIn 1.5s ease-in-out;
+    }
+    
+    .hero h1 {
+      font-size: 3.5rem;
+      margin-bottom: 1rem;
+      line-height: 1.2;
+    }
+    
+    .hero p {
+      font-size: 1.2rem;
+      margin-bottom: 2rem;
+    }
+    
+    /* 5. Modern Button Styles */
+    .btn {
+      display: inline-block;
+      background-color: var(--primary-color);
+      color: white;
+      padding: 0.8rem 2rem;
+      border-radius: 50px;
+      text-decoration: none;
+      font-weight: bold;
+      transition: var(--transition);
+      border: none;
+      cursor: pointer;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+    }
+    
+    .btn-accent {
+      background-color: var(--accent-color);
+      color: var(--dark-color);
+    }
+    
+    .btn:hover {
+      transform: translateY(-3px);
+      box-shadow: var(--box-shadow);
+    }
+    
+    .btn-group {
+      display: flex;
+      gap: 1rem;
+      justify-content: center;
+    }
+    
+    /* 6. Section Styling */
+    section {
+      padding: 5rem 2rem;
+    }
+    
+    .container {
+      max-width: 1200px;
+      margin: 0 auto;
+    }
+    
+    .section-title {
+      text-align: center;
+      margin-bottom: 3rem;
+    }
+    
+    .section-title h2 {
+      font-size: 2.5rem;
+      color: var(--dark-color);
+      position: relative;
+      display: inline-block;
+    }
+    
+    .section-title h2::after {
+      content: '';
+      position: absolute;
+      bottom: -10px;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 50px;
+      height: 3px;
+      background-color: var(--primary-color);
+    }
+    
+    /* 7. Card Layout for Classes */
+    .classes-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+      gap: 2rem;
+    }
+    
+    .class-card {
+      background: white;
+      border-radius: var(--border-radius);
+      overflow: hidden;
+      box-shadow: var(--box-shadow);
+      transition: var(--transition);
+    }
+    
+    .class-card:hover {
+      transform: translateY(-10px);
+    }
+    
+    .class-img {
+      height: 200px;
+      overflow: hidden;
+    }
+    
+    .class-img img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      transition: var(--transition);
+    }
+    
+    .class-card:hover .class-img img {
+      transform: scale(1.1);
+    }
+    
+    .class-info {
+      padding: 1.5rem;
+    }
+    
+    .class-info h3 {
+      margin-bottom: 0.5rem;
+      color: var(--dark-color);
+    }
+    
+    .class-info p {
+      margin-bottom: 1rem;
+    }
+    
+    .class-meta {
+      display: flex;
+      justify-content: space-between;
+      color: var(--primary-color);
+      font-weight: bold;
+    }
+    
+    /* 8. Pricing Tables */
+    .pricing-container {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: 2rem;
+    }
+    
+    .pricing-card {
+      background: white;
+      border-radius: var(--border-radius);
+      box-shadow: var(--box-shadow);
+      padding: 2rem;
+      text-align: center;
+      transition: var(--transition);
+      position: relative;
+      overflow: hidden;
+    }
+    
+    .pricing-card.popular::before {
+      content: 'Most Popular';
+      position: absolute;
+      top: 0;
+      right: 0;
+      background: var(--accent-color);
+      color: var(--dark-color);
+      padding: 0.5rem 1rem;
+      font-size: 0.8rem;
+      border-bottom-left-radius: var(--border-radius);
+    }
+    
+    .pricing-card:hover {
+      transform: scale(1.03);
+    }
+    
+    .pricing-header {
+      margin-bottom: 2rem;
+    }
+    
+    .pricing-title {
+      color: var(--dark-color);
+      font-size: 1.5rem;
+      margin-bottom: 0.5rem;
+    }
+    
+    .pricing-price {
+      font-size: 2.5rem;
+      color: var(--primary-color);
+      font-weight: bold;
+    }
+    
+    .pricing-price span {
+      font-size: 1rem;
+      color: var(--text-color);
+      font-weight: normal;
+    }
+    
+    .pricing-features {
+      list-style: none;
+      margin-bottom: 2rem;
+    }
+    
+    .pricing-features li {
+      padding: 0.5rem 0;
+      border-bottom: 1px solid rgba(0,0,0,0.1);
+    }
+    
+    .pricing-features li:last-child {
+      border-bottom: none;
+    }
+    
+    /* 9. Testimonials Slider */
+    .testimonial-slider {
+      max-width: 700px;
+      margin: 0 auto;
+      overflow: hidden;
+      position: relative;
+    }
+    
+    .testimonial-slide {
+      background: white;
+      padding: 2rem;
+      border-radius: var(--border-radius);
+      box-shadow: var(--box-shadow);
+      margin: 1rem;
+      display: none;
+    }
+    
+    .testimonial-slide.active {
+      display: block;
+      animation: fadeIn 0.5s ease-in-out;
+    }
+    
+    .testimonial-content {
+      text-align: center;
+    }
+    
+    .testimonial-author {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin-top: 1.5rem;
+    }
+    
+    .testimonial-author img {
+      width: 60px;
+      height: 60px;
+      border-radius: 50%;
+      object-fit: cover;
+      margin-right: 1rem;
+    }
+    
+    .author-info h4 {
+      margin: 0;
+      color: var(--dark-color);
+    }
+    
+    .author-info p {
+      margin: 0;
+      font-size: 0.9rem;
+      color: var(--text-color);
+    }
+    
+    .testimonial-controls {
+      display: flex;
+      justify-content: center;
+      margin-top: 2rem;
+    }
+    
+    .testimonial-control {
+      background: var(--primary-color);
+      color: white;
+      border: none;
+      width: 40px;
+      height: 40px;
+      border-radius: 50%;
+      margin: 0 0.5rem;
+      cursor: pointer;
+      transition: var(--transition);
+    }
+    
+    .testimonial-control:hover {
+      background: var(--secondary-color);
+    }
+    
+    /* 10. Responsive Gallery Grid */
+    .gallery-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+      gap: 1rem;
+    }
+    
+    .gallery-item {
+      position: relative;
+      border-radius: var(--border-radius);
+      overflow: hidden;
+      aspect-ratio: 1;
+    }
+    
+    .gallery-item img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      transition: var(--transition);
+    }
+    
+    .gallery-overlay {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(123, 58, 237, 0.8);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      opacity: 0;
+      transition: var(--transition);
+    }
+    
+    .gallery-item:hover .gallery-overlay {
+      opacity: 1;
+    }
+    
+    .gallery-item:hover img {
+      transform: scale(1.1);
+    }
+    
+    /* 11. Newsletter Form Styling */
+    .newsletter {
+      background: linear-gradient(135deg, var(--primary-color) 0%, var(--secondary-color) 100%);
+      color: white;
+      text-align: center;
+      padding: 4rem 2rem;
+    }
+    
+    .newsletter h2 {
+      margin-bottom: 1rem;
+    }
+    
+    .newsletter p {
+      margin-bottom: 2rem;
+      max-width: 600px;
+      margin-left: auto;
+      margin-right: auto;
+    }
+    
+    .newsletter-form {
+      display: flex;
+      max-width: 500px;
+      margin: 0 auto;
+    }
+    
+    .newsletter-form input {
+      flex: 1;
+      padding: 0.8rem 1rem;
+      border: none;
+      border-radius: 50px 0 0 50px;
+      outline: none;
+    }
+    
+    .newsletter-form button {
+      background: var(--accent-color);
+      color: var(--dark-color);
+      border: none;
+      padding: 0 1.5rem;
+      border-radius: 0 50px 50px 0;
+      cursor: pointer;
+      font-weight: bold;
+    }
+    
+    /* 12. Footer with Modern Layout */
+    footer {
+      background: var(--dark-color);
+      color: white;
+      padding: 4rem 2rem 2rem;
+    }
+    
+    .footer-container {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 2rem;
+      max-width: 1200px;
+      margin: 0 auto;
+    }
+    
+    .footer-column h3 {
+      margin-bottom: 1.5rem;
+      font-size: 1.2rem;
+      position: relative;
+    }
+    
+    .footer-column h3::after {
+      content: '';
+      position: absolute;
+      bottom: -8px;
+      left: 0;
+      width: 40px;
+      height: 3px;
+      background-color: var(--primary-color);
+    }
+    
+    .footer-links {
+      list-style: none;
+    }
+    
+    .footer-links li {
+      margin-bottom: 0.8rem;
+    }
+    
+    .footer-links a {
+      color: rgba(255,255,255,0.8);
+      text-decoration: none;
+      transition: var(--transition);
+    }
+    
+    .footer-links a:hover {
+      color: var(--accent-color);
+    }
+    
+    .social-links {
+      display: flex;
+      gap: 1rem;
+      margin-top: 1rem;
+    }
+    
+    .social-link {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      width: 40px;
+      height: 40px;
+      background: rgba(255,255,255,0.1);
+      color: white;
+      border-radius: 50%;
+      transition: var(--transition);
+    }
+    
+    .social-link:hover {
+      background: var(--primary-color);
+      transform: translateY(-3px);
+    }
+    
+    .footer-bottom {
+      text-align: center;
+      padding-top: 2rem;
+      margin-top: 3rem;
+      border-top: 1px solid rgba(255,255,255,0.1);
+    }
+    
+    /* Additional components */
+    
+    /* Floating action button */
+    .fab {
+      position: fixed;
+      bottom: 30px;
+      right: 30px;
+      width: 60px;
+      height: 60px;
+      background: var(--primary-color);
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: white;
+      box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+      cursor: pointer;
+      transition: var(--transition);
+      z-index: 99;
+    }
+    
+    .fab:hover {
+      background: var(--secondary-color);
+      transform: scale(1.1);
+    }
+    
+    /* Instructor profiles */
+    .instructors-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+      gap: 2rem;
+    }
+    
+    .instructor-card {
+      background: white;
+      border-radius: var(--border-radius);
+      overflow: hidden;
+      box-shadow: var(--box-shadow);
+      transition: var(--transition);
+    }
+    
+    .instructor-img {
+      height: 250px;
+      overflow: hidden;
+    }
+    
+    .instructor-img img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      transition: var(--transition);
+    }
+    
+    .instructor-info {
+      padding: 1.5rem;
+      text-align: center;
+    }
+    
+    .instructor-info h3 {
+      margin-bottom: 0.5rem;
+      color: var(--dark-color);
+    }
+    
+    .instructor-info p {
+      margin-bottom: 1rem;
+      color: var(--primary-color);
+      font-weight: 500;
+    }
+    
+    .instructor-social {
+      display: flex;
+      justify-content: center;
+      gap: 1rem;
+    }
+    
+    .instructor-social a {
+      color: var(--dark-color);
+      transition: var(--transition);
+    }
+    
+    .instructor-social a:hover {
+      color: var(--primary-color);
+    }
+    
+    /* Modal */
+    .modal {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0,0,0,0.8);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      z-index: 9999;
+      opacity: 0;
+      visibility: hidden;
+      transition: var(--transition);
+    }
+    
+    .modal.active {
+      opacity: 1;
+      visibility: visible;
+    }
+    
+    .modal-content {
+      background: white;
+      border-radius: var(--border-radius);
+      width: 90%;
+      max-width: 500px;
+      padding: 2rem;
+      position: relative;
+      transform: translateY(-50px);
+      transition: var(--transition);
+    }
+    
+    .modal.active .modal-content {
+      transform: translateY(0);
+    }
+    
+    .close-modal {
+      position: absolute;
+      top: 10px;
+      right: 10px;
+      background: none;
+      border: none;
+      font-size: 1.5rem;
+      cursor: pointer;
+      color: var(--text-color);
+    }
+    
+    /* Animations */
+    @keyframes fadeIn {
+      from {
+        opacity: 0;
+        transform: translateY(20px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+    
+    /* Responsive styles */
+    @media (max-width: 768px) {
+      .nav-links {
+        position: fixed;
+        top: 0;
+        right: -300px;
+        height: 100vh;
+        width: 250px;
+        background: var(--primary-color);
+        flex-direction: column;
+        padding-top: 80px;
+        transition: var(--transition);
+        box-shadow: -5px 0 15px rgba(0,0,0,0.1);
+      }
+      
+      .nav-links.active {
+        right: 0;
+      }
+      
+      .nav-links li {
+        margin: 1rem 0;
+        text-align: center;
+      }
+      
+      .hamburger {
+        display: block;
+        z-index: 1001;
+      }
+      
+      .hero h1 {
+        font-size: 2.5rem;
+      }
+      
+      .btn-group {
+        flex-direction: column;
+      }
+      
+      .newsletter-form {
+        flex-direction: column;
+      }
+      
+      .newsletter-form input,
+      .newsletter-form button {
+        width: 100%;
+        border-radius: 50px;
+        margin-bottom: 0.5rem;
+      }
+    }
+  </style>
+</head>
+<body>
+  <!-- 3. Responsive Header with Navbar -->
+  <header id="header">
+    <nav>
+      <a href="#" class="logo"><i class="fas fa-spa"></i> Sports Yoga Studios</a>
+      <ul class="nav-links" id="nav-links">
+        <li><a href="#home">Home</a></li>
+        <li><a href="#about">About</a></li>
+        <li><a href="#classes">Classes</a></li>
+        <li><a href="#pricing">Pricing</a></li>
+        <li><a href="#instructors">Instructors</a></li>
+        <li><a href="#gallery">Gallery</a></li>
+        <li><a href="#contact">Contact</a></li>
+      </ul>
+      <button class="hamburger" id="hamburger">
+        <i class="fas fa-bars"></i>
+      </button>
+    </nav>
+  </header>
+
+  <!-- 4. Hero Section with Video Background -->
+  <section class="hero" id="home">
+    <video class="hero-video" autoplay loop muted playsinline>
+      <source src="https://assets.mixkit.co/videos/preview/mixkit-woman-doing-yoga-on-the-beach-4710-large.mp4" type="video/mp4">
+    </video>
+    <div class="hero-overlay"></div>
+    <div class="hero-content">
+      <h1>Transform Your Body & Mind Through Yoga</h1>
+      <p>Join our community and experience the perfect balance of strength, flexibility, and inner peace.</p>
+      <div class="btn-group">
+        <a href="#pricing" class="btn">View Membership Plans</a>
+        <a href="#classes" class="btn btn-accent">Explore Our Classes</a>
+      </div>
+    </div>
+  </section>
+
+  <!-- About Section -->
+  <section id="about" class="container">
+    <div class="section-title">
+      <h2>About Us</h2>
+    </div>
+    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 2rem; align-items: center;">
+      <div>
+        <h3 style="font-size: 1.8rem; margin-bottom: 1rem; color: var(--dark-color);">A Unique Approach to Sports Yoga</h3>
+        <p style="margin-bottom: 1rem;">Sports Yoga Studios was founded with a vision to combine the traditional practices of yoga with modern sports science. Our unique approach helps athletes and fitness enthusiasts enhance their performance while maintaining balance in body and mind.</p>
+        <p style="margin-bottom: 1rem;">With over 10 years of experience, our certified instructors offer personalized guidance to help you achieve your fitness goals, whether you're a beginner or an advanced practitioner.</p>
+        <ul style="list-style: none; margin: 1.5rem 0;">
+          <li style="margin-bottom: 0.5rem; display: flex; align-items: center;">
+            <i class="fas fa-check-circle" style="color: var(--primary-color); margin-right: 10px;"></i>
+            <span>Expert certified instructors</span>
+          </li>
+          <li style="margin-bottom: 0.5rem; display: flex; align-items: center;">
+            <i class="fas fa-check-circle" style="color: var(--primary-color); margin-right: 10px;"></i>
+            <span>State-of-the-art facilities</span>
+          </li>
+          <li style="margin-bottom: 0.5rem; display: flex; align-items: center;">
+            <i class="fas fa-check-circle" style="color: var(--primary-color); margin-right: 10px;"></i>
+            <span>Innovative class formats</span>
+          </li>
+          <li style="margin-bottom: 0.5rem; display: flex; align-items: center;">
+            <i class="fas fa-check-circle" style="color: var(--primary-color); margin-right: 10px;"></i>
+            <span>Both online and in-studio options</span>
+          </li>
+        </ul>
+      </div>
+      <div style="position: relative;">
+        <img src="https://images.unsplash.com/photo-1599447421416-3414500d18a5?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=687&q=80" alt="Yoga practice" style="width: 100%; border-radius: var(--border-radius); box-shadow: var(--box-shadow);">
+        <div style="position: absolute; bottom: -20px; right: -20px; background: var(--primary-color); padding: 1.5rem; border-radius: var(--border-radius); color: white; box-shadow: var(--box-shadow);">
+          <p style="font-size: 2rem; font-weight: bold; margin: 0;">10+</p>
+          <p style="margin: 0;">Years Experience</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 7. Classes with Card Layout -->
+  <section id="classes" style="background-color: #f8f9fa;">
+    <div class="container">
+      <div class="section-title">
+        <h2>Our Classes</h2>
+      </div>
+      <div class="classes-grid">
+        <!-- Class 1 -->
+        <div class="class-card">
+          <div class="class-img">
+            <img src="https://images.unsplash.com/photo-1544367567-0f2fcb009e0b?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1220&q=80" alt="Power Yoga">
+          </div>
+          <div class="class-info">
+            <h3>Power Yoga</h3>
+            <p>A dynamic, fitness-based approach to vinyasa-style yoga with emphasis on strength and flexibility.</p>
+            <div class="class-meta">
+              <span><i class="far fa-clock"></i> 60 min</span>
+              <span><i class="fas fa-signal"></i> Advanced</span>
+            </div>
+          </div>
+        </div>
+        
+        <!-- Class 2 -->
+        <div class="class-card">
+          <div class="class-img">
+            <img src="https://images.unsplash.com/photo-1588286840104-8957b019727f?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1170&q=80" alt="Gentle Flow">
+          </div>
+          <div class="class-info">
+            <h3>Gentle Flow</h3>
+            <p>A slower-paced class focusing on breathing techniques and gentle movements to reduce stress.</p>
+            <div class="class-meta">
+              <span><i class="far fa-clock"></i> 45 min</span>
+              <span><i class="fas fa-signal"></i> Beginner</span>
+            </div>
+          </div>
+        </div>
+        
+        <!-- Class 3 -->
+        <div class="class-card">
+          <div class="class-img">
+            <img src="https://images.unsplash.com/photo-1593810450967-f9c2866b2688?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1170&q=80" alt="Sports Recovery">
+          </div>
+          <div class="class-info">
+            <h3>Sports Recovery</h3>
+            <p>Designed for athletes to enhance recovery, improve flexibility and prevent injuries.</p>
+            <div class="class-meta">
+              <span><i class="far fa-clock"></i> 75 min</span>
+              <span><i class="fas fa-signal"></i> Intermediate</span>
+            </div>
+          </div>
+        </div>
+        
+        <!-- Class 4 -->
+        <div class="class-card">
+          <div class="class-img">
+            <img src="https://images.unsplash.com/photo-1599901860904-17e6ed7083a0?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1170&q=80" alt="Online Live Classes">
+          </div>
+          <div class="class-info">
+            <h3>Online Live Classes</h3>
+            <p>Join our expert instructors from the comfort of your home with interactive live sessions.</p>
+            <div class="class-meta">
+              <span><i class="far fa-clock"></i> 60 min</span>
+              <span><i class="fas fa-signal"></i> All Levels</span>
+            </div>
+          </div>
+        </div>
+        
+        <!-- Class 5 -->
+        <div class="class-card">
+          <div class="class-img">
+            <img src="https://images.unsplash.com/photo-1518611012118-696072aa579a?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1170&q=80" alt="Meditation">
+          </div>
+          <div class="class-info">
+            <h3>Meditation</h3>
+            <p>Guided meditation sessions to help you reduce stress and improve mental clarity.</p>
+            <div class="class-meta">
+              <span><i class="far fa-clock"></i> 30 min</span>
+              <span><i class="fas fa-signal"></i> All Levels</span>
+            </div>
+          </div>
+        </div>
+        
+        <!-- Class 6 -->
+        <div class="class-card">
+          <div class="class-img">
+            <img src="https://images.unsplash.com/photo-1603988363607-e1e4a66962c6?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1170&q=80" alt="Prenatal Yoga">
+          </div>
+          <div class="class-info">
+            <h3>Prenatal Yoga</h3>
+            <p>Safe and gentle yoga practices designed specifically for expectant mothers.</p>
+            <div class="class-meta">
+              <span><i class="far fa-clock"></i> 45 min</span>
+              <span><i class="fas fa-signal"></i> Special</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 8. Pricing Tables Section -->
+  <section id="pricing" class="container">
+    <div class="section-title">
+      <h2>Membership Plans</h2>
+    </div>
+    <div class="pricing-container">
+      <!-- Basic Plan -->
+      <div class="pricing-card">
+        <div class="pricing-header">
+          <h3 class="pricing-title">Basic Plan</h3>
+          <div class="pricing-price">$49<span>/month</span></div>
+        </div>
+        <ul class="pricing-features">
+          <li><i class="fas fa-check" style="color: var(--primary-color); margin-right: 5px;"></i> Access to 2 classes per week</li>
+          <li><i class="fas fa-check" style="color: var(--primary-color); margin-right: 5px;"></i> Online streaming access</li>
+          <li><i class="fas fa-check" style="color: var(--primary-color); margin-right: 5px;"></i> Basic fitness assessment</li>
+          <li><i class="fas fa-times" style="color: #ccc; margin-right: 5px;"></i> Personalized training plan</li>
+          <li><i class="fas fa-times" style="color: #ccc; margin-right: 5px;"></i> Private sessions</li>
+        </ul>
+        <a href="#" class="btn">Choose Plan</a>
+      </div>
+      
+      <!-- Premium Plan -->
+      <div class="pricing-card popular">
+        <div class="pricing-header">
+          <h3 class="pricing-title">Premium</h3>
+          <div class="pricing-price">$79<span>/month</span></div>
+        </div>
+        <ul class="pricing-features">
+          <li><i class="fas fa-check" style="color: var(--primary-color); margin-right: 5px;"></i> Unlimited in-studio classes</li>
+          <li><i class="fas fa-check" style="color: var(--primary-color); margin-right: 5px;"></i> Unlimited online streaming</li>
+          <li><i class="fas fa-check" style="color: var(--primary-color); margin-right: 5px;"></i> Advanced fitness assessment</li>
+          <li><i class="fas fa-check" style="color: var(--primary-color); margin-right: 5px;"></i> Personalized training plan</li>
+          <li><i class="fas fa-times" style="color: #ccc; margin-right: 5px;"></i> Private sessions</li>
+        </ul>
+        <a href="#" class="btn">Choose Plan</a>
+      </div>
+      
+      <!-- Elite Plan -->
+      <div class="pricing-card">
+        <div class="pricing-header">
+          <h3 class="pricing-title">Elite</h3>
+          <div class="pricing-price">$129<span>/month</span></div>
+        </div>
+        <ul class="pricing-features">
+          <li><i class="fas fa-check" style="color: var(--primary-color); margin-right: 5px;"></i> Unlimited in-studio classes</li>
+          <li><i class="fas fa-check" style="color: var(--primary-color); margin-right: 5px;"></i> Unlimited online streaming</li>
+          <li><i class="fas fa-check" style="color: var(--primary-color); margin-right: 5px;"></i> Complete fitness assessment</li>
+          <li><i class="fas fa-check" style="color: var(--primary-color); margin-right: 5px;"></i> Personalized training plan</li>
+          <li><i class="fas fa-check" style="color: var(--primary-color); margin-right: 5px;"></i> 2 private sessions per month</li>
+        </ul>
+        <a href="#" class="btn">Choose Plan</a>
+      </div>
+    </div>
+  </section>
+
+  <!-- Instructors Section -->
+  <section id="instructors" style="background-color: #f8f9fa;">
+    <div class="container">
+      <div class="section-title">
+        <h2>Our Expert Instructors</h2>
+      </div>
+      <div class="instructors-grid">
+        <!-- Instructor 1 -->
+        <div class="instructor-card">
+          <div class="instructor-img">
+            <img src="https://images.unsplash.com/photo-1494790108377-be9c29b29330?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=687&q=80" alt="Sarah Johnson">
+          </div>
+          <div class="instructor-info">
+            <h3>Sarah Johnson</h3>
+            <p>Power Yoga Specialist</p>
+            <div class="instructor-social">
+              <a href="#"><i class="fab fa-instagram"></i></a>
+              <a href="#"><i class="fab fa-facebook"></i></a>
+              <a href="#"><i class="fab fa-linkedin"></i></a>
+            </div>
+          </div>
+        </div>
+        
+        <!-- Instructor 2 -->
+        <div class="instructor-card">
+          <div class="instructor-img">
+            <img src="https://images.unsplash.com/photo-1607990281513-2c110a25bd8c?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=934&q=80" alt="Michael Rodriguez">
+          </div>
+          <div class="instructor-info">
+            <h3>Michael Rodriguez</h3>
+            <p>Sports Recovery Expert</p>
+            <div class="instructor-social">
+              <a href="#"><i class="fab fa-instagram"></i></a>
+              <a href="#"><i class="fab fa-facebook"></i></a>
+              <a href="#"><i class="fab fa-linkedin"></i></a>
+            </div>
+          </div>
+        </div>
+        
+        <!-- Instructor 3 -->
+        <div class="instructor-card">
+          <div class="instructor-img">
+            <img src="https://images.unsplash.com/photo-1531746020798-e6953c6e8e04?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=928&q=80" alt="Emily Chen">
+          </div>
+          <div class="instructor-info">
+            <h3>Emily Chen</h3>
+            <p>Meditation Instructor</p>
+            <div class="instructor-social">
+              <a href="#"><i class="fab fa-instagram"></i></a>
+              <a href="#"><i class="fab fa-facebook"></i></a>
+              <a href="#"><i class="fab fa-linkedin"></i></a>
+            </div>
+          </div>
+        </div>
+        
+        <!-- Instructor 4 -->
+        <div class="instructor-card">
+          <div class="instructor-img">
+            <img src="https://images.unsplash.com/photo-1527980965255-d3b416303d12?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=880&q=80" alt="David Kim">
+          </div>
+          <div class="instructor-info">
+            <h3>David Kim</h3>
+            <p>Gentle Flow Specialist</p>
+            <div class="instructor-social">
+              <a href="#"><i class="fab fa-instagram"></i></a>
+              <a href="#"><i class="fab fa-facebook"></i></a>
+              <a href="#"><i class="fab fa-linkedin"></i></a>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 10. Gallery Section -->
+  <section id="gallery" class="container">
+    <div class="section-title">
+      <h2>Our Studio Gallery</h2>
+    </div>
+    <div class="gallery-grid">
+      <div class="gallery-item">
+        <img src="https://images.unsplash.com/photo-1545205597-3d9d02c29597?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1170&q=80" alt="Yoga Studio">
+        <div class="gallery-overlay">
+          <a href="#" class="btn btn-accent">View Larger</a>
+        </div>
+      </div>
+      <div class="gallery-item">
+        <img src="https://images.unsplash.com/photo-1603988363607-e1e4a66962c6?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1170&q=80" alt="Yoga Class">
+        <div class="gallery-overlay">
+          <a href="#" class="btn btn-accent">View Larger</a>
+        </div>
+      </div>
+      <div class="gallery-item">
+        <img src="https://images.unsplash.com/photo-1588286840104-8957b019727f?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1170&q=80" alt="Meditation Room">
+        <div class="gallery-overlay">
+          <a href="#" class="btn btn-accent">View Larger</a>
+        </div>
+      </div>
+      <div class="gallery-item">
+        <img src="https://images.unsplash.com/photo-1518611012118-696072aa579a?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1170&q=80" alt="Yoga Pose">
+        <div class="gallery-overlay">
+          <a href="#" class="btn btn-accent">View Larger</a>
+        </div>
+      </div>
+      <div class="gallery-item">
+        <img src="https://images.unsplash.com/photo-1599447421416-3414500d18a5?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=687&q=80" alt="Yoga Equipment">
+        <div class="gallery-overlay">
+          <a href="#" class="btn btn-accent">View Larger</a>
+        </div>
+      </div>
+      <div class="gallery-item">
+        <img src="https://images.unsplash.com/photo-1593810450967-f9c2866b2688?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1170&q=80" alt="Yoga Practice">
+        <div class="gallery-overlay">
+          <a href="#" class="btn btn-accent">View Larger</a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 9. Testimonials Section -->
+  <section style="background-color: #f8f9fa; padding: 5rem 0;">
+    <div class="container">
+      <div class="section-title">
+        <h2>What Our Members Say</h2>
+      </div>
+      <div class="testimonial-slider" id="testimonialSlider">
+        <div class="testimonial-slide active" id="slide1">
+          <div class="testimonial-content">
+            <i class="fas fa-quote-left" style="font-size: 2rem; color: var(--primary-color); margin-bottom: 1rem;"></i>
+            <p>"Sports Yoga Studios has transformed my approach to fitness. The instructors are knowledgeable and supportive, and the variety of classes keeps me engaged and motivated. I've seen significant improvements in my flexibility and overall performance."</p>
+            <div class="testimonial-author">
+              <img src="https://randomuser.me/api/portraits/women/65.jpg" alt="Jessica M.">
+              <div class="author-info">
+                <h4>Jessica M.</h4>
+                <p>Marathon Runner</p>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="testimonial-slide" id="slide2">
+          <div class="testimonial-content">
+            <i class="fas fa-quote-left" style="font-size: 2rem; color: var(--primary-color); margin-bottom: 1rem;"></i>
+            <p>"As a professional athlete, recovery is crucial to my performance. The Sports Recovery classes have been a game-changer for my training regimen. I've experienced fewer injuries and improved mobility since joining."</p>
+            <div class="testimonial-author">
+              <img src="https://randomuser.me/api/portraits/men/32.jpg" alt="Robert T.">
+              <div class="author-info">
+                <h4>Robert T.</h4>
+                <p>Professional Soccer Player</p>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="testimonial-slide" id="slide3">
+          <div class="testimonial-content">
+            <i class="fas fa-quote-left" style="font-size: 2rem; color: var(--primary-color); margin-bottom: 1rem;"></i>
+            <p>"The online classes have been a lifesaver during my busy schedule. I can practice from anywhere, and the instructors are just as attentive and helpful as they are in the studio. The membership is worth every penny!"</p>
+            <div class="testimonial-author">
+              <img src="https://randomuser.me/api/portraits/women/44.jpg" alt="Samantha K.">
+              <div class="author-info">
+                <h4>Samantha K.</h4>
+                <p>Business Executive</p>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="testimonial-controls">
+          <button class="testimonial-control" onclick="changeSlide(-1)"><i class="fas fa-chevron-left"></i></button>
+          <button class="testimonial-control" onclick="changeSlide(1)"><i class="fas fa-chevron-right"></i></button>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 11. Newsletter Section -->
+  <section class="newsletter">
+    <div class="container">
+      <h2>Join Our Community</h2>
+      <p>Subscribe to our newsletter to receive updates on new classes, special events, and exclusive content to enhance your yoga journey.</p>
+      <form class="newsletter-form">
+        <input type="email" placeholder="Your Email Address" required>
+        <button type="submit"><i class="fas fa-paper-plane"></i> Subscribe</button>
+      </form>
+    </div>
+  </section>
+
+  <!-- Contact Section -->
+  <section id="contact" class="container">
+    <div class="section-title">
+      <h2>Get In Touch</h2>
+    </div>
+    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 2rem;">
+      <div>
+        <h3 style="font-size: 1.5rem; margin-bottom: 1.5rem; color: var(--dark-color);">Contact Information</h3>
+        <div style="margin-bottom: 1.5rem;">
+          <p style="display: flex; align-items: center; margin-bottom: 1rem;">
+            <i class="fas fa-map-marker-alt" style="color: var(--primary-color); margin-right: 1rem; font-size: 1.2rem;"></i>
+            <span>123 Yoga Street, Fitness City, FC 12345</span>
+          </p>
+          <p style="display: flex; align-items: center; margin-bottom: 1rem;">
+            <i class="fas fa-phone" style="color: var(--primary-color); margin-right: 1rem; font-size: 1.2rem;"></i>
+            <span>(123) 456-7890</span>
+          </p>
+          <p style="display: flex; align-items: center; margin-bottom: 1rem;">
+            <i class="fas fa-envelope" style="color: var(--primary-color); margin-right: 1rem; font-size: 1.2rem;"></i>
+            <span>info@sportsyogastudios.com</span>
+          </p>
+        </div>
+        <h4 style="font-size: 1.2rem; margin-bottom: 1rem; color: var(--dark-color);">Studio Hours</h4>
+        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem;">
+          <div>
+            <p style="font-weight: bold;">Monday - Friday</p>
+            <p>6:00 AM - 9:00 PM</p>
+          </div>
+          <div>
+            <p style="font-weight: bold;">Saturday - Sunday</p>
+            <p>8:00 AM - 6:00 PM</p>
+          </div>
+        </div>
+      </div>
+      <div>
+        <form style="background: white; padding: 2rem; border-radius: var(--border-radius); box-shadow: var(--box-shadow);">
+          <div style="margin-bottom: 1.5rem;">
+            <label for="name" style="display: block; margin-bottom: 0.5rem; font-weight: bold;">Your Name</label>
+            <input type="text" id="name" required style="width: 100%; padding: 0.8rem 1rem; border: 1px solid #ddd; border-radius: var(--border-radius); outline: none;">
+          </div>
+          <div style="margin-bottom: 1.5rem;">
+            <label for="email" style="display: block; margin-bottom: 0.5rem; font-weight: bold;">Your Email</label>
+            <input type="email" id="email" required style="width: 100%; padding: 0.8rem 1rem; border: 1px solid #ddd; border-radius: var(--border-radius); outline: none;">
+          </div>
+          <div style="margin-bottom: 1.5rem;">
+            <label for="subject" style="display: block; margin-bottom: 0.5rem; font-weight: bold;">Subject</label>
+            <input type="text" id="subject" required style="width: 100%; padding: 0.8rem 1rem; border: 1px solid #ddd; border-radius: var(--border-radius); outline: none;">
+          </div>
+          <div style="margin-bottom: 1.5rem;">
+            <label for="message" style="display: block; margin-bottom: 0.5rem; font-weight: bold;">Your Message</label>
+            <textarea id="message" rows="5" required style="width: 100%; padding: 0.8rem 1rem; border: 1px solid #ddd; border-radius: var(--border-radius); outline: none; resize: vertical;"></textarea>
+          </div>
+          <button type="submit" class="btn" style="width: 100%;">Send Message</button>
+        </form>
+      </div>
+    </div>
+  </section>
+
+  <!-- 12. Footer Section -->
+  <footer>
+    <div class="footer-container">
+      <div class="footer-column">
+        <h3>Sports Yoga Studios</h3>
+        <p style="color: rgba(255,255,255,0.7); margin-bottom: 1rem;">We are dedicated to helping you achieve balance in body and mind through our innovative yoga practices tailored for athletes and fitness enthusiasts.</p>
+        <div class="social-links">
+          <a href="#" class="social-link"><i class="fab fa-facebook-f"></i></a>
+          <a href="#" class="social-link"><i class="fab fa-instagram"></i></a>
+          <a href="#" class="social-link"><i class="fab fa-twitter"></i></a>
+          <a href="#" class="social-link"><i class="fab fa-youtube"></i></a>
+        </div>
+      </div>
+      <div class="footer-column">
+        <h3>Quick Links</h3>
+        <ul class="footer-links">
+          <li><a href="#home">Home</a></li>
+          <li><a href="#about">About Us</a></li>
+          <li><a href="#classes">Our Classes</a></li>
+          <li><a href="#pricing">Pricing</a></li>
+          <li><a href="#contact">Contact</a></li>
+        </ul>
+      </div>
+      <div class="footer-column">
+        <h3>Our Classes</h3>
+        <ul class="footer-links">
+          <li><a href="#classes">Power Yoga</a></li>
+          <li><a href="#classes">Gentle Flow</a></li>
+          <li><a href="#classes">Sports Recovery</a></li>
+          <li><a href="#classes">Meditation</a></li>
+          <li><a href="#classes">Online Classes</a></li>
+        </ul>
+      </div>
+      <div class="footer-column">
+        <h3>Newsletter</h3>
+        <p style="color: rgba(255,255,255,0.7); margin-bottom: 1rem;">Subscribe to our newsletter for the latest updates and offers.</p>
+        <form style="display: flex; margin-bottom: 1rem;">
+          <input type="email" placeholder="Your Email" style="flex: 1; padding: 0.5rem; border: none; border-radius: var(--border-radius) 0 0 var(--border-radius);">
+          <button type="submit" style="background: var(--primary-color); color: white; border: none; padding: 0.5rem; border-radius: 0 var(--border-radius) var(--border-radius) 0;"><i class="fas fa-arrow-right"></i></button>
+        </form>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <p>&copy; 2023 Sports Yoga Studios. All Rights Reserved.</p>
+    </div>
+  </footer>
+
+  <!-- Floating Action Button -->
+  <div class="fab" id="bookNowBtn">
+    <i class="fas fa-calendar-check"></i>
+  </div>
+
+  <!-- Modal -->
+  <div class="modal" id="bookingModal">
+    <div class="modal-content">
+      <button class="close-modal" id="closeModal"><i class="fas fa-times"></i></button>
+      <h2 style="font-size: 1.8rem; margin-bottom: 1.5rem; color: var(--dark-color); text-align: center;">Book a Class</h2>
+      <form>
+        <div style="margin-bottom: 1.5rem;">
+          <label for="class-select" style="display: block; margin-bottom: 0.5rem; font-weight: bold;">Select Class</label>
+          <select id="class-select" style="width: 100%; padding: 0.8rem 1rem; border: 1px solid #ddd; border-radius: var(--border-radius); outline: none;">
+            <option value="">Choose a class...</option>
+            <option value="power-yoga">Power Yoga</option>
+            <option value="gentle-flow">Gentle Flow</option>
+            <option value="sports-recovery">Sports Recovery</option>
+            <option value="meditation">Meditation</option>
+            <option value="online-live">Online Live Class</option>
+          </select>
+        </div>
+        <div style="margin-bottom: 1.5rem;">
+          <label for="date-select" style="display: block; margin-bottom: 0.5rem; font-weight: bold;">Select Date</label>
+          <input type="date" id="date-select" style="width: 100%; padding: 0.8rem 1rem; border: 1px solid #ddd; border-radius: var(--border-radius); outline: none;">
+        </div>
+        <div style="margin-bottom: 1.5rem;">
+          <label for="time-select" style="display: block; margin-bottom: 0.5rem; font-weight: bold;">Select Time</label>
+          <select id="time-select" style="width: 100%; padding: 0.8rem 1rem; border: 1px solid #ddd; border-radius: var(--border-radius); outline: none;">
+            <option value="">Choose a time...</option>
+            <option value="morning">Morning (6:00 AM - 9:00 AM)</option>
+            <option value="midday">Midday (11:00 AM - 1:00 PM)</option>
+            <option value="evening">Evening (5:00 PM - 8:00 PM)</option>
+          </select>
+        </div>
+        <button type="submit" class="btn" style="width: 100%;">Confirm Booking</button>
+      </form>
+    </div>
+  </div>
+
+  <script>
+    // Header scroll effect
+    window.addEventListener('scroll', function() {
+      const header = document.getElementById('header');
+      if (window.scrollY > 50) {
+        header.classList.add('scroll');
+      } else {
+        header.classList.remove('scroll');
+      }
+    });
+    
+    // Mobile menu toggle
+    const hamburger = document.getElementById('hamburger');
+    const navLinks = document.getElementById('nav-links');
+    
+    hamburger.addEventListener('click', function() {
+      navLinks.classList.toggle('active');
+      const icon = hamburger.querySelector('i');
+      if (navLinks.classList.contains('active')) {
+        icon.classList.remove('fa-bars');
+        icon.classList.add('fa-times');
+      } else {
+        icon.classList.remove('fa-times');
+        icon.classList.add('fa-bars');
+      }
+    });
+    
+    // Close mobile menu when clicking a link
+    const mobileLinks = navLinks.querySelectorAll('a');
+    mobileLinks.forEach(link => {
+      link.addEventListener('click', function() {
+        navLinks.classList.remove('active');
+        const icon = hamburger.querySelector('i');
+        icon.classList.remove('fa-times');
+        icon.classList.add('fa-bars');
+      });
+    });
+    
+    // Testimonial slider
+    let currentSlide = 1;
+    
+    function changeSlide(direction) {
+      const slides = document.querySelectorAll('.testimonial-slide');
+      
+      // Hide current slide
+      document.getElementById('slide' + currentSlide).classList.remove('active');
+      
+      // Calculate next slide index
+      currentSlide += direction;
+      
+      // Loop back to first or last slide if needed
+      if (currentSlide > slides.length) {
+        currentSlide = 1;
+      } else if (currentSlide < 1) {
+        currentSlide = slides.length;
+      }
+      
+      // Show the new current slide
+      document.getElementById('slide' + currentSlide).classList.add('active');
+    }
+    
+    // Auto rotate testimonials
+    setInterval(() => {
+      changeSlide(1);
+    }, 7000);
+    
+    // Modal functionality
+    const modal = document.getElementById('bookingModal');
+    const bookNowBtn = document.getElementById('bookNowBtn');
+    const closeModal = document.getElementById('closeModal');
+    
+    bookNowBtn.addEventListener('click', function() {
+      modal.classList.add('active');
+    });
+    
+    closeModal.addEventListener('click', function() {
+      modal.classList.remove('active');
+    });
+    
+    // Close modal if clicking outside content
+    window.addEventListener('click', function(event) {
+      if (event.target === modal) {
+        modal.classList.remove('active');
+      }
+    });
+    
+    // Smooth scrolling for anchor links
+    document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+      anchor.addEventListener('click', function(e) {
+        e.preventDefault();
+        
+        const target = document.querySelector(this.getAttribute('href'));
+        
+        if (target) {
+          window.scrollTo({
+            top: target.offsetTop - 80, // Offset for fixed header
+            behavior: 'smooth'
+          });
+        }
+      });
+    });
+  </script>
+</body>
+</html>
+`}
+        className="w-full h-screen border-0"
+        title="Sports Yoga Studios"
+      />
+    </div>
+  );
+};
+
+export default Index;

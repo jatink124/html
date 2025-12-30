@@ -1,0 +1,292 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Web Developer Portfolio</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    animation: {
+                        'fade-in': 'fadeIn 1s ease-out',
+                        'slide-up': 'slideUp 0.8s ease-out',
+                        'bounce-slow': 'bounce 3s infinite',
+                        'pulse-slow': 'pulse 4s cubic-bezier(0.4, 0, 0.6, 1) infinite',
+                        'float': 'float 3s ease-in-out infinite'
+                    },
+                    keyframes: {
+                        fadeIn: {
+                            '0%': { opacity: '0' },
+                            '100%': { opacity: '1' }
+                        },
+                        slideUp: {
+                            '0%': { transform: 'translateY(20px)', opacity: '0' },
+                            '100%': { transform: 'translateY(0)', opacity: '1' }
+                        },
+                        float: {
+                            '0%': { transform: 'translateY(0px)' },
+                            '50%': { transform: 'translateY(-10px)' },
+                            '100%': { transform: 'translateY(0px)' }
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body class="bg-gray-900 text-white font-sans">
+    <div class="container mx-auto px-4 py-8 animate-fade-in">
+        <!-- Header with Sticky Navigation - Feature 1 -->
+        <header class="flex justify-between items-center mb-16 sticky top-0 z-50 bg-gray-900/80 backdrop-blur-md py-4">
+            <h1 class="text-3xl font-bold">John Doe</h1>
+            <nav>
+                <ul class="flex space-x-6">
+                    <li><a href="#projects" class="hover:text-blue-400 transition">Projects</a></li>
+                    <li><a href="#skills" class="hover:text-blue-400 transition">Skills</a></li>
+                    <li><a href="#contact" class="hover:text-blue-400 transition">Contact</a></li>
+                </ul>
+            </nav>
+        </header>
+
+        <!-- Hero Section with Animated Text - Feature 2 -->
+        <section class="text-center mb-16 animate-slide-up">
+            <h2 class="text-5xl font-bold mb-4">Full Stack Web Developer</h2>
+            <p class="text-xl text-gray-300 max-w-2xl mx-auto">
+                Creating innovative web solutions with modern technologies and a passion for clean, efficient code.
+            </p>
+            <div class="mt-8 flex justify-center space-x-4">
+                <a href="#projects" class="bg-blue-600 hover:bg-blue-700 px-6 py-3 rounded-lg transition">View Projects</a>
+                <a href="#contact" class="border border-blue-600 hover:bg-blue-600 px-6 py-3 rounded-lg transition">Contact Me</a>
+            </div>
+        </section>
+
+        <!-- Projects Section with Hover Effects - Feature 3 -->
+        <section id="projects" class="mb-16">
+            <h3 class="text-3xl font-bold text-center mb-8">Featured Projects</h3>
+            <div class="grid md:grid-cols-3 gap-6">
+                <!-- Project Cards with Hover Animation - Feature 4 -->
+                <div class="bg-gray-800 p-6 rounded-lg hover:scale-105 transition duration-300 transform">
+                    <h4 class="text-xl font-semibold mb-4">E-Commerce Platform</h4>
+                    <p class="text-gray-300 mb-4">Full-stack e-commerce application with React and Node.js</p>
+                    <div class="flex space-x-4">
+                        <a href="#" class="bg-blue-600 px-4 py-2 rounded">GitHub</a>
+                        <a href="#" class="border border-blue-600 px-4 py-2 rounded">Live Demo</a>
+                    </div>
+                </div>
+                <div class="bg-gray-800 p-6 rounded-lg hover:scale-105 transition duration-300 transform">
+                    <h4 class="text-xl font-semibold mb-4">Social Media Dashboard</h4>
+                    <p class="text-gray-300 mb-4">Real-time analytics dashboard using WebSockets</p>
+                    <div class="flex space-x-4">
+                        <a href="#" class="bg-blue-600 px-4 py-2 rounded">GitHub</a>
+                        <a href="#" class="border border-blue-600 px-4 py-2 rounded">Live Demo</a>
+                    </div>
+                </div>
+                <div class="bg-gray-800 p-6 rounded-lg hover:scale-105 transition duration-300 transform">
+                    <h4 class="text-xl font-semibold mb-4">AI Chatbot</h4>
+                    <p class="text-gray-300 mb-4">Machine learning powered customer support chatbot</p>
+                    <div class="flex space-x-4">
+                        <a href="#" class="bg-blue-600 px-4 py-2 rounded">GitHub</a>
+                        <a href="#" class="border border-blue-600 px-4 py-2 rounded">Live Demo</a>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Skills Section with Grid Layout - Feature 5 -->
+        <section id="skills" class="mb-16">
+            <h3 class="text-3xl font-bold text-center mb-8">Technologies & Skills</h3>
+            <div class="grid md:grid-cols-4 gap-4 text-center">
+                <div class="bg-gray-800 p-4 rounded-lg hover:bg-gray-700 transition">React.js</div>
+                <div class="bg-gray-800 p-4 rounded-lg hover:bg-gray-700 transition">Node.js</div>
+                <div class="bg-gray-800 p-4 rounded-lg hover:bg-gray-700 transition">TypeScript</div>
+                <div class="bg-gray-800 p-4 rounded-lg hover:bg-gray-700 transition">GraphQL</div>
+                <div class="bg-gray-800 p-4 rounded-lg hover:bg-gray-700 transition">Docker</div>
+                <div class="bg-gray-800 p-4 rounded-lg hover:bg-gray-700 transition">Kubernetes</div>
+                <div class="bg-gray-800 p-4 rounded-lg hover:bg-gray-700 transition">AWS</div>
+                <div class="bg-gray-800 p-4 rounded-lg hover:bg-gray-700 transition">MongoDB</div>
+            </div>
+        </section>
+
+        <!-- GitHub Repositories with Card Design - Feature 6 -->
+        <section class="mb-16">
+            <h3 class="text-3xl font-bold text-center mb-8">GitHub Repositories</h3>
+            <div class="grid md:grid-cols-2 gap-6">
+                <div class="bg-gray-800 p-6 rounded-lg">
+                    <h4 class="text-xl font-semibold mb-4">Personal Blog CMS</h4>
+                    <p class="text-gray-300 mb-4">Custom content management system with Next.js</p>
+                    <a href="#" class="bg-blue-600 px-4 py-2 rounded">View Repository</a>
+                </div>
+                <div class="bg-gray-800 p-6 rounded-lg">
+                    <h4 class="text-xl font-semibold mb-4">Machine Learning Toolkit</h4>
+                    <p class="text-gray-300 mb-4">Collection of ML algorithms and utilities</p>
+                    <a href="#" class="bg-blue-600 px-4 py-2 rounded">View Repository</a>
+                </div>
+            </div>
+        </section>
+
+        <!-- Experience Timeline - Feature 7 -->
+        <section class="mb-16">
+            <h3 class="text-3xl font-bold text-center mb-8">Work Experience</h3>
+            <div class="space-y-8 relative before:absolute before:inset-0 before:ml-5 before:-translate-x-px md:before:mx-auto md:before:translate-x-0 before:h-full before:w-0.5 before:bg-gradient-to-b before:from-blue-700 before:via-blue-500 before:to-blue-300">
+                <div class="relative flex items-center justify-between md:justify-normal md:odd:flex-row-reverse group">
+                    <div class="flex items-center justify-center w-10 h-10 rounded-full bg-blue-600 text-white shrink-0 md:order-1 md:group-odd:-translate-x-1/2 md:group-even:translate-x-1/2">
+                        <span class="text-sm">1</span>
+                    </div>
+                    <div class="w-[calc(100%-4rem)] md:w-[calc(50%-2.5rem)] bg-gray-800 p-4 rounded-lg">
+                        <div class="font-bold text-blue-400">2022 - Present</div>
+                        <div class="text-xl font-semibold mb-1">Senior Developer at TechCorp</div>
+                        <div class="text-gray-300">Leading development of cloud-native applications and mentoring junior developers.</div>
+                    </div>
+                </div>
+                <div class="relative flex items-center justify-between md:justify-normal md:odd:flex-row-reverse group">
+                    <div class="flex items-center justify-center w-10 h-10 rounded-full bg-blue-600 text-white shrink-0 md:order-1 md:group-odd:-translate-x-1/2 md:group-even:translate-x-1/2">
+                        <span class="text-sm">2</span>
+                    </div>
+                    <div class="w-[calc(100%-4rem)] md:w-[calc(50%-2.5rem)] bg-gray-800 p-4 rounded-lg">
+                        <div class="font-bold text-blue-400">2019 - 2022</div>
+                        <div class="text-xl font-semibold mb-1">Web Developer at DigitalSolutions</div>
+                        <div class="text-gray-300">Built responsive web applications and implemented CI/CD pipelines.</div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Animated Stats Counters - Feature 8 -->
+        <section class="mb-16 py-10 bg-gradient-to-r from-blue-900 to-indigo-900 rounded-xl">
+            <h3 class="text-3xl font-bold text-center mb-8">Achievements</h3>
+            <div class="grid grid-cols-2 md:grid-cols-4 gap-6 text-center">
+                <div class="animate-pulse-slow">
+                    <div class="text-4xl font-bold mb-2">50+</div>
+                    <div class="text-blue-300">Projects Completed</div>
+                </div>
+                <div class="animate-pulse-slow">
+                    <div class="text-4xl font-bold mb-2">30+</div>
+                    <div class="text-blue-300">Happy Clients</div>
+                </div>
+                <div class="animate-pulse-slow">
+                    <div class="text-4xl font-bold mb-2">100+</div>
+                    <div class="text-blue-300">GitHub Repositories</div>
+                </div>
+                <div class="animate-pulse-slow">
+                    <div class="text-4xl font-bold mb-2">5+</div>
+                    <div class="text-blue-300">Years Experience</div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Testimonials Slider - Feature 9 -->
+        <section class="mb-16">
+            <h3 class="text-3xl font-bold text-center mb-8">Client Testimonials</h3>
+            <div class="testimonial-slider relative overflow-hidden">
+                <div class="flex flex-nowrap space-x-6 transition-transform duration-500" id="testimonialWrapper">
+                    <div class="min-w-full md:min-w-[400px] bg-gray-800 p-6 rounded-lg">
+                        <p class="italic mb-4">"John delivered our project on time and exceeded our expectations. His technical expertise and problem-solving skills are outstanding."</p>
+                        <p class="font-semibold">- Sarah Johnson, CEO of TechStart</p>
+                    </div>
+                    <div class="min-w-full md:min-w-[400px] bg-gray-800 p-6 rounded-lg">
+                        <p class="italic mb-4">"Working with John was a pleasure. He understood our requirements perfectly and implemented everything flawlessly."</p>
+                        <p class="font-semibold">- Michael Chen, Product Manager</p>
+                    </div>
+                    <div class="min-w-full md:min-w-[400px] bg-gray-800 p-6 rounded-lg">
+                        <p class="italic mb-4">"John's attention to detail and ability to solve complex technical challenges made our project a success."</p>
+                        <p class="font-semibold">- Emily Rodriguez, CTO</p>
+                    </div>
+                </div>
+                <div class="flex justify-center space-x-2 mt-4">
+                    <button class="w-3 h-3 rounded-full bg-blue-600" onclick="moveSlide(0)"></button>
+                    <button class="w-3 h-3 rounded-full bg-gray-400" onclick="moveSlide(1)"></button>
+                    <button class="w-3 h-3 rounded-full bg-gray-400" onclick="moveSlide(2)"></button>
+                </div>
+            </div>
+        </section>
+
+        <!-- Services List with Icons - Feature 10 -->
+        <section class="mb-16">
+            <h3 class="text-3xl font-bold text-center mb-8">Services Offered</h3>
+            <div class="grid md:grid-cols-3 gap-6">
+                <div class="bg-gray-800 p-6 rounded-lg text-center">
+                    <div class="text-4xl mb-4 text-blue-400"><i class="fas fa-laptop-code"></i></div>
+                    <h4 class="text-xl font-semibold mb-2">Web Development</h4>
+                    <p class="text-gray-300">Full-stack web applications with modern frameworks and best practices.</p>
+                </div>
+                <div class="bg-gray-800 p-6 rounded-lg text-center">
+                    <div class="text-4xl mb-4 text-blue-400"><i class="fas fa-mobile-alt"></i></div>
+                    <h4 class="text-xl font-semibold mb-2">Mobile Apps</h4>
+                    <p class="text-gray-300">Cross-platform mobile applications using React Native or Flutter.</p>
+                </div>
+                <div class="bg-gray-800 p-6 rounded-lg text-center">
+                    <div class="text-4xl mb-4 text-blue-400"><i class="fas fa-cloud"></i></div>
+                    <h4 class="text-xl font-semibold mb-2">Cloud Solutions</h4>
+                    <p class="text-gray-300">Scalable cloud infrastructure setup and maintenance on AWS, GCP, or Azure.</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- Interactive Contact Form - Feature 11 -->
+        <section id="contact" class="mb-16">
+            <h3 class="text-3xl font-bold text-center mb-8">Contact Me</h3>
+            <form class="max-w-lg mx-auto bg-gray-800 p-8 rounded-lg">
+                <input type="text" placeholder="Your Name" class="w-full mb-4 p-3 bg-gray-700 rounded text-white focus:outline-none focus:ring-2 focus:ring-blue-600 transition">
+                <input type="email" placeholder="Your Email" class="w-full mb-4 p-3 bg-gray-700 rounded text-white focus:outline-none focus:ring-2 focus:ring-blue-600 transition">
+                <textarea placeholder="Your Message" class="w-full mb-4 p-3 bg-gray-700 rounded text-white focus:outline-none focus:ring-2 focus:ring-blue-600 transition" rows="4"></textarea>
+                <button type="submit" class="w-full bg-blue-600 hover:bg-blue-700 p-3 rounded transition">
+                    Send Message
+                </button>
+            </form>
+        </section>
+
+        <!-- Social Media Links with Animations - Feature 12 -->
+        <section class="mb-16 text-center">
+            <h3 class="text-3xl font-bold text-center mb-8">Let's Connect</h3>
+            <div class="flex justify-center space-x-6">
+                <a href="#" class="text-3xl hover:text-blue-400 transform hover:scale-125 transition-all animate-float"><i class="fab fa-linkedin"></i></a>
+                <a href="#" class="text-3xl hover:text-blue-400 transform hover:scale-125 transition-all animate-float delay-100"><i class="fab fa-github"></i></a>
+                <a href="#" class="text-3xl hover:text-blue-400 transform hover:scale-125 transition-all animate-float delay-200"><i class="fab fa-twitter"></i></a>
+                <a href="#" class="text-3xl hover:text-blue-400 transform hover:scale-125 transition-all animate-float delay-300"><i class="fab fa-instagram"></i></a>
+            </div>
+        </section>
+
+        <!-- Footer with Dynamic Copyright Year - Feature 13 -->
+        <footer class="text-center text-gray-400 py-8">
+            <div class="flex justify-center space-x-6 mb-4">
+                <a href="#" class="hover:text-white transition">LinkedIn</a>
+                <a href="#" class="hover:text-white transition">GitHub</a>
+                <a href="#" class="hover:text-white transition">Twitter</a>
+            </div>
+            <p>&copy; <span id="currentYear">2024</span> John Doe. All Rights Reserved.</p>
+        </footer>
+    </div>
+
+    <!-- JavaScript functionality -->
+    <script>
+        // Set current year for copyright
+        document.getElementById('currentYear').textContent = new Date().getFullYear();
+
+        // Testimonial slider functionality
+        function moveSlide(index) {
+            const wrapper = document.getElementById('testimonialWrapper');
+            const slideWidth = document.querySelector('.testimonial-slider').offsetWidth;
+            wrapper.style.transform = `translateX(-${index * slideWidth}px)`;
+            
+            // Update active button
+            const buttons = document.querySelectorAll('.testimonial-slider button');
+            buttons.forEach((btn, i) => {
+                btn.className = i === index ? 'w-3 h-3 rounded-full bg-blue-600' : 'w-3 h-3 rounded-full bg-gray-400';
+            });
+        }
+
+        // Smooth scrolling for anchor links
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                e.preventDefault();
+                document.querySelector(this.getAttribute('href')).scrollIntoView({
+                    behavior: 'smooth'
+                });
+            });
+        });
+    </script>
+</body>
+</html>

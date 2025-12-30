@@ -1,0 +1,835 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <title>Hotel Management Dashboard</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <!-- Tailwind CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            hotel: {
+              primary: '#1E40AF', // Indigo-800
+              accent: '#0EA5E9',  // Sky-500
+              soft: '#E0F2FE',    // Sky-100
+            }
+          }
+        }
+      }
+    }
+  </script>
+
+  <style>
+    /* Simple scrollbar styling */
+    ::-webkit-scrollbar {
+      width: 6px;
+      height: 6px;
+    }
+    ::-webkit-scrollbar-thumb {
+      background: rgba(148, 163, 184, 0.7);
+      border-radius: 9999px;
+    }
+  </style>
+</head>
+<body class="bg-slate-950 text-slate-100">
+
+  <!-- Page Wrapper -->
+  <div class="min-h-screen flex">
+
+    <!-- Sidebar -->
+    <aside
+      id="sidebar"
+      class="hidden lg:flex lg:flex-col w-72 bg-slate-950 border-r border-slate-800/60"
+    >
+      <!-- Logo -->
+      <div class="flex items-center gap-3 px-6 py-5 border-b border-slate-800/60">
+        <div class="h-9 w-9 rounded-xl bg-hotel.primary flex items-center justify-center text-hotel.soft font-semibold">
+          HM
+        </div>
+        <div>
+          <div class="text-sm font-semibold tracking-wide uppercase text-slate-200">
+            Hotel Manager
+          </div>
+          <div class="text-xs text-slate-500">
+            Grand Skyline Hotel
+          </div>
+        </div>
+      </div>
+
+      <!-- Nav -->
+      <nav class="flex-1 px-3 py-4 space-y-1 overflow-y-auto">
+        <button
+          class="w-full flex items-center gap-3 px-3 py-2.5 rounded-xl bg-slate-800 text-slate-50 text-sm font-medium"
+        >
+          <span class="inline-flex h-7 w-7 items-center justify-center rounded-lg bg-hotel.primary/40 text-xs">
+            📊
+          </span>
+          <span>Dashboard Overview</span>
+        </button>
+
+        <button class="w-full flex items-center gap-3 px-3 py-2.5 rounded-xl hover:bg-slate-800/70 text-slate-300 text-sm">
+          <span class="inline-flex h-7 w-7 items-center justify-center rounded-lg bg-slate-800 text-xs">
+            🛎️
+          </span>
+          <span>Front Desk & Bookings</span>
+        </button>
+
+        <button class="w-full flex items-center gap-3 px-3 py-2.5 rounded-xl hover:bg-slate-800/70 text-slate-300 text-sm">
+          <span class="inline-flex h-7 w-7 items-center justify-center rounded-lg bg-slate-800 text-xs">
+            🧹
+          </span>
+          <span>Housekeeping & Rooms</span>
+        </button>
+
+        <button class="w-full flex items-center gap-3 px-3 py-2.5 rounded-xl hover:bg-slate-800/70 text-slate-300 text-sm">
+          <span class="inline-flex h-7 w-7 items-center justify-center rounded-lg bg-slate-800 text-xs">
+            💰
+          </span>
+          <span>Revenue & Forecast</span>
+        </button>
+
+        <button class="w-full flex items-center gap-3 px-3 py-2.5 rounded-xl hover:bg-slate-800/70 text-slate-300 text-sm">
+          <span class="inline-flex h-7 w-7 items-center justify-center rounded-lg bg-slate-800 text-xs">
+            👤
+          </span>
+          <span>Guests & Profiles</span>
+        </button>
+
+        <button class="w-full flex items-center gap-3 px-3 py-2.5 rounded-xl hover:bg-slate-800/70 text-slate-300 text-sm">
+          <span class="inline-flex h-7 w-7 items-center justify-center rounded-lg bg-slate-800 text-xs">
+            ⚙️
+          </span>
+          <span>Settings</span>
+        </button>
+      </nav>
+
+      <!-- Footer -->
+      <div class="px-4 py-4 border-t border-slate-800/60 text-xs text-slate-500">
+        <div class="flex items-center justify-between">
+          <span>Occupancy Engine v2.1</span>
+          <span class="px-2 py-0.5 rounded-full bg-emerald-500/10 text-emerald-400 border border-emerald-500/30">
+            Online
+          </span>
+        </div>
+      </div>
+    </aside>
+
+    <!-- Main Content -->
+    <div class="flex-1 flex flex-col min-w-0">
+
+      <!-- Top Bar -->
+      <header class="border-b border-slate-800/70 bg-slate-950/80 backdrop-blur">
+        <div class="flex items-center justify-between px-4 sm:px-6 py-3 gap-3">
+          <div class="flex items-center gap-2">
+            <!-- Mobile menu button -->
+            <button
+              id="menuBtn"
+              class="lg:hidden inline-flex items-center justify-center rounded-xl border border-slate-800 bg-slate-900 h-9 w-9 text-slate-300"
+            >
+              ☰
+            </button>
+            <div>
+              <div class="text-xs uppercase tracking-[0.2em] text-slate-500">Today</div>
+              <h1 class="text-lg sm:text-xl font-semibold text-slate-50">
+                Hotel Operations Command Center
+              </h1>
+            </div>
+          </div>
+
+          <div class="flex items-center gap-3">
+            <!-- Date Range -->
+            <div class="hidden md:flex items-center gap-2 text-xs text-slate-300">
+              <span class="px-2 py-1 rounded-lg bg-slate-900 border border-slate-700/80">
+                📅 03 Dec 2025
+              </span>
+              <span class="hidden lg:inline text-slate-500">Shift:</span>
+              <span class="hidden lg:inline px-2 py-1 rounded-lg bg-slate-900 border border-slate-700/80">
+                Morning & Day
+              </span>
+            </div>
+
+            <!-- Search -->
+            <div class="hidden sm:flex items-center bg-slate-900 border border-slate-700 rounded-xl px-3 py-1.5 text-xs text-slate-400 w-44 lg:w-56">
+              <span>🔍</span>
+              <input
+                class="bg-transparent border-none outline-none flex-1 px-2 text-xs text-slate-100 placeholder:text-slate-500"
+                placeholder="Search room / guest / booking..."
+              />
+            </div>
+
+            <!-- User -->
+            <div class="flex items-center gap-2">
+              <div class="text-right hidden sm:block">
+                <div class="text-xs font-medium">Duty Manager</div>
+                <div class="text-[11px] text-slate-500">Front Office</div>
+              </div>
+              <div class="h-9 w-9 rounded-full bg-gradient-to-br from-sky-500 to-indigo-600 flex items-center justify-center text-xs font-semibold">
+                DM
+              </div>
+            </div>
+          </div>
+        </div>
+      </header>
+
+      <!-- Scrollable Main Area -->
+      <main class="flex-1 overflow-y-auto px-4 sm:px-6 pb-6 pt-4 space-y-6">
+
+        <!-- KPI Cards -->
+        <section class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-4">
+          <!-- Occupancy -->
+          <div class="relative rounded-2xl border border-slate-800 bg-gradient-to-br from-slate-900 to-slate-950/90 p-4">
+            <div class="flex items-center justify-between gap-3">
+              <div>
+                <div class="text-xs text-slate-400 mb-1">Current Occupancy</div>
+                <div class="text-2xl font-semibold tracking-tight">87%</div>
+                <div class="mt-1.5 text-[11px] text-emerald-400 flex items-center gap-1">
+                  ▲ 4.2% vs yesterday
+                </div>
+              </div>
+              <div class="h-12 w-12 rounded-xl bg-hotel.primary/40 flex items-center justify-center">
+                <span class="text-xl">🏨</span>
+              </div>
+            </div>
+            <div class="mt-3">
+              <div class="flex justify-between text-[11px] text-slate-500 mb-1">
+                <span>Occupied</span>
+                <span>174 / 200 rooms</span>
+              </div>
+              <div class="h-1.5 rounded-full bg-slate-800 overflow-hidden">
+                <div class="h-full w-[87%] bg-gradient-to-r from-sky-500 to-emerald-400"></div>
+              </div>
+            </div>
+          </div>
+
+          <!-- ADR -->
+          <div class="relative rounded-2xl border border-slate-800 bg-slate-950 p-4">
+            <div class="flex items-center justify-between gap-3">
+              <div>
+                <div class="text-xs text-slate-400 mb-1">Average Daily Rate (ADR)</div>
+                <div class="text-2xl font-semibold tracking-tight">₹ 8,450</div>
+                <div class="mt-1.5 text-[11px] text-emerald-400 flex items-center gap-1">
+                  ▲ Premium segment strong
+                </div>
+              </div>
+              <div class="h-12 w-12 rounded-xl bg-slate-800 flex items-center justify-center">
+                <span class="text-lg">💳</span>
+              </div>
+            </div>
+            <div class="mt-3 grid grid-cols-2 gap-2 text-[11px] text-slate-400">
+              <div class="flex flex-col">
+                <span>Corporate</span>
+                <span class="text-slate-100 font-medium">₹ 9,800</span>
+              </div>
+              <div class="flex flex-col">
+                <span>OTA / Direct</span>
+                <span class="text-slate-100 font-medium">₹ 7,200</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- RevPAR -->
+          <div class="relative rounded-2xl border border-slate-800 bg-slate-950 p-4">
+            <div class="flex items-center justify-between gap-3">
+              <div>
+                <div class="text-xs text-slate-400 mb-1">RevPAR (Today)</div>
+                <div class="text-2xl font-semibold tracking-tight">₹ 7,360</div>
+                <div class="mt-1.5 text-[11px] text-amber-300 flex items-center gap-1">
+                  ● Slightly below target
+                </div>
+              </div>
+              <div class="h-12 w-12 rounded-xl bg-slate-800 flex items-center justify-center">
+                <span class="text-lg">📈</span>
+              </div>
+            </div>
+            <div class="mt-3 space-y-1.5 text-[11px]">
+              <div class="flex justify-between text-slate-400">
+                <span>Target</span>
+                <span>₹ 7,800</span>
+              </div>
+              <div class="h-1.5 rounded-full bg-slate-800 overflow-hidden">
+                <div class="h-full w-[94%] bg-sky-500"></div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Guest Experience -->
+          <div class="relative rounded-2xl border border-slate-800 bg-gradient-to-br from-sky-900/40 to-emerald-900/40 p-4">
+            <div class="flex items-center justify-between gap-3">
+              <div>
+                <div class="text-xs text-slate-200/80 mb-1">Guest Experience Index</div>
+                <div class="text-2xl font-semibold tracking-tight">4.7 / 5</div>
+                <div class="mt-1.5 text-[11px] text-emerald-200 flex items-center gap-1">
+                  ⭐ High priority VIP in-house
+                </div>
+              </div>
+              <div class="h-12 w-12 rounded-xl bg-slate-900/60 flex items-center justify-center">
+                <span class="text-lg">🤝</span>
+              </div>
+            </div>
+            <div class="mt-3 flex items-center justify-between text-[11px] text-slate-200/70">
+              <span>Open guest requests: <span class="font-semibold">12</span></span>
+              <span>Late responses: <span class="font-semibold text-amber-300">2</span></span>
+            </div>
+          </div>
+        </section>
+
+        <!-- Charts & Revenue -->
+        <section class="grid grid-cols-1 xl:grid-cols-3 gap-4">
+          <!-- Occupancy Trend (Placeholder chart area) -->
+          <div class="xl:col-span-2 rounded-2xl border border-slate-800 bg-slate-950 p-4 sm:p-5 flex flex-col">
+            <div class="flex items-center justify-between gap-3 mb-3">
+              <div>
+                <h2 class="text-sm font-semibold text-slate-50">7-Day Occupancy Trend</h2>
+                <p class="text-[11px] text-slate-500">Visualize rooms sold by segment & channel.</p>
+              </div>
+              <div class="flex items-center gap-2 text-[11px]">
+                <button class="px-2.5 py-1 rounded-full bg-slate-900 border border-slate-700 text-slate-100">
+                  All Segments
+                </button>
+                <button class="px-2.5 py-1 rounded-full bg-slate-900 border border-slate-800 text-slate-400 hover:text-slate-100">
+                  Corporate
+                </button>
+                <button class="px-2.5 py-1 rounded-full bg-slate-900 border border-slate-800 text-slate-400 hover:text-slate-100">
+                  OTA
+                </button>
+              </div>
+            </div>
+
+            <!-- Chart placeholder -->
+            <div class="flex-1 min-h-[220px] rounded-xl border border-dashed border-slate-700/70 bg-slate-950/60 flex items-center justify-center text-xs text-slate-500">
+              <div class="text-center space-y-1.5">
+                <div class="text-sm font-medium text-slate-200">[Insert line / area chart here]</div>
+                <p class="max-w-sm mx-auto text-[11px]">
+                  This area is reserved for integrating a chart library (e.g. Chart.js, ECharts) showing occupancy % by day & segment.
+                </p>
+              </div>
+            </div>
+          </div>
+
+          <!-- Revenue Breakdown -->
+          <div class="rounded-2xl border border-slate-800 bg-slate-950 p-4 sm:p-5">
+            <div class="flex items-center justify-between gap-3 mb-4">
+              <div>
+                <h2 class="text-sm font-semibold text-slate-50">Today's Revenue Breakdown</h2>
+                <p class="text-[11px] text-slate-500">Room + F&B + Ancillary</p>
+              </div>
+              <span class="inline-flex items-center rounded-full bg-emerald-500/10 border border-emerald-500/30 text-[11px] px-2 py-0.5 text-emerald-300">
+                ▲ +12% vs same day last week
+              </span>
+            </div>
+
+            <dl class="space-y-3 text-sm">
+              <div>
+                <div class="flex justify-between text-xs text-slate-400 mb-1">
+                  <dt>Room Revenue</dt>
+                  <dd>₹ 13,20,000</dd>
+                </div>
+                <div class="h-1.5 rounded-full bg-slate-800 overflow-hidden">
+                  <div class="h-full w-[70%] bg-gradient-to-r from-sky-500 to-sky-300"></div>
+                </div>
+              </div>
+              <div>
+                <div class="flex justify-between text-xs text-slate-400 mb-1">
+                  <dt>F&B</dt>
+                  <dd>₹ 4,80,000</dd>
+                </div>
+                <div class="h-1.5 rounded-full bg-slate-800 overflow-hidden">
+                  <div class="h-full w-[20%] bg-gradient-to-r from-emerald-500 to-emerald-300"></div>
+                </div>
+              </div>
+              <div>
+                <div class="flex justify-between text-xs text-slate-400 mb-1">
+                  <dt>Events / Banquets</dt>
+                  <dd>₹ 1,10,000</dd>
+                </div>
+                <div class="h-1.5 rounded-full bg-slate-800 overflow-hidden">
+                  <div class="h-full w-[8%] bg-gradient-to-r from-amber-500 to-amber-300"></div>
+                </div>
+              </div>
+              <div>
+                <div class="flex justify-between text-xs text-slate-400 mb-1">
+                  <dt>Spa / Ancillary</dt>
+                  <dd>₹ 60,000</dd>
+                </div>
+                <div class="h-1.5 rounded-full bg-slate-800 overflow-hidden">
+                  <div class="h-full w-[5%] bg-gradient-to-r from-fuchsia-500 to-fuchsia-300"></div>
+                </div>
+              </div>
+            </dl>
+
+            <div class="mt-4 pt-3 border-t border-slate-800 text-[11px] space-y-1.5">
+              <div class="flex justify-between">
+                <span>Total Revenue (Today)</span>
+                <span class="font-semibold text-slate-50">₹ 19,70,000</span>
+              </div>
+              <div class="flex justify-between text-slate-400">
+                <span>Forecasted</span>
+                <span>₹ 18,40,000</span>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <!-- Arrivals / Departures / In-House -->
+        <section class="rounded-2xl border border-slate-800 bg-slate-950 p-4 sm:p-5 space-y-4">
+          <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+            <div>
+              <h2 class="text-sm font-semibold text-slate-50">Today's Front Desk Overview</h2>
+              <p class="text-[11px] text-slate-500">Manage arrivals, departures & in-house guests.</p>
+            </div>
+            <div class="flex flex-wrap gap-2 text-[11px]">
+              <div class="px-2.5 py-1 rounded-full bg-slate-900 border border-slate-700 text-slate-100">
+                Arrivals: <span class="font-semibold">32</span>
+              </div>
+              <div class="px-2.5 py-1 rounded-full bg-slate-900 border border-slate-700 text-slate-100">
+                Departures: <span class="font-semibold">27</span>
+              </div>
+              <div class="px-2.5 py-1 rounded-full bg-slate-900 border border-slate-700 text-slate-100">
+                Late check-outs: <span class="font-semibold text-amber-300">4</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- Tabs -->
+          <div class="flex items-center gap-2 border-b border-slate-800 text-xs">
+            <button
+              data-tab="arrivals"
+              class="tab-btn px-3 py-2 rounded-t-lg border border-b-0 border-slate-700 bg-slate-900 text-slate-100"
+            >
+              Arrivals
+            </button>
+            <button
+              data-tab="departures"
+              class="tab-btn px-3 py-2 rounded-t-lg border border-b-0 border-transparent text-slate-400 hover:text-slate-100 hover:border-slate-700"
+            >
+              Departures
+            </button>
+            <button
+              data-tab="inhouse"
+              class="tab-btn px-3 py-2 rounded-t-lg border border-b-0 border-transparent text-slate-400 hover:text-slate-100 hover:border-slate-700"
+            >
+              In-House
+            </button>
+          </div>
+
+          <!-- Tab Content -->
+          <div class="tab-panel space-y-2 text-xs" id="tab-arrivals">
+            <div class="overflow-x-auto">
+              <table class="min-w-full text-left text-xs">
+                <thead class="border-b border-slate-800 text-slate-400">
+                  <tr>
+                    <th class="py-2 pr-3">Guest</th>
+                    <th class="py-2 pr-3">Room Type</th>
+                    <th class="py-2 pr-3">ETA</th>
+                    <th class="py-2 pr-3">Nights</th>
+                    <th class="py-2 pr-3">Source</th>
+                    <th class="py-2 pr-3">Requests</th>
+                    <th class="py-2 pr-3 text-right">Status</th>
+                  </tr>
+                </thead>
+                <tbody class="divide-y divide-slate-800">
+                  <tr>
+                    <td class="py-2 pr-3">
+                      <div class="flex flex-col">
+                        <span class="font-medium text-slate-100">Mr. Arjun Mehta</span>
+                        <span class="text-[11px] text-slate-500">VIP · Corporate</span>
+                      </div>
+                    </td>
+                    <td class="py-2 pr-3">Club Suite · 1805</td>
+                    <td class="py-2 pr-3">13:30</td>
+                    <td class="py-2 pr-3">3</td>
+                    <td class="py-2 pr-3">Direct</td>
+                    <td class="py-2 pr-3">
+                      <span class="px-2 py-0.5 rounded-full bg-sky-500/10 text-sky-300 border border-sky-500/40">
+                        Airport pick-up, late check-in
+                      </span>
+                    </td>
+                    <td class="py-2 pl-3 text-right">
+                      <span class="px-2 py-0.5 rounded-full bg-emerald-500/10 text-emerald-300 border border-emerald-500/40">
+                        Room Ready
+                      </span>
+                    </td>
+                  </tr>
+                  <tr>
+                    <td class="py-2 pr-3">
+                      <div class="flex flex-col">
+                        <span class="font-medium text-slate-100">Ms. Neha Kapoor</span>
+                        <span class="text-[11px] text-slate-500">OTA · Genius</span>
+                      </div>
+                    </td>
+                    <td class="py-2 pr-3">Deluxe King · 1003</td>
+                    <td class="py-2 pr-3">15:45</td>
+                    <td class="py-2 pr-3">2</td>
+                    <td class="py-2 pr-3">Booking.com</td>
+                    <td class="py-2 pr-3">
+                      <span class="px-2 py-0.5 rounded-full bg-amber-500/10 text-amber-300 border border-amber-500/40">
+                        High-floor, city view
+                      </span>
+                    </td>
+                    <td class="py-2 pl-3 text-right">
+                      <span class="px-2 py-0.5 rounded-full bg-slate-800 text-slate-300 border border-slate-600">
+                        Cleaning in progress
+                      </span>
+                    </td>
+                  </tr>
+                  <tr>
+                    <td class="py-2 pr-3">
+                      <div class="flex flex-col">
+                        <span class="font-medium text-slate-100">Dr. Sameer Rao</span>
+                        <span class="text-[11px] text-slate-500">Long stay</span>
+                      </div>
+                    </td>
+                    <td class="py-2 pr-3">Premium Twin · 914</td>
+                    <td class="py-2 pr-3">11:15</td>
+                    <td class="py-2 pr-3">7</td>
+                    <td class="py-2 pr-3">Corporate</td>
+                    <td class="py-2 pr-3">
+                      <span class="px-2 py-0.5 rounded-full bg-emerald-500/10 text-emerald-200 border border-emerald-500/40">
+                        Quiet floor, extra pillows
+                      </span>
+                    </td>
+                    <td class="py-2 pl-3 text-right">
+                      <span class="px-2 py-0.5 rounded-full bg-slate-800 text-slate-300 border border-slate-600">
+                        Not arrived
+                      </span>
+                    </td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+
+          <!-- Departures -->
+          <div class="tab-panel hidden space-y-2 text-xs" id="tab-departures">
+            <div class="overflow-x-auto">
+              <table class="min-w-full text-left text-xs">
+                <thead class="border-b border-slate-800 text-slate-400">
+                  <tr>
+                    <th class="py-2 pr-3">Guest</th>
+                    <th class="py-2 pr-3">Room</th>
+                    <th class="py-2 pr-3">Check-out</th>
+                    <th class="py-2 pr-3">Balance</th>
+                    <th class="py-2 pr-3">Payments</th>
+                    <th class="py-2 pr-3 text-right">Status</th>
+                  </tr>
+                </thead>
+                <tbody class="divide-y divide-slate-800">
+                  <tr>
+                    <td class="py-2 pr-3">
+                      <div class="flex flex-col">
+                        <span class="font-medium text-slate-100">Mr. Rajesh Sharma</span>
+                        <span class="text-[11px] text-slate-500">Corporate · Late checkout</span>
+                      </div>
+                    </td>
+                    <td class="py-2 pr-3">Executive King · 803</td>
+                    <td class="py-2 pr-3">14:00</td>
+                    <td class="py-2 pr-3">₹ 12,400</td>
+                    <td class="py-2 pr-3">To be settled at desk</td>
+                    <td class="py-2 pl-3 text-right">
+                      <span class="px-2 py-0.5 rounded-full bg-amber-500/10 text-amber-300 border border-amber-500/40">
+                        Pending payment
+                      </span>
+                    </td>
+                  </tr>
+                  <tr>
+                    <td class="py-2 pr-3">
+                      <div class="flex flex-col">
+                        <span class="font-medium text-slate-100">Mrs. Ritu Aggarwal</span>
+                        <span class="text-[11px] text-slate-500">OTA · Prepaid</span>
+                      </div>
+                    </td>
+                    <td class="py-2 pr-3">Deluxe Queen · 512</td>
+                    <td class="py-2 pr-3">12:00</td>
+                    <td class="py-2 pr-3">₹ 0</td>
+                    <td class="py-2 pr-3">Prepaid · Invoice emailed</td>
+                    <td class="py-2 pl-3 text-right">
+                      <span class="px-2 py-0.5 rounded-full bg-emerald-500/10 text-emerald-300 border border-emerald-500/40">
+                        Ready for checkout
+                      </span>
+                    </td>
+                  </tr>
+                  <tr>
+                    <td class="py-2 pr-3">
+                      <div class="flex flex-col">
+                        <span class="font-medium text-slate-100">Mr. Imran Khan</span>
+                        <span class="text-[11px] text-slate-500">Walk-in</span>
+                      </div>
+                    </td>
+                    <td class="py-2 pr-3">Standard Twin · 314</td>
+                    <td class="py-2 pr-3">11:00</td>
+                    <td class="py-2 pr-3">₹ 2,800</td>
+                    <td class="py-2 pr-3">Cash at checkout</td>
+                    <td class="py-2 pl-3 text-right">
+                      <span class="px-2 py-0.5 rounded-full bg-slate-800 text-slate-300 border border-slate-600">
+                        In-house
+                      </span>
+                    </td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+
+          <!-- In-House -->
+          <div class="tab-panel hidden space-y-2 text-xs" id="tab-inhouse">
+            <div class="overflow-x-auto">
+              <table class="min-w-full text-left text-xs">
+                <thead class="border-b border-slate-800 text-slate-400">
+                  <tr>
+                    <th class="py-2 pr-3">Guest</th>
+                    <th class="py-2 pr-3">Room</th>
+                    <th class="py-2 pr-3">Nights</th>
+                    <th class="py-2 pr-3">Account</th>
+                    <th class="py-2 pr-3">Requests</th>
+                    <th class="py-2 pr-3 text-right">Flag</th>
+                  </tr>
+                </thead>
+                <tbody class="divide-y divide-slate-800">
+                  <tr>
+                    <td class="py-2 pr-3">
+                      <div class="flex flex-col">
+                        <span class="font-medium text-slate-100">Mr. & Mrs. Desai</span>
+                        <span class="text-[11px] text-slate-500">Anniversary stay</span>
+                      </div>
+                    </td>
+                    <td class="py-2 pr-3">Suite · 1901</td>
+                    <td class="py-2 pr-3">2 / 3</td>
+                    <td class="py-2 pr-3">₹ 36,800</td>
+                    <td class="py-2 pr-3">
+                      <span class="px-2 py-0.5 rounded-full bg-pink-500/10 text-pink-300 border border-pink-500/40">
+                        Cake, decoration, late checkout
+                      </span>
+                    </td>
+                    <td class="py-2 pl-3 text-right">
+                      <span class="px-2 py-0.5 rounded-full bg-emerald-500/10 text-emerald-300 border border-emerald-500/40">
+                        Handle personally
+                      </span>
+                    </td>
+                  </tr>
+                  <tr>
+                    <td class="py-2 pr-3">
+                      <div class="flex flex-col">
+                        <span class="font-medium text-slate-100">Mr. Prakash Nair</span>
+                        <span class="text-[11px] text-slate-500">Long stay · 21 nights</span>
+                      </div>
+                    </td>
+                    <td class="py-2 pr-3">Premium King · 1007</td>
+                    <td class="py-2 pr-3">10 / 21</td>
+                    <td class="py-2 pr-3">₹ 1,12,400</td>
+                    <td class="py-2 pr-3">
+                      <span class="px-2 py-0.5 rounded-full bg-sky-500/10 text-sky-300 border border-sky-500/40">
+                        Weekly laundry, quiet floor
+                      </span>
+                    </td>
+                    <td class="py-2 pl-3 text-right">
+                      <span class="px-2 py-0.5 rounded-full bg-slate-800 text-slate-300 border border-slate-600">
+                        Monitor spend
+                      </span>
+                    </td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+
+        </section>
+
+        <!-- Live Room Status & Guest Requests -->
+        <section class="grid grid-cols-1 lg:grid-cols-3 gap-4">
+          <!-- Room Status -->
+          <div class="rounded-2xl border border-slate-800 bg-slate-950 p-4 sm:p-5 lg:col-span-2">
+            <div class="flex items-center justify-between gap-3 mb-3">
+              <div>
+                <h2 class="text-sm font-semibold text-slate-50">Live Room Status</h2>
+                <p class="text-[11px] text-slate-500">Housekeeping & room readiness by floor.</p>
+              </div>
+              <div class="flex gap-1.5 text-[11px] flex-wrap justify-end">
+                <span class="px-2 py-0.5 rounded-full bg-emerald-500/10 text-emerald-300 border border-emerald-500/30">Clean · 142</span>
+                <span class="px-2 py-0.5 rounded-full bg-amber-500/10 text-amber-300 border border-amber-500/30">Dirty · 32</span>
+                <span class="px-2 py-0.5 rounded-full bg-sky-500/10 text-sky-300 border border-sky-500/30">Inspection · 18</span>
+              </div>
+            </div>
+
+            <div class="overflow-x-auto text-xs">
+              <table class="min-w-full text-left">
+                <thead class="border-b border-slate-800 text-slate-400">
+                  <tr>
+                    <th class="py-2 pr-3">Floor</th>
+                    <th class="py-2 pr-3">Clean</th>
+                    <th class="py-2 pr-3">Dirty</th>
+                    <th class="py-2 pr-3">In-Inspection</th>
+                    <th class="py-2 pr-3">Out of Order</th>
+                    <th class="py-2 pr-3">ETA Completion</th>
+                  </tr>
+                </thead>
+                <tbody class="divide-y divide-slate-800">
+                  <tr>
+                    <td class="py-2 pr-3">19 (Suites)</td>
+                    <td class="py-2 pr-3">14</td>
+                    <td class="py-2 pr-3">2</td>
+                    <td class="py-2 pr-3">1</td>
+                    <td class="py-2 pr-3">0</td>
+                    <td class="py-2 pr-3">Completed</td>
+                  </tr>
+                  <tr>
+                    <td class="py-2 pr-3">18</td>
+                    <td class="py-2 pr-3">16</td>
+                    <td class="py-2 pr-3">3</td>
+                    <td class="py-2 pr-3">2</td>
+                    <td class="py-2 pr-3">1</td>
+                    <td class="py-2 pr-3">Approx. 30 mins</td>
+                  </tr>
+                  <tr>
+                    <td class="py-2 pr-3">10</td>
+                    <td class="py-2 pr-3">11</td>
+                    <td class="py-2 pr-3">7</td>
+                    <td class="py-2 pr-3">3</td>
+                    <td class="py-2 pr-3">0</td>
+                    <td class="py-2 pr-3">Approx. 45 mins</td>
+                  </tr>
+                  <tr>
+                    <td class="py-2 pr-3">5</td>
+                    <td class="py-2 pr-3">9</td>
+                    <td class="py-2 pr-3">8</td>
+                    <td class="py-2 pr-3">4</td>
+                    <td class="py-2 pr-3">1</td>
+                    <td class="py-2 pr-3">Approx. 1 hr</td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+
+          <!-- Dynamic Guest Requests Snapshot -->
+          <div class="rounded-2xl border border-slate-800 bg-slate-950 p-4 sm:p-5 space-y-3">
+            <div class="flex items-center justify-between gap-3">
+              <div>
+                <h2 class="text-sm font-semibold text-slate-50">Live Guest Requests</h2>
+                <p class="text-[11px] text-slate-500">Special requests & amenities in progress.</p>
+              </div>
+              <span class="inline-flex items-center rounded-full bg-slate-900 border border-slate-700 text-[11px] px-2 py-0.5 text-slate-300">
+                Open: <span class="font-semibold text-amber-300 ml-1">12</span>
+              </span>
+            </div>
+
+            <ul class="space-y-2.5 text-xs">
+              <li class="flex gap-2.5">
+                <div class="flex-1">
+                  <div class="flex justify-between">
+                    <div>
+                      <div class="font-medium text-slate-100">Extra amenities · 1407</div>
+                      <div class="text-[11px] text-slate-500">2 extra pillows, toothbrush kit, hot water kettle.</div>
+                    </div>
+                    <span class="px-1.5 py-0.5 rounded-full bg-amber-500/10 text-amber-300 border border-amber-500/40 h-fit text-[10px]">
+                      High priority
+                    </span>
+                  </div>
+                  <div class="mt-1 text-[11px] text-slate-500 flex justify-between">
+                    <span>Channel: In-room tablet</span>
+                    <span>Assigned to: HK - Riya</span>
+                  </div>
+                </div>
+              </li>
+
+              <li class="flex gap-2.5">
+                <div class="flex-1">
+                  <div class="flex justify-between">
+                    <div>
+                      <div class="font-medium text-slate-100">Airport Transfer Update · 1805</div>
+                      <div class="text-[11px] text-slate-500">Pickup rescheduled to 21:15 from T2.</div>
+                    </div>
+                    <span class="px-1.5 py-0.5 rounded-full bg-sky-500/10 text-sky-300 border border-sky-500/40 h-fit text-[10px]">
+                      In progress
+                    </span>
+                  </div>
+                  <div class="mt-1 text-[11px] text-slate-500 flex justify-between">
+                    <span>Channel: WhatsApp concierge</span>
+                    <span>Assigned to: Concierge - Amit</span>
+                  </div>
+                </div>
+              </li>
+
+              <li class="flex gap-2.5">
+                <div class="flex-1">
+                  <div class="flex justify-between">
+                    <div>
+                      <div class="font-medium text-slate-100">Birthday Setup · 908</div>
+                      <div class="text-[11px] text-slate-500">Balloon decor & pastry delivery at 20:00.</div>
+                    </div>
+                    <span class="px-1.5 py-0.5 rounded-full bg-emerald-500/10 text-emerald-300 border border-emerald-500/40 h-fit text-[10px]">
+                      Scheduled
+                    </span>
+                  </div>
+                  <div class="mt-1 text-[11px] text-slate-500 flex justify-between">
+                    <span>Channel: Pre-arrival form</span>
+                    <span>Assigned to: F&B + HK coordination</span>
+                  </div>
+                </div>
+              </li>
+            </ul>
+
+            <button
+              class="mt-2 w-full text-xs px-3 py-2 rounded-xl bg-hotel.primary hover:bg-indigo-700 border border-indigo-500/60 text-slate-50 font-medium"
+            >
+              Open Dynamic Guest Request Console
+            </button>
+          </div>
+        </section>
+
+      </main>
+    </div>
+  </div>
+
+  <!-- Simple JS for sidebar toggle & tabs -->
+  <script>
+    // Sidebar toggle (mobile)
+    const menuBtn = document.getElementById('menuBtn');
+    const sidebar = document.getElementById('sidebar');
+
+    if (menuBtn && sidebar) {
+      menuBtn.addEventListener('click', () => {
+        const isHidden = sidebar.classList.contains('hidden');
+        if (isHidden) {
+          sidebar.classList.remove('hidden');
+          sidebar.classList.add('fixed', 'z-40', 'inset-y-0', 'left-0');
+        } else {
+          sidebar.classList.add('hidden');
+          sidebar.classList.remove('fixed', 'z-40', 'inset-y-0', 'left-0');
+        }
+      });
+    }
+
+    // Tabs for Arrivals / Departures / In-House
+    const tabButtons = document.querySelectorAll('.tab-btn');
+    const tabPanels = {
+      arrivals: document.getElementById('tab-arrivals'),
+      departures: document.getElementById('tab-departures'),
+      inhouse: document.getElementById('tab-inhouse'),
+    };
+
+    tabButtons.forEach((btn) => {
+      btn.addEventListener('click', () => {
+        const target = btn.getAttribute('data-tab');
+
+        // Update buttons
+        tabButtons.forEach((b) => {
+          b.classList.remove('bg-slate-900', 'border-slate-700', 'text-slate-100');
+          b.classList.add('border-transparent', 'text-slate-400');
+        });
+        btn.classList.add('bg-slate-900', 'border-slate-700', 'text-slate-100');
+        btn.classList.remove('border-transparent', 'text-slate-400');
+
+        // Update panels
+        Object.keys(tabPanels).forEach((key) => {
+          if (key === target) tabPanels[key].classList.remove('hidden');
+          else tabPanels[key].classList.add('hidden');
+        });
+      });
+    });
+  </script>
+</body>
+</html>

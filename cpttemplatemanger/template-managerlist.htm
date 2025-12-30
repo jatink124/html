@@ -1,0 +1,419 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Template Manager – List View</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-slate-50 text-slate-900 min-h-screen">
+  <div class="min-h-screen flex flex-col">
+    <!-- Top bar -->
+    <header class="border-b border-slate-200 bg-white/80 backdrop-blur flex items-center gap-4 px-6 py-3">
+      <div class="flex items-center gap-2">
+        <div class="w-7 h-7 rounded-xl bg-gradient-to-br from-sky-500 via-blue-500 to-indigo-500"></div>
+        <div>
+          <h1 class="text-sm font-semibold leading-tight">Template Manager</h1>
+          <p class="text-[11px] text-slate-500">List view · Editing workspace</p>
+        </div>
+      </div>
+
+      <!-- Search -->
+      <div class="flex-1 max-w-md">
+        <div class="relative">
+          <input
+            type="text"
+            placeholder="Search templates..."
+            class="w-full bg-slate-100 border border-slate-200 rounded-xl px-9 py-2 text-sm placeholder:text-slate-400 focus:outline-none focus:ring-2 focus:ring-sky-500/70 focus:border-sky-500/70"
+          />
+          <span class="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 text-xs">
+            🔍
+          </span>
+        </div>
+      </div>
+
+      <!-- View toggles -->
+      <div class="flex items-center gap-1 rounded-full bg-slate-100 border border-slate-200 px-1 py-1">
+        <button class="px-3 py-1.5 rounded-full text-[11px] text-slate-500 hover:text-slate-900">
+          Gallery
+        </button>
+        <button class="px-3 py-1.5 rounded-full text-[11px] bg-white shadow-sm text-slate-900 font-medium">
+          List
+        </button>
+      </div>
+
+      <!-- Actions -->
+      <div class="flex items-center gap-2">
+        <button class="px-3 py-1.5 text-xs rounded-lg border border-slate-200 bg-white hover:bg-slate-50">
+          Import
+        </button>
+        <button class="px-3 py-1.5 text-xs rounded-lg bg-sky-500 text-white font-medium hover:bg-sky-400">
+          + New template
+        </button>
+      </div>
+    </header>
+
+    <!-- Main layout -->
+    <main class="flex-1 grid grid-cols-[minmax(260px,320px)_minmax(0,1.4fr)]">
+      <!-- Left list -->
+      <aside class="border-r border-slate-200 bg-slate-50/80 overflow-y-auto">
+        <div class="px-4 py-3 flex items-center justify-between">
+          <p class="text-[11px] font-semibold uppercase tracking-[0.18em] text-slate-500">
+            Templates
+          </p>
+          <span class="text-[11px] text-slate-400">24 items</span>
+        </div>
+
+        <div class="px-3 pb-4 space-y-1.5">
+          <!-- Active item -->
+          <button
+            class="w-full flex items-start gap-3 px-2.5 py-2.5 rounded-xl bg-sky-50 border border-sky-200 text-left"
+          >
+            <div class="mt-0.5 w-1 h-10 rounded-full bg-sky-500"></div>
+            <div class="flex-1 min-w-0">
+              <div class="flex items-center justify-between gap-2">
+                <p class="text-xs font-semibold truncate">
+                  Modern SaaS Landing (Dark)
+                </p>
+                <span class="text-[10px] text-slate-400">Updated 2d ago</span>
+              </div>
+              <p class="text-[11px] text-slate-500 truncate">
+                React · Tailwind · Dark mode · 12 sections
+              </p>
+              <div class="mt-1 flex items-center gap-1.5 text-[10px]">
+                <span class="px-1.5 py-0.5 rounded-full bg-slate-900 text-white">
+                  React
+                </span>
+                <span class="px-1.5 py-0.5 rounded-full bg-slate-100 text-slate-600">
+                  SaaS
+                </span>
+                <span class="px-1.5 py-0.5 rounded-full bg-emerald-50 text-emerald-600 border border-emerald-100">
+                  Featured
+                </span>
+              </div>
+            </div>
+          </button>
+
+          <!-- Other items -->
+          <button
+            class="w-full flex items-start gap-3 px-2.5 py-2.5 rounded-xl hover:bg-slate-100 text-left"
+          >
+            <div class="mt-0.5 w-1 h-10 rounded-full bg-slate-200"></div>
+            <div class="flex-1 min-w-0">
+              <div class="flex items-center justify-between gap-2">
+                <p class="text-xs font-semibold truncate">
+                  Documentation Portal
+                </p>
+                <span class="text-[10px] text-slate-400">Updated 1w ago</span>
+              </div>
+              <p class="text-[11px] text-slate-500 truncate">
+                Next.js · Tailwind · Full text search ready
+              </p>
+              <div class="mt-1 flex items-center gap-1.5 text-[10px]">
+                <span class="px-1.5 py-0.5 rounded-full bg-slate-900 text-white">
+                  Next.js
+                </span>
+                <span class="px-1.5 py-0.5 rounded-full bg-slate-100 text-slate-600">
+                  Docs
+                </span>
+                <span class="px-1.5 py-0.5 rounded-full bg-slate-900 text-white">
+                  Pro
+                </span>
+              </div>
+            </div>
+          </button>
+
+          <button
+            class="w-full flex items-start gap-3 px-2.5 py-2.5 rounded-xl hover:bg-slate-100 text-left"
+          >
+            <div class="mt-0.5 w-1 h-10 rounded-full bg-slate-200"></div>
+            <div class="flex-1 min-w-0">
+              <div class="flex items-center justify-between gap-2">
+                <p class="text-xs font-semibold truncate">
+                  Minimal eCommerce Storefront
+                </p>
+                <span class="text-[10px] text-slate-400">Updated 3w ago</span>
+              </div>
+              <p class="text-[11px] text-slate-500 truncate">
+                HTML · Tailwind · Cart UI included
+              </p>
+              <div class="mt-1 flex items-center gap-1.5 text-[10px]">
+                <span class="px-1.5 py-0.5 rounded-full bg-slate-900 text-white">
+                  HTML
+                </span>
+                <span class="px-1.5 py-0.5 rounded-full bg-slate-100 text-slate-600">
+                  eCommerce
+                </span>
+                <span class="px-1.5 py-0.5 rounded-full bg-slate-100 text-slate-600">
+                  Free
+                </span>
+              </div>
+            </div>
+          </button>
+
+          <button
+            class="w-full flex items-start gap-3 px-2.5 py-2.5 rounded-xl hover:bg-slate-100 text-left"
+          >
+            <div class="mt-0.5 w-1 h-10 rounded-full bg-slate-200"></div>
+            <div class="flex-1 min-w-0">
+              <div class="flex items-center justify-between gap-2">
+                <p class="text-xs font-semibold truncate">
+                  Analytics Dashboard
+                </p>
+                <span class="text-[10px] text-slate-400">Updated 5d ago</span>
+              </div>
+              <p class="text-[11px] text-slate-500 truncate">
+                React · Tailwind · Cards, charts, table
+              </p>
+              <div class="mt-1 flex items-center gap-1.5 text-[10px]">
+                <span class="px-1.5 py-0.5 rounded-full bg-slate-900 text-white">
+                  React
+                </span>
+                <span class="px-1.5 py-0.5 rounded-full bg-slate-100 text-slate-600">
+                  Dashboard
+                </span>
+              </div>
+            </div>
+          </button>
+
+          <button
+            class="w-full flex items-start gap-3 px-2.5 py-2.5 rounded-xl hover:bg-slate-100 text-left"
+          >
+            <div class="mt-0.5 w-1 h-10 rounded-full bg-slate-200"></div>
+            <div class="flex-1 min-w-0">
+              <div class="flex items-center justify-between gap-2">
+                <p class="text-xs font-semibold truncate">
+                  Agency Landing · Gradient
+                </p>
+                <span class="text-[10px] text-slate-400">Updated 6d ago</span>
+              </div>
+              <p class="text-[11px] text-slate-500 truncate">
+                Next.js · Tailwind · Gradient-heavy
+              </p>
+              <div class="mt-1 flex items-center gap-1.5 text-[10px]">
+                <span class="px-1.5 py-0.5 rounded-full bg-slate-900 text-white">
+                  Next.js
+                </span>
+                <span class="px-1.5 py-0.5 rounded-full bg-slate-100 text-slate-600">
+                  Agency
+                </span>
+              </div>
+            </div>
+          </button>
+        </div>
+      </aside>
+
+      <!-- Right: preview + customizer -->
+      <section class="bg-white flex flex-col border-l border-slate-200/0">
+        <!-- Preview area -->
+        <div class="flex-1 px-6 pt-4 pb-3 overflow-y-auto">
+          <!-- Header -->
+          <div class="flex items-center justify-between mb-4">
+            <div>
+              <p class="text-[11px] font-semibold uppercase tracking-[0.18em] text-slate-500">
+                Preview
+              </p>
+              <p class="text-sm font-semibold text-slate-900 mt-1">
+                Modern SaaS Landing (Dark)
+              </p>
+              <p class="text-[11px] text-slate-500">
+                React · Tailwind · Hero, Features, Pricing, FAQ, Footer
+              </p>
+            </div>
+            <div class="flex items-center gap-2">
+              <button class="px-2.5 py-1.5 text-[11px] rounded-lg border border-slate-200 bg-slate-50 hover:bg-slate-100">
+                View code
+              </button>
+              <button class="px-2.5 py-1.5 text-[11px] rounded-lg bg-slate-900 text-white hover:bg-slate-800">
+                Use template
+              </button>
+            </div>
+          </div>
+
+          <!-- Browser frame preview -->
+          <div class="rounded-2xl border border-slate-200 bg-slate-50 overflow-hidden shadow-sm">
+            <!-- Browser chrome -->
+            <div class="flex items-center justify-between px-4 py-2 border-b border-slate-200 bg-white">
+              <div class="flex items-center gap-1.5">
+                <span class="w-2.5 h-2.5 rounded-full bg-rose-400"></span>
+                <span class="w-2.5 h-2.5 rounded-full bg-amber-400"></span>
+                <span class="w-2.5 h-2.5 rounded-full bg-emerald-400"></span>
+              </div>
+              <div class="flex-1 mx-3">
+                <div class="h-6 rounded-lg bg-slate-100 border border-slate-200 text-[10px] flex items-center px-2 text-slate-500">
+                  https://app.novasass.com
+                </div>
+              </div>
+              <div class="flex items-center gap-1 text-[10px] text-slate-500">
+                <span>Desktop</span>
+                <span>100%</span>
+              </div>
+            </div>
+
+            <!-- Fake landing preview -->
+            <div class="p-6 md:p-8 lg:p-10 bg-slate-950 text-slate-50 space-y-6">
+              <!-- Navbar -->
+              <div class="flex items-center justify-between gap-4">
+                <div class="flex items-center gap-2">
+                  <div class="w-7 h-7 rounded-xl bg-gradient-to-br from-sky-400 via-teal-400 to-emerald-400"></div>
+                  <span class="text-xs font-semibold">NovaSaaS</span>
+                </div>
+                <div class="hidden md:flex items-center gap-4 text-[11px] text-slate-200">
+                  <span>Features</span>
+                  <span>Pricing</span>
+                  <span>Integrations</span>
+                  <span>Changelog</span>
+                  <button class="px-3 py-1.5 rounded-full bg-white text-slate-900 text-[11px] font-semibold">
+                    Get started
+                  </button>
+                </div>
+              </div>
+
+              <!-- Hero -->
+              <div class="grid md:grid-cols-[minmax(0,1.05fr)_minmax(0,1fr)] gap-8 items-center mt-4">
+                <div class="space-y-4">
+                  <div class="inline-flex items-center gap-2 px-2.5 py-1 rounded-full bg-slate-900 border border-slate-700/80 text-[10px]">
+                    <span class="px-1.5 py-0.5 rounded-full bg-slate-800 border border-slate-600">
+                      New
+                    </span>
+                    <span class="text-slate-300">v2.1 – Now with AI suggestions</span>
+                  </div>
+                  <h1 class="text-2xl md:text-3xl font-semibold leading-tight">
+                    Launch your SaaS website
+                    <span class="text-sky-400">without a designer.</span>
+                  </h1>
+                  <p class="text-xs md:text-sm text-slate-300 max-w-md">
+                    Pick a layout, customize colors and content, and export production-ready React + Tailwind code in minutes.
+                  </p>
+
+                  <div class="flex flex-wrap items-center gap-3">
+                    <button class="px-4 py-2 rounded-xl bg-sky-500 text-slate-950 text-xs font-semibold shadow-sm hover:bg-sky-400">
+                      Use this template
+                    </button>
+                    <button class="px-4 py-2 rounded-xl border border-slate-600 bg-slate-950 text-xs text-slate-100">
+                      Live preview
+                    </button>
+                    <div class="flex items-center gap-1.5 text-[10px] text-slate-400">
+                      <span class="w-1.5 h-1.5 rounded-full bg-emerald-400"></span>
+                      <span>Responsive · Dark · Ready</span>
+                    </div>
+                  </div>
+
+                  <div class="flex flex-wrap gap-2 pt-1.5">
+                    <span class="px-2 py-1 rounded-full bg-slate-900 border border-slate-700 text-[10px]">
+                      ✅ Responsive grid
+                    </span>
+                    <span class="px-2 py-1 rounded-full bg-slate-900 border border-slate-700 text-[10px]">
+                      ✅ Dark mode
+                    </span>
+                    <span class="px-2 py-1 rounded-full bg-slate-900 border border-slate-700 text-[10px]">
+                      ✅ 12 ready sections
+                    </span>
+                  </div>
+                </div>
+
+                <!-- Right preview blocks -->
+                <div class="space-y-3">
+                  <div class="rounded-2xl border border-slate-800 bg-slate-950/80 p-3">
+                    <div class="flex items-center justify-between mb-2 text-[11px]">
+                      <p class="text-slate-200">Conversion summary</p>
+                      <span class="text-emerald-400">+18.2%</span>
+                    </div>
+                    <div class="h-20 rounded-lg border border-slate-800 bg-gradient-to-br from-sky-500/20 via-slate-900 to-slate-950"></div>
+                    <div class="flex justify-between mt-2 text-[10px] text-slate-400">
+                      <span>Visitors</span>
+                      <span>Signups</span>
+                      <span>Trials</span>
+                      <span>Customers</span>
+                    </div>
+                  </div>
+                  <div class="grid grid-cols-3 gap-3 text-[10px]">
+                    <div class="rounded-xl border border-slate-800 bg-slate-950/90 p-2">
+                      <p class="text-slate-400 mb-1">Sections</p>
+                      <p class="text-sm font-semibold text-slate-50">12</p>
+                    </div>
+                    <div class="rounded-xl border border-slate-800 bg-slate-950/90 p-2">
+                      <p class="text-slate-400 mb-1">Components</p>
+                      <p class="text-sm font-semibold text-slate-50">38</p>
+                    </div>
+                    <div class="rounded-xl border border-slate-800 bg-slate-950/90 p-2">
+                      <p class="text-slate-400 mb-1">Layout</p>
+                      <p class="text-sm font-semibold text-slate-50">Split hero</p>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Small blocks -->
+              <div class="grid md:grid-cols-3 gap-3 pt-4">
+                <div class="h-16 rounded-xl border border-slate-800 bg-slate-950/90"></div>
+                <div class="h-16 rounded-xl border border-slate-800 bg-slate-950/90"></div>
+                <div class="h-16 rounded-xl border border-slate-800 bg-slate-950/90"></div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Bottom customizer bar (fixed to right panel) -->
+        <div class="border-t border-slate-200 bg-white/95 backdrop-blur px-6 py-3 flex items-center justify-between gap-4">
+          <div class="flex items-center gap-4 text-[11px]">
+            <div>
+              <p class="text-[11px] font-semibold uppercase tracking-[0.18em] text-slate-500">
+                Color theme
+              </p>
+              <div class="mt-1 flex items-center gap-2">
+                <button class="flex items-center gap-1.5 px-2.5 py-1.5 rounded-full border border-sky-500/70 bg-sky-50">
+                  <span class="w-3 h-3 rounded-full bg-sky-500"></span>
+                  <span class="w-3 h-3 rounded-full bg-teal-500"></span>
+                  <span class="text-[11px] text-slate-800">Sky / Teal</span>
+                </button>
+                <button class="flex items-center gap-1.5 px-2.5 py-1.5 rounded-full border border-slate-200 bg-slate-50">
+                  <span class="w-3 h-3 rounded-full bg-indigo-500"></span>
+                  <span class="w-3 h-3 rounded-full bg-fuchsia-500"></span>
+                  <span class="text-[11px] text-slate-700">Indigo / Fuchsia</span>
+                </button>
+              </div>
+            </div>
+
+            <div class="hidden md:block">
+              <p class="text-[11px] font-semibold uppercase tracking-[0.18em] text-slate-500">
+                Layout
+              </p>
+              <div class="mt-1 flex items-center gap-1.5 text-[11px]">
+                <button class="px-2.5 py-1.5 rounded-full border border-slate-200 bg-slate-100">
+                  Full width
+                </button>
+                <button class="px-2.5 py-1.5 rounded-full border border-slate-200 bg-white">
+                  Boxed
+                </button>
+                <button class="px-2.5 py-1.5 rounded-full border border-slate-200 bg-white">
+                  Split hero
+                </button>
+              </div>
+            </div>
+
+            <div class="hidden lg:block">
+              <p class="text-[11px] font-semibold uppercase tracking-[0.18em] text-slate-500">
+                Corner radius
+              </p>
+              <div class="mt-1 flex items-center gap-2">
+                <input type="range" min="4" max="32" value="20" class="w-32 accent-sky-500" />
+                <span class="text-[11px] text-slate-600 w-8 text-right">20px</span>
+              </div>
+            </div>
+          </div>
+
+          <div class="flex items-center gap-2">
+            <button class="px-3 py-1.5 text-[11px] rounded-lg border border-slate-200 bg-white hover:bg-slate-50">
+              Reset
+            </button>
+            <button class="px-3 py-1.5 text-[11px] rounded-lg bg-sky-500 text-white font-semibold hover:bg-sky-400">
+              Apply changes
+            </button>
+          </div>
+        </div>
+      </section>
+    </main>
+  </div>
+</body>
+</html>

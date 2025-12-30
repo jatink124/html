@@ -1,0 +1,585 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <title>Time OS — Advanced Time Planner</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <!-- Tailwind -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- React + ReactDOM + Babel -->
+    <script crossorigin src="https://unpkg.com/react@18/umd/react.development.js"></script>
+    <script crossorigin src="https://unpkg.com/react-dom@18/umd/react-dom.development.js"></script>
+    <script crossorigin src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+  </head>
+  <body class="bg-slate-950 text-slate-50">
+    <div id="root" class="min-h-screen"></div>
+
+    <script type="text/babel">
+      const { useState, useEffect, useMemo } = React;
+
+      const STORAGE_KEY = "time_os_app_v1";
+
+      function loadState() {
+        try {
+          const raw = localStorage.getItem(STORAGE_KEY);
+          if (!raw) return null;
+          return JSON.parse(raw);
+        } catch (e) {
+          console.error("Failed to load state", e);
+          return null;
+        }
+      }
+
+      function saveState(state) {
+        try {
+          localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
+        } catch (e) {
+          console.error("Failed to save state", e);
+        }
+      }
+
+      function minutesToTimeString(m) {
+        const h = Math.floor(m / 60);
+        const mm = m % 60;
+        const hStr = h.toString().padStart(2, "0");
+        const mStr = mm.toString().padStart(2, "0");
+        return `${hStr}:${mStr}`;
+      }
+
+      function getTodayISO() {
+        const d = new Date();
+        return d.toISOString().slice(0, 10);
+      }
+
+      function createId() {
+        return Date.now().toString(36) + Math.random().toString(36).slice(2);
+      }
+
+      function App() {
+        const persisted = loadState();
+        const [tasks, setTasks] = useState(persisted?.tasks || []);
+        const [blocks, setBlocks] = useState(persisted?.blocks || []);
+        const [dayConfig, setDayConfig] = useState(
+          persisted?.dayConfig || {
+            workStartHour: 10,
+            workEndHour: 18,
+            breakEveryMinutes: 50,
+            breakLengthMinutes: 10,
+          }
+        );
+
+        // persist on changes
+        useEffect(() => {
+          saveState({ tasks, blocks, dayConfig });
+        }, [tasks, blocks, dayConfig]);
+
+        const today = getTodayISO();
+
+        const todayBlocks = useMemo(
+          () => blocks.filter((b) => b.date === today),
+          [blocks, today]
+        );
+
+        const todayPlannedMinutes = useMemo(
+          () =>
+            todayBlocks
+              .filter((b) => !b.isBreak)
+              .reduce((sum, b) => sum + (b.endMinutes - b.startMinutes), 0),
+          [todayBlocks]
+        );
+
+        const dayCapacityMinutes =
+          (dayConfig.workEndHour - dayConfig.workStartHour) * 60;
+
+        const overload = todayPlannedMinutes - dayCapacityMinutes;
+
+        function addTask(task) {
+          setTasks((prev) => [...prev, task]);
+        }
+
+        function updateTask(id, patch) {
+          setTasks((prev) =>
+            prev.map((t) => (t.id === id ? { ...t, ...patch } : t))
+          );
+        }
+
+        function toggleTaskDone(id) {
+          setTasks((prev) =>
+            prev.map((t) =>
+              t.id === id
+                ? {
+                    ...t,
+                    status: t.status === "done" ? "inbox" : "done",
+                  }
+                : t
+            )
+          );
+        }
+
+        function clearTodayPlan() {
+          setBlocks((prev) => prev.filter((b) => b.date !== today));
+          // also reset planned status for tasks that were only planned (optional)
+        }
+
+        function planToday() {
+          // 1. clear previous today plan
+          clearTodayPlan();
+
+          const startMinutes = dayConfig.workStartHour * 60;
+          const endMinutes = dayConfig.workEndHour * 60;
+
+          // 2. select candidate tasks
+          const candidates = tasks
+            .filter(
+              (t) =>
+                t.status !== "done" &&
+                t.status !== "canceled" &&
+                t.estimateMinutes > 0
+            )
+            .sort((a, b) => {
+              const priorityOrder = { high: 0, medium: 1, low: 2 };
+              const pa = priorityOrder[a.priority] ?? 1;
+              const pb = priorityOrder[b.priority] ?? 1;
+              if (pa !== pb) return pa - pb;
+              const da = a.dueDate || "9999-12-31";
+              const db = b.dueDate || "9999-12-31";
+              if (da !== db) return da < db ? -1 : 1;
+              return a.createdAt.localeCompare(b.createdAt);
+            });
+
+          let current = startMinutes;
+          const newBlocks = [];
+
+          let sinceBreak = 0;
+
+          for (const task of candidates) {
+            const duration = task.estimateMinutes;
+            if (current >= endMinutes) break;
+            if (current + duration > endMinutes) {
+              // doesn't fit fully, skip for MVP
+              continue;
+            }
+
+            // insert break if needed
+            if (
+              dayConfig.breakEveryMinutes > 0 &&
+              sinceBreak >= dayConfig.breakEveryMinutes &&
+              dayConfig.breakLengthMinutes > 0
+            ) {
+              const breakEnd = current + dayConfig.breakLengthMinutes;
+              if (breakEnd <= endMinutes) {
+                newBlocks.push({
+                  id: createId(),
+                  isBreak: true,
+                  label: "Break",
+                  startMinutes: current,
+                  endMinutes: breakEnd,
+                  date: today,
+                  status: "planned",
+                });
+                current = breakEnd;
+                sinceBreak = 0;
+              }
+            }
+
+            // add task block
+            const blockStart = current;
+            const blockEnd = current + duration;
+            newBlocks.push({
+              id: createId(),
+              isBreak: false,
+              taskId: task.id,
+              startMinutes: blockStart,
+              endMinutes: blockEnd,
+              date: today,
+              status: "planned",
+            });
+
+            current = blockEnd;
+            sinceBreak += duration;
+
+            // mark as planned (optional, status stays inbox but we know it's planned by blocks)
+          }
+
+          setBlocks((prev) => [...prev, ...newBlocks]);
+        }
+
+        const inboxTasks = useMemo(
+          () =>
+            tasks
+              .filter((t) => t.status !== "done")
+              .sort((a, b) => b.createdAt.localeCompare(a.createdAt)),
+          [tasks]
+        );
+
+        const doneTasksToday = useMemo(
+          () =>
+            tasks.filter(
+              (t) =>
+                t.status === "done" &&
+                t.updatedAt &&
+                t.updatedAt.slice(0, 10) === today
+            ),
+          [tasks, today]
+        );
+
+        return (
+          <div className="max-w-6xl mx-auto px-4 py-6 space-y-6">
+            <header className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+              <div>
+                <h1 className="text-2xl font-semibold">
+                  Time OS <span className="text-sky-400">/ Freelancer</span>
+                </h1>
+                <p className="text-sm text-slate-400">
+                  Turn your tasks into a realistic daily timeline.
+                </p>
+              </div>
+              <div className="flex flex-col items-end gap-1 text-sm">
+                <span className="text-slate-300">
+                  Today: <span className="font-mono">{today}</span>
+                </span>
+                <span>
+                  Planned today:{" "}
+                  <span className="font-semibold">
+                    {todayPlannedMinutes} min
+                  </span>{" "}
+                  /{" "}
+                  <span className="font-mono">{dayCapacityMinutes} min</span>
+                </span>
+                {overload > 0 && (
+                  <span className="text-xs text-rose-400">
+                    Over capacity by {overload} min
+                  </span>
+                )}
+              </div>
+            </header>
+
+            <main className="grid md:grid-cols-3 gap-4 md:gap-6">
+              <section className="md:col-span-1 space-y-4">
+                <DayConfigCard
+                  config={dayConfig}
+                  onChange={setDayConfig}
+                  onPlanToday={planToday}
+                  onClearPlan={clearTodayPlan}
+                />
+                <NewTaskCard onAddTask={addTask} />
+              </section>
+
+              <section className="md:col-span-1">
+                <InboxCard
+                  tasks={inboxTasks}
+                  onToggleDone={toggleTaskDone}
+                  onUpdateTask={updateTask}
+                />
+              </section>
+
+              <section className="md:col-span-1">
+                <TodayTimelineCard
+                  blocks={todayBlocks}
+                  tasks={tasks}
+                  onSetBlocks={setBlocks}
+                />
+              </section>
+            </main>
+          </div>
+        );
+      }
+
+      function DayConfigCard({ config, onChange, onPlanToday, onClearPlan }) {
+        function handleChange(e) {
+          const { name, value } = e.target;
+          onChange({
+            ...config,
+            [name]: Number(value),
+          });
+        }
+
+        return (
+          <div className="bg-slate-900/60 border border-slate-800 rounded-2xl p-4 shadow-lg shadow-slate-950/40 space-y-3">
+            <h2 className="text-sm font-semibold text-slate-100 uppercase tracking-wide">
+              Day Settings
+            </h2>
+            <div className="grid grid-cols-2 gap-3 text-xs">
+              <label className="space-y-1">
+                <span className="text-slate-400">Start hour</span>
+                <input
+                  type="number"
+                  name="workStartHour"
+                  min="0"
+                  max="23"
+                  value={config.workStartHour}
+                  onChange={handleChange}
+                  className="w-full bg-slate-950/60 border border-slate-700 rounded-lg px-2 py-1 text-xs"
+                />
+              </label>
+              <label className="space-y-1">
+                <span className="text-slate-400">End hour</span>
+                <input
+                  type="number"
+                  name="workEndHour"
+                  min="0"
+                  max="23"
+                  value={config.workEndHour}
+                  onChange={handleChange}
+                  className="w-full bg-slate-950/60 border border-slate-700 rounded-lg px-2 py-1 text-xs"
+                />
+              </label>
+              <label className="space-y-1">
+                <span className="text-slate-400">Break every (min)</span>
+                <input
+                  type="number"
+                  name="breakEveryMinutes"
+                  min="0"
+                  value={config.breakEveryMinutes}
+                  onChange={handleChange}
+                  className="w-full bg-slate-950/60 border border-slate-700 rounded-lg px-2 py-1 text-xs"
+                />
+              </label>
+              <label className="space-y-1">
+                <span className="text-slate-400">Break length (min)</span>
+                <input
+                  type="number"
+                  name="breakLengthMinutes"
+                  min="0"
+                  value={config.breakLengthMinutes}
+                  onChange={handleChange}
+                  className="w-full bg-slate-950/60 border border-slate-700 rounded-lg px-2 py-1 text-xs"
+                />
+              </label>
+            </div>
+            <div className="flex gap-2 pt-1">
+              <button
+                onClick={onPlanToday}
+                className="flex-1 text-xs bg-sky-500 hover:bg-sky-400 text-slate-950 font-semibold py-1.5 rounded-lg transition"
+              >
+                Auto-plan Today
+              </button>
+              <button
+                onClick={onClearPlan}
+                className="text-xs border border-slate-700 text-slate-300 hover:bg-slate-800 px-3 rounded-lg transition"
+              >
+                Clear
+              </button>
+            </div>
+          </div>
+        );
+      }
+
+      function NewTaskCard({ onAddTask }) {
+        const [title, setTitle] = useState("");
+        const [estimate, setEstimate] = useState("");
+        const [priority, setPriority] = useState("medium");
+
+        function handleSubmit(e) {
+          e.preventDefault();
+          if (!title.trim()) return;
+          const est = Number(estimate) || 25; // default 25 min
+          const now = new Date().toISOString();
+          const task = {
+            id: createId(),
+            title: title.trim(),
+            estimateMinutes: est,
+            priority,
+            status: "inbox",
+            createdAt: now,
+          };
+          onAddTask(task);
+          setTitle("");
+          setEstimate("");
+          setPriority("medium");
+        }
+
+        return (
+          <div className="bg-slate-900/60 border border-slate-800 rounded-2xl p-4 shadow-lg shadow-slate-950/40">
+            <h2 className="text-sm font-semibold text-slate-100 uppercase tracking-wide mb-2">
+              Quick Add Task
+            </h2>
+            <form onSubmit={handleSubmit} className="space-y-2 text-xs">
+              <div className="space-y-1">
+                <label className="text-slate-400">Title</label>
+                <input
+                  value={title}
+                  onChange={(e) => setTitle(e.target.value)}
+                  placeholder="e.g. Finish client landing page hero section"
+                  className="w-full bg-slate-950/60 border border-slate-700 rounded-lg px-2 py-1 text-xs"
+                />
+              </div>
+              <div className="grid grid-cols-2 gap-2">
+                <div className="space-y-1">
+                  <label className="text-slate-400">Estimate (min)</label>
+                  <input
+                    type="number"
+                    min="5"
+                    step="5"
+                    value={estimate}
+                    onChange={(e) => setEstimate(e.target.value)}
+                    className="w-full bg-slate-950/60 border border-slate-700 rounded-lg px-2 py-1 text-xs"
+                  />
+                </div>
+                <div className="space-y-1">
+                  <label className="text-slate-400">Priority</label>
+                  <select
+                    value={priority}
+                    onChange={(e) => setPriority(e.target.value)}
+                    className="w-full bg-slate-950/60 border border-slate-700 rounded-lg px-2 py-1 text-xs"
+                  >
+                    <option value="high">High</option>
+                    <option value="medium">Medium</option>
+                    <option value="low">Low</option>
+                  </select>
+                </div>
+              </div>
+              <button
+                type="submit"
+                className="w-full mt-1 bg-emerald-500 hover:bg-emerald-400 text-slate-950 font-semibold py-1.5 rounded-lg text-xs transition"
+              >
+                Add to Inbox
+              </button>
+            </form>
+          </div>
+        );
+      }
+
+      function InboxCard({ tasks, onToggleDone, onUpdateTask }) {
+        return (
+          <div className="bg-slate-900/60 border border-slate-800 rounded-2xl p-4 h-full shadow-lg shadow-slate-950/40 flex flex-col">
+            <div className="flex items-center justify-between mb-2">
+              <h2 className="text-sm font-semibold uppercase tracking-wide">
+                Task Inbox
+              </h2>
+              <span className="text-xs text-slate-400">
+                {tasks.length} task{tasks.length !== 1 ? "s" : ""}
+              </span>
+            </div>
+            <div className="space-y-1 overflow-y-auto max-h-[420px] pr-1">
+              {tasks.length === 0 && (
+                <p className="text-xs text-slate-500">
+                  No tasks yet. Add a few from the left panel.
+                </p>
+              )}
+              {tasks.map((task) => (
+                <InboxTaskRow
+                  key={task.id}
+                  task={task}
+                  onToggleDone={onToggleDone}
+                  onUpdateTask={onUpdateTask}
+                />
+              ))}
+            </div>
+          </div>
+        );
+      }
+
+      function InboxTaskRow({ task, onToggleDone }) {
+        const priorityColor =
+          task.priority === "high"
+            ? "bg-rose-500/80"
+            : task.priority === "medium"
+            ? "bg-amber-500/80"
+            : "bg-slate-500/80";
+
+        return (
+          <div className="flex items-center gap-2 text-xs bg-slate-950/50 border border-slate-800 rounded-lg px-2 py-1.5">
+            <button
+              onClick={() => onToggleDone(task.id)}
+              className={`w-4 h-4 rounded border ${
+                task.status === "done"
+                  ? "bg-emerald-500 border-emerald-400"
+                  : "border-slate-600"
+              } flex items-center justify-center text-[10px]`}
+            >
+              {task.status === "done" ? "✓" : ""}
+            </button>
+            <div className="flex-1">
+              <div className="flex items-center gap-1">
+                <span
+                  className={`inline-flex px-1.5 rounded-full text-[10px] text-slate-950 ${priorityColor}`}
+                >
+                  {task.priority}
+                </span>
+                <p
+                  className={`truncate ${
+                    task.status === "done"
+                      ? "line-through text-slate-500"
+                      : ""
+                  }`}
+                >
+                  {task.title}
+                </p>
+              </div>
+              <div className="flex items-center gap-2 text-[10px] text-slate-400 mt-0.5">
+                <span>{task.estimateMinutes} min</span>
+                {task.dueDate && <span>Due {task.dueDate}</span>}
+              </div>
+            </div>
+          </div>
+        );
+      }
+
+      function TodayTimelineCard({ blocks, tasks }) {
+        const sorted = [...blocks].sort(
+          (a, b) => a.startMinutes - b.startMinutes
+        );
+
+        function getLabel(block) {
+          if (block.isBreak) return block.label || "Break";
+          const task = tasks.find((t) => t.id === block.taskId);
+          return task ? task.title : "Unknown task";
+        }
+
+        return (
+          <div className="bg-slate-900/60 border border-slate-800 rounded-2xl p-4 h-full shadow-lg shadow-slate-950/40 flex flex-col">
+            <div className="flex items-center justify-between mb-2">
+              <h2 className="text-sm font-semibold uppercase tracking-wide">
+                Today&apos;s Timeline
+              </h2>
+              <span className="text-xs text-slate-400">
+                {sorted.length} block{sorted.length !== 1 ? "s" : ""}
+              </span>
+            </div>
+            <div className="space-y-1 overflow-y-auto max-h-[420px] pr-1">
+              {sorted.length === 0 && (
+                <p className="text-xs text-slate-500">
+                  No plan yet. Use &quot;Auto-plan Today&quot; to schedule your
+                  work.
+                </p>
+              )}
+              {sorted.map((block) => (
+                <div
+                  key={block.id}
+                  className={`text-xs rounded-lg px-2 py-1.5 border ${
+                    block.isBreak
+                      ? "bg-slate-800/60 border-slate-700"
+                      : "bg-sky-500/10 border-sky-600/60"
+                  }`}
+                >
+                  <div className="flex justify-between items-center">
+                    <span className="font-mono text-[11px] text-slate-300">
+                      {minutesToTimeString(block.startMinutes)}–
+                      {minutesToTimeString(block.endMinutes)}
+                    </span>
+                    <span className="text-[10px] text-slate-400 capitalize">
+                      {block.status}
+                    </span>
+                  </div>
+                  <p
+                    className={`mt-0.5 ${
+                      block.isBreak
+                        ? "text-slate-200 italic"
+                        : "text-slate-50"
+                    }`}
+                  >
+                    {getLabel(block)}
+                  </p>
+                </div>
+              ))}
+            </div>
+          </div>
+        );
+      }
+
+      const root = ReactDOM.createRoot(document.getElementById("root"));
+      root.render(<App />);
+    </script>
+  </body>
+</html>

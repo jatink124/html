@@ -1,0 +1,1653 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PULSE - Premium Nightlife Experience</title>
+    <meta name="description" content="Premium nightlife experiences, event booking, drink menus, and exclusive VIP memberships">
+    
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;600;700;900&family=Poppins:wght@300;400;500;700&display=swap" rel="stylesheet">
+    
+    <style>
+        :root {
+            --primary: #6a0dad;
+            --primary-dark: #4a0080;
+            --secondary: #ff3e78;
+            --dark: #1a1a1a;
+            --light: #f8f9fa;
+        }
+        
+        body {
+            font-family: 'Poppins', sans-serif;
+            color: #333;
+            background-color: #0e0e10;
+        }
+        
+        h1, h2, h3, h4, h5, h6 {
+            font-family: 'Montserrat', sans-serif;
+            font-weight: 700;
+        }
+        
+        .btn-primary {
+            background-color: var(--primary);
+            border-color: var(--primary);
+        }
+        
+        .btn-primary:hover {
+            background-color: var(--primary-dark);
+            border-color: var(--primary-dark);
+        }
+        
+        .btn-secondary {
+            background-color: var(--secondary);
+            border-color: var(--secondary);
+        }
+        
+        .text-primary {
+            color: var(--primary) !important;
+        }
+        
+        .bg-dark-custom {
+            background-color: #0e0e10;
+        }
+        
+        .bg-primary-custom {
+            background-color: var(--primary);
+        }
+        
+        /* NAVBAR */
+        .navbar {
+            background-color: rgba(14, 14, 16, 0.9) !important;
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+        }
+        
+        /* HERO SECTION */
+        .hero {
+            height: 100vh;
+            background: linear-gradient(rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.7)), url('https://images.unsplash.com/photo-1566737236500-c8ac43014a67?ixlib=rb-1.2.1&auto=format&fit=crop&w=1950&q=80');
+            background-size: cover;
+            background-position: center;
+            color: white;
+            display: flex;
+            align-items: center;
+            position: relative;
+        }
+        
+        .hero h1 {
+            font-size: 4rem;
+            font-weight: 900;
+            text-transform: uppercase;
+        }
+        
+        .hero p {
+            font-size: 1.2rem;
+            max-width: 600px;
+        }
+        
+        /* FEATURES */
+        .feature-card {
+            background-color: #1a1a1a;
+            border-radius: 10px;
+            transition: transform 0.3s;
+        }
+        
+        .feature-card:hover {
+            transform: translateY(-10px);
+        }
+        
+        .feature-icon {
+            width: 70px;
+            height: 70px;
+            background-color: var(--primary);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 20px;
+        }
+        
+        /* VENUES */
+        .venue-card {
+            border-radius: 10px;
+            overflow: hidden;
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
+            margin-bottom: 30px;
+            position: relative;
+        }
+        
+        .venue-img {
+            height: 250px;
+            object-fit: cover;
+        }
+        
+        .venue-overlay {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background: linear-gradient(transparent, rgba(0, 0, 0, 0.8));
+            color: white;
+            padding: 20px;
+        }
+        
+        /* DRINK MENU */
+        .drink-card {
+            background-color: #1a1a1a;
+            border-radius: 10px;
+            overflow: hidden;
+            transition: transform 0.3s;
+        }
+        
+        .drink-card:hover {
+            transform: scale(1.03);
+        }
+        
+        .drink-img {
+            height: 200px;
+            object-fit: cover;
+        }
+        
+        /* EVENTS */
+        .event-card {
+            background-color: #1a1a1a;
+            border-radius: 10px;
+            overflow: hidden;
+            margin-bottom: 30px;
+            transition: transform 0.3s;
+        }
+        
+        .event-card:hover {
+            transform: scale(1.03);
+        }
+        
+        .event-img {
+            height: 200px;
+            object-fit: cover;
+        }
+        
+        .event-date {
+            position: absolute;
+            top: 20px;
+            left: 20px;
+            background-color: var(--primary);
+            color: white;
+            padding: 10px 15px;
+            border-radius: 5px;
+        }
+        
+        /* VIP MEMBERSHIP */
+        .vip-card {
+            background-color: #1a1a1a;
+            border-radius: 10px;
+            overflow: hidden;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+            transition: transform 0.3s;
+            height: 100%;
+        }
+        
+        .vip-card:hover {
+            transform: translateY(-10px);
+        }
+        
+        .vip-popular {
+            border: 2px solid var(--secondary);
+        }
+        
+        .vip-header {
+            background-color: var(--primary);
+            color: white;
+            padding: 20px;
+            text-align: center;
+        }
+        
+        .vip-popular .vip-header {
+            background-color: var(--secondary);
+        }
+        
+        .vip-price {
+            font-size: 2.5rem;
+            font-weight: 700;
+        }
+        
+        .vip-features {
+            padding: 30px;
+        }
+        
+        .vip-feature {
+            margin-bottom: 15px;
+            display: flex;
+            align-items: center;
+        }
+        
+        .vip-feature i {
+            color: var(--primary);
+            margin-right: 10px;
+        }
+        
+        /* TESTIMONIALS */
+        .testimonial-card {
+            background-color: #1a1a1a;
+            border-radius: 10px;
+            padding: 30px;
+            margin-bottom: 30px;
+        }
+        
+        .testimonial-img {
+            width: 80px;
+            height: 80px;
+            border-radius: 50%;
+            object-fit: cover;
+            margin-right: 20px;
+        }
+        
+        /* CONTACT FORM */
+        .contact-form {
+            background-color: #1a1a1a;
+            border-radius: 10px;
+            padding: 30px;
+        }
+        
+        /* GALLERY */
+        .gallery-item {
+            margin-bottom: 30px;
+            border-radius: 10px;
+            overflow: hidden;
+            transition: transform 0.3s;
+        }
+        
+        .gallery-item:hover {
+            transform: scale(1.05);
+        }
+        
+        /* FOOTER */
+        footer {
+            background-color: #0a0a0a;
+            color: #999;
+            padding: 60px 0 30px;
+        }
+        
+        .social-icon {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background-color: #1a1a1a;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-right: 10px;
+            color: white;
+            transition: background-color 0.3s;
+        }
+        
+        .social-icon:hover {
+            background-color: var(--primary);
+        }
+        
+        /* Chat Widget */
+        .chat-widget {
+            position: fixed;
+            bottom: 30px;
+            right: 30px;
+            width: 60px;
+            height: 60px;
+            background-color: var(--primary);
+            color: white;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            z-index: 999;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+            transition: transform 0.3s;
+        }
+        
+        .chat-widget:hover {
+            transform: scale(1.1);
+        }
+        
+        /* Mobile Responsive */
+        @media (max-width: 768px) {
+            .hero h1 {
+                font-size: 2.5rem;
+            }
+            
+            .venue-img, .drink-img, .event-img {
+                height: 180px;
+            }
+        }
+        
+        /* Night Mode Toggle */
+        .night-mode-toggle {
+            position: fixed;
+            top: 100px;
+            right: 20px;
+            width: 50px;
+            height: 50px;
+            background-color: #1a1a1a;
+            color: white;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            z-index: 999;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+        }
+        
+        /* Music Player */
+        .music-player {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background-color: rgba(14, 14, 16, 0.9);
+            backdrop-filter: blur(10px);
+            color: white;
+            padding: 10px 20px;
+            display: flex;
+            align-items: center;
+            z-index: 99;
+        }
+        
+        .music-player-controls {
+            display: flex;
+            align-items: center;
+        }
+        
+        .music-player-controls button {
+            background: none;
+            border: none;
+            color: white;
+            margin: 0 10px;
+            cursor: pointer;
+        }
+        
+        /* Age Verification Modal */
+        .age-modal-backdrop {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-color: rgba(0, 0, 0, 0.95);
+            z-index: 1050;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            backdrop-filter: blur(10px);
+        }
+        
+        .age-modal {
+            background-color: #1a1a1a;
+            color: white;
+            padding: 40px;
+            border-radius: 10px;
+            text-align: center;
+            max-width: 500px;
+        }
+        
+        /* Notification Badge */
+        .notification-badge {
+            position: absolute;
+            top: -5px;
+            right: -5px;
+            background-color: var(--secondary);
+            color: white;
+            width: 20px;
+            height: 20px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 12px;
+        }
+    </style>
+</head>
+<body class="text-white">
+    <!-- Age Verification Modal -->
+    <div class="age-modal-backdrop" id="ageVerificationModal">
+        <div class="age-modal">
+            <h2 class="mb-4">Age Verification</h2>
+            <p class="mb-4">You must be of legal drinking age to enter this website.</p>
+            <div class="d-flex justify-content-center">
+                <button class="btn btn-secondary me-3" onclick="rejectAge()">I'm under 21</button>
+                <button class="btn btn-primary" onclick="confirmAge()">I'm 21 or older</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Navbar - Feature 1: Responsive Navigation -->
+    <nav class="navbar navbar-expand-lg navbar-dark fixed-top">
+        <div class="container">
+            <a class="navbar-brand" href="#">
+                <span class="fw-bold">PULSE</span>
+                <span class="text-secondary">NIGHTLIFE</span>
+            </a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav ms-auto">
+                    <li class="nav-item">
+                        <a class="nav-link" href="#home">Home</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#venues">Venues</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#events">Events</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#drinks">Drinks</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#vip">VIP</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#gallery">Gallery</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#contact">Contact</a>
+                    </li>
+                    <li class="nav-item ms-lg-3">
+                        <a class="btn btn-primary" href="#book">Book Now</a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Hero Section - Feature 2: Dynamic Hero Banner -->
+    <section class="hero" id="home">
+        <div class="container">
+            <div class="row">
+                <div class="col-lg-8">
+                    <h1 class="mb-4">Experience Elite Nightlife</h1>
+                    <p class="mb-5">Discover exclusive bars, clubs, and VIP experiences in the heart of the city. Book events, browse drink menus, and unlock premium memberships.</p>
+                    <div class="d-flex flex-wrap">
+                        <a href="#book" class="btn btn-primary btn-lg me-3 mb-3">Book A Table</a>
+                        <a href="#events" class="btn btn-outline-light btn-lg mb-3">Upcoming Events</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Features Section -->
+    <section class="py-5 bg-dark-custom">
+        <div class="container py-5">
+            <div class="row gy-4">
+                <div class="col-md-4">
+                    <div class="feature-card p-4 text-center">
+                        <div class="feature-icon mb-3">
+                            <i class="fas fa-glass-cheers text-white fa-2x"></i>
+                        </div>
+                        <h3>Premium Venues</h3>
+                        <p class="text-muted">Access to the most exclusive clubs and bars in the city</p>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="feature-card p-4 text-center">
+                        <div class="feature-icon mb-3">
+                            <i class="fas fa-cocktail text-white fa-2x"></i>
+                        </div>
+                        <h3>Craft Cocktails</h3>
+                        <p class="text-muted">Expertly crafted signature drinks by master mixologists</p>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="feature-card p-4 text-center">
+                        <div class="feature-icon mb-3">
+                            <i class="fas fa-crown text-white fa-2x"></i>
+                        </div>
+                        <h3>VIP Experience</h3>
+                        <p class="text-muted">Exclusive perks and privileges for our members</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Venues Section - Feature 3: Venue Showcasing -->
+    <section class="py-5 bg-dark-custom" id="venues">
+        <div class="container py-5">
+            <div class="text-center mb-5">
+                <h2 class="display-4 fw-bold mb-3">Our Premier Venues</h2>
+                <p class="text-muted">Experience nightlife at our curated selection of top establishments</p>
+            </div>
+            <div class="row">
+                <div class="col-lg-4 col-md-6">
+                    <div class="venue-card">
+                        <img src="https://images.unsplash.com/photo-1566417713940-fe7c737a9ef2?ixlib=rb-1.2.1&auto=format&fit=crop&w=1950&q=80" alt="Sapphire Lounge" class="img-fluid venue-img w-100">
+                        <div class="venue-overlay">
+                            <h3>Sapphire Lounge</h3>
+                            <p class="mb-2">
+                                <i class="fas fa-map-marker-alt me-2"></i>
+                                123 Main Street
+                            </p>
+                            <div class="d-flex justify-content-between align-items-center">
+                                <div>
+                                    <span class="badge bg-primary me-2">Cocktail Bar</span>
+                                    <span class="badge bg-secondary">Live Music</span>
+                                </div>
+                                <a href="#" class="btn btn-sm btn-outline-light">Details</a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-lg-4 col-md-6">
+                    <div class="venue-card">
+                        <img src="https://images.unsplash.com/photo-1578574577315-3fbeb0cecdc2?ixlib=rb-1.2.1&auto=format&fit=crop&w=1950&q=80" alt="Mirage Nightclub" class="img-fluid venue-img w-100">
+                        <div class="venue-overlay">
+                            <h3>Mirage Nightclub</h3>
+                            <p class="mb-2">
+                                <i class="fas fa-map-marker-alt me-2"></i>
+                                456 Club Avenue
+                            </p>
+                            <div class="d-flex justify-content-between align-items-center">
+                                <div>
+                                    <span class="badge bg-primary me-2">EDM</span>
+                                    <span class="badge bg-secondary">Dancing</span>
+                                </div>
+                                <a href="#" class="btn btn-sm btn-outline-light">Details</a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-lg-4 col-md-6">
+                    <div class="venue-card">
+                        <img src="https://images.unsplash.com/photo-1470337458703-46ad1756a187?ixlib=rb-1.2.1&auto=format&fit=crop&w=1949&q=80" alt="Skyline Rooftop" class="img-fluid venue-img w-100">
+                        <div class="venue-overlay">
+                            <h3>Skyline Rooftop</h3>
+                            <p class="mb-2">
+                                <i class="fas fa-map-marker-alt me-2"></i>
+                                789 High Street
+                            </p>
+                            <div class="d-flex justify-content-between align-items-center">
+                                <div>
+                                    <span class="badge bg-primary me-2">Rooftop</span>
+                                    <span class="badge bg-secondary">Cocktails</span>
+                                </div>
+                                <a href="#" class="btn btn-sm btn-outline-light">Details</a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="text-center mt-5">
+                <a href="#" class="btn btn-outline-light">View All Venues</a>
+            </div>
+        </div>
+    </section>
+
+    <!-- Events Section - Feature 4: Event Calendar & Booking -->
+    <section class="py-5 bg-dark-custom" id="events">
+        <div class="container py-5">
+            <div class="text-center mb-5">
+                <h2 class="display-4 fw-bold mb-3">Upcoming Events</h2>
+                <p class="text-muted">Don't miss our featured events and special nights</p>
+            </div>
+            <div class="row">
+                <div class="col-lg-4 col-md-6 mb-4">
+                    <div class="event-card">
+                        <div class="position-relative">
+                            <img src="https://images.unsplash.com/photo-1516450360452-9312f5e86fc7?ixlib=rb-1.2.1&auto=format&fit=crop&w=1950&q=80" alt="DJ Night" class="img-fluid event-img w-100">
+                            <div class="event-date">
+                                <strong>24</strong><br>AUG
+                            </div>
+                        </div>
+                        <div class="p-4">
+                            <h3>Electro Pulse: DJ Max Event</h3>
+                            <p class="text-muted mb-3">
+                                <i class="fas fa-clock me-2"></i>10:00 PM - 4:00 AM
+                                <br>
+                                <i class="fas fa-map-marker-alt me-2"></i>Mirage Nightclub
+                            </p>
+                            <div class="d-flex justify-content-between align-items-center">
+                                <span class="fw-bold text-primary">$25.00</span>
+                                <a href="#book" class="btn btn-sm btn-primary">Book Now</a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-lg-4 col-md-6 mb-4">
+                    <div class="event-card">
+                        <div class="position-relative">
+                            <img src="https://images.unsplash.com/photo-1574391084249-379da08837eb?ixlib=rb-1.2.1&auto=format&fit=crop&w=1950&q=80" alt="Jazz Evening" class="img-fluid event-img w-100">
+                            <div class="event-date">
+                                <strong>27</strong><br>AUG
+                            </div>
+                        </div>
+                        <div class="p-4">
+                            <h3>Jazz & Cocktails Evening</h3>
+                            <p class="text-muted mb-3">
+                                <i class="fas fa-clock me-2"></i>8:00 PM - 1:00 AM
+                                <br>
+                                <i class="fas fa-map-marker-alt me-2"></i>Sapphire Lounge
+                            </p>
+                            <div class="d-flex justify-content-between align-items-center">
+                                <span class="fw-bold text-primary">$15.00</span>
+                                <a href="#book" class="btn btn-sm btn-primary">Book Now</a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-lg-4 col-md-6 mb-4">
+                    <div class="event-card">
+                        <div class="position-relative">
+                            <img src="https://images.unsplash.com/photo-1587407627257-27b7127c868c?ixlib=rb-1.2.1&auto=format&fit=crop&w=1950&q=80" alt="Summer Party" class="img-fluid event-img w-100">
+                            <div class="event-date">
+                                <strong>31</strong><br>AUG
+                            </div>
+                        </div>
+                        <div class="p-4">
+                            <h3>Summer Sunset Party</h3>
+                            <p class="text-muted mb-3">
+                                <i class="fas fa-clock me-2"></i>7:00 PM - 2:00 AM
+                                <br>
+                                <i class="fas fa-map-marker-alt me-2"></i>Skyline Rooftop
+                            </p>
+                            <div class="d-flex justify-content-between align-items-center">
+                                <span class="fw-bold text-primary">$30.00</span>
+                                <a href="#book" class="btn btn-sm btn-primary">Book Now</a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="text-center mt-3">
+                <a href="#" class="btn btn-outline-light">View All Events</a>
+            </div>
+        </div>
+    </section>
+
+    <!-- Drink Menu Section - Feature 5: Interactive Drink Menu -->
+    <section class="py-5 bg-dark-custom" id="drinks">
+        <div class="container py-5">
+            <div class="text-center mb-5">
+                <h2 class="display-4 fw-bold mb-3">Signature Drinks</h2>
+                <p class="text-muted">Explore our selection of expertly crafted cocktails</p>
+            </div>
+            
+            <!-- Menu Categories -->
+            <ul class="nav nav-pills justify-content-center mb-5" id="drinkTabs" role="tablist">
+                <li class="nav-item mx-2" role="presentation">
+                    <button class="nav-link active" id="cocktails-tab" data-bs-toggle="pill" data-bs-target="#cocktails" type="button" role="tab">Cocktails</button>
+                </li>
+                <li class="nav-item mx-2" role="presentation">
+                    <button class="nav-link" id="wine-tab" data-bs-toggle="pill" data-bs-target="#wine" type="button" role="tab">Wine</button>
+                </li>
+                <li class="nav-item mx-2" role="presentation">
+                    <button class="nav-link" id="beer-tab" data-bs-toggle="pill" data-bs-target="#beer" type="button" role="tab">Beer</button>
+                </li>
+                <li class="nav-item mx-2" role="presentation">
+                    <button class="nav-link" id="spirits-tab" data-bs-toggle="pill" data-bs-target="#spirits" type="button" role="tab">Spirits</button>
+                </li>
+                <li class="nav-item mx-2" role="presentation">
+                    <button class="nav-link" id="mocktails-tab" data-bs-toggle="pill" data-bs-target="#mocktails" type="button" role="tab">Mocktails</button>
+                </li>
+            </ul>
+            
+            <!-- Menu Content -->
+            <div class="tab-content" id="drinkTabContent">
+                <div class="tab-pane fade show active" id="cocktails" role="tabpanel">
+                    <div class="row">
+                        <div class="col-lg-3 col-md-6 mb-4">
+                            <div class="drink-card h-100">
+                                <img src="https://images.unsplash.com/photo-1621873495818-57e400ea66fb?ixlib=rb-1.2.1&auto=format&fit=crop&w=1950&q=80" alt="Electric Blue" class="drink-img w-100">
+                                <div class="p-3">
+                                    <h4>Electric Blue</h4>
+                                    <p class="small text-muted mb-3">Vodka, Blue Curaçao, Fresh Lime, Simple Syrup</p>
+                                    <div class="d-flex justify-content-between align-items-center">
+                                        <span class="fw-bold text-primary">$12</span>
+                                        <button class="btn btn-sm btn-outline-light" data-bs-toggle="modal" data-bs-target="#drinkModal">Details</button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-lg-3 col-md-6 mb-4">
+                            <div class="drink-card h-100">
+                                <img src="https://images.unsplash.com/photo-1560508179-b2c9a3f8e92b?ixlib=rb-1.2.1&auto=format&fit=crop&w=1950&q=80" alt="Sunset Margarita" class="drink-img w-100">
+                                <div class="p-3">
+                                    <h4>Sunset Margarita</h4>
+                                    <p class="small text-muted mb-3">Tequila, Fresh Lime, Orange Liqueur, Hibiscus Syrup</p>
+                                    <div class="d-flex justify-content-between align-items-center">
+                                        <span class="fw-bold text-primary">$14</span>
+                                        <button class="btn btn-sm btn-outline-light" data-bs-toggle="modal" data-bs-target="#drinkModal">Details</button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-lg-3 col-md-6 mb-4">
+                            <div class="drink-card h-100">
+                                <img src="https://images.unsplash.com/photo-1582056615197-68885c6fa4de?ixlib=rb-1.2.1&auto=format&fit=crop&w=1950&q=80" alt="Smoky Old Fashioned" class="drink-img w-100">
+                                <div class="p-3">
+                                    <h4>Smoky Old Fashioned</h4>
+                                    <p class="small text-muted mb-3">Bourbon Whiskey, Angostura Bitters, Sugar, Smoked Cinnamon</p>
+                                    <div class="d-flex justify-content-between align-items-center">
+                                        <span class="fw-bold text-primary">$16</span>
+                                        <button class="btn btn-sm btn-outline-light" data-bs-toggle="modal" data-bs-target="#drinkModal">Details</button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-lg-3 col-md-6 mb-4">
+                            <div class="drink-card h-100">
+                                <img src="https://images.unsplash.com/photo-1507034589631-9433cc6bc453?ixlib=rb-1.2.1&auto=format&fit=crop&w=1950&q=80" alt="Berry Mojito" class="drink-img w-100">
+                                <div class="p-3">
+                                    <h4>Berry Mojito</h4>
+                                    <p class="small text-muted mb-3">White Rum, Fresh Lime, Mixed Berries, Mint, Soda</p>
+                                    <div class="d-flex justify-content-between align-items-center">
+                                        <span class="fw-bold text-primary">$13</span>
+                                        <button class="btn btn-sm btn-outline-light" data-bs-toggle="modal" data-bs-target="#drinkModal">Details</button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="tab-pane fade" id="wine" role="tabpanel">
+                    <div class="row">
+                        <div class="col-lg-3 col-md-6 mb-4">
+                            <div class="drink-card h-100">
+                                <img src="https://images.unsplash.com/photo-1553361371-9b22f78e8b1d?ixlib=rb-1.2.1&auto=format&fit=crop&w=1950&q=80" alt="Cabernet Sauvignon" class="drink-img w-100">
+                                <div class="p-3">
+                                    <h4>Cabernet Sauvignon</h4>
+                                    <p class="small text-muted mb-3">California, 2018</p>
+                                    <div class="d-flex justify-content-between align-items-center">
+                                        <span class="fw-bold text-primary">$12 / glass</span>
+                                        <button class="btn btn-sm btn-outline-light">Details</button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <!-- More wine items would go here -->
+                    </div>
+                </div>
+                
+                <div class="tab-pane fade" id="beer" role="tabpanel">
+                    <div class="row">
+                        <div class="col-lg-3 col-md-6 mb-4">
+                            <div class="drink-card h-100">
+                                <img src="https://images.unsplash.com/photo-1566633806327-68e152aaf26d?ixlib=rb-1.2.1&auto=format&fit=crop&w=1950&q=80" alt="Craft IPA" class="drink-img w-100">
+                                <div class="p-3">
+                                    <h4>Craft IPA</h4>
+                                    <p class="small text-muted mb-3">Local Brewery, 6.8% ABV</p>
+                                    <div class="d-flex justify-content-between align-items-center">
+                                        <span class="fw-bold text-primary">$8</span>
+                                        <button class="btn btn-sm btn-outline-light">Details</button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <!-- More beer items would go here -->
+                    </div>
+                </div>
+                
+                <div class="tab-pane fade" id="spirits" role="tabpanel">
+                    <div class="row">
+                        <div class="col-lg-3 col-md-6 mb-4">
+                            <div class="drink-card h-100">
+                                <img src="https://images.unsplash.com/photo-1607622750671-6cd9a99eabd1?ixlib=rb-1.2.1&auto=format&fit=crop&w=1950&q=80" alt="Premium Vodka" class="drink-img w-100">
+                                <div class="p-3">
+                                    <h4>Premium Vodka</h4>
+                                    <p class="small text-muted mb-3">Distilled 5 times, 40% ABV</p>
+                                    <div class="d-flex justify-content-between align-items-center">
+                                        <span class="fw-bold text-primary">$10 / shot</span>
+                                        <button class="btn btn-sm btn-outline-light">Details</button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <!-- More spirit items would go here -->
+                    </div>
+                </div>
+                
+                <div class="tab-pane fade" id="mocktails" role="tabpanel">
+                    <div class="row">
+                        <div class="col-lg-3 col-md-6 mb-4">
+                            <div class="drink-card h-100">
+                                <img src="https://images.unsplash.com/photo-1540189549336-e6e99c3679fe?ixlib=rb-1.2.1&auto=format&fit=crop&w=1950&q=80" alt="Virgin Mojito" class="drink-img w-100">
+                                <div class="p-3">
+                                    <h4>Virgin Mojito</h4>
+                                    <p class="small text-muted mb-3">Fresh Lime, Mint, Simple Syrup, Soda</p>
+                                    <div class="d-flex justify-content-between align-items-center">
+                                        <span class="fw-bold text-primary">$8</span>
+                                        <button class="btn btn-sm btn-outline-light">Details</button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <!-- More mocktail items would go here -->
+                    </div>
+                </div>
+            </div>
+            
+            <div class="text-center mt-5">
+                <a href="#" class="btn btn-outline-light">View Full Menu</a>
+            </div>
+        </div>
+    </section>
+
+    <!-- VIP Membership Section - Feature 6: VIP Membership Plans -->
+    <section class="py-5 bg-dark-custom" id="vip">
+        <div class="container py-5">
+            <div class="text-center mb-5">
+                <h2 class="display-4 fw-bold mb-3">VIP Membership</h2>
+                <p class="text-muted">Unlock exclusive benefits and elevate your nightlife experience</p>
+            </div>
+            <div class="row">
+                <div class="col-lg-4 col-md-6 mb-4">
+                    <div class="vip-card">
+                        <div class="vip-header">
+                            <h3>Silver</h3>
+                            <div class="vip-price">$99<span class="small">/month</span></div>
+                        </div>
+                        <div class="vip-features">
+                            <div class="vip-feature">
+                                <i class="fas fa-check"></i>
+                                <span>Priority Entry (No Lines)</span>
+                            </div>
+                            <div class="vip-feature">
+                                <i class="fas fa-check"></i>
+                                <span>10% Off All Drinks</span>
+                            </div>
+                            <div class="vip-feature">
+                                <i class="fas fa-check"></i>
+                                <span>Access to Members-Only Events</span>
+                            </div>
+                            <div class="vip-feature">
+                                <i class="fas fa-check"></i>
+                                <span>2 Free Guest Passes per Month</span>
+                            </div>
+                            <div class="mt-4">
+                                <a href="#" class="btn btn-primary w-100">Join Now</a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-lg-4 col-md-6 mb-4">
+                    <div class="vip-card vip-popular">
+                        <div class="vip-header">
+                            <span class="badge bg-primary position-absolute top-0 start-50 translate-middle">Most Popular</span>
+                            <h3>Gold</h3>
+                            <div class="vip-price">$199<span class="small">/month</span></div>
+                        </div>
+                        <div class="vip-features">
+                            <div class="vip-feature">
+                                <i class="fas fa-check"></i>
+                                <span>All Silver Benefits</span>
+                            </div>
+                            <div class="vip-feature">
+                                <i class="fas fa-check"></i>
+                                <span>20% Off All Drinks</span>
+                            </div>
+                            <div class="vip-feature">
+                                <i class="fas fa-check"></i>
+                                <span>Complimentary Bottle Service (Once per Month)</span>
+                            </div>
+                            <div class="vip-feature">
+                                <i class="fas fa-check"></i>
+                                <span>Dedicated Host/Hostess</span>
+                            </div>
+                            <div class="vip-feature">
+                                <i class="fas fa-check"></i>
+                                <span>4 Free Guest Passes per Month</span>
+                            </div>
+                            <div class="mt-4">
+                                <a href="#" class="btn btn-secondary w-100">Join Now</a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-lg-4 col-md-6 mb-4">
+                    <div class="vip-card">
+                        <div class="vip-header">
+                            <h3>Platinum</h3>
+                            <div class="vip-price">$349<span class="small">/month</span></div>
+                        </div>
+                        <div class="vip-features">
+                            <div class="vip-feature">
+                                <i class="fas fa-check"></i>
+                                <span>All Gold Benefits</span>
+                            </div>
+                            <div class="vip-feature">
+                                <i class="fas fa-check"></i>
+                                <span>30% Off All Drinks</span>
+                            </div>
+                            <div class="vip-feature">
+                                <i class="fas fa-check"></i>
+                                <span>Reserved VIP Table at All Venues</span>
+                            </div>
+                            <div class="vip-feature">
+                                <i class="fas fa-check"></i>
+                                <span>Complimentary Bottle Service (Once per Week)</span>
+                            </div>
+                            <div class="vip-feature">
+                                <i class="fas fa-check"></i>
+                                <span>Private Event Invitations</span>
+                            </div>
+                            <div class="vip-feature">
+                                <i class="fas fa-check"></i>
+                                <span>Unlimited Guest Passes (Subject to Capacity)</span>
+                            </div>
+                            <div class="mt-4">
+                                <a href="#" class="btn btn-primary w-100">Join Now</a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Gallery Section - Feature 7: Interactive Gallery -->
+    <section class="py-5 bg-dark-custom" id="gallery">
+        <div class="container py-5">
+            <div class="text-center mb-5">
+                <h2 class="display-4 fw-bold mb-3">Gallery</h2>
+                <p class="text-muted">Experience the atmosphere of our venues</p>
+            </div>
+            <div class="row g-3">
+                <div class="col-lg-4 col-md-6">
+                    <div class="gallery-item">
+                        <a href="#" data-bs-toggle="modal" data-bs-target="#galleryModal">
+                            <img src="https://images.unsplash.com/photo-1566417713940-fe7c737a9ef2?ixlib=rb-1.2.1&auto=format&fit=crop&w=1950&q=80" alt="Gallery Image" class="img-fluid rounded">
+                        </a>
+                    </div>
+                </div>
+                <div class="col-lg-4 col-md-6">
+                    <div class="gallery-item">
+                        <a href="#" data-bs-toggle="modal" data-bs-target="#galleryModal">
+                            <img src="https://images.unsplash.com/photo-1556035511-3168381ea4d4?ixlib=rb-1.2.1&auto=format&fit=crop&w=1950&q=80" alt="Gallery Image" class="img-fluid rounded">
+                        </a>
+                    </div>
+                </div>
+                <div class="col-lg-4 col-md-6">
+                    <div class="gallery-item">
+                        <a href="#" data-bs-toggle="modal" data-bs-target="#galleryModal">
+                            <img src="https://images.unsplash.com/photo-1545128485-c400e7702796?ixlib=rb-1.2.1&auto=format&fit=crop&w=1950&q=80" alt="Gallery Image" class="img-fluid rounded">
+                        </a>
+                    </div>
+                </div>
+                <div class="col-lg-4 col-md-6">
+                    <div class="gallery-item">
+                        <a href="#" data-bs-toggle="modal" data-bs-target="#galleryModal">
+                            <img src="https://images.unsplash.com/photo-1516450360452-9312f5e86fc7?ixlib=rb-1.2.1&auto=format&fit=crop&w=1950&q=80" alt="Gallery Image" class="img-fluid rounded">
+                        </a>
+                    </div>
+                </div>
+                <div class="col-lg-4 col-md-6">
+                    <div class="gallery-item">
+                        <a href="#" data-bs-toggle="modal" data-bs-target="#galleryModal">
+                            <img src="https://images.unsplash.com/photo-1492684223066-81342ee5ff30?ixlib=rb-1.2.1&auto=format&fit=crop&w=1950&q=80" alt="Gallery Image" class="img-fluid rounded">
+                        </a>
+                    </div>
+                </div>
+                <div class="col-lg-4 col-md-6">
+                    <div class="gallery-item">
+                        <a href="#" data-bs-toggle="modal" data-bs-target="#galleryModal">
+                            <img src="https://images.unsplash.com/photo-1470229722913-7c0e2dbbafd3?ixlib=rb-1.2.1&auto=format&fit=crop&w=1950&q=80" alt="Gallery Image" class="img-fluid rounded">
+                        </a>
+                    </div>
+                </div>
+            </div>
+            <div class="text-center mt-5">
+                <a href="#" class="btn btn-outline-light">View More Photos</a>
+            </div>
+        </div>
+    </section>
+
+    <!-- Testimonials Section - Feature 8: Reviews & Testimonials -->
+    <section class="py-5 bg-primary-custom">
+        <div class="container py-5">
+            <div class="text-center mb-5">
+                <h2 class="display-4 fw-bold mb-3 text-white">What Our Guests Say</h2>
+                <p class="text-white opacity-75">Hear from our valued guests and members</p>
+            </div>
+            <div class="row">
+                <div class="col-lg-4 col-md-6">
+                    <div class="testimonial-card h-100">
+                        <div class="d-flex align-items-center mb-4">
+                            <img src="https://randomuser.me/api/portraits/women/32.jpg" alt="Customer" class="testimonial-img">
+                            <div>
+                                <h5 class="mb-0">Sarah Johnson</h5>
+                                <p class="small text-muted mb-0">Gold Member</p>
+                                <div class="mt-1">
+                                    <i class="fas fa-star text-warning"></i>
+                                    <i class="fas fa-star text-warning"></i>
+                                    <i class="fas fa-star text-warning"></i>
+                                    <i class="fas fa-star text-warning"></i>
+                                    <i class="fas fa-star text-warning"></i>
+                                </div>
+                            </div>
+                        </div>
+                        <p>"The VIP membership is absolutely worth every penny. I love skipping the lines and getting personalized service. The exclusive events are always the highlight of my month!"</p>
+                    </div>
+                </div>
+                <div class="col-lg-4 col-md-6">
+                    <div class="testimonial-card h-100">
+                        <div class="d-flex align-items-center mb-4">
+                            <img src="https://randomuser.me/api/portraits/men/45.jpg" alt="Customer" class="testimonial-img">
+                            <div>
+                                <h5 class="mb-0">Michael Chen</h5>
+                                <p class="small text-muted mb-0">Platinum Member</p>
+                                <div class="mt-1">
+                                    <i class="fas fa-star text-warning"></i>
+                                    <i class="fas fa-star text-warning"></i>
+                                    <i class="fas fa-star text-warning"></i>
+                                    <i class="fas fa-star text-warning"></i>
+                                    <i class="fas fa-star text-warning"></i>
+                                </div>
+                            </div>
+                        </div>
+                        <p>"As a Platinum member, I always feel like royalty when I visit any of their venues. The dedicated host knows my preferences and the bottle service is exceptional. Highly recommend!"</p>
+                    </div>
+                </div>
+                <div class="col-lg-4 col-md-6">
+                    <div class="testimonial-card h-100">
+                        <div class="d-flex align-items-center mb-4">
+                            <img src="https://randomuser.me/api/portraits/women/68.jpg" alt="Customer" class="testimonial-img">
+                            <div>
+                                <h5 class="mb-0">Jessica Williams</h5>
+                                <p class="small text-muted mb-0">Guest</p>
+                                <div class="mt-1">
+                                    <i class="fas fa-star text-warning"></i>
+                                    <i class="fas fa-star text-warning"></i>
+                                    <i class="fas fa-star text-warning"></i>
+                                    <i class="fas fa-star text-warning"></i>
+                                    <i class="far fa-star text-warning"></i>
+                                </div>
+                            </div>
+                        </div>
+                        <p>"Attended a friend's birthday at Mirage Nightclub and was blown away by the atmosphere and service. The cocktails were exceptional and the music was perfect. I'm considering getting a membership now!"</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Booking Section - Feature 9: Advanced Booking System -->
+    <section class="py-5 bg-dark-custom" id="book">
+        <div class="container py-5">
+            <div class="row align-items-center">
+                <div class="col-lg-6 mb-5 mb-lg-0">
+                    <h2 class="display-4 fw-bold mb-4">Reserve Your Experience</h2>
+                    <p class="mb-4">Book a table, VIP section, or event space at any of our premium venues. Our team will ensure your night is perfect from start to finish.</p>
+                    <div class="d-flex flex-wrap gap-3 mb-4">
+                        <div class="d-flex align-items-center">
+                            <div class="me-2 text-primary">
+                                <i class="fas fa-check-circle fa-lg"></i>
+                            </div>
+                            <span>Instant Confirmation</span>
+                        </div>
+                        <div class="d-flex align-items-center">
+                            <div class="me-2 text-primary">
+                                <i class="fas fa-check-circle fa-lg"></i>
+                            </div>
+                            <span>No Booking Fees</span>
+                        </div>
+                        <div class="d-flex align-items-center">
+                            <div class="me-2 text-primary">
+                                <i class="fas fa-check-circle fa-lg"></i>
+                            </div>
+                            <span>Special Requests</span>
+                        </div>
+                    </div>
+                    <p>Need help with your booking? Call us at <a href="tel:+12345678901" class="text-primary">+1 (234) 567-8901</a></p>
+                </div>
+                <div class="col-lg-6">
+                    <div class="contact-form">
+                        <form id="bookingForm">
+                            <div class="row g-3">
+                                <div class="col-md-6">
+                                    <label for="name" class="form-label">Full Name</label>
+                                    <input type="text" class="form-control" id="name" required>
+                                </div>
+                                <div class="col-md-6">
+                                    <label for="email" class="form-label">Email</label>
+                                    <input type="email" class="form-control" id="email" required>
+                                </div>
+                                <div class="col-md-6">
+                                    <label for="phone" class="form-label">Phone</label>
+                                    <input type="tel" class="form-control" id="phone" required>
+                                </div>
+                                <div class="col-md-6">
+                                    <label for="guests" class="form-label">Number of Guests</label>
+                                    <select class="form-select" id="guests" required>
+                                        <option value="">Select</option>
+                                        <option value="1-2">1-2</option>
+                                        <option value="3-5">3-5</option>
+                                        <option value="6-10">6-10</option>
+                                        <option value="11+">11+</option>
+                                    </select>
+                                </div>
+                                <div class="col-md-6">
+                                    <label for="venue" class="form-label">Venue</label>
+                                    <select class="form-select" id="venue" required>
+                                        <option value="">Select Venue</option>
+                                        <option value="Sapphire Lounge">Sapphire Lounge</option>
+                                        <option value="Mirage Nightclub">Mirage Nightclub</option>
+                                        <option value="Skyline Rooftop">Skyline Rooftop</option>
+                                    </select>
+                                </div>
+                                <div class="col-md-6">
+                                    <label for="date" class="form-label">Date</label>
+                                    <input type="date" class="form-control" id="date" required>
+                                </div>
+                                <div class="col-md-6">
+                                    <label for="time" class="form-label">Time</label>
+                                    <input type="time" class="form-control" id="time" required>
+                                </div>
+                                <div class="col-md-6">
+                                    <label for="bookingType" class="form-label">Booking Type</label>
+                                    <select class="form-select" id="bookingType" required>
+                                        <option value="">Select</option>
+                                        <option value="Standard Table">Standard Table</option>
+                                        <option value="VIP Section">VIP Section</option>
+                                        <option value="Bottle Service">Bottle Service</option>
+                                        <option value="Event Space">Event Space</option>
+                                    </select>
+                                </div>
+                                <div class="col-12">
+                                    <label for="specialRequests" class="form-label">Special Requests</label>
+                                    <textarea class="form-control" id="specialRequests" rows="3"></textarea>
+                                </div>
+                                <div class="col-12">
+                                    <div class="form-check">
+                                        <input class="form-check-input" type="checkbox" id="terms" required>
+                                        <label class="form-check-label" for="terms">
+                                            I agree to the <a href="#" class="text-primary">terms and conditions</a>
+                                        </label>
+                                    </div>
+                                </div>
+                                <div class="col-12 mt-4">
+                                    <button type="submit" class="btn btn-primary w-100 py-3">Complete Reservation</button>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Contact Section - Feature 10: Interactive Contact Form -->
+    <section class="py-5 bg-dark-custom" id="contact">
+        <div class="container py-5">
+            <div class="text-center mb-5">
+                <h2 class="display-4 fw-bold mb-3">Get In Touch</h2>
+                <p class="text-muted">Contact us for inquiries, feedback, or partnership opportunities</p>
+            </div>
+            <div class="row g-5">
+                <div class="col-lg-5">
+                    <div class="mb-5">
+                        <h3 class="mb-4">Contact Information</h3>
+                        <div class="d-flex mb-4">
+                            <div class="me-3 text-primary">
+                                <i class="fas fa-map-marker-alt fa-2x"></i>
+                            </div>
+                            <div>
+                                <h5>Address</h5>
+                                <p class="mb-0">123 Nightlife Avenue<br>Downtown, City, 10001</p>
+                            </div>
+                        </div>
+                        <div class="d-flex mb-4">
+                            <div class="me-3 text-primary">
+                                <i class="fas fa-phone-alt fa-2x"></i>
+                            </div>
+                            <div>
+                                <h5>Phone</h5>
+                                <p class="mb-0">+1 (234) 567-8901</p>
+                            </div>
+                        </div>
+                        <div class="d-flex mb-4">
+                            <div class="me-3 text-primary">
+                                <i class="fas fa-envelope fa-2x"></i>
+                            </div>
+                            <div>
+                                <h5>Email</h5>
+                                <p class="mb-0">info@pulse-nightlife.com</p>
+                            </div>
+                        </div>
+                        <div class="d-flex mb-4">
+                            <div class="me-3 text-primary">
+                                <i class="fas fa-clock fa-2x"></i>
+                            </div>
+                            <div>
+                                <h5>Business Hours</h5>
+                                <p class="mb-0">
+                                    Monday - Thursday: 6 PM - 2 AM<br>
+                                    Friday - Saturday: 6 PM - 4 AM<br>
+                                    Sunday: 6 PM - 12 AM
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                    <div>
+                        <h3 class="mb-4">Follow Us</h3>
+                        <div class="d-flex">
+                            <a href="#" class="social-icon me-2">
+                                <i class="fab fa-facebook-f"></i>
+                            </a>
+                            <a href="#" class="social-icon me-2">
+                                <i class="fab fa-instagram"></i>
+                            </a>
+                            <a href="#" class="social-icon me-2">
+                                <i class="fab fa-twitter"></i>
+                            </a>
+                            <a href="#" class="social-icon me-2">
+                                <i class="fab fa-tiktok"></i>
+                            </a>
+                            <a href="#" class="social-icon">
+                                <i class="fab fa-youtube"></i>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-lg-7">
+                    <div class="contact-form">
+                        <form id="contactForm">
+                            <div class="row g-3">
+                                <div class="col-md-6">
+                                    <label for="contactName" class="form-label">Name</label>
+                                    <input type="text" class="form-control" id="contactName" required>
+                                </div>
+                                <div class="col-md-6">
+                                    <label for="contactEmail" class="form-label">Email</label>
+                                    <input type="email" class="form-control" id="contactEmail" required>
+                                </div>
+                                <div class="col-md-6">
+                                    <label for="contactPhone" class="form-label">Phone</label>
+                                    <input type="tel" class="form-control" id="contactPhone">
+                                </div>
+                                <div class="col-md-6">
+                                    <label for="contactSubject" class="form-label">Subject</label>
+                                    <select class="form-select" id="contactSubject" required>
+                                        <option value="">Select Subject</option>
+                                        <option value="General Inquiry">General Inquiry</option>
+                                        <option value="Event Planning">Event Planning</option>
+                                        <option value="Membership">Membership</option>
+                                        <option value="Feedback">Feedback</option>
+                                        <option value="Partnership">Partnership/Collaboration</option>
+                                    </select>
+                                </div>
+                                <div class="col-12">
+                                    <label for="contactMessage" class="form-label">Message</label>
+                                    <textarea class="form-control" id="contactMessage" rows="5" required></textarea>
+                                </div>
+                                <div class="col-12 mt-4">
+                                    <button type="submit" class="btn btn-primary">Send Message</button>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Newsletter Section - Feature 11: Newsletter Subscription -->
+    <section class="py-5 bg-primary-custom">
+        <div class="container py-5">
+            <div class="row justify-content-center">
+                <div class="col-lg-8 text-center">
+                    <h2 class="display-4 fw-bold mb-3 text-white">Stay Updated</h2>
+                    <p class="text-white opacity-75 mb-5">Subscribe to our newsletter for exclusive event announcements, special offers, and nightlife insights.</p>
+                    <form class="d-flex flex-column flex-sm-row gap-2">
+                        <input type="email" class="form-control form-control-lg" placeholder="Enter your email">
+                        <button type="submit" class="btn btn-light btn-lg px-4">Subscribe</button>
+                    </form>
+                    <p class="small text-white opacity-75 mt-3">By subscribing, you agree to our <a href="#" class="text-white text-decoration-underline">Privacy Policy</a> and consent to receive updates from us.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- FAQ Section - Feature 12: FAQ Accordion -->
+    <section class="py-5 bg-dark-custom">
+        <div class="container py-5">
+            <div class="text-center mb-5">
+                <h2 class="display-4 fw-bold mb-3">Frequently Asked Questions</h2>
+                <p class="text-muted">Find answers to common questions about our venues and services</p>
+            </div>
+            <div class="row justify-content-center">
+                <div class="col-lg-10">
+                    <div class="accordion" id="faqAccordion">
+                        <div class="accordion-item bg-dark text-white border-0 mb-3">
+                            <h2 class="accordion-header">
+                                <button class="accordion-button bg-dark text-white" type="button" data-bs-toggle="collapse" data-bs-target="#faqOne">
+                                    What is the dress code for your venues?
+                                </button>
+                            </h2>
+                            <div id="faqOne" class="accordion-collapse collapse show" data-bs-parent="#faqAccordion">
+                                <div class="accordion-body">
+                                    We maintain an upscale dress code at all our venues. Smart casual attire is required at minimum. No athletic wear, ripped jeans, flip-flops, or overly casual attire. For specific venues like Mirage Nightclub, we recommend more formal attire, especially on weekends and for special events.
+                                </div>
+                            </div>
+                        </div>
+                        <div class="accordion-item bg-dark text-white border-0 mb-3">
+                            <h2 class="accordion-header">
+                                <button class="accordion-button bg-dark text-white collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#faqTwo">
+                                    Do I need to make a reservation before visiting?
+                                </button>
+                            </h2>
+                            <div id="faqTwo" class="accordion-collapse collapse" data-bs-parent="#faqAccordion">
+                                <div class="accordion-body">
+                                    While walk-ins are welcome (subject to capacity), we strongly recommend making reservations, especially for weekends and special events. Reservations ensure you have a guaranteed entry and can be made through our online booking system or by calling our reservation line.
+                                </div>
+                            </div>
+                        </div>
+                        <div class="accordion-item bg-dark text-white border-0 mb-3">
+                            <h2 class="accordion-header">
+                                <button class="accordion-button bg-dark text-white collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#faqThree">
+                                    How does the VIP membership work?
+                                </button>
+                            </h2>
+                            <div id="faqThree" class="accordion-collapse collapse" data-bs-parent="#faqAccordion">
+                                <div class="accordion-body">
+                                    Our VIP memberships offer exclusive benefits across all our venues. Once you sign up, you'll receive a digital membership card in your email and a physical card within 7 business days. Membership benefits begin immediately upon confirmation of your subscription. You can upgrade or downgrade your membership level at any time with the changes taking effect at the start of the next billing cycle.
+                                </div>
+                            </div>
+                        </div>
+                        <div class="accordion-item bg-dark text-white border-0 mb-3">
+                            <h2 class="accordion-header">
+                                <button class="accordion-button bg-dark text-white collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#faqFour">
+                                    What payment methods do you accept?
+                                </button>
+                            </h2>
+                            <div id="faqFour" class="accordion-collapse collapse" data-bs-parent="#faqAccordion">
+                                <div class="accordion-body">
+                                    We accept all major credit cards, digital wallets (Apple Pay, Google Pay), and cash. For VIP services and bottle service, a credit card is required for reservation and minimum spend requirements apply. All prices shown on our website and menus include taxes.
+                                </div>
+                            </div>
+                        </div>
+                        <div class="accordion-item bg-dark text-white border-0 mb-3">
+                            <h2 class="accordion-header">
+                                <button class="accordion-button bg-dark text-white collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#faqFive">
+                                    Can I host a private event at your venues?
+                                </button>
+                            </h2>
+                            <div id="faqFive" class="accordion-collapse collapse" data-bs-parent="#faqAccordion">
+                                <div class="accordion-body">
+                                    Yes, all our venues are available for private events, from birthday celebrations to corporate gatherings. We offer customizable packages including catering, entertainment, decor, and more. Please contact our events team at events@pulse-nightlife.com to discuss your specific requirements and get a personalized quote.
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="py-5 bg-black">
+        <div class="container py-4">
+            <div class="row g-5">
+                <div class="col-lg-4">
+                    <h3 class="mb-4 text-white">PULSE NIGHTLIFE</h3>
+                    <p class="text-muted mb-4">The premier destination for upscale nightlife experiences, offering exclusive venues, premier events, and VIP memberships for the discerning party-goer.</p>
+                    <div class="d-flex mb-4">
+                        <a href="#" class="social-icon me-2">
+                            <i class="fab fa-facebook-f"></i>
+                        </a>
+                        <a href="#" class="social-icon me-2">
+                            <i class="fab fa-instagram"></i>
+                        </a>
+                        <a href="#" class="social-icon me-2">
+                            <i class="fab fa-twitter"></i>
+                        </a>
+                        <a href="#" class="social-icon me-2">
+                            <i class="fab fa-tiktok"></i>
+                        </a>
+                        <a href="#" class="social-icon">
+                            <i class="fab fa-youtube"></i>
+                        </a>
+                    </div>
+                </div>
+                <div class="col-lg-2 col-md-6">
+                    <h5 class="mb-4 text-white">Quick Links</h5>
+                    <ul class="list-unstyled">
+                        <li class="mb-2"><a href="#home" class="text-muted text-decoration-none">Home</a></li>
+                        <li class="mb-2"><a href="#venues" class="text-muted text-decoration-none">Venues</a></li>
+                        <li class="mb-2"><a href="#events" class="text-muted text-decoration-none">Events</a></li>
+                        <li class="mb-2"><a href="#drinks" class="text-muted text-decoration-none">Drinks</a></li>
+                        <li class="mb-2"><a href="#vip" class="text-muted text-decoration-none">VIP</a></li>
+                        <li class="mb-2"><a href="#gallery" class="text-muted text-decoration-none">Gallery</a></li>
+                    </ul>
+                </div>
+                <div class="col-lg-2 col-md-6">
+                    <h5 class="mb-4 text-white">Support</h5>
+                    <ul class="list-unstyled">
+                        <li class="mb-2"><a href="#" class="text-muted text-decoration-none">Help Center</a></li>
+                        <li class="mb-2"><a href="#" class="text-muted text-decoration-none">Terms of Service</a></li>
+                        <li class="mb-2"><a href="#" class="text-muted text-decoration-none">Privacy Policy</a></li>
+                        <li class="mb-2"><a href="#" class="text-muted text-decoration-none">Cookie Policy</a></li>
+                        <li class="mb-2"><a href="#contact" class="text-muted text-decoration-none">Contact Us</a></li>
+                    </ul>
+                </div>
+                <div class="col-lg-4">
+                    <h5 class="mb-4 text-white">Download Our App</h5>
+                    <p class="text-muted mb-4">Get the most out of your nightlife experience with our mobile app. Book tables, view menus, manage your VIP membership, and more.</p>
+                    <div class="d-flex flex-wrap gap-2">
+                        <a href="#" class="btn btn-outline-light">
+                            <i class="fab fa-apple me-2"></i>App Store
+                        </a>
+                        <a href="#" class="btn btn-outline-light">
+                            <i class="fab fa-google-play me-2"></i>Google Play
+                        </a>
+                    </div>
+                </div>
+            </div>
+            <hr class="mt-5 mb-4 bg-secondary">
+            <div class="row align-items-center">
+                <div class="col-md-6 text-center text-md-start">
+                    <p class="small text-muted mb-0">© 2023 PULSE Nightlife. All rights reserved.</p>
+                </div>
+                <div class="col-md-6 text-center text-md-end mt-3 mt-md-0">
+                    <p class="small text-muted mb-0">
+                        <a href="#" class="text-muted me-3">Terms</a>
+                        <a href="#" class="text-muted me-3">Privacy</a>
+                        <a href="#" class="text-muted">Cookies</a>
+                    </p>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Chat Widget -->
+    <div class="chat-widget" id="chatWidget">
+        <i class="fas fa-comments fa-lg"></i>
+        <span class="notification-badge">1</span>
+    </div>
+
+    <!-- Night Mode Toggle -->
+    <div class="night-mode-toggle" id="nightModeToggle">
+        <i class="fas fa-moon"></i>
+    </div>
+
+    <!-- Music Player -->
+    <div class="music-player">
+        <div class="music-player-controls">
+            <button><i class="fas fa-step-backward"></i></button>
+            <button id="playPauseBtn"><i class="fas fa-play"></i></button>
+            <button><i class="fas fa-step-forward"></i></button>
+        </div>
+        <div class="ms-3">
+            <div class="small text-white">Now Playing: Chill Lounge Mix</div>
+            <div class="progress mt-1" style="height: 5px;">
+                <div class="progress-bar bg-primary" role="progressbar" style="width: 35%"></div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Drink Modal -->
+    <div class="modal fade" id="drinkModal" tabindex="-1">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content bg-dark text-white">
+                <div class="modal-header border-0">
+                    <h5 class="modal-title">Electric Blue</h5>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <img src="https://images.unsplash.com/photo-1621873495818-57e400ea66fb?ixlib=rb-1.2.1&auto=format&fit=crop&w=1950&q=80" alt="Electric Blue" class="img-fluid rounded mb-4">
+                    <h5>Ingredients</h5>
+                    <ul>
+                        <li>2 oz Premium Vodka</li>
+                        <li>1 oz Blue Curaçao</li>
+                        <li>1 oz Fresh Lime Juice</li>
+                        <li>0.5 oz Simple Syrup</li>
+                        <li>Ice</li>
+                        <li>Lime Wheel (Garnish)</li>
+                    </ul>
+                    <h5>Description</h5>
+                    <p>A vibrant, refreshing cocktail with a perfect balance of sweet and sour. The Electric Blue is a signature drink that delivers a bold flavor and eye-catching presentation.</p>
+                    <div class="d-flex align-items-center mt-4">
+                        <span class="badge bg-primary me-2">Popular</span>
+                        <span class="badge bg-secondary me-2">Signature</span>
+                        <span class="small text-muted ms-auto">Alcohol Content: 18%</span>
+                    </div>
+                </div>
+                <div class="modal-footer border-0">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Gallery Modal -->
+    <div class="modal fade" id="galleryModal" tabindex="-1">
+        <div class="modal-dialog modal-lg modal-dialog-centered">
+            <div class="modal-content bg-dark text-white">
+                <div class="modal-header border-0">
+                    <h5 class="modal-title">Gallery</h5>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <img src="https://images.unsplash.com/photo-1566417713940-fe7c737a9ef2?ixlib=rb-1.2.1&auto=format&fit=crop&w=1950&q=80" alt="Gallery Image" class="img-fluid rounded">
+                </div>
+                <div class="modal-footer border-0 justify-content-between">
+                    <button class="btn btn-outline-light"><i class="fas fa-arrow-left me-2"></i>Previous</button>
+                    <button class="btn btn-outline-light">Next<i class="fas fa-arrow-right ms-2"></i></button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Bootstrap Bundle with Popper -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    
+    <!-- Custom JavaScript -->
+    <script>
+        // Age Verification
+        function confirmAge() {
+            document.getElementById('ageVerificationModal').style.display = 'none';
+            localStorage.setItem('ageVerified', 'true');
+        }
+        
+        function rejectAge() {
+            window.location.href = 'https://www.responsibility.org/';
+        }
+        
+        // Check if age is already verified
+        document.addEventListener('DOMContentLoaded', function() {
+            if (localStorage.getItem('ageVerified') === 'true') {
+                document.getElementById('ageVerificationModal').style.display = 'none';
+            }
+            
+            // Initialize tooltips
+            var tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'))
+            tooltipTriggerList.map(function (tooltipTriggerEl) {
+                return new bootstrap.Tooltip(tooltipTriggerEl)
+            });
+            
+            // Music Player Toggle
+            const playPauseBtn = document.getElementById('playPauseBtn');
+            let isPlaying = false;
+            
+            playPauseBtn.addEventListener('click', function() {
+                if (isPlaying) {
+                    playPauseBtn.innerHTML = '<i class="fas fa-play"></i>';
+                    isPlaying = false;
+                } else {
+                    playPauseBtn.innerHTML = '<i class="fas fa-pause"></i>';
+                    isPlaying = true;
+                }
+            });
+            
+            // Night Mode Toggle
+            const nightModeToggle = document.getElementById('nightModeToggle');
+            let isDarkMode = true; // Already dark by default
+            
+            nightModeToggle.addEventListener('click', function() {
+                if (isDarkMode) {
+                    document.body.style.backgroundColor = '#f8f9fa';
+                    document.body.style.color = '#333';
+                    nightModeToggle.innerHTML = '<i class="fas fa-sun"></i>';
+                    isDarkMode = false;
+                    // Would add more complex logic here to change all dark elements
+                } else {
+                    document.body.style.backgroundColor = '#0e0e10';
+                    document.body.style.color = 'white';
+                    nightModeToggle.innerHTML = '<i class="fas fa-moon"></i>';
+                    isDarkMode = true;
+                    // Would revert all styling changes
+                }
+            });
+            
+            // Smooth scrolling for anchor links
+            document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+                anchor.addEventListener('click', function (e) {
+                    e.preventDefault();
+                    
+                    const targetId = this.getAttribute('href');
+                    if (targetId === '#') return;
+                    
+                    const targetElement = document.querySelector(targetId);
+                    if (targetElement) {
+                        window.scrollTo({
+                            top: targetElement.offsetTop - 100,
+                            behavior: 'smooth'
+                        });
+                    }
+                });
+            });
+            
+            // Form submissions
+            const bookingForm = document.getElementById('bookingForm');
+            if (bookingForm) {
+                bookingForm.addEventListener('submit', function(e) {
+                    e.preventDefault();
+                    alert('Thank you for your reservation request! We will confirm your booking shortly.');
+                    bookingForm.reset();
+                });
+            }
+            
+            const contactForm = document.getElementById('contactForm');
+            if (contactForm) {
+                contactForm.addEventListener('submit', function(e) {
+                    e.preventDefault();
+                    alert('Thanks for reaching out! We will get back to you as soon as possible.');
+                    contactForm.reset();
+                });
+            }
+            
+            // Chat widget
+            const chatWidget = document.getElementById('chatWidget');
+            if (chatWidget) {
+                chatWidget.addEventListener('click', function() {
+                    alert('Live chat feature coming soon! Please contact us via email or phone for now.');
+                });
+            }
+        });
+    </script>
+</body>
+</html>

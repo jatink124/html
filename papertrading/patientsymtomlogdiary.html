@@ -1,0 +1,281 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Patient Symptom Log</title>
+    <!-- Load Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Use Inter font family -->
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@100..900&display=swap');
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #f7f9fb; /* Light background */
+        }
+        .app-container {
+            min-height: 100vh;
+        }
+        /* Custom styles for medical/health theme colors */
+        .header-bg {
+            background-color: #e0f2f1; /* Teal-100 */
+        }
+        .primary-color {
+            background-color: #14b8a6; /* Teal-500 */
+        }
+        .focus-ring-color:focus {
+            --tw-ring-color: #0d9488; /* Teal-600 */
+        }
+    </style>
+</head>
+<body class="selection:bg-teal-200 selection:text-teal-900">
+
+    <div class="app-container p-4 sm:p-8">
+        <!-- Header -->
+        <header class="mb-8 p-4 header-bg shadow-lg rounded-xl border-l-4 border-teal-600">
+            <h1 class="text-3xl font-bold text-gray-800">Patient Symptom Diary</h1>
+            <p class="text-teal-700 mt-1">Accurately log daily symptoms and metrics for your care provider.</p>
+        </header>
+
+        <!-- Dynamic Form & Custom Metric Management -->
+        <section class="bg-white p-6 rounded-xl shadow-lg mb-8">
+            <h2 class="text-xl font-semibold text-gray-700 mb-4 flex items-center">
+                <svg class="w-6 h-6 mr-2 text-teal-500" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"></path>
+                </svg>
+                Log New Symptom Entry
+            </h2>
+            <form id="symptomForm" class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                <input type="hidden" id="entryId">
+
+                <!-- Standard Health Fields -->
+                <div class="col-span-1">
+                    <label for="symptomName" class="block text-sm font-medium text-gray-700">Symptom Name</label>
+                    <input type="text" id="symptomName" placeholder="e.g., Headache, Joint Pain, Nausea" required class="mt-1 p-2 w-full border border-gray-300 rounded-lg shadow-sm focus-ring-color focus:ring-1 focus:border-teal-500">
+                </div>
+                <div class="col-span-1">
+                    <label for="date" class="block text-sm font-medium text-gray-700">Date</label>
+                    <input type="date" id="date" required class="mt-1 p-2 w-full border border-gray-300 rounded-lg shadow-sm focus-ring-color focus:ring-1 focus:border-teal-500">
+                </div>
+                <div class="col-span-1">
+                    <label for="time" class="block text-sm font-medium text-gray-700">Time</label>
+                    <input type="time" id="time" required class="mt-1 p-2 w-full border border-gray-300 rounded-lg shadow-sm focus-ring-color focus:ring-1 focus:border-teal-500">
+                </div>
+                
+                <div class="col-span-1 md:col-span-3">
+                    <label for="severity" class="block text-sm font-medium text-gray-700">Severity (1-10 Scale)</label>
+                    <select id="severity" required class="mt-1 p-2 w-full border border-gray-300 rounded-lg shadow-sm focus-ring-color focus:ring-1 focus:border-teal-500">
+                        <option value="">Select Severity</option>
+                        <option value="1">1 (Mild/Barely Noticeable)</option>
+                        <option value="5">5 (Moderate/Distracting)</option>
+                        <option value="10">10 (Severe/Debilitating)</option>
+                    </select>
+                </div>
+                
+                <div class="col-span-1 md:col-span-3">
+                    <label for="description" class="block text-sm font-medium text-gray-700">Detailed Description & Context</label>
+                    <textarea id="description" rows="3" class="mt-1 p-2 w-full border border-gray-300 rounded-lg shadow-sm focus-ring-color focus:ring-1 focus:border-teal-500" placeholder="e.g., Felt sharp pain after lunch. Tried Tylenol, which helped reduce it to 3/10."></textarea>
+                </div>
+
+                <!-- Dynamic Custom Fields Container (for inputs) -->
+                <div id="customFieldsContainer" class="col-span-1 md:col-span-3 grid grid-cols-1 md:grid-cols-3 gap-4">
+                    <!-- Dynamic fields will be rendered here by JS -->
+                </div>
+
+                <!-- Submit Button -->
+                <div class="md:col-span-3 pt-4 flex justify-end space-x-4">
+                    <button type="submit" class="w-full md:w-auto px-6 py-2 primary-color text-white font-medium rounded-lg shadow-md hover:bg-teal-600 transition duration-150 ease-in-out">
+                        Save Entry
+                    </button>
+                    <button type="button" id="resetFormButton" class="w-full md:w-auto px-6 py-2 border border-gray-300 text-gray-700 bg-white font-medium rounded-lg shadow-sm hover:bg-gray-50 transition duration-150 ease-in-out">
+                        Clear Form
+                    </button>
+                </div>
+            </form>
+
+            <!-- Custom Metric Management -->
+            <div class="mt-8 border-t pt-4">
+                <h3 class="text-lg font-medium text-gray-700 mb-3">Add Custom Health Metric</h3>
+                <div class="flex flex-col sm:flex-row space-y-3 sm:space-y-0 sm:space-x-4 mb-6">
+                    <input type="text" id="newMetricName" placeholder="Enter new metric name (e.g., Temp in °F, Duration in minutes)" class="p-2 flex-grow border border-gray-300 rounded-lg shadow-sm focus-ring-color focus:ring-1 focus:border-teal-500">
+                    
+                    <!-- Metric Type Dropdown -->
+                    <select id="newMetricType" class="p-2 border border-gray-300 rounded-lg shadow-sm focus-ring-color focus:ring-1 focus:border-teal-500 w-full sm:w-auto">
+                        <option value="number">Number (Quantity)</option>
+                        <option value="text">Text (Short Answer)</option>
+                        <option value="checkbox">Checkbox (Medication Taken)</option>
+                        <option value="dropdown">Dropdown (Activity Level)</option>
+                    </select>
+                    
+                    <button type="button" onclick="addCustomField()" class="px-4 py-2 primary-color text-white font-medium rounded-lg shadow-md hover:bg-teal-600 transition duration-150 ease-in-out">
+                        Add Metric
+                    </button>
+                </div>
+
+                <!-- List of existing custom fields for removal -->
+                <div id="fieldManagementList" class="flex flex-wrap gap-2">
+                    <!-- Custom fields will be shown as removable badges -->
+                </div>
+            </div>
+        </section>
+
+
+        <!-- Symptom History Table -->
+        <section class="bg-white p-6 rounded-xl shadow-lg">
+            <h2 class="text-xl font-semibold text-gray-700 mb-4">Symptom History</h2>
+            <div class="overflow-x-auto">
+                <table class="min-w-full divide-y divide-gray-200">
+                    <thead class="bg-teal-50" id="symptomTableHead">
+                        <!-- Table headers will be dynamically populated here -->
+                    </thead>
+                    <tbody class="bg-white divide-y divide-gray-200" id="symptomTableBody">
+                        <tr>
+                            <td class="px-3 py-4 whitespace-nowrap text-sm font-medium text-gray-900">24 Oct, 2025, 10:30 AM</td>
+                            <td class="px-3 py-4 whitespace-nowrap text-sm text-gray-500">Migraine</td>
+                            <td class="px-3 py-4 whitespace-nowrap text-sm font-semibold text-red-600">8</td>
+                            <td class="px-3 py-4 max-w-xs overflow-hidden text-sm text-gray-500">Started after looking at bright screen...</td>
+                            <td class="px-3 py-4 whitespace-nowrap text-sm text-gray-500">98.6</td>
+                            <td class="px-3 py-4 whitespace-nowrap text-right text-sm font-medium space-x-2">
+                                <button onclick="editEntry('mock1')" class="text-teal-600 hover:text-teal-900 transition duration-150">Edit</button>
+                                <button onclick="handleDeleteEntry('mock1')" class="text-red-600 hover:text-red-900 transition duration-150">Delete</button>
+                            </td>
+                        </tr>
+                         <tr>
+                            <td class="px-3 py-4 whitespace-nowrap text-sm font-medium text-gray-900">23 Oct, 2025, 08:00 PM</td>
+                            <td class="px-3 py-4 whitespace-nowrap text-sm text-gray-500">Fatigue</td>
+                            <td class="px-3 py-4 whitespace-nowrap text-sm font-semibold text-amber-600">4</td>
+                            <td class="px-3 py-4 max-w-xs overflow-hidden text-sm text-gray-500">Mild tiredness, likely due to low sleep...</td>
+                            <td class="px-3 py-4 whitespace-nowrap text-sm text-gray-500">98.1</td>
+                            <td class="px-3 py-4 whitespace-nowrap text-right text-sm font-medium space-x-2">
+                                <button onclick="editEntry('mock2')" class="text-teal-600 hover:text-teal-900 transition duration-150">Edit</button>
+                                <button onclick="handleDeleteEntry('mock2')" class="text-red-600 hover:text-red-900 transition duration-150">Delete</button>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+            <p id="noEntriesMessage" class="text-center text-gray-500 p-4 hidden">No entries logged yet. Start by logging one above!</p>
+        </section>
+    </div>
+
+    <!-- Custom Modal (for Confirmation/Alert) -->
+    <div id="customModal" class="custom-modal-overlay hidden">
+        <div class="custom-modal-content">
+            <h3 id="modalTitle" class="text-xl font-semibold text-gray-800 mb-4"></h3>
+            <p id="modalMessage" class="text-gray-600 mb-6"></p>
+            <div id="modalActions" class="flex justify-end space-x-3">
+                <!-- Buttons will be dynamically added here -->
+            </div>
+        </div>
+    </div>
+
+    <!-- JavaScript for Dynamic Rendering (Simplified/Mock Logic) -->
+    <script>
+        // MOCK DATA STRUCTURE
+        let customFields = [
+            { name: 'Temperature', type: 'number' },
+            { name: 'Medication Taken', type: 'checkbox' }
+        ];
+
+        function fieldNameToId(fieldName) {
+            return 'metric-' + fieldName.replace(/[^a-zA-Z0-9]/g, '-').toLowerCase();
+        }
+
+        function renderCustomFormFields() {
+            const container = document.getElementById('customFieldsContainer');
+            container.innerHTML = ''; 
+
+            customFields.forEach(field => {
+                const fieldId = fieldNameToId(field.name);
+                let inputElement;
+                let divClass = 'col-span-1';
+
+                if (field.type === 'textarea') {
+                    inputElement = `<textarea id="${fieldId}" name="${fieldId}" rows="2" class="mt-1 p-2 w-full border border-gray-300 rounded-lg shadow-sm focus-ring-color focus:ring-1 focus:border-teal-500"></textarea>`;
+                } else if (field.type === 'checkbox') {
+                    divClass = 'col-span-1 flex items-center pt-2'; 
+                    inputElement = `
+                        <input type="checkbox" id="${fieldId}" name="${fieldId}" class="h-4 w-4 text-teal-600 border-gray-300 rounded focus:ring-teal-500">
+                        <label for="${fieldId}" class="block text-sm font-medium text-gray-700 ml-2">${field.name}</label>
+                    `;
+                } else {
+                    const inputType = field.type === 'dropdown' ? 'text' : field.type;
+                    inputElement = `<input type="${inputType}" id="${fieldId}" name="${fieldId}" class="mt-1 p-2 w-full border border-gray-300 rounded-lg shadow-sm focus-ring-color focus:ring-1 focus:border-teal-500">`;
+                }
+
+                const div = document.createElement('div');
+                div.className = divClass;
+                
+                if (field.type === 'checkbox') {
+                    div.innerHTML = inputElement;
+                } else {
+                    div.innerHTML = `
+                        <label for="${fieldId}" class="block text-sm font-medium text-gray-700">${field.name}</label>
+                        ${inputElement}
+                    `;
+                }
+                container.appendChild(div);
+            });
+        }
+        
+        function renderFieldManagement() {
+            const container = document.getElementById('fieldManagementList');
+            container.innerHTML = '';
+
+            customFields.forEach(field => {
+                const fieldName = field.name;
+                const button = document.createElement('span');
+                button.className = 'flex items-center space-x-1 px-3 py-1 bg-teal-100 text-teal-700 text-sm font-medium rounded-full shadow-sm';
+                button.innerHTML = `
+                    <span>${fieldName} (${field.type})</span>
+                    <!-- Mock delete button -->
+                    <svg class="w-4 h-4 text-teal-500 cursor-pointer hover:text-red-600" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" onclick="alert('This would remove the metric: ${fieldName}')">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+                    </svg>
+                `;
+                container.appendChild(button);
+            });
+        }
+
+        function renderTableHeaders() {
+            const tableHead = document.getElementById('symptomTableHead');
+            const standardHeaders = ['Time Logged', 'Symptom', 'Severity', 'Description'];
+            const customHeaders = customFields.map(field => field.name);
+            const allHeaders = standardHeaders.concat(customHeaders).concat(['Actions']);
+
+            tableHead.innerHTML = `
+                <tr>
+                    ${allHeaders.map(header => `<th scope="col" class="px-3 py-3 text-left text-xs font-medium text-teal-700 uppercase tracking-wider">${header}</th>`).join('')}
+                </tr>
+            `;
+        }
+        
+        // MOCK functions to avoid JS errors in the design preview
+        function addCustomField() { alert("Metric added (mock)"); }
+        function editEntry(id) { alert(`Editing entry: ${id}`); }
+        function handleDeleteEntry(id) { alert(`Deleting entry: ${id}`); }
+        
+        // INITIALIZATION
+        window.onload = function() {
+            renderCustomFormFields();
+            renderFieldManagement();
+            renderTableHeaders();
+            
+            // Set today's date and current time for convenience
+            const today = new Date().toISOString().split('T')[0];
+            const now = new Date().toTimeString().split(' ')[0].substring(0, 5);
+            document.getElementById('date').value = today;
+            document.getElementById('time').value = now;
+        }
+
+        // MOCK Modal function (simplified)
+        function showModal({ title, message }) {
+            document.getElementById('modalTitle').textContent = title;
+            document.getElementById('modalMessage').textContent = message;
+            document.getElementById('modalActions').innerHTML = `<button onclick="document.getElementById('customModal').classList.add('hidden')" class="px-4 py-2 primary-color text-white font-medium rounded-lg shadow-md">OK</button>`;
+            document.getElementById('customModal').classList.remove('hidden');
+        }
+
+    </script>
+</body>
+</html>

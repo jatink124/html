@@ -1,0 +1,1189 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>StockTrader Pro - Advanced Investment Platform</title>
+    <meta name="description" content="Modern stock trading platform with live market data and advanced analysis tools" />
+    
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    
+    <!-- Font Awesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+      tailwind.config = {
+        theme: {
+          extend: {
+            colors: {
+              primary: {
+                DEFAULT: '#2563eb',
+                50: '#eff6ff',
+                100: '#dbeafe',
+                500: '#3b82f6',
+                600: '#2563eb',
+                700: '#1d4ed8',
+                800: '#1e40af',
+                900: '#1e3a8a',
+              },
+              secondary: {
+                DEFAULT: '#10b981',
+                50: '#ecfdf5',
+                100: '#d1fae5',
+                600: '#059669',
+              },
+              danger: {
+                DEFAULT: '#ef4444',
+                500: '#ef4444',
+                600: '#dc2626',
+              },
+              dark: {
+                DEFAULT: '#111827',
+                50: '#f9fafb',
+                100: '#f3f4f6',
+                500: '#6b7280',
+                600: '#4b5563',
+                700: '#374151',
+                800: '#1f2937',
+                900: '#111827',
+              }
+            },
+            fontFamily: {
+              sans: ['Inter', 'sans-serif'],
+            },
+          },
+        },
+      }
+    </script>
+    
+    <style>
+      /* Custom Styles */
+      .stock-card {
+        transition: transform 0.3s ease, box-shadow 0.3s ease;
+      }
+      .stock-card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+      }
+      .chart-container {
+        height: 300px;
+        width: 100%;
+      }
+      .price-up {
+        color: #10b981;
+      }
+      .price-down {
+        color: #ef4444;
+      }
+      .news-item {
+        transition: all 0.3s ease;
+      }
+      .news-item:hover {
+        transform: translateX(5px);
+      }
+      .tab-active {
+        border-bottom: 2px solid #2563eb;
+        color: #2563eb;
+      }
+      /* Hide scrollbar for Chrome, Safari and Opera */
+      .hide-scrollbar::-webkit-scrollbar {
+        display: none;
+      }
+      /* Hide scrollbar for IE, Edge and Firefox */
+      .hide-scrollbar {
+        -ms-overflow-style: none;  /* IE and Edge */
+        scrollbar-width: none;  /* Firefox */
+      }
+    </style>
+  </head>
+  
+  <body class="bg-gray-50 font-sans">
+    <!-- Header with Navigation -->
+    <header class="bg-white shadow-md sticky top-0 z-50">
+      <div class="container mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="flex justify-between items-center py-4">
+          <div class="flex items-center">
+            <a href="#" class="flex items-center">
+              <i class="fa-solid fa-chart-line text-primary text-2xl mr-2"></i>
+              <span class="font-bold text-xl text-dark-800">StockTrader Pro</span>
+            </a>
+          </div>
+          
+          <nav class="hidden md:flex space-x-8">
+            <a href="#dashboard" class="text-dark-600 hover:text-primary font-medium">Dashboard</a>
+            <a href="#markets" class="text-dark-600 hover:text-primary font-medium">Markets</a>
+            <a href="#watchlist" class="text-dark-600 hover:text-primary font-medium">Watchlist</a>
+            <a href="#portfolio" class="text-dark-600 hover:text-primary font-medium">Portfolio</a>
+            <a href="#news" class="text-dark-600 hover:text-primary font-medium">News</a>
+          </nav>
+          
+          <div class="flex items-center space-x-4">
+            <button class="text-dark-600 hover:text-primary relative">
+              <i class="fa-solid fa-bell text-xl"></i>
+              <span class="absolute top-0 right-0 inline-flex items-center justify-center px-2 py-1 text-xs font-bold leading-none text-white transform translate-x-1/2 -translate-y-1/2 bg-danger rounded-full">3</span>
+            </button>
+            <a href="#account" class="hidden md:flex items-center text-dark-600 hover:text-primary">
+              <i class="fa-solid fa-user text-xl mr-2"></i>
+              <span>Account</span>
+            </a>
+            <button class="md:hidden text-dark-600 hover:text-primary focus:outline-none">
+              <i class="fa-solid fa-bars text-xl"></i>
+            </button>
+          </div>
+        </div>
+      </div>
+      
+      <!-- Mobile Navigation (Hidden by default) -->
+      <div class="hidden md:hidden bg-white border-t" id="mobile-menu">
+        <div class="container mx-auto px-4 py-2">
+          <nav class="flex flex-col space-y-2">
+            <a href="#dashboard" class="py-2 text-dark-600 hover:text-primary font-medium">Dashboard</a>
+            <a href="#markets" class="py-2 text-dark-600 hover:text-primary font-medium">Markets</a>
+            <a href="#watchlist" class="py-2 text-dark-600 hover:text-primary font-medium">Watchlist</a>
+            <a href="#portfolio" class="py-2 text-dark-600 hover:text-primary font-medium">Portfolio</a>
+            <a href="#news" class="py-2 text-dark-600 hover:text-primary font-medium">News</a>
+            <a href="#account" class="py-2 text-dark-600 hover:text-primary font-medium">Account</a>
+          </nav>
+        </div>
+      </div>
+    </header>
+
+    <!-- Main Dashboard Section -->
+    <section id="dashboard" class="py-8">
+      <div class="container mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="flex flex-col md:flex-row justify-between items-start md:items-center mb-6">
+          <div>
+            <h1 class="text-2xl md:text-3xl font-bold text-dark-800">Market Dashboard</h1>
+            <p class="text-dark-500 mt-1">Live market data and insights</p>
+          </div>
+          
+          <div class="mt-4 md:mt-0 flex items-center">
+            <div class="relative mr-4">
+              <input type="text" placeholder="Search stocks..." class="pl-10 pr-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent">
+              <i class="fa-solid fa-search absolute left-3 top-1/2 transform -translate-y-1/2 text-dark-500"></i>
+            </div>
+            <div class="flex items-center text-sm">
+              <i class="fa-solid fa-clock mr-2 text-dark-500"></i>
+              <span class="text-dark-500">Last updated: <time id="update-time">9:45 AM EDT</time></span>
+            </div>
+          </div>
+        </div>
+        
+        <!-- Market Overview Cards -->
+        <div class="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-4 gap-4 mb-8">
+          <div class="bg-white p-4 rounded-lg shadow-md">
+            <div class="flex justify-between items-start">
+              <div>
+                <p class="text-dark-500 text-sm">S&P 500</p>
+                <h3 class="text-xl font-bold text-dark-800">4,587.64</h3>
+              </div>
+              <div class="flex flex-col items-end">
+                <span class="text-red-500 flex items-center text-sm">
+                  <i class="fa-solid fa-caret-down mr-1"></i>-0.35%
+                </span>
+                <span class="text-red-500 text-sm">-16.12</span>
+              </div>
+            </div>
+            <div class="mt-4 h-16">
+              <!-- Mini Chart Placeholder -->
+              <div class="w-full h-full bg-gradient-to-r from-red-50 to-red-100 rounded-md flex items-center justify-center">
+                <i class="fa-solid fa-chart-line text-red-400"></i>
+              </div>
+            </div>
+          </div>
+          
+          <div class="bg-white p-4 rounded-lg shadow-md">
+            <div class="flex justify-between items-start">
+              <div>
+                <p class="text-dark-500 text-sm">Dow Jones</p>
+                <h3 class="text-xl font-bold text-dark-800">38,455.30</h3>
+              </div>
+              <div class="flex flex-col items-end">
+                <span class="text-green-500 flex items-center text-sm">
+                  <i class="fa-solid fa-caret-up mr-1"></i>0.28%
+                </span>
+                <span class="text-green-500 text-sm">+107.63</span>
+              </div>
+            </div>
+            <div class="mt-4 h-16">
+              <!-- Mini Chart Placeholder -->
+              <div class="w-full h-full bg-gradient-to-r from-green-50 to-green-100 rounded-md flex items-center justify-center">
+                <i class="fa-solid fa-chart-line text-green-400"></i>
+              </div>
+            </div>
+          </div>
+          
+          <div class="bg-white p-4 rounded-lg shadow-md">
+            <div class="flex justify-between items-start">
+              <div>
+                <p class="text-dark-500 text-sm">NASDAQ</p>
+                <h3 class="text-xl font-bold text-dark-800">16,028.93</h3>
+              </div>
+              <div class="flex flex-col items-end">
+                <span class="text-red-500 flex items-center text-sm">
+                  <i class="fa-solid fa-caret-down mr-1"></i>-0.76%
+                </span>
+                <span class="text-red-500 text-sm">-122.95</span>
+              </div>
+            </div>
+            <div class="mt-4 h-16">
+              <!-- Mini Chart Placeholder -->
+              <div class="w-full h-full bg-gradient-to-r from-red-50 to-red-100 rounded-md flex items-center justify-center">
+                <i class="fa-solid fa-chart-line text-red-400"></i>
+              </div>
+            </div>
+          </div>
+          
+          <div class="bg-white p-4 rounded-lg shadow-md">
+            <div class="flex justify-between items-start">
+              <div>
+                <p class="text-dark-500 text-sm">Bitcoin (BTC)</p>
+                <h3 class="text-xl font-bold text-dark-800">$63,245.78</h3>
+              </div>
+              <div class="flex flex-col items-end">
+                <span class="text-green-500 flex items-center text-sm">
+                  <i class="fa-solid fa-caret-up mr-1"></i>2.15%
+                </span>
+                <span class="text-green-500 text-sm">+$1,330.45</span>
+              </div>
+            </div>
+            <div class="mt-4 h-16">
+              <!-- Mini Chart Placeholder -->
+              <div class="w-full h-full bg-gradient-to-r from-green-50 to-green-100 rounded-md flex items-center justify-center">
+                <i class="fa-solid fa-chart-line text-green-400"></i>
+              </div>
+            </div>
+          </div>
+        </div>
+        
+        <!-- Main Chart Section -->
+        <div class="bg-white p-6 rounded-lg shadow-md mb-8">
+          <div class="flex flex-col md:flex-row justify-between items-start md:items-center mb-6">
+            <div>
+              <h2 class="text-xl font-bold text-dark-800">AAPL Performance</h2>
+              <div class="flex items-center mt-1">
+                <span class="text-2xl font-bold mr-2">$182.63</span>
+                <span class="text-green-500 flex items-center">
+                  <i class="fa-solid fa-caret-up mr-1"></i>+1.25 (0.69%)
+                </span>
+              </div>
+            </div>
+            
+            <div class="mt-4 md:mt-0 flex flex-wrap gap-2">
+              <button class="px-3 py-1 text-sm bg-gray-100 hover:bg-gray-200 rounded-md">1D</button>
+              <button class="px-3 py-1 text-sm bg-gray-100 hover:bg-gray-200 rounded-md">1W</button>
+              <button class="px-3 py-1 text-sm bg-primary text-white rounded-md">1M</button>
+              <button class="px-3 py-1 text-sm bg-gray-100 hover:bg-gray-200 rounded-md">3M</button>
+              <button class="px-3 py-1 text-sm bg-gray-100 hover:bg-gray-200 rounded-md">1Y</button>
+              <button class="px-3 py-1 text-sm bg-gray-100 hover:bg-gray-200 rounded-md">5Y</button>
+              <button class="px-3 py-1 text-sm bg-gray-100 hover:bg-gray-200 rounded-md">ALL</button>
+            </div>
+          </div>
+          
+          <div class="chart-container">
+            <!-- Chart Placeholder - In a real app, you'd use a charting library like Chart.js -->
+            <div class="w-full h-full bg-gradient-to-b from-blue-50 to-white rounded-md border border-gray-200 flex items-center justify-center">
+              <div class="text-center">
+                <i class="fa-solid fa-chart-line text-primary text-4xl mb-2"></i>
+                <p class="text-dark-500">Interactive stock chart would appear here</p>
+                <p class="text-dark-400 text-sm">Powered by real-time market data</p>
+              </div>
+            </div>
+          </div>
+          
+          <div class="grid grid-cols-2 md:grid-cols-4 gap-4 mt-6">
+            <div>
+              <p class="text-dark-500 text-sm">Open</p>
+              <p class="font-semibold">$181.27</p>
+            </div>
+            <div>
+              <p class="text-dark-500 text-sm">High</p>
+              <p class="font-semibold">$183.92</p>
+            </div>
+            <div>
+              <p class="text-dark-500 text-sm">Low</p>
+              <p class="font-semibold">$180.45</p>
+            </div>
+            <div>
+              <p class="text-dark-500 text-sm">Volume</p>
+              <p class="font-semibold">32.5M</p>
+            </div>
+          </div>
+        </div>
+        
+        <!-- Stock Watchlist -->
+        <div id="watchlist" class="bg-white p-6 rounded-lg shadow-md mb-8">
+          <div class="flex justify-between items-center mb-6">
+            <h2 class="text-xl font-bold text-dark-800">Your Watchlist</h2>
+            <button class="text-primary hover:text-primary-600 flex items-center">
+              <i class="fa-solid fa-plus mr-1"></i> Add Stock
+            </button>
+          </div>
+          
+          <div class="overflow-x-auto">
+            <table class="min-w-full divide-y divide-gray-200">
+              <thead>
+                <tr>
+                  <th class="px-4 py-3 text-left text-xs font-medium text-dark-500 uppercase tracking-wider">Symbol</th>
+                  <th class="px-4 py-3 text-left text-xs font-medium text-dark-500 uppercase tracking-wider">Last Price</th>
+                  <th class="px-4 py-3 text-left text-xs font-medium text-dark-500 uppercase tracking-wider">Change</th>
+                  <th class="px-4 py-3 text-left text-xs font-medium text-dark-500 uppercase tracking-wider">% Change</th>
+                  <th class="px-4 py-3 text-left text-xs font-medium text-dark-500 uppercase tracking-wider">Volume</th>
+                  <th class="px-4 py-3 text-left text-xs font-medium text-dark-500 uppercase tracking-wider">Actions</th>
+                </tr>
+              </thead>
+              <tbody class="divide-y divide-gray-200">
+                <tr class="hover:bg-gray-50">
+                  <td class="px-4 py-4 whitespace-nowrap">
+                    <div class="flex items-center">
+                      <div class="w-8 h-8 bg-blue-100 text-blue-800 rounded-full flex items-center justify-center mr-2">
+                        <span class="text-xs font-medium">AAPL</span>
+                      </div>
+                      <div>
+                        <div class="font-medium text-dark-800">Apple Inc.</div>
+                      </div>
+                    </div>
+                  </td>
+                  <td class="px-4 py-4 whitespace-nowrap font-medium">$182.63</td>
+                  <td class="px-4 py-4 whitespace-nowrap">
+                    <span class="text-green-500">+1.25</span>
+                  </td>
+                  <td class="px-4 py-4 whitespace-nowrap">
+                    <span class="text-green-500">+0.69%</span>
+                  </td>
+                  <td class="px-4 py-4 whitespace-nowrap">32.5M</td>
+                  <td class="px-4 py-4 whitespace-nowrap text-sm">
+                    <button class="text-primary hover:text-primary-700 mr-3">Trade</button>
+                    <button class="text-dark-500 hover:text-dark-700">
+                      <i class="fa-solid fa-ellipsis-vertical"></i>
+                    </button>
+                  </td>
+                </tr>
+                
+                <tr class="hover:bg-gray-50">
+                  <td class="px-4 py-4 whitespace-nowrap">
+                    <div class="flex items-center">
+                      <div class="w-8 h-8 bg-green-100 text-green-800 rounded-full flex items-center justify-center mr-2">
+                        <span class="text-xs font-medium">MSFT</span>
+                      </div>
+                      <div>
+                        <div class="font-medium text-dark-800">Microsoft Corp.</div>
+                      </div>
+                    </div>
+                  </td>
+                  <td class="px-4 py-4 whitespace-nowrap font-medium">$417.88</td>
+                  <td class="px-4 py-4 whitespace-nowrap">
+                    <span class="text-red-500">-2.32</span>
+                  </td>
+                  <td class="px-4 py-4 whitespace-nowrap">
+                    <span class="text-red-500">-0.55%</span>
+                  </td>
+                  <td class="px-4 py-4 whitespace-nowrap">22.1M</td>
+                  <td class="px-4 py-4 whitespace-nowrap text-sm">
+                    <button class="text-primary hover:text-primary-700 mr-3">Trade</button>
+                    <button class="text-dark-500 hover:text-dark-700">
+                      <i class="fa-solid fa-ellipsis-vertical"></i>
+                    </button>
+                  </td>
+                </tr>
+                
+                <tr class="hover:bg-gray-50">
+                  <td class="px-4 py-4 whitespace-nowrap">
+                    <div class="flex items-center">
+                      <div class="w-8 h-8 bg-red-100 text-red-800 rounded-full flex items-center justify-center mr-2">
+                        <span class="text-xs font-medium">TSLA</span>
+                      </div>
+                      <div>
+                        <div class="font-medium text-dark-800">Tesla Inc.</div>
+                      </div>
+                    </div>
+                  </td>
+                  <td class="px-4 py-4 whitespace-nowrap font-medium">$177.94</td>
+                  <td class="px-4 py-4 whitespace-nowrap">
+                    <span class="text-green-500">+4.31</span>
+                  </td>
+                  <td class="px-4 py-4 whitespace-nowrap">
+                    <span class="text-green-500">+2.48%</span>
+                  </td>
+                  <td class="px-4 py-4 whitespace-nowrap">40.2M</td>
+                  <td class="px-4 py-4 whitespace-nowrap text-sm">
+                    <button class="text-primary hover:text-primary-700 mr-3">Trade</button>
+                    <button class="text-dark-500 hover:text-dark-700">
+                      <i class="fa-solid fa-ellipsis-vertical"></i>
+                    </button>
+                  </td>
+                </tr>
+                
+                <tr class="hover:bg-gray-50">
+                  <td class="px-4 py-4 whitespace-nowrap">
+                    <div class="flex items-center">
+                      <div class="w-8 h-8 bg-yellow-100 text-yellow-800 rounded-full flex items-center justify-center mr-2">
+                        <span class="text-xs font-medium">AMZN</span>
+                      </div>
+                      <div>
+                        <div class="font-medium text-dark-800">Amazon.com Inc.</div>
+                      </div>
+                    </div>
+                  </td>
+                  <td class="px-4 py-4 whitespace-nowrap font-medium">$178.12</td>
+                  <td class="px-4 py-4 whitespace-nowrap">
+                    <span class="text-red-500">-1.53</span>
+                  </td>
+                  <td class="px-4 py-4 whitespace-nowrap">
+                    <span class="text-red-500">-0.85%</span>
+                  </td>
+                  <td class="px-4 py-4 whitespace-nowrap">25.7M</td>
+                  <td class="px-4 py-4 whitespace-nowrap text-sm">
+                    <button class="text-primary hover:text-primary-700 mr-3">Trade</button>
+                    <button class="text-dark-500 hover:text-dark-700">
+                      <i class="fa-solid fa-ellipsis-vertical"></i>
+                    </button>
+                  </td>
+                </tr>
+                
+                <tr class="hover:bg-gray-50">
+                  <td class="px-4 py-4 whitespace-nowrap">
+                    <div class="flex items-center">
+                      <div class="w-8 h-8 bg-purple-100 text-purple-800 rounded-full flex items-center justify-center mr-2">
+                        <span class="text-xs font-medium">GOOGL</span>
+                      </div>
+                      <div>
+                        <div class="font-medium text-dark-800">Alphabet Inc.</div>
+                      </div>
+                    </div>
+                  </td>
+                  <td class="px-4 py-4 whitespace-nowrap font-medium">$159.13</td>
+                  <td class="px-4 py-4 whitespace-nowrap">
+                    <span class="text-green-500">+0.78</span>
+                  </td>
+                  <td class="px-4 py-4 whitespace-nowrap">
+                    <span class="text-green-500">+0.49%</span>
+                  </td>
+                  <td class="px-4 py-4 whitespace-nowrap">18.3M</td>
+                  <td class="px-4 py-4 whitespace-nowrap text-sm">
+                    <button class="text-primary hover:text-primary-700 mr-3">Trade</button>
+                    <button class="text-dark-500 hover:text-dark-700">
+                      <i class="fa-solid fa-ellipsis-vertical"></i>
+                    </button>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+        
+        <!-- Portfolio and News Section -->
+        <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+          <!-- Portfolio Section -->
+          <div id="portfolio" class="lg:col-span-1 bg-white p-6 rounded-lg shadow-md">
+            <div class="flex justify-between items-center mb-6">
+              <h2 class="text-xl font-bold text-dark-800">Your Portfolio</h2>
+              <div class="flex space-x-2">
+                <button class="text-primary hover:text-primary-600 text-sm">View All</button>
+              </div>
+            </div>
+            
+            <div class="mb-6">
+              <div class="flex justify-between items-center">
+                <span class="text-dark-500">Total Value</span>
+                <span class="font-bold text-dark-800">$87,451.28</span>
+              </div>
+              <div class="flex justify-between items-center mt-2">
+                <span class="text-dark-500">Today's Change</span>
+                <span class="text-green-500 flex items-center">
+                  <i class="fa-solid fa-caret-up mr-1"></i>+$452.36 (0.52%)
+                </span>
+              </div>
+            </div>
+            
+            <div class="h-40 mb-6">
+              <!-- Portfolio Chart Placeholder -->
+              <div class="w-full h-full bg-gradient-to-r from-blue-50 to-indigo-50 rounded-md flex items-center justify-center">
+                <div class="text-center">
+                  <i class="fa-solid fa-chart-pie text-primary text-2xl mb-2"></i>
+                  <p class="text-dark-500 text-sm">Portfolio allocation chart</p>
+                </div>
+              </div>
+            </div>
+            
+            <div class="space-y-4">
+              <div class="flex justify-between items-center p-3 bg-gray-50 rounded-md">
+                <div class="flex items-center">
+                  <div class="w-8 h-8 bg-blue-100 text-blue-800 rounded-full flex items-center justify-center mr-2">
+                    <span class="text-xs font-medium">AAPL</span>
+                  </div>
+                  <div>
+                    <div class="font-medium text-dark-800">Apple Inc.</div>
+                    <div class="text-dark-500 text-xs">12 shares</div>
+                  </div>
+                </div>
+                <div class="text-right">
+                  <div class="font-medium">$2,191.56</div>
+                  <div class="text-green-500 text-xs">+$15.00 (0.69%)</div>
+                </div>
+              </div>
+              
+              <div class="flex justify-between items-center p-3 bg-gray-50 rounded-md">
+                <div class="flex items-center">
+                  <div class="w-8 h-8 bg-green-100 text-green-800 rounded-full flex items-center justify-center mr-2">
+                    <span class="text-xs font-medium">MSFT</span>
+                  </div>
+                  <div>
+                    <div class="font-medium text-dark-800">Microsoft Corp.</div>
+                    <div class="text-dark-500 text-xs">8 shares</div>
+                  </div>
+                </div>
+                <div class="text-right">
+                  <div class="font-medium">$3,343.04</div>
+                  <div class="text-red-500 text-xs">-$18.56 (0.55%)</div>
+                </div>
+              </div>
+              
+              <div class="flex justify-between items-center p-3 bg-gray-50 rounded-md">
+                <div class="flex items-center">
+                  <div class="w-8 h-8 bg-purple-100 text-purple-800 rounded-full flex items-center justify-center mr-2">
+                    <span class="text-xs font-medium">GOOGL</span>
+                  </div>
+                  <div>
+                    <div class="font-medium text-dark-800">Alphabet Inc.</div>
+                    <div class="text-dark-500 text-xs">15 shares</div>
+                  </div>
+                </div>
+                <div class="text-right">
+                  <div class="font-medium">$2,386.95</div>
+                  <div class="text-green-500 text-xs">+$11.70 (0.49%)</div>
+                </div>
+              </div>
+            </div>
+            
+            <button class="w-full mt-6 py-2 bg-primary hover:bg-primary-600 text-white rounded-md transition duration-200">
+              Trade Now
+            </button>
+          </div>
+          
+          <!-- News Section -->
+          <div id="news" class="lg:col-span-2 bg-white p-6 rounded-lg shadow-md">
+            <div class="flex justify-between items-center mb-6">
+              <h2 class="text-xl font-bold text-dark-800">Market News</h2>
+              <div class="flex space-x-2">
+                <button class="text-primary hover:text-primary-600 text-sm">View All</button>
+              </div>
+            </div>
+            
+            <div class="space-y-6">
+              <article class="news-item flex gap-4 pb-4 border-b border-gray-100">
+                <img src="https://via.placeholder.com/100x100" alt="News thumbnail" class="w-24 h-24 object-cover rounded-md flex-shrink-0">
+                <div>
+                  <h3 class="font-semibold text-dark-800 mb-1">Fed signals rate cuts could begin in September amid cooling inflation</h3>
+                  <p class="text-dark-500 text-sm mb-2 line-clamp-2">Federal Reserve officials indicated they could start cutting interest rates as soon as September, with inflation showing signs of returning to their 2% target.</p>
+                  <div class="flex items-center text-xs text-dark-400">
+                    <span>Financial Times</span>
+                    <span class="mx-2">•</span>
+                    <span>2 hours ago</span>
+                  </div>
+                </div>
+              </article>
+              
+              <article class="news-item flex gap-4 pb-4 border-b border-gray-100">
+                <img src="https://via.placeholder.com/100x100" alt="News thumbnail" class="w-24 h-24 object-cover rounded-md flex-shrink-0">
+                <div>
+                  <h3 class="font-semibold text-dark-800 mb-1">Tesla surges on better-than-expected Q2 deliveries despite EV market slowdown</h3>
+                  <p class="text-dark-500 text-sm mb-2 line-clamp-2">Tesla shares jumped after the electric vehicle maker reported second-quarter deliveries that exceeded analyst expectations, defying broader industry trends.</p>
+                  <div class="flex items-center text-xs text-dark-400">
+                    <span>Bloomberg</span>
+                    <span class="mx-2">•</span>
+                    <span>5 hours ago</span>
+                  </div>
+                </div>
+              </article>
+              
+              <article class="news-item flex gap-4 pb-4 border-b border-gray-100">
+                <img src="https://via.placeholder.com/100x100" alt="News thumbnail" class="w-24 h-24 object-cover rounded-md flex-shrink-0">
+                <div>
+                  <h3 class="font-semibold text-dark-800 mb-1">Apple's AI plans could drive next growth phase, analysts say ahead of WWDC</h3>
+                  <p class="text-dark-500 text-sm mb-2 line-clamp-2">Wall Street analysts believe Apple's upcoming AI features could drive the next phase of growth for the tech giant, potentially boosting iPhone sales and services revenue.</p>
+                  <div class="flex items-center text-xs text-dark-400">
+                    <span>CNBC</span>
+                    <span class="mx-2">•</span>
+                    <span>7 hours ago</span>
+                  </div>
+                </div>
+              </article>
+              
+              <article class="news-item flex gap-4">
+                <img src="https://via.placeholder.com/100x100" alt="News thumbnail" class="w-24 h-24 object-cover rounded-md flex-shrink-0">
+                <div>
+                  <h3 class="font-semibold text-dark-800 mb-1">JPMorgan predicts S&P 500 could hit 5,200 by year-end as economic outlook improves</h3>
+                  <p class="text-dark-500 text-sm mb-2 line-clamp-2">JPMorgan strategists raised their S&P 500 year-end target to 5,200, citing improving economic data and expectations for Federal Reserve rate cuts in the second half.</p>
+                  <div class="flex items-center text-xs text-dark-400">
+                    <span>MarketWatch</span>
+                    <span class="mx-2">•</span>
+                    <span>9 hours ago</span>
+                  </div>
+                </div>
+              </article>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+    
+    <!-- Trading Tools Section -->
+    <section class="bg-gray-50 py-12">
+      <div class="container mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="text-center mb-12">
+          <h2 class="text-2xl md:text-3xl font-bold text-dark-800 mb-4">Advanced Trading Tools</h2>
+          <p class="max-w-2xl mx-auto text-dark-500">Professional-grade tools to help you make informed investment decisions</p>
+        </div>
+        
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+          <div class="bg-white p-6 rounded-lg shadow-md">
+            <div class="w-12 h-12 bg-primary-50 rounded-full flex items-center justify-center mb-4">
+              <i class="fa-solid fa-robot text-primary text-xl"></i>
+            </div>
+            <h3 class="text-xl font-bold text-dark-800 mb-2">AI-Powered Insights</h3>
+            <p class="text-dark-500 mb-4">Get personalized stock recommendations and market insights powered by advanced machine learning algorithms.</p>
+            <a href="#" class="text-primary hover:text-primary-600 inline-flex items-center">
+              Learn more <i class="fa-solid fa-arrow-right ml-2"></i>
+            </a>
+          </div>
+          
+          <div class="bg-white p-6 rounded-lg shadow-md">
+            <div class="w-12 h-12 bg-primary-50 rounded-full flex items-center justify-center mb-4">
+              <i class="fa-solid fa-chart-line text-primary text-xl"></i>
+            </div>
+            <h3 class="text-xl font-bold text-dark-800 mb-2">Technical Analysis</h3>
+            <p class="text-dark-500 mb-4">Access over 100 technical indicators and drawing tools to analyze price movements and identify trading opportunities.</p>
+            <a href="#" class="text-primary hover:text-primary-600 inline-flex items-center">
+              Learn more <i class="fa-solid fa-arrow-right ml-2"></i>
+            </a>
+          </div>
+          
+          <div class="bg-white p-6 rounded-lg shadow-md">
+            <div class="w-12 h-12 bg-primary-50 rounded-full flex items-center justify-center mb-4">
+              <i class="fa-solid fa-wallet text-primary text-xl"></i>
+            </div>
+            <h3 class="text-xl font-bold text-dark-800 mb-2">Portfolio Optimization</h3>
+            <p class="text-dark-500 mb-4">Optimize your investment portfolio based on your risk tolerance and financial goals with our advanced algorithms.</p>
+            <a href="#" class="text-primary hover:text-primary-600 inline-flex items-center">
+              Learn more <i class="fa-solid fa-arrow-right ml-2"></i>
+            </a>
+          </div>
+          
+          <div class="bg-white p-6 rounded-lg shadow-md">
+            <div class="w-12 h-12 bg-primary-50 rounded-full flex items-center justify-center mb-4">
+              <i class="fa-solid fa-bell text-primary text-xl"></i>
+            </div>
+            <h3 class="text-xl font-bold text-dark-800 mb-2">Price Alerts</h3>
+            <p class="text-dark-500 mb-4">Set custom price alerts and get notified instantly when stocks hit your target price or trigger technical indicators.</p>
+            <a href="#" class="text-primary hover:text-primary-600 inline-flex items-center">
+              Learn more <i class="fa-solid fa-arrow-right ml-2"></i>
+            </a>
+          </div>
+          
+          <div class="bg-white p-6 rounded-lg shadow-md">
+            <div class="w-12 h-12 bg-primary-50 rounded-full flex items-center justify-center mb-4">
+              <i class="fa-solid fa-newspaper text-primary text-xl"></i>
+            </div>
+            <h3 class="text-xl font-bold text-dark-800 mb-2">Sentiment Analysis</h3>
+            <p class="text-dark-500 mb-4">Track social media and news sentiment for stocks in your watchlist to gauge market perception and potential movements.</p>
+            <a href="#" class="text-primary hover:text-primary-600 inline-flex items-center">
+              Learn more <i class="fa-solid fa-arrow-right ml-2"></i>
+            </a>
+          </div>
+          
+          <div class="bg-white p-6 rounded-lg shadow-md">
+            <div class="w-12 h-12 bg-primary-50 rounded-full flex items-center justify-center mb-4">
+              <i class="fa-solid fa-gamepad text-primary text-xl"></i>
+            </div>
+            <h3 class="text-xl font-bold text-dark-800 mb-2">Trading Simulator</h3>
+            <p class="text-dark-500 mb-4">Practice trading strategies without risking real money with our realistic market simulator using historical data.</p>
+            <a href="#" class="text-primary hover:text-primary-600 inline-flex items-center">
+              Learn more <i class="fa-solid fa-arrow-right ml-2"></i>
+            </a>
+          </div>
+        </div>
+      </div>
+    </section>
+    
+    <!-- Trade Simulation Section -->
+    <section class="py-12 bg-white">
+      <div class="container mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="max-w-4xl mx-auto bg-gray-50 p-8 rounded-lg shadow-md">
+          <h2 class="text-2xl font-bold text-dark-800 mb-6">Trade Simulator</h2>
+          <p class="text-dark-500 mb-8">Practice trading without risking real money. Our simulator uses real market data to provide a realistic trading experience.</p>
+          
+          <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
+            <div>
+              <label for="simulator-stock" class="block text-dark-600 font-medium mb-2">Select Stock</label>
+              <select id="simulator-stock" class="w-full p-2 border border-gray-300 rounded-md">
+                <option value="AAPL">AAPL - Apple Inc.</option>
+                <option value="MSFT">MSFT - Microsoft Corp.</option>
+                <option value="GOOGL">GOOGL - Alphabet Inc.</option>
+                <option value="AMZN">AMZN - Amazon.com Inc.</option>
+                <option value="TSLA">TSLA - Tesla Inc.</option>
+              </select>
+            </div>
+            
+            <div>
+              <label for="simulator-shares" class="block text-dark-600 font-medium mb-2">Number of Shares</label>
+              <input type="number" id="simulator-shares" min="1" value="10" class="w-full p-2 border border-gray-300 rounded-md">
+            </div>
+            
+            <div>
+              <label for="simulator-action" class="block text-dark-600 font-medium mb-2">Action</label>
+              <div class="flex space-x-4">
+                <button class="flex-1 bg-green-500 hover:bg-green-600 text-white font-medium py-2 px-4 rounded-md">Buy</button>
+                <button class="flex-1 bg-red-500 hover:bg-red-600 text-white font-medium py-2 px-4 rounded-md">Sell</button>
+              </div>
+            </div>
+          </div>
+          
+          <div class="bg-white p-4 rounded-md border border-gray-200 mb-8">
+            <h3 class="font-medium text-dark-800 mb-2">Simulation Summary</h3>
+            <div class="grid grid-cols-2 gap-4 text-sm">
+              <div>
+                <p class="text-dark-500">Current Price:</p>
+                <p class="font-medium">$182.63</p>
+              </div>
+              <div>
+                <p class="text-dark-500">Total Cost:</p>
+                <p class="font-medium">$1,826.30</p>
+              </div>
+              <div>
+                <p class="text-dark-500">Simulated Cash:</p>
+                <p class="font-medium">$10,000.00</p>
+              </div>
+              <div>
+                <p class="text-dark-500">Remaining Cash:</p>
+                <p class="font-medium">$8,173.70</p>
+              </div>
+            </div>
+          </div>
+          
+          <div class="text-center">
+            <button class="bg-primary hover:bg-primary-600 text-white font-medium py-3 px-8 rounded-md transition duration-200">
+              Execute Simulated Trade
+            </button>
+            <p class="text-dark-400 text-sm mt-4">
+              This is a simulation. No real money will be used and no actual trades will be executed.
+            </p>
+          </div>
+        </div>
+      </div>
+    </section>
+    
+    <!-- Pricing Section -->
+    <section class="py-16 bg-gray-50">
+      <div class="container mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="text-center mb-12">
+          <h2 class="text-3xl font-bold text-dark-800 mb-4">Choose Your Plan</h2>
+          <p class="max-w-2xl mx-auto text-dark-500">Select the perfect trading plan for your investment needs</p>
+        </div>
+        
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-8 max-w-5xl mx-auto">
+          <div class="bg-white p-8 rounded-lg shadow-md">
+            <h3 class="text-xl font-bold text-dark-800 mb-2">Basic</h3>
+            <p class="text-dark-500 mb-6">Perfect for beginners</p>
+            <div class="flex items-end mb-6">
+              <span class="text-4xl font-bold text-dark-800">$0</span>
+              <span class="text-dark-500 ml-2">/month</span>
+            </div>
+            <ul class="space-y-3 mb-8">
+              <li class="flex items-center">
+                <i class="fa-solid fa-check text-green-500 mr-2"></i>
+                <span>Real-time market data</span>
+              </li>
+              <li class="flex items-center">
+                <i class="fa-solid fa-check text-green-500 mr-2"></i>
+                <span>Basic watchlist (up to 5 stocks)</span>
+              </li>
+              <li class="flex items-center">
+                <i class="fa-solid fa-check text-green-500 mr-2"></i>
+                <span>Limited news access</span>
+              </li>
+              <li class="flex items-center">
+                <i class="fa-solid fa-check text-green-500 mr-2"></i>
+                <span>Basic charting tools</span>
+              </li>
+              <li class="flex items-center text-dark-400">
+                <i class="fa-solid fa-xmark text-red-500 mr-2"></i>
+                <span>Advanced indicators</span>
+              </li>
+              <li class="flex items-center text-dark-400">
+                <i class="fa-solid fa-xmark text-red-500 mr-2"></i>
+                <span>Portfolio analysis</span>
+              </li>
+            </ul>
+            <button class="w-full py-2 border border-primary text-primary hover:bg-primary hover:text-white rounded-md transition duration-200">
+              Get Started
+            </button>
+          </div>
+          
+          <div class="bg-white p-8 rounded-lg shadow-md relative transform scale-105 border-2 border-primary">
+            <div class="absolute top-0 right-0 bg-primary text-white px-4 py-1 text-sm font-medium rounded-bl-lg rounded-tr-lg">
+              Most Popular
+            </div>
+            <h3 class="text-xl font-bold text-dark-800 mb-2">Premium</h3>
+            <p class="text-dark-500 mb-6">For active traders</p>
+            <div class="flex items-end mb-6">
+              <span class="text-4xl font-bold text-dark-800">$29</span>
+              <span class="text-dark-500 ml-2">/month</span>
+            </div>
+            <ul class="space-y-3 mb-8">
+              <li class="flex items-center">
+                <i class="fa-solid fa-check text-green-500 mr-2"></i>
+                <span>Real-time market data</span>
+              </li>
+              <li class="flex items-center">
+                <i class="fa-solid fa-check text-green-500 mr-2"></i>
+                <span>Unlimited watchlists</span>
+              </li>
+              <li class="flex items-center">
+                <i class="fa-solid fa-check text-green-500 mr-2"></i>
+                <span>Full news access</span>
+              </li>
+              <li class="flex items-center">
+                <i class="fa-solid fa-check text-green-500 mr-2"></i>
+                <span>Advanced charting tools</span>
+              </li>
+              <li class="flex items-center">
+                <i class="fa-solid fa-check text-green-500 mr-2"></i>
+                <span>50+ technical indicators</span>
+              </li>
+              <li class="flex items-center">
+                <i class="fa-solid fa-check text-green-500 mr-2"></i>
+                <span>Portfolio analysis</span>
+              </li>
+            </ul>
+            <button class="w-full py-2 bg-primary hover:bg-primary-600 text-white rounded-md transition duration-200">
+              Get Started
+            </button>
+          </div>
+          
+          <div class="bg-white p-8 rounded-lg shadow-md">
+            <h3 class="text-xl font-bold text-dark-800 mb-2">Professional</h3>
+            <p class="text-dark-500 mb-6">For serious investors</p>
+            <div class="flex items-end mb-6">
+              <span class="text-4xl font-bold text-dark-800">$79</span>
+              <span class="text-dark-500 ml-2">/month</span>
+            </div>
+            <ul class="space-y-3 mb-8">
+              <li class="flex items-center">
+                <i class="fa-solid fa-check text-green-500 mr-2"></i>
+                <span>All Premium features</span>
+              </li>
+              <li class="flex items-center">
+                <i class="fa-solid fa-check text-green-500 mr-2"></i>
+                <span>Level 2 market data</span>
+              </li>
+              <li class="flex items-center">
+                <i class="fa-solid fa-check text-green-500 mr-2"></i>
+                <span>AI-powered stock suggestions</span>
+              </li>
+              <li class="flex items-center">
+                <i class="fa-solid fa-check text-green-500 mr-2"></i>
+                <span>Custom alerts</span>
+              </li>
+              <li class="flex items-center">
+                <i class="fa-solid fa-check text-green-500 mr-2"></i>
+                <span>Institutional research reports</span>
+              </li>
+              <li class="flex items-center">
+                <i class="fa-solid fa-check text-green-500 mr-2"></i>
+                <span>Priority customer support</span>
+              </li>
+            </ul>
+            <button class="w-full py-2 border border-primary text-primary hover:bg-primary hover:text-white rounded-md transition duration-200">
+              Get Started
+            </button>
+          </div>
+        </div>
+      </div>
+    </section>
+    
+    <!-- App Download Section -->
+    <section class="py-16 bg-gradient-to-r from-primary-900 to-primary-700 text-white">
+      <div class="container mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="flex flex-col lg:flex-row items-center justify-between">
+          <div class="lg:w-1/2 mb-8 lg:mb-0">
+            <h2 class="text-3xl font-bold mb-4">Download Our Mobile App</h2>
+            <p class="text-white/80 mb-6 text-lg">Stay connected to the markets wherever you go. Trade, track, and analyze on the move with our powerful mobile app.</p>
+            
+            <div class="flex flex-col sm:flex-row space-y-4 sm:space-y-0 sm:space-x-4">
+              <a href="#" class="flex items-center justify-center bg-white text-dark-800 py-3 px-6 rounded-lg hover:bg-gray-100 transition duration-200">
+                <i class="fa-brands fa-apple text-2xl mr-3"></i>
+                <div>
+                  <div class="text-xs">Download on the</div>
+                  <div class="font-semibold">App Store</div>
+                </div>
+              </a>
+              
+              <a href="#" class="flex items-center justify-center bg-white text-dark-800 py-3 px-6 rounded-lg hover:bg-gray-100 transition duration-200">
+                <i class="fa-brands fa-google-play text-2xl mr-3"></i>
+                <div>
+                  <div class="text-xs">Get it on</div>
+                  <div class="font-semibold">Google Play</div>
+                </div>
+              </a>
+            </div>
+          </div>
+          
+          <div class="lg:w-2/5">
+            <div class="relative">
+              <div class="w-64 h-96 mx-auto bg-primary-800 rounded-3xl p-3 shadow-2xl">
+                <div class="w-full h-full bg-white rounded-2xl overflow-hidden">
+                  <!-- App Screenshot Placeholder -->
+                  <div class="w-full h-full bg-gradient-to-b from-primary-50 to-white p-4">
+                    <div class="flex justify-between mb-4">
+                      <div class="text-xs font-medium text-dark-800">StockTrader</div>
+                      <div class="text-xs text-dark-500">9:41 AM</div>
+                    </div>
+                    
+                    <div class="space-y-4">
+                      <div class="bg-white p-3 rounded-lg shadow-sm">
+                        <div class="flex justify-between items-center mb-2">
+                          <div class="font-medium text-dark-800">AAPL</div>
+                          <div class="text-green-500 text-sm">+0.69%</div>
+                        </div>
+                        <div class="h-10 bg-green-50 rounded-md"></div>
+                      </div>
+                      
+                      <div class="bg-white p-3 rounded-lg shadow-sm">
+                        <div class="flex justify-between items-center mb-2">
+                          <div class="font-medium text-dark-800">TSLA</div>
+                          <div class="text-green-500 text-sm">+2.48%</div>
+                        </div>
+                        <div class="h-10 bg-green-50 rounded-md"></div>
+                      </div>
+                      
+                      <div class="bg-white p-3 rounded-lg shadow-sm">
+                        <div class="flex justify-between items-center mb-2">
+                          <div class="font-medium text-dark-800">MSFT</div>
+                          <div class="text-red-500 text-sm">-0.55%</div>
+                        </div>
+                        <div class="h-10 bg-red-50 rounded-md"></div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+    
+    <!-- Testimonials Section -->
+    <section class="py-16 bg-white">
+      <div class="container mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="text-center mb-12">
+          <h2 class="text-3xl font-bold text-dark-800 mb-4">What Our Users Say</h2>
+          <p class="max-w-2xl mx-auto text-dark-500">Hear from our community of traders and investors</p>
+        </div>
+        
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-8 max-w-5xl mx-auto">
+          <div class="bg-gray-50 p-6 rounded-lg">
+            <div class="flex items-center mb-4">
+              <div class="text-yellow-400 flex">
+                <i class="fa-solid fa-star"></i>
+                <i class="fa-solid fa-star"></i>
+                <i class="fa-solid fa-star"></i>
+                <i class="fa-solid fa-star"></i>
+                <i class="fa-solid fa-star"></i>
+              </div>
+            </div>
+            <p class="text-dark-600 mb-6">"StockTrader Pro has transformed my investing. The real-time data and advanced analytics help me make informed decisions quickly. The mobile app is exceptional!"</p>
+            <div class="flex items-center">
+              <img src="https://randomuser.me/api/portraits/women/32.jpg" alt="User" class="w-12 h-12 rounded-full mr-4">
+              <div>
+                <h4 class="font-medium text-dark-800">Sarah Johnson</h4>
+                <p class="text-dark-500 text-sm">Day Trader</p>
+              </div>
+            </div>
+          </div>
+          
+          <div class="bg-gray-50 p-6 rounded-lg">
+            <div class="flex items-center mb-4">
+              <div class="text-yellow-400 flex">
+                <i class="fa-solid fa-star"></i>
+                <i class="fa-solid fa-star"></i>
+                <i class="fa-solid fa-star"></i>
+                <i class="fa-solid fa-star"></i>
+                <i class="fa-solid fa-star"></i>
+              </div>
+            </div>
+            <p class="text-dark-600 mb-6">"As a beginner, the simulation feature was a game-changer. I could practice trading without risking real money. The educational resources are outstanding too."</p>
+            <div class="flex items-center">
+              <img src="https://randomuser.me/api/portraits/men/45.jpg" alt="User" class="w-12 h-12 rounded-full mr-4">
+              <div>
+                <h4 class="font-medium text-dark-800">Michael Chen</h4>
+                <p class="text-dark-500 text-sm">Retail Investor</p>
+              </div>
+            </div>
+          </div>
+          
+          <div class="bg-gray-50 p-6 rounded-lg">
+            <div class="flex items-center mb-4">
+              <div class="text-yellow-400 flex">
+                <i class="fa-solid fa-star"></i>
+                <i class="fa-solid fa-star"></i>
+                <i class="fa-solid fa-star"></i>
+                <i class="fa-solid fa-star"></i>
+                <i class="fa-solid fa-star-half-stroke"></i>
+              </div>
+            </div>
+            <p class="text-dark-600 mb-6">"The portfolio analysis tools have helped me optimize my investments for better returns. The AI-powered insights are surprisingly accurate and useful."</p>
+            <div class="flex items-center">
+              <img src="https://randomuser.me/api/portraits/women/68.jpg" alt="User" class="w-12 h-12 rounded-full mr-4">
+              <div>
+                <h4 class="font-medium text-dark-800">Emily Rodriguez</h4>
+                <p class="text-dark-500 text-sm">Financial Advisor</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+    
+    <!-- Newsletter Section -->
+    <section class="py-12 bg-gray-50">
+      <div class="container mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="max-w-3xl mx-auto text-center">
+          <h2 class="text-2xl font-bold text-dark-800 mb-4">Stay Updated</h2>
+          <p class="text-dark-500 mb-8">Subscribe to our newsletter for market insights, trading tips, and platform updates</p>
+          
+          <form class="flex flex-col md:flex-row gap-4">
+            <input type="email" placeholder="Your email address" class="flex-1 px-4 py-3 rounded-md border border-gray-300 focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent">
+            <button type="submit" class="bg-primary hover:bg-primary-600 text-white font-medium py-3 px-6 rounded-md transition duration-200 whitespace-nowrap">
+              Subscribe
+            </button>
+          </form>
+          
+          <p class="mt-4 text-sm text-dark-400">
+            By subscribing, you agree to our Privacy Policy and consent to receive updates from our company.
+          </p>
+        </div>
+      </div>
+    </section>
+    
+    <!-- Footer -->
+    <footer class="bg-dark-900 text-white pt-16 pb-8">
+      <div class="container mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-12">
+          <div>
+            <div class="flex items-center mb-6">
+              <i class="fa-solid fa-chart-line text-primary text-2xl mr-2"></i>
+              <span class="font-bold text-xl">StockTrader Pro</span>
+            </div>
+            <p class="text-gray-400 mb-6">
+              Advanced stock trading platform with professional-grade tools for investors of all experience levels.
+            </p>
+            <div class="flex space-x-4">
+              <a href="#" class="text-gray-400 hover:text-primary">
+                <i class="fa-brands fa-twitter"></i>
+              </a>
+              <a href="#" class="text-gray-400 hover:text-primary">
+                <i class="fa-brands fa-facebook-f"></i>
+              </a>
+              <a href="#" class="text-gray-400 hover:text-primary">
+                <i class="fa-brands fa-linkedin-in"></i>
+              </a>
+              <a href="#" class="text-gray-400 hover:text-primary">
+                <i class="fa-brands fa-instagram"></i>
+              </a>
+            </div>
+          </div>
+          
+          <div>
+            <h3 class="text-lg font-bold mb-6">Quick Links</h3>
+            <ul class="space-y-4">
+              <li><a href="#" class="text-gray-400 hover:text-white">Home</a></li>
+              <li><a href="#" class="text-gray-400 hover:text-white">Markets</a></li>
+              <li><a href="#" class="text-gray-400 hover:text-white">Trading Tools</a></li>
+              <li><a href="#" class="text-gray-400 hover:text-white">Pricing</a></li>
+              <li><a href="#" class="text-gray-400 hover:text-white">About Us</a></li>
+            </ul>
+          </div>
+          
+          <div>
+            <h3 class="text-lg font-bold mb-6">Resources</h3>
+            <ul class="space-y-4">
+              <li><a href="#" class="text-gray-400 hover:text-white">Market News</a></li>
+              <li><a href="#" class="text-gray-400 hover:text-white">Learning Center</a></li>
+              <li><a href="#" class="text-gray-400 hover:text-white">Trading Guides</a></li>
+              <li><a href="#" class="text-gray-400 hover:text-white">API Documentation</a></li>
+              <li><a href="#" class="text-gray-400 hover:text-white">Help Center</a></li>
+            </ul>
+          </div>
+          
+          <div>
+            <h3 class="text-lg font-bold mb-6">Contact Us</h3>
+            <ul class="space-y-4">
+              <li class="flex items-start">
+                <i class="fa-solid fa-envelope mt-1 mr-3 text-primary"></i>
+                <span class="text-gray-400">support@stocktraderpro.com</span>
+              </li>
+              <li class="flex items-start">
+                <i class="fa-solid fa-phone mt-1 mr-3 text-primary"></i>
+                <span class="text-gray-400">+1 (555) 123-4567</span>
+              </li>
+              <li class="flex items-start">
+                <i class="fa-solid fa-location-dot mt-1 mr-3 text-primary"></i>
+                <span class="text-gray-400">123 Trading Street, Financial District, New York, NY 10004</span>
+              </li>
+            </ul>
+          </div>
+        </div>
+        
+        <hr class="border-dark-800 my-8">
+        
+        <div class="flex flex-col md:flex-row justify-between items-center">
+          <p class="text-gray-400 text-sm">
+            &copy; 2023 StockTrader Pro. All rights reserved.
+          </p>
+          <div class="flex space-x-4 mt-4 md:mt-0">
+            <a href="#" class="text-gray-400 hover:text-white text-sm">Privacy Policy</a>
+            <a href="#" class="text-gray-400 hover:text-white text-sm">Terms of Service</a>
+            <a href="#" class="text-gray-400 hover:text-white text-sm">Cookie Policy</a>
+          </div>
+        </div>
+      </div>
+    </footer>
+
+    <!-- JavaScript -->
+    <script>
+      // Mobile Menu Toggle
+      document.addEventListener('DOMContentLoaded', function() {
+        const mobileMenuButton = document.querySelector('.md\\:hidden');
+        const mobileMenu = document.getElementById('mobile-menu');
+        
+        mobileMenuButton.addEventListener('click', function() {
+          mobileMenu.classList.toggle('hidden');
+        });
+        
+        // Set real-time update clock
+        function updateClock() {
+          const now = new Date();
+          const hours = now.getHours();
+          const minutes = now.getMinutes();
+          const ampm = hours >= 12 ? 'PM' : 'AM';
+          const formattedHours = hours % 12 || 12;
+          const formattedMinutes = minutes < 10 ? '0' + minutes : minutes;
+          const timeString = `${formattedHours}:${formattedMinutes} ${ampm} EDT`;
+          
+          document.getElementById('update-time').textContent = timeString;
+        }
+        
+        // Update time initially and then every minute
+        updateClock();
+        setInterval(updateClock, 60000);
+      });
+    </script>
+  </body>
+</html>

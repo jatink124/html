@@ -1,0 +1,281 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Anti-Procrastination Productivity Engine</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<style>
+    body {
+        font-family: Arial, sans-serif;
+        background: #111827;
+        color: white;
+        margin: 0;
+        padding: 20px;
+    }
+    h1 { text-align: center; }
+    .container {
+        max-width: 800px;
+        margin: auto;
+        background: #1f2937;
+        padding: 20px;
+        border-radius: 12px;
+        box-shadow: 0 0 10px black;
+    }
+    button {
+        padding: 10px 20px;
+        border: none;
+        background: #3b82f6;
+        color: white;
+        border-radius: 6px;
+        cursor: pointer;
+        margin-top: 10px;
+    }
+    button:hover { background: #2563eb; }
+    input, select {
+        width: 100%;
+        padding: 10px;
+        border-radius: 6px;
+        border: none;
+        margin-bottom: 10px;
+    }
+    .box {
+        background: #111;
+        padding: 15px;
+        border-radius: 10px;
+        margin-top: 20px;
+    }
+    .meter {
+        width: 100%;
+        height: 20px;
+        background: #333;
+        border-radius: 10px;
+        overflow: hidden;
+        margin-top: 10px;
+    }
+    .meter-fill {
+        height: 100%;
+        width: 0%;
+        background: #10b981;
+        transition: width 0.5s;
+    }
+</style>
+</head>
+
+<body>
+
+<h1>Anti-Procrastination Productivity Engine</h1>
+
+<div class="container">
+
+    <!-- TASK SELECTOR -->
+    <div class="box">
+        <h2>Task Selector</h2>
+        <input type="text" id="taskInput" placeholder="Enter your task">
+        <button onclick="addTask()">Add Task</button>
+        <ul id="taskList"></ul>
+    </div>
+
+    <!-- DEEP WORK TIMER -->
+    <div class="box">
+        <h2>2-Hour Deep Work Timer</h2>
+        <div id="timerDisplay" style="font-size: 28px;">02:00:00</div>
+        <button onclick="startTimer()">Start Deep Work</button>
+        <button onclick="stopTimer()">Stop</button>
+        <p><strong>Strict Mode:</strong> Page switching is monitored. If you switch tabs, a warning is logged.</p>
+        <p id="strictWarning" style="color: red;"></p>
+    </div>
+
+    <!-- DAILY FOCUS SCORE -->
+    <div class="box">
+        <h2>Daily Focus Score (0–100)</h2>
+        <p id="focusScore">Score: 0</p>
+    </div>
+
+    <!-- CONFIDENCE METER -->
+    <div class="box">
+        <h2>Confidence Builder</h2>
+        <div class="meter">
+            <div class="meter-fill" id="confidenceFill"></div>
+        </div>
+        <p id="confidenceText">Confidence Level: 0%</p>
+    </div>
+
+    <!-- WEEKLY REVIEW -->
+    <div class="box">
+        <h2>Weekly Review</h2>
+        <p id="weeklyReview">No data yet.</p>
+    </div>
+
+    <!-- ANTI-LAZINESS AUTOMATIONS -->
+    <div class="box">
+        <h2>Anti-Laziness Automations</h2>
+        <p id="lazyMessage"></p>
+    </div>
+
+</div>
+
+<script>
+/* -----------------------------------------
+   DATA STORAGE
+-------------------------------------------*/
+let tasksCompleted = 0;
+let deepWorkMinutes = 0;
+let procrastinationMinutes = 0;
+let confidence = 0;
+let focusScore = 0;
+
+let workDays = JSON.parse(localStorage.getItem("workDays")) || [];
+let lastWorkDay = localStorage.getItem("lastWorkDay") || null;
+
+// Utility to save work logs
+function logWorkDay() {
+    const today = new Date().toDateString();
+    if (!workDays.includes(today)) {
+        workDays.push(today);
+        localStorage.setItem("workDays", JSON.stringify(workDays));
+        localStorage.setItem("lastWorkDay", today);
+    }
+}
+
+/* -----------------------------------------
+   TASK MANAGEMENT
+-------------------------------------------*/
+function addTask() {
+    const task = document.getElementById("taskInput").value;
+    if (!task.trim()) return;
+
+    const li = document.createElement("li");
+    li.innerHTML = task + 
+        ' <button onclick="completeTask(this)">Complete</button>';
+    document.getElementById("taskList").appendChild(li);
+
+    document.getElementById("taskInput").value = "";
+}
+
+function completeTask(btn) {
+    tasksCompleted++;
+    confidence += 5;
+    updateConfidenceBar();
+    updateFocusScore();
+
+    btn.parentElement.remove();
+}
+
+/* -----------------------------------------
+   DEEP WORK TIMER
+-------------------------------------------*/
+let timer;
+let seconds = 7200;
+
+function startTimer() {
+    if (timer) return;
+
+    logWorkDay();
+
+    document.title = "Deep Work Running";
+
+    timer = setInterval(() => {
+        seconds--;
+        deepWorkMinutes++;
+
+        let h = String(Math.floor(seconds / 3600)).padStart(2, "0");
+        let m = String(Math.floor((seconds % 3600) / 60)).padStart(2, "0");
+        let s = String(seconds % 60).padStart(2, "0");
+
+        document.getElementById("timerDisplay").textContent = `${h}:${m}:${s}`;
+
+        updateFocusScore();
+
+        if (seconds <= 0) stopTimer();
+    }, 1000);
+}
+
+function stopTimer() {
+    clearInterval(timer);
+    timer = null;
+    document.title = "Anti-Procrastination App";
+}
+
+/* -----------------------------------------
+   STRICT MODE (Detect Tab Switching)
+-------------------------------------------*/
+document.addEventListener("visibilitychange", () => {
+    if (document.hidden && timer) {
+        procrastinationMinutes += 1;
+        document.getElementById("strictWarning").textContent =
+            "Warning: You left the page during deep work. Logged as procrastination.";
+        updateFocusScore();
+    }
+});
+
+/* -----------------------------------------
+   FOCUS SCORE CALCULATION
+-------------------------------------------*/
+function updateFocusScore() {
+    focusScore = Math.min(
+        100,
+        tasksCompleted * 10 + deepWorkMinutes * 0.1 - procrastinationMinutes * 2
+    );
+
+    if (focusScore < 0) focusScore = 0;
+
+    document.getElementById("focusScore").textContent =
+        "Score: " + Math.floor(focusScore);
+}
+
+/* -----------------------------------------
+   CONFIDENCE METER
+-------------------------------------------*/
+function updateConfidenceBar() {
+    const fill = document.getElementById("confidenceFill");
+    const text = document.getElementById("confidenceText");
+
+    if (confidence > 100) confidence = 100;
+
+    fill.style.width = confidence + "%";
+    text.textContent = "Confidence Level: " + confidence + "%";
+}
+
+/* -----------------------------------------
+   WEEKLY REVIEW
+-------------------------------------------*/
+function updateWeeklyReview() {
+    const review = document.getElementById("weeklyReview");
+    review.textContent =
+        `This week you completed ${tasksCompleted} tasks, ` +
+        `${deepWorkMinutes} minutes deep work, ` +
+        `${procrastinationMinutes} minutes procrastination.`;
+}
+
+/* -----------------------------------------
+   ANTI-LAZINESS AUTOMATIONS
+-------------------------------------------*/
+function checkLaziness() {
+    const msg = document.getElementById("lazyMessage");
+    const today = new Date().toDateString();
+
+    if (!lastWorkDay) return;
+
+    const diff = Math.floor(
+        (new Date(today) - new Date(lastWorkDay)) / (1000 * 3600 * 24)
+    );
+
+    if (diff >= 2) {
+        msg.style.color = "red";
+        msg.textContent = 
+            "Strict Alert: You skipped work for 2 days. Reset discipline immediately.";
+    } else {
+        msg.style.color = "lightgreen";
+        msg.textContent =
+            "Good job. Keep working. Your discipline is improving.";
+    }
+}
+
+updateWeeklyReview();
+checkLaziness();
+
+</script>
+
+</body>
+</html>

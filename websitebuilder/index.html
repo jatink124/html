@@ -1,0 +1,655 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Learner Local Studio</title>
+    
+    <script src="https://unpkg.com/react@18/umd/react.development.js"></script>
+    <script src="https://unpkg.com/react-dom@18/umd/react-dom.development.js"></script>
+    <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+    
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700;900&family=Playfair+Display:wght@700&family=Inter:wght@400;600&display=swap" rel="stylesheet">
+
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+
+    <style>
+        /* --- GLOBAL & UTILS --- */
+        body { margin: 0; background: #f8fafc; font-family: 'Roboto', sans-serif; height: 100vh; overflow: hidden; }
+        
+        /* Custom Scrollbar */
+        .custom-scroll::-webkit-scrollbar { width: 6px; }
+        .custom-scroll::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 3px; }
+        .custom-scroll::-webkit-scrollbar-track { background: transparent; }
+
+        /* --- DASHBOARD STYLES --- */
+        .dash-container { max-width: 1200px; margin: 0 auto; padding: 2rem; overflow-y: auto; height: calc(100vh - 80px); }
+        .section-title { font-size: 1.25rem; font-weight: 800; color: #1e293b; margin-bottom: 1.5rem; display: flex; items-center; gap: 0.5rem; }
+        
+        .template-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(240px, 1fr)); gap: 1.5rem; margin-bottom: 3rem; }
+        
+        .card-hover { transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1); }
+        .card-hover:hover { transform: translateY(-4px); box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.1), 0 8px 10px -6px rgba(0, 0, 0, 0.1); }
+
+        /* --- BUILDER UI STYLES --- */
+        .nav-icon.active { background-color: #eff6ff; color: #2563eb; box-shadow: inset 2px 0 0 #2563eb; }
+        .nav-icon { color: #64748b; transition: all 0.2s; border-radius: 0; width: 100%; height: 50px; }
+        .nav-icon:hover:not(.active) { background-color: #f1f5f9; color: #2563eb; }
+
+        .draggable-item { cursor: grab; background: white; border: 1px solid #e2e8f0; border-radius: 6px; transition: all 0.2s; }
+        .draggable-item:hover { border-color: #93c5fd; box-shadow: 0 2px 5px rgba(0,0,0,0.05); z-index: 10; }
+        .draggable-item.dragging { opacity: 0.6; background: #eff6ff; border: 1px dashed #3b82f6; }
+
+        .canvas-section-wrapper { border: 2px solid transparent; transition: all 0.2s ease; position: relative; }
+        .canvas-section-wrapper.selected { border-color: #3b82f6; box-shadow: 0 0 0 4px rgba(59, 130, 246, 0.1); z-index: 10; border-radius: 4px; }
+        
+        [contenteditable]:focus { outline: none; }
+        .spinner { border: 3px solid #f3f3f3; border-top: 3px solid #3498db; border-radius: 50%; width: 20px; height: 20px; animation: spin 1s linear infinite; }
+        @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+    </style>
+</head>
+<body>
+
+    <div id="root"></div>
+
+    <script type="text/babel">
+        const { useState, useEffect, useRef } = React;
+
+        // ==========================================
+        // 1. TEMPLATE LIBRARY (The 5 Designs)
+        // ==========================================
+        const TEMPLATES = [
+            {
+                id: 't1',
+                name: 'Modern SaaS',
+                category: 'Landing Page',
+                icon: 'fa-rocket',
+                color: 'bg-blue-600',
+                html: `
+<nav class="navbar navbar-expand-lg navbar-light bg-white py-3 border-bottom">
+    <div class="container">
+        <a class="navbar-brand fw-bold text-primary" href="#">LaunchPad</a>
+        <div class="d-flex gap-2">
+            <a href="#" class="btn btn-outline-primary rounded-pill">Login</a>
+            <a href="#" class="btn btn-primary rounded-pill">Get Started</a>
+        </div>
+    </div>
+</nav>
+<header class="py-5 bg-light border-bottom">
+    <div class="container text-center py-5">
+        <h1 class="display-4 fw-bold mb-3 text-dark">Build Faster with LaunchPad</h1>
+        <p class="lead text-secondary mb-4 mx-auto" style="max-width: 600px;">The all-in-one platform to scale your business to new heights. Integrated, automated, and easy to use.</p>
+        <button class="btn btn-primary btn-lg px-5 rounded-pill shadow-sm">Start Free Trial</button>
+    </div>
+</header>
+<section class="py-5">
+    <div class="container">
+        <div class="row g-4 text-center">
+            <div class="col-md-4"><div class="p-4 border rounded-3 h-100 shadow-sm bg-white"><i class="fas fa-bolt text-warning fs-1 mb-3"></i><h3 class="h5 fw-bold">Lightning Fast</h3><p class="text-muted">Optimized for speed and performance.</p></div></div>
+            <div class="col-md-4"><div class="p-4 border rounded-3 h-100 shadow-sm bg-white"><i class="fas fa-lock text-success fs-1 mb-3"></i><h3 class="h5 fw-bold">Secure</h3><p class="text-muted">Enterprise grade security built-in.</p></div></div>
+            <div class="col-md-4"><div class="p-4 border rounded-3 h-100 shadow-sm bg-white"><i class="fas fa-chart-line text-info fs-1 mb-3"></i><h3 class="h5 fw-bold">Analytics</h3><p class="text-muted">Real-time insights for your growth.</p></div></div>
+        </div>
+    </div>
+</section>
+<footer class="bg-dark text-white py-4 mt-auto">
+    <div class="container text-center"><small>&copy; 2024 LaunchPad Inc.</small></div>
+</footer>`
+            },
+            {
+                id: 't2',
+                name: 'Creative Folio',
+                category: 'Personal',
+                icon: 'fa-user-astronaut',
+                color: 'bg-purple-600',
+                html: `
+<header class="vh-100 d-flex align-items-center bg-black text-white position-relative overflow-hidden">
+    <div class="container position-relative z-2">
+        <span class="text-uppercase tracking-widest text-warning small fw-bold">Portfolio</span>
+        <h1 class="display-1 fw-bold mb-4" style="font-family: 'Playfair Display', serif;">Alex <br/> Morgan.</h1>
+        <p class="lead text-white-50 mb-5 fs-4">Digital Designer & Art Director based in New York.</p>
+        <a href="#work" class="text-white text-decoration-none border-bottom border-warning pb-1">View Selected Works</a>
+    </div>
+</header>
+<section class="py-5 bg-white">
+    <div class="container py-5">
+        <h2 class="mb-5 fw-bold text-uppercase">Selected Projects</h2>
+        <div class="row g-5">
+            <div class="col-md-6">
+                <div class="bg-light ratio ratio-4x3 mb-3"></div>
+                <h3 class="h4 fw-bold">Neon Brand Identity</h3>
+                <p class="text-muted">Branding, UI/UX</p>
+            </div>
+            <div class="col-md-6">
+                <div class="bg-light ratio ratio-4x3 mb-3"></div>
+                <h3 class="h4 fw-bold">Future Tech</h3>
+                <p class="text-muted">Web Design, Development</p>
+            </div>
+        </div>
+    </div>
+</section>
+<footer class="py-5 bg-black text-white border-top border-secondary">
+    <div class="container d-flex justify-content-between">
+        <h4 class="fw-bold">Let's Talk.</h4>
+        <div><a href="#" class="text-white mx-2">Instagram</a><a href="#" class="text-white mx-2">Twitter</a></div>
+    </div>
+</footer>`
+            },
+            {
+                id: 't3',
+                name: 'Bistro Elite',
+                category: 'Restaurant',
+                icon: 'fa-utensils',
+                color: 'bg-orange-500',
+                html: `
+<nav class="navbar navbar-dark bg-dark py-3"><div class="container justify-content-center"><a class="navbar-brand text-uppercase tracking-widest" href="#">Bistro Elite</a></div></nav>
+<header class="py-5 bg-dark text-white text-center" style="background: linear-gradient(rgba(0,0,0,0.6), rgba(0,0,0,0.6)), url('https://source.unsplash.com/random/1920x1080?restaurant') center/cover;">
+    <div class="py-5">
+        <h1 class="display-3 fw-light mb-2" style="font-family: 'Playfair Display', serif;">Taste the Extraordinary</h1>
+        <p class="mb-4 text-white-50">Fine Dining in the Heart of the City</p>
+        <button class="btn btn-outline-light rounded-0 px-4 py-2 text-uppercase">Book a Table</button>
+    </div>
+</header>
+<section class="py-5 bg-light">
+    <div class="container py-5 text-center">
+        <span class="text-primary text-uppercase small fw-bold ls-2">Our Menu</span>
+        <h2 class="mb-5 mt-2" style="font-family: 'Playfair Display', serif;">Chef's Specials</h2>
+        <div class="row text-start justify-content-center">
+            <div class="col-lg-8">
+                <div class="d-flex justify-content-between border-bottom pb-2 mb-4">
+                    <div><h5 class="mb-0">Truffle Risotto</h5><small class="text-muted">Arborio rice, black truffle, parmesan</small></div>
+                    <span class="fw-bold">$32</span>
+                </div>
+                <div class="d-flex justify-content-between border-bottom pb-2 mb-4">
+                    <div><h5 class="mb-0">Pan Seared Scallops</h5><small class="text-muted">Cauliflower purée, caper raisin emulsion</small></div>
+                    <span class="fw-bold">$45</span>
+                </div>
+                <div class="d-flex justify-content-between border-bottom pb-2 mb-4">
+                    <div><h5 class="mb-0">Wagyu Beef Burger</h5><small class="text-muted">Brioche bun, aged cheddar, truffle fries</small></div>
+                    <span class="fw-bold">$28</span>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+<footer class="bg-dark text-white py-4 text-center"><p class="mb-0 small">123 Culinary Ave, Food City • (555) 123-4567</p></footer>`
+            },
+            {
+                id: 't4',
+                name: 'Tech Blog',
+                category: 'Content',
+                icon: 'fa-newspaper',
+                color: 'bg-emerald-600',
+                html: `
+<nav class="border-bottom py-3 mb-4"><div class="container d-flex justify-content-between align-items-center"><a href="#" class="fw-bold text-dark text-decoration-none fs-4">DevLog_</a><button class="btn btn-sm btn-dark">Subscribe</button></div></nav>
+<div class="container">
+    <div class="row g-5">
+        <div class="col-md-8">
+            <article class="mb-5 border-bottom pb-5">
+                <span class="badge bg-primary mb-2">Technology</span>
+                <h2 class="fw-bold display-6 mb-3">The Future of Web Development in 2025</h2>
+                <p class="text-muted mb-4">Web development is evolving rapidly. From AI-assisted coding to new frameworks, here is what you need to know to stay ahead of the curve...</p>
+                <a href="#" class="text-primary fw-bold text-decoration-none">Read More &rarr;</a>
+            </article>
+            <article class="mb-5 border-bottom pb-5">
+                <span class="badge bg-success mb-2">Coding</span>
+                <h2 class="fw-bold display-6 mb-3">Understanding React Server Components</h2>
+                <p class="text-muted mb-4">A deep dive into how server components are changing the way we build performant web applications...</p>
+                <a href="#" class="text-primary fw-bold text-decoration-none">Read More &rarr;</a>
+            </article>
+        </div>
+        <div class="col-md-4">
+            <div class="p-4 bg-light rounded-3 mb-4">
+                <h4 class="fw-bold mb-3">About</h4>
+                <p class="mb-0 text-muted">DevLog is a community of developers sharing knowledge and insights about the latest in tech.</p>
+            </div>
+        </div>
+    </div>
+</div>
+<footer class="py-5 text-center text-muted border-top mt-5"><p>&copy; 2024 DevLog. All rights reserved.</p></footer>`
+            },
+            {
+                id: 't5',
+                name: 'Agency X',
+                category: 'Corporate',
+                icon: 'fa-building',
+                color: 'bg-slate-700',
+                html: `
+<nav class="navbar navbar-expand-lg navbar-dark bg-dark"><div class="container"><a class="navbar-brand fw-bold" href="#">AGENCY X</a></div></nav>
+<header class="bg-dark text-white py-5"><div class="container py-5"><div class="row align-items-center"><div class="col-lg-6"><h1 class="display-4 fw-bold mb-4">Digital Solutions for Modern Business</h1><p class="lead text-white-50 mb-4">We help brands grow through strategic design and innovative technology.</p><button class="btn btn-primary btn-lg">Our Services</button></div><div class="col-lg-6"><div class="p-5 bg-secondary bg-opacity-25 rounded-3 mt-4 mt-lg-0 border border-secondary">Placeholder Illustration</div></div></div></div></header>
+<section class="py-5"><div class="container"><div class="row g-4"><div class="col-md-4"><h3 class="fw-bold mb-3">Strategy</h3><p class="text-muted">Data-driven insights to guide your digital transformation journey.</p></div><div class="col-md-4"><h3 class="fw-bold mb-3">Design</h3><p class="text-muted">User-centric interfaces that engage and convert.</p></div><div class="col-md-4"><h3 class="fw-bold mb-3">Development</h3><p class="text-muted">Robust and scalable code built on modern stacks.</p></div></div></div></section>
+<footer class="bg-black text-white py-5"><div class="container"><div class="row"><div class="col-md-6"><h4 class="fw-bold">AGENCY X</h4></div><div class="col-md-6 text-md-end"><p class="text-white-50">contact@agencyx.com</p></div></div></div></footer>`
+            }
+        ];
+
+        // ==========================================
+        // 2. HELPER FUNCTIONS
+        // ==========================================
+        
+        async function getFilesRecursively(dirHandle, path = '') {
+            const files = [];
+            for await (const entry of dirHandle.values()) {
+                const newPath = path ? `${path}\\${entry.name}` : entry.name;
+                if (entry.kind === 'file' && entry.name.endsWith('.html')) {
+                    files.push({ 
+                        handle: entry, 
+                        path: newPath,
+                        category: path || 'Root',
+                        name: entry.name.replace('.html', '')
+                    });
+                } else if (entry.kind === 'directory') {
+                    files.push(...await getFilesRecursively(entry, newPath));
+                }
+            }
+            return files;
+        }
+
+        const parseCodeToSections = (html) => {
+            const parser = new DOMParser();
+            const doc = parser.parseFromString(html, 'text/html');
+            const sections = [];
+            let idCounter = 0;
+
+            const add = (el, type, label) => {
+                if(el) sections.push({ 
+                    id: `sec-${idCounter++}`, 
+                    type, 
+                    label, 
+                    html: el.outerHTML, 
+                    visible: true 
+                });
+            };
+
+            doc.querySelectorAll('nav').forEach(el => add(el, 'Navbar', 'Navigation Bar'));
+            doc.querySelectorAll('header').forEach(el => add(el, 'Header', 'Header / Hero'));
+            doc.querySelectorAll('section').forEach((el, idx) => {
+                const heading = el.querySelector('h1, h2, h3, h4, h5, h6');
+                const label = heading ? heading.innerText.substring(0, 20) : `Section ${idx + 1}`;
+                add(el, 'Section', label);
+            });
+            doc.querySelectorAll('article').forEach((el, idx) => add(el, 'Article', `Article ${idx + 1}`));
+            doc.querySelectorAll('footer').forEach(el => add(el, 'Footer', 'Footer'));
+
+            if(sections.length === 0) add(doc.body, 'Raw', 'Full Page Content');
+            return sections;
+        };
+
+        // ==========================================
+        // 3. MAIN APP COMPONENT
+        // ==========================================
+        const App = () => {
+            const [view, setView] = useState('dashboard');
+            const [isLoading, setIsLoading] = useState(false);
+            
+            // File & content State
+            const [files, setFiles] = useState([]);
+            const [currentFile, setCurrentFile] = useState(null); // { name, handle (optional), path (optional) }
+            const [sections, setSections] = useState([]);
+            
+            // Builder UI State
+            const [activeTab, setActiveTab] = useState('page');
+            const [accordionOpen, setAccordionOpen] = useState('sections'); 
+            const [hoveredSection, setHoveredSection] = useState(null);
+            
+            const dragItem = useRef(null);
+            const dragOverItem = useRef(null);
+
+            // --- DASHBOARD ACTIONS ---
+
+            const handleOpenFolder = async () => {
+                try {
+                    setIsLoading(true);
+                    const dirHandle = await window.showDirectoryPicker();
+                    const fileList = await getFilesRecursively(dirHandle);
+                    setFiles(fileList);
+                    setIsLoading(false);
+                } catch (err) {
+                    console.error(err);
+                    setIsLoading(false);
+                }
+            };
+
+            const handleLoadLocalFile = async (fileObj) => {
+                setIsLoading(true);
+                const file = await fileObj.handle.getFile();
+                const text = await file.text();
+                const parsedSections = parseCodeToSections(text);
+                setSections(parsedSections);
+                setCurrentFile(fileObj);
+                setView('builder');
+                setIsLoading(false);
+            };
+
+            const handleLoadTemplate = (template) => {
+                setIsLoading(true);
+                const parsedSections = parseCodeToSections(template.html);
+                setSections(parsedSections);
+                // Create a "virtual" file object. Handle is null, meaning it hasn't been saved to disk yet.
+                setCurrentFile({
+                    name: `New ${template.name}`,
+                    handle: null,
+                    path: 'Unsaved Draft',
+                    isTemplate: true
+                });
+                setView('builder');
+                setIsLoading(false);
+            };
+
+            // --- SAVE ACTION (KEY LOGIC) ---
+
+            const handleSave = async () => {
+                if(!currentFile) return;
+
+                // Reconstruct HTML
+                const newHtml = `<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>${currentFile.name}</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700&display=swap" rel="stylesheet">
+</head>
+<body>
+    ${sections.filter(s => s.visible).map(s => s.html).join('\n\n    ')}
+    
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"><\/script>
+</body>
+</html>`;
+
+                try {
+                    let fileHandle = currentFile.handle;
+
+                    // If it's a new template (no handle), ask user where to save
+                    if (!fileHandle) {
+                        const opts = {
+                            suggestedName: `${currentFile.name.replace(/\s+/g, '-').toLowerCase()}.html`,
+                            types: [{
+                                description: 'HTML File',
+                                accept: { 'text/html': ['.html', '.htm'] },
+                            }],
+                        };
+                        fileHandle = await window.showSaveFilePicker(opts);
+                        // Update current file so next save is instant
+                        setCurrentFile(prev => ({
+                            ...prev,
+                            handle: fileHandle,
+                            name: fileHandle.name,
+                            path: fileHandle.name,
+                            isTemplate: false
+                        }));
+                    }
+
+                    // Write to file
+                    const writable = await fileHandle.createWritable();
+                    await writable.write(newHtml);
+                    await writable.close();
+                    alert("Saved successfully!");
+                } catch(err) {
+                    if (err.name !== 'AbortError') {
+                        alert("Error saving: " + err.message);
+                    }
+                }
+            };
+
+            // --- EDITING ACTIONS ---
+
+            const updateSectionHtml = (id, newHtml) => {
+                setSections(prev => prev.map(s => s.id === id ? { ...s, html: newHtml } : s));
+            };
+
+            const toggleSectionVisibility = (id) => {
+                setSections(prev => prev.map(s => s.id === id ? { ...s, visible: !s.visible } : s));
+            };
+
+            // --- DRAG AND DROP ---
+            
+            const handleSort = () => {
+                let _sections = [...sections];
+                const draggedItemContent = _sections.splice(dragItem.current, 1)[0];
+                _sections.splice(dragOverItem.current, 0, draggedItemContent);
+                dragItem.current = null;
+                dragOverItem.current = null;
+                setSections(_sections);
+            };
+
+            const scrollToSection = (id) => {
+                const el = document.getElementById(`preview-${id}`);
+                if(el) el.scrollIntoView({ behavior: 'smooth', block: 'center' });
+            };
+
+            // --- COMPONENTS ---
+            
+            const NavIcon = ({ icon, tabName, tooltip }) => (
+                <button 
+                    onClick={() => setActiveTab(tabName)}
+                    title={tooltip}
+                    className={`nav-icon flex flex-col items-center justify-center ${activeTab === tabName ? 'active' : ''}`}
+                >
+                    <i className={`fas ${icon} text-lg mb-1`}></i>
+                    <span className="text-[9px] uppercase font-bold tracking-wide">{tabName}</span>
+                </button>
+            );
+
+            // =========================================================================
+            // VIEW 1: DASHBOARD
+            // =========================================================================
+            if (view === 'dashboard') {
+                return (
+                    <div className="min-h-screen bg-slate-50">
+                        {/* Header */}
+                        <div className="bg-white border-b px-8 py-4 flex justify-between items-center shadow-sm sticky top-0 z-50">
+                            <div className="flex items-center gap-3">
+                                <div className="w-10 h-10 bg-blue-600 rounded-lg flex items-center justify-center text-white text-xl"><i className="fas fa-cubes"></i></div>
+                                <div>
+                                    <h1 className="text-xl font-bold text-gray-800 leading-tight">Learner Studio</h1>
+                                    <div className="text-xs text-gray-400 font-medium">Local HTML Builder</div>
+                                </div>
+                            </div>
+                            <button onClick={handleOpenFolder} className="bg-gray-900 hover:bg-black text-white px-6 py-2.5 rounded-full font-bold shadow-lg folder-btn flex items-center gap-2 transition">
+                                {isLoading ? <div className="spinner"></div> : <i className="fas fa-folder-open"></i>}
+                                {files.length > 0 ? 'Change Folder' : 'Open Local Folder'}
+                            </button>
+                        </div>
+
+                        <div className="dash-container">
+                            
+                            {/* SECTION 1: TEMPLATES */}
+                            <div className="section-title"><i className="fas fa-magic text-blue-500"></i> Start with a Template</div>
+                            <div className="template-grid">
+                                {TEMPLATES.map(t => (
+                                    <div key={t.id} onClick={() => handleLoadTemplate(t)} className="bg-white rounded-xl border border-gray-200 overflow-hidden cursor-pointer card-hover h-full flex flex-col">
+                                        <div className={`h-32 ${t.color} flex items-center justify-center text-white relative overflow-hidden`}>
+                                            <i className={`fas ${t.icon} text-6xl opacity-20 absolute -bottom-4 -right-4 transform rotate-12`}></i>
+                                            <i className={`fas ${t.icon} text-4xl relative z-10`}></i>
+                                        </div>
+                                        <div className="p-5 flex-1 flex flex-col">
+                                            <div className="text-xs font-bold text-blue-600 uppercase tracking-wide mb-1">{t.category}</div>
+                                            <h3 className="font-bold text-gray-800 text-lg mb-2">{t.name}</h3>
+                                            <div className="mt-auto pt-3 border-t border-gray-50 flex items-center text-gray-400 text-xs font-medium gap-2">
+                                                <i className="fas fa-plus-circle"></i> Create New
+                                            </div>
+                                        </div>
+                                    </div>
+                                ))}
+                            </div>
+
+                            {/* SECTION 2: LOCAL FILES */}
+                            <div className="section-title"><i className="fas fa-folder text-yellow-500"></i> Local Files</div>
+                            
+                            {files.length === 0 ? (
+                                <div className="bg-white border-2 border-dashed border-gray-200 rounded-xl p-10 text-center">
+                                    <div className="text-gray-300 text-5xl mb-3"><i className="fas fa-folder-open"></i></div>
+                                    <h3 className="text-lg font-bold text-gray-500">No folder opened</h3>
+                                    <p className="text-gray-400 text-sm mb-4">Open a local folder to see your HTML files here.</p>
+                                    <button onClick={handleOpenFolder} className="text-blue-600 font-bold hover:underline">Browse Folder</button>
+                                </div>
+                            ) : (
+                                <div className="template-grid">
+                                    {files.map((file, idx) => (
+                                        <div key={idx} onClick={() => handleLoadLocalFile(file)} className="bg-white rounded-xl border border-gray-200 p-5 card-hover cursor-pointer flex flex-col">
+                                            <div className="flex items-center gap-3 mb-4">
+                                                <div className="w-10 h-10 rounded-lg bg-gray-100 text-gray-600 flex items-center justify-center text-xl"><i className="fas fa-file-code"></i></div>
+                                                <div className="overflow-hidden">
+                                                    <div className="text-xs font-bold text-gray-400 uppercase tracking-wide">{file.category}</div>
+                                                    <div className="font-bold text-gray-800 truncate w-full" title={file.name}>{file.name}</div>
+                                                </div>
+                                            </div>
+                                            <div className="mt-auto pt-4 border-t border-gray-50 text-blue-600 font-bold text-sm flex items-center gap-2">
+                                                <i className="fas fa-pen"></i> Edit File
+                                            </div>
+                                        </div>
+                                    ))}
+                                </div>
+                            )}
+                        </div>
+                    </div>
+                );
+            }
+
+            // =========================================================================
+            // VIEW 2: BUILDER STUDIO
+            // =========================================================================
+            return (
+                <div className="flex h-screen bg-white">
+                    
+                    {/* LEFT SIDEBAR - ICONS */}
+                    <div className="w-16 border-r bg-white flex flex-col items-center py-4 gap-2 shadow-sm z-30">
+                        <button onClick={() => setView('dashboard')} className="w-10 h-10 rounded-lg flex items-center justify-center text-gray-400 hover:text-gray-800 hover:bg-gray-100 mb-4 transition">
+                            <i className="fas fa-arrow-left"></i>
+                        </button>
+                        <NavIcon icon="fa-layer-group" tabName="page" tooltip="Structure" />
+                        <NavIcon icon="fa-palette" tabName="style" tooltip="Styles" />
+                        <NavIcon icon="fa-cog" tabName="settings" tooltip="Settings" />
+                    </div>
+
+                    {/* LEFT SIDEBAR - PANEL */}
+                    <div className="w-80 bg-gray-50 border-r flex flex-col shadow-inner z-20 transition-all duration-300">
+                        <div className="h-14 border-b bg-white flex items-center px-4 font-bold text-gray-700 uppercase tracking-wide text-xs">
+                            {activeTab === 'page' ? 'Page Structure' : `${activeTab} Options`}
+                        </div>
+
+                        <div className="flex-1 overflow-y-auto custom-scroll">
+                            {activeTab === 'page' && (
+                                <div>
+                                    {/* INFO BOX */}
+                                    <div className="p-4 bg-white border-b">
+                                        <div className="text-xs font-bold text-gray-400 uppercase mb-1">Editing</div>
+                                        <div className="font-bold text-gray-800 truncate mb-2">{currentFile.name}</div>
+                                        {currentFile.handle ? (
+                                            <div className="inline-flex items-center gap-1 px-2 py-1 bg-green-50 text-green-700 text-[10px] font-bold rounded border border-green-200">
+                                                <i className="fas fa-hdd"></i> Local File
+                                            </div>
+                                        ) : (
+                                            <div className="inline-flex items-center gap-1 px-2 py-1 bg-amber-50 text-amber-700 text-[10px] font-bold rounded border border-amber-200">
+                                                <i className="fas fa-star"></i> New Draft
+                                            </div>
+                                        )}
+                                    </div>
+
+                                    {/* DRAGGABLE LIST */}
+                                    <div className="p-3 space-y-2">
+                                        <div className="flex justify-between items-center px-1 mb-2">
+                                            <span className="text-xs font-bold text-gray-500 uppercase">Sections</span>
+                                            <span className="text-[10px] bg-gray-200 px-2 rounded-full text-gray-600">{sections.length}</span>
+                                        </div>
+                                        
+                                        {sections.map((section, idx) => (
+                                            <div 
+                                                key={section.id} 
+                                                draggable
+                                                onDragStart={(e) => { dragItem.current = idx; e.target.classList.add('dragging'); }}
+                                                onDragEnter={(e) => dragOverItem.current = idx}
+                                                onDragEnd={(e) => { e.target.classList.remove('dragging'); handleSort(); }}
+                                                onDragOver={(e) => e.preventDefault()}
+                                                onMouseEnter={() => { setHoveredSection(section.id); scrollToSection(section.id); }}
+                                                onMouseLeave={() => setHoveredSection(null)}
+                                                className="draggable-item p-3 flex items-center gap-3 bg-white hover:bg-gray-50"
+                                            >
+                                                <div className="text-gray-300 cursor-grab active:cursor-grabbing hover:text-gray-500"><i className="fas fa-grip-vertical text-xs"></i></div>
+                                                <div className="flex-1 overflow-hidden">
+                                                    <div className="text-xs font-bold text-gray-700 truncate">{section.label}</div>
+                                                    <div className="text-[10px] text-gray-400 uppercase">{section.type}</div>
+                                                </div>
+                                                <button onClick={() => toggleSectionVisibility(section.id)} className={`text-sm w-6 hover:scale-110 transition ${section.visible ? 'text-blue-500' : 'text-gray-300'}`}>
+                                                    <i className={`fas ${section.visible ? 'fa-eye' : 'fa-eye-slash'}`}></i>
+                                                </button>
+                                            </div>
+                                        ))}
+                                    </div>
+                                </div>
+                            )}
+
+                            {activeTab !== 'page' && (
+                                <div className="p-8 text-center text-gray-400">
+                                    <i className="fas fa-tools text-3xl mb-3 opacity-30"></i>
+                                    <p className="text-xs">Advanced settings coming soon.</p>
+                                </div>
+                            )}
+                        </div>
+                    </div>
+
+                    {/* MAIN CANVAS */}
+                    <div className="flex-1 relative bg-gray-200 h-full flex flex-col">
+                        
+                        {/* TOOLBAR */}
+                        <div className="h-14 bg-white border-b flex items-center justify-between px-6 shadow-sm z-10 shrink-0">
+                            <div className="flex items-center gap-4 text-gray-400">
+                                <i className="fas fa-desktop text-blue-600 cursor-pointer"></i>
+                                <i className="fas fa-tablet-alt hover:text-gray-600 cursor-pointer transition"></i>
+                                <i className="fas fa-mobile-alt hover:text-gray-600 cursor-pointer transition"></i>
+                            </div>
+
+                            <button onClick={handleSave} className="bg-green-600 hover:bg-green-700 text-white px-5 py-2 rounded-lg text-xs font-bold transition shadow-sm flex items-center gap-2">
+                                <i className="fas fa-save"></i> 
+                                {currentFile.handle ? 'Save Changes' : 'Save as File'}
+                            </button>
+                        </div>
+
+                        {/* PREVIEW FRAME */}
+                        <div className="flex-1 overflow-y-auto p-8 custom-scroll scroll-smooth bg-gray-100">
+                            <div className="max-w-6xl mx-auto bg-white shadow-xl min-h-[1000px] relative">
+                                {sections.map(section => {
+                                    if(!section.visible) return null;
+                                    const isHovered = hoveredSection === section.id;
+
+                                    return (
+                                        <div 
+                                            key={section.id} 
+                                            id={`preview-${section.id}`}
+                                            className={`canvas-section-wrapper ${isHovered ? 'selected' : ''}`}
+                                            onMouseEnter={() => setHoveredSection(section.id)}
+                                            onMouseLeave={() => setHoveredSection(null)}
+                                        >
+                                            <div 
+                                                dangerouslySetInnerHTML={{ __html: section.html }}
+                                                contentEditable={true}
+                                                suppressContentEditableWarning={true}
+                                                onBlur={(e) => updateSectionHtml(section.id, e.target.innerHTML)}
+                                                className="outline-none"
+                                            />
+                                            
+                                            {isHovered && (
+                                                <div className="absolute top-0 right-0 bg-blue-600 text-white text-[10px] px-2 py-1 font-bold rounded-bl uppercase z-50 pointer-events-none shadow-md">
+                                                    {section.label}
+                                                </div>
+                                            )}
+                                        </div>
+                                    );
+                                })}
+                            </div>
+                            <div className="h-20"></div>
+                        </div>
+                    </div>
+                </div>
+            );
+        };
+
+        const root = ReactDOM.createRoot(document.getElementById('root'));
+        root.render(<App />);
+    </script>
+</body>
+</html>

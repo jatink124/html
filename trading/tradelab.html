@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>TradeLab — Rule Based Trade Analyzer</title>
+<script src="https://cdn.tailwindcss.com"></script>
+<script src="https://cdn.jsdelivr.net/npm/papaparse@5.4.1/papaparse.min.js"></script>
+</head>
+
+<body class="bg-slate-900 text-slate-100 p-6">
+
+<h1 class="text-2xl font-bold mb-4">TradeLab — Post Trade Analysis</h1>
+
+<input type="file" id="csvFile" accept=".csv"
+ class="mb-6 file:bg-blue-600 file:text-white file:px-4 file:py-2"/>
+
+<div class="grid grid-cols-2 md:grid-cols-4 gap-4 mb-6">
+  <input id="maxTrades" type="number" placeholder="Max trades/day"
+   class="bg-slate-800 p-2 rounded"/>
+  <input id="maxQty" type="number" placeholder="Max quantity"
+   class="bg-slate-800 p-2 rounded"/>
+  <input id="minProfit" type="number" placeholder="Min profit per trade"
+   class="bg-slate-800 p-2 rounded"/>
+  <button onclick="applyRules()"
+   class="bg-green-600 rounded px-4">Apply Rules</button>
+</div>
+
+<div id="summary" class="mb-6"></div>
+
+<table class="w-full text-sm border border-slate-700">
+<thead class="bg-slate-800">
+<tr>
+<th>Date</th><th>Instrument</th><th>P/L</th>
+</tr>
+</thead>
+<tbody id="table"></tbody>
+</table>
+
+<script>
+let trades = [];
+
+document.getElementById('csvFile').addEventListener('change', e => {
+ Papa.parse(e.target.files[0], {
+  header:true,
+  skipEmptyLines:true,
+  complete:r=>process(r.data)
+ });
+});
+
+function process(rows){
+ trades=[];
+ for(let i=0;i<rows.length-1;i+=2){
+  let sell=rows[i], buy=rows[i+1];
+  let qty=parseInt(sell.Qty.split('/')[0]);
+  let pnl=(sell.Price-buy.Price)*qty;
+  trades.push({date:sell.Time, name:sell.Name, qty, pnl});
+ }
+ applyRules();
+}
+
+function applyRules(){
+ let maxQty=+maxTrades.value||9999;
+ let minProfit=+minProfit.value||-9999;
+
+ let filtered=trades.filter(t=>t.qty<=maxQty && t.pnl>=minProfit);
+ let total=filtered.reduce((a,b)=>a+b.pnl,0);
+
+ summary.innerHTML=`<div class="bg-slate-800 p-4 rounded">
+   Trades: ${filtered.length}<br>
+   Net P/L: ₹${total.toFixed(2)}
+ </div>`;
+
+ table.innerHTML=filtered.map(t=>`
+ <tr class="border-b border-slate-700">
+  <td>${t.date}</td>
+  <td>${t.name}</td>
+  <td class="${t.pnl>=0?'text-green-400':'text-red-400'}">
+   ${t.pnl.toFixed(2)}
+  </td>
+ </tr>`).join('');
+}
+</script>
+
+</body>
+</html>

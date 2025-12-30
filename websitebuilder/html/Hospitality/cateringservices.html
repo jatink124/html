@@ -1,0 +1,1067 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Elegant Eats - Premium Catering Services</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <style>
+    :root {
+      --primary: #4a6d7c;
+      --secondary: #f8b400;
+      --light: #f8f9fa;
+      --dark: #212529;
+    }
+    
+    body {
+      font-family: 'Poppins', sans-serif;
+      color: #333;
+      overflow-x: hidden;
+    }
+    
+    .hero-section {
+      background: linear-gradient(rgba(0, 0, 0, 0.6), rgba(0, 0, 0, 0.6)), url('https://images.unsplash.com/photo-1555244162-803834f70033?ixlib=rb-1.2.1&auto=format&fit=crop&w=1350&q=80');
+      background-size: cover;
+      background-position: center;
+      height: 100vh;
+      display: flex;
+      align-items: center;
+    }
+    
+    .feature-card {
+      border-radius: 10px;
+      overflow: hidden;
+      box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+      transition: transform 0.3s ease;
+    }
+    
+    .feature-card:hover {
+      transform: translateY(-5px);
+    }
+    
+    .menu-item {
+      border-radius: 10px;
+      overflow: hidden;
+      box-shadow: 0 5px 15px rgba(0,0,0,0.05);
+      transition: transform 0.3s ease;
+    }
+    
+    .menu-item:hover {
+      transform: translateY(-5px);
+    }
+    
+    .testimonial-card {
+      background-color: #f8f9fa;
+      border-radius: 10px;
+      padding: 20px;
+      box-shadow: 0 5px 15px rgba(0,0,0,0.05);
+    }
+    
+    .booking-form {
+      background-color: white;
+      padding: 30px;
+      border-radius: 10px;
+      box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+    }
+    
+    footer {
+      background-color: var(--dark);
+      color: var(--light);
+    }
+    
+    .navbar {
+      background-color: transparent !important;
+      transition: background-color 0.3s ease;
+    }
+    
+    .navbar.scrolled {
+      background-color: rgba(0, 0, 0, 0.9) !important;
+    }
+    
+    /* Chat Widget Styles */
+    .chat-widget {
+      position: fixed;
+      bottom: 20px;
+      right: 20px;
+      z-index: 1000;
+    }
+    
+    .chat-button {
+      background-color: var(--primary);
+      color: white;
+      border-radius: 50%;
+      width: 60px;
+      height: 60px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 24px;
+      cursor: pointer;
+      box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+    }
+    
+    .chat-popup {
+      display: none;
+      position: absolute;
+      bottom: 80px;
+      right: 0;
+      width: 300px;
+      background-color: white;
+      border-radius: 10px;
+      box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+      overflow: hidden;
+    }
+    
+    .chat-header {
+      background-color: var(--primary);
+      color: white;
+      padding: 15px;
+      display: flex;
+      justify-content: space-between;
+    }
+    
+    .chat-body {
+      padding: 15px;
+      max-height: 250px;
+      overflow-y: auto;
+    }
+    
+    .chat-input {
+      padding: 10px;
+      display: flex;
+      border-top: 1px solid #eee;
+    }
+    
+    /* Food Gallery */
+    .gallery-container {
+      column-count: 3;
+      column-gap: 10px;
+    }
+    
+    .gallery-item {
+      break-inside: avoid;
+      margin-bottom: 10px;
+      border-radius: 10px;
+      overflow: hidden;
+    }
+    
+    /* Responsive */
+    @media (max-width: 768px) {
+      .gallery-container {
+        column-count: 2;
+      }
+    }
+    
+    @media (max-width: 576px) {
+      .gallery-container {
+        column-count: 1;
+      }
+    }
+  </style>
+</head>
+<body>
+  <!-- Feature 1: Responsive Navigation -->
+  <nav class="navbar navbar-expand-lg navbar-dark fixed-top">
+    <div class="container">
+      <a class="navbar-brand" href="#">Elegant Eats</a>
+      <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+        <span class="navbar-toggler-icon"></span>
+      </button>
+      <div class="collapse navbar-collapse" id="navbarNav">
+        <ul class="navbar-nav ms-auto">
+          <li class="nav-item"><a class="nav-link" href="#home">Home</a></li>
+          <li class="nav-item"><a class="nav-link" href="#services">Services</a></li>
+          <li class="nav-item"><a class="nav-link" href="#menu">Menu</a></li>
+          <li class="nav-item"><a class="nav-link" href="#gallery">Gallery</a></li>
+          <li class="nav-item"><a class="nav-link" href="#testimonials">Testimonials</a></li>
+          <li class="nav-item"><a class="nav-link" href="#booking">Book Now</a></li>
+          <li class="nav-item"><a class="nav-link" href="#contact">Contact</a></li>
+        </ul>
+      </div>
+    </div>
+  </nav>
+
+  <!-- Feature 2: Hero Section with Call to Action -->
+  <section id="home" class="hero-section">
+    <div class="container text-white text-center">
+      <h1 class="display-3 fw-bold mb-4">Exquisite Catering for Memorable Events</h1>
+      <p class="lead mb-4">Elevate your events with our premium catering services. From intimate gatherings to grand celebrations.</p>
+      <div>
+        <a href="#booking" class="btn btn-warning btn-lg me-2">Book Now</a>
+        <a href="#menu" class="btn btn-outline-light btn-lg">View Menu</a>
+      </div>
+    </div>
+  </section>
+
+  <!-- Feature 3: Services Section -->
+  <section id="services" class="py-5">
+    <div class="container">
+      <div class="text-center mb-5">
+        <h2 class="fw-bold">Our Premium Services</h2>
+        <p class="text-muted">Tailored catering solutions for every occasion</p>
+      </div>
+      <div class="row g-4">
+        <div class="col-md-4">
+          <div class="feature-card h-100">
+            <img src="https://images.unsplash.com/photo-1519225421980-715cb0215aed?ixlib=rb-1.2.1&auto=format&fit=crop&w=600&q=80" class="card-img-top" alt="Wedding Catering">
+            <div class="card-body text-center">
+              <h5 class="card-title">Wedding Catering</h5>
+              <p class="card-text">Make your special day unforgettable with our exquisite wedding menus and professional service.</p>
+            </div>
+          </div>
+        </div>
+        <div class="col-md-4">
+          <div class="feature-card h-100">
+            <img src="https://images.unsplash.com/photo-1530103862676-de8c9debad1d?ixlib=rb-1.2.1&auto=format&fit=crop&w=600&q=80" class="card-img-top" alt="Corporate Events">
+            <div class="card-body text-center">
+              <h5 class="card-title">Corporate Events</h5>
+              <p class="card-text">Impress your clients and team with our professional corporate catering services.</p>
+            </div>
+          </div>
+        </div>
+        <div class="col-md-4">
+          <div class="feature-card h-100">
+            <img src="https://images.unsplash.com/photo-1465495976277-4387d4b0b4c6?ixlib=rb-1.2.1&auto=format&fit=crop&w=600&q=80" class="card-img-top" alt="Private Parties">
+            <div class="card-body text-center">
+              <h5 class="card-title">Private Parties</h5>
+              <p class="card-text">From intimate dinners to birthday celebrations, we cater to all your private party needs.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Feature 4: Interactive Menu Section -->
+  <section id="menu" class="py-5 bg-light">
+    <div class="container">
+      <div class="text-center mb-5">
+        <h2 class="fw-bold">Our Signature Menu</h2>
+        <p class="text-muted">Explore our curated selection of gourmet dishes</p>
+      </div>
+      
+      <ul class="nav nav-pills mb-4 justify-content-center" id="menuTabs" role="tablist">
+        <li class="nav-item" role="presentation">
+          <button class="nav-link active" id="appetizers-tab" data-bs-toggle="pill" data-bs-target="#appetizers" type="button">Appetizers</button>
+        </li>
+        <li class="nav-item" role="presentation">
+          <button class="nav-link" id="mains-tab" data-bs-toggle="pill" data-bs-target="#mains" type="button">Main Courses</button>
+        </li>
+        <li class="nav-item" role="presentation">
+          <button class="nav-link" id="desserts-tab" data-bs-toggle="pill" data-bs-target="#desserts" type="button">Desserts</button>
+        </li>
+        <li class="nav-item" role="presentation">
+          <button class="nav-link" id="beverages-tab" data-bs-toggle="pill" data-bs-target="#beverages" type="button">Beverages</button>
+        </li>
+      </ul>
+      
+      <div class="tab-content" id="menuTabContent">
+        <div class="tab-pane fade show active" id="appetizers" role="tabpanel">
+          <div class="row g-4">
+            <div class="col-md-4">
+              <div class="menu-item">
+                <img src="https://images.unsplash.com/photo-1541014741259-de529411b96a?ixlib=rb-1.2.1&auto=format&fit=crop&w=600&q=80" class="img-fluid" alt="Appetizer">
+                <div class="p-3">
+                  <h5>Prosciutto Wrapped Melon</h5>
+                  <p class="text-muted small">Sweet melon wrapped in thinly sliced prosciutto</p>
+                  <p class="fw-bold">$12</p>
+                </div>
+              </div>
+            </div>
+            <div class="col-md-4">
+              <div class="menu-item">
+                <img src="https://images.unsplash.com/photo-1604908176997-125f25cc6f3d?ixlib=rb-1.2.1&auto=format&fit=crop&w=600&q=80" class="img-fluid" alt="Appetizer">
+                <div class="p-3">
+                  <h5>Bruschetta</h5>
+                  <p class="text-muted small">Toasted bread topped with tomatoes, basil, and garlic</p>
+                  <p class="fw-bold">$10</p>
+                </div>
+              </div>
+            </div>
+            <div class="col-md-4">
+              <div class="menu-item">
+                <img src="https://images.unsplash.com/photo-1676037150408-4b59a542f597?ixlib=rb-1.2.1&auto=format&fit=crop&w=600&q=80" class="img-fluid" alt="Appetizer">
+                <div class="p-3">
+                  <h5>Mushroom Arancini</h5>
+                  <p class="text-muted small">Fried risotto balls with wild mushrooms and parmesan</p>
+                  <p class="fw-bold">$14</p>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        
+        <div class="tab-pane fade" id="mains" role="tabpanel">
+          <div class="row g-4">
+            <div class="col-md-4">
+              <div class="menu-item">
+                <img src="https://images.unsplash.com/photo-1514516816566-de580c621376?ixlib=rb-1.2.1&auto=format&fit=crop&w=600&q=80" class="img-fluid" alt="Main Course">
+                <div class="p-3">
+                  <h5>Filet Mignon</h5>
+                  <p class="text-muted small">Grilled filet with red wine reduction and roasted vegetables</p>
+                  <p class="fw-bold">$38</p>
+                </div>
+              </div>
+            </div>
+            <div class="col-md-4">
+              <div class="menu-item">
+                <img src="https://images.unsplash.com/photo-1598532213298-304a9bd63e8f?ixlib=rb-1.2.1&auto=format&fit=crop&w=600&q=80" class="img-fluid" alt="Main Course">
+                <div class="p-3">
+                  <h5>Herb Crusted Salmon</h5>
+                  <p class="text-muted small">Fresh salmon with herbs, lemon, and seasonal vegetables</p>
+                  <p class="fw-bold">$32</p>
+                </div>
+              </div>
+            </div>
+            <div class="col-md-4">
+              <div class="menu-item">
+                <img src="https://images.unsplash.com/photo-1611270629569-8b357cb88da9?ixlib=rb-1.2.1&auto=format&fit=crop&w=600&q=80" class="img-fluid" alt="Main Course">
+                <div class="p-3">
+                  <h5>Wild Mushroom Risotto</h5>
+                  <p class="text-muted small">Creamy arborio rice with wild mushrooms and truffle oil</p>
+                  <p class="fw-bold">$26</p>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        
+        <div class="tab-pane fade" id="desserts" role="tabpanel">
+          <div class="row g-4">
+            <div class="col-md-4">
+              <div class="menu-item">
+                <img src="https://images.unsplash.com/photo-1587314168485-3236d6710814?ixlib=rb-1.2.1&auto=format&fit=crop&w=600&q=80" class="img-fluid" alt="Dessert">
+                <div class="p-3">
+                  <h5>Chocolate Fondant</h5>
+                  <p class="text-muted small">Warm chocolate cake with a molten center and vanilla ice cream</p>
+                  <p class="fw-bold">$14</p>
+                </div>
+              </div>
+            </div>
+            <div class="col-md-4">
+              <div class="menu-item">
+                <img src="https://images.unsplash.com/photo-1488477304112-4944851de03d?ixlib=rb-1.2.1&auto=format&fit=crop&w=600&q=80" class="img-fluid" alt="Dessert">
+                <div class="p-3">
+                  <h5>Tiramisu</h5>
+                  <p class="text-muted small">Classic Italian dessert with coffee, mascarpone, and cocoa</p>
+                  <p class="fw-bold">$12</p>
+                </div>
+              </div>
+            </div>
+            <div class="col-md-4">
+              <div class="menu-item">
+                <img src="https://images.unsplash.com/photo-1551404615-94695d33f1f1?ixlib=rb-1.2.1&auto=format&fit=crop&w=600&q=80" class="img-fluid" alt="Dessert">
+                <div class="p-3">
+                  <h5>Fruit Pavlova</h5>
+                  <p class="text-muted small">Meringue topped with fresh cream and seasonal fruits</p>
+                  <p class="fw-bold">$10</p>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        
+        <div class="tab-pane fade" id="beverages" role="tabpanel">
+          <div class="row g-4">
+            <div class="col-md-4">
+              <div class="menu-item">
+                <img src="https://images.unsplash.com/photo-1508253578933-20b529302151?ixlib=rb-1.2.1&auto=format&fit=crop&w=600&q=80" class="img-fluid" alt="Beverage">
+                <div class="p-3">
+                  <h5>Signature Cocktails</h5>
+                  <p class="text-muted small">Custom crafted cocktails for your event</p>
+                  <p class="fw-bold">$15 per person</p>
+                </div>
+              </div>
+            </div>
+            <div class="col-md-4">
+              <div class="menu-item">
+                <img src="https://images.unsplash.com/photo-1585551897231-77fe523c288a?ixlib=rb-1.2.1&auto=format&fit=crop&w=600&q=80" class="img-fluid" alt="Beverage">
+                <div class="p-3">
+                  <h5>Wine Pairing</h5>
+                  <p class="text-muted small">Expertly selected wines to complement your menu</p>
+                  <p class="fw-bold">$25 per person</p>
+                </div>
+              </div>
+            </div>
+            <div class="col-md-4">
+              <div class="menu-item">
+                <img src="https://images.unsplash.com/photo-1596097635121-14b38c54d4d1?ixlib=rb-1.2.1&auto=format&fit=crop&w=600&q=80" class="img-fluid" alt="Beverage">
+                <div class="p-3">
+                  <h5>Premium Non-Alcoholic</h5>
+                  <p class="text-muted small">Crafted mocktails and specialty beverages</p>
+                  <p class="fw-bold">$10 per person</p>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      
+      <div class="text-center mt-4">
+        <a href="#" class="btn btn-primary">Download Full Menu PDF</a>
+      </div>
+    </div>
+  </section>
+
+  <!-- Feature 5: Food Gallery -->
+  <section id="gallery" class="py-5">
+    <div class="container">
+      <div class="text-center mb-5">
+        <h2 class="fw-bold">Food Gallery</h2>
+        <p class="text-muted">A visual feast of our culinary creations</p>
+      </div>
+      
+      <div class="gallery-container">
+        <div class="gallery-item">
+          <img src="https://images.unsplash.com/photo-1555244162-803834f70033?ixlib=rb-1.2.1&auto=format&fit=crop&w=600&q=80" alt="Food" class="img-fluid">
+        </div>
+        <div class="gallery-item">
+          <img src="https://images.unsplash.com/photo-1551183053-bf91a1d81141?ixlib=rb-1.2.1&auto=format&fit=crop&w=600&q=80" alt="Food" class="img-fluid">
+        </div>
+        <div class="gallery-item">
+          <img src="https://images.unsplash.com/photo-1554998171-706e730d721d?ixlib=rb-1.2.1&auto=format&fit=crop&w=600&q=80" alt="Food" class="img-fluid">
+        </div>
+        <div class="gallery-item">
+          <img src="https://images.unsplash.com/photo-1546793665-c74683f339c1?ixlib=rb-1.2.1&auto=format&fit=crop&w=600&q=80" alt="Food" class="img-fluid">
+        </div>
+        <div class="gallery-item">
+          <img src="https://images.unsplash.com/photo-1526893381913-e311045b8064?ixlib=rb-1.2.1&auto=format&fit=crop&w=600&q=80" alt="Food" class="img-fluid">
+        </div>
+        <div class="gallery-item">
+          <img src="https://images.unsplash.com/photo-1559742811-822873691df8?ixlib=rb-1.2.1&auto=format&fit=crop&w=600&q=80" alt="Food" class="img-fluid">
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Feature 6: Testimonials -->
+  <section id="testimonials" class="py-5 bg-light">
+    <div class="container">
+      <div class="text-center mb-5">
+        <h2 class="fw-bold">Client Testimonials</h2>
+        <p class="text-muted">What our satisfied customers have to say</p>
+      </div>
+      
+      <div class="row g-4">
+        <div class="col-md-4">
+          <div class="testimonial-card h-100">
+            <div class="d-flex align-items-center mb-3">
+              <img src="https://randomuser.me/api/portraits/women/32.jpg" class="rounded-circle me-3" width="60" alt="Client">
+              <div>
+                <h5 class="mb-0">Emily Johnson</h5>
+                <p class="text-muted mb-0">Wedding</p>
+              </div>
+            </div>
+            <p>"Elegant Eats made our wedding day truly special. The food was exceptional, and the service was impeccable. All our guests were impressed!"</p>
+            <div class="text-warning">
+              <i class="fas fa-star"></i>
+              <i class="fas fa-star"></i>
+              <i class="fas fa-star"></i>
+              <i class="fas fa-star"></i>
+              <i class="fas fa-star"></i>
+            </div>
+          </div>
+        </div>
+        <div class="col-md-4">
+          <div class="testimonial-card h-100">
+            <div class="d-flex align-items-center mb-3">
+              <img src="https://randomuser.me/api/portraits/men/41.jpg" class="rounded-circle me-3" width="60" alt="Client">
+              <div>
+                <h5 class="mb-0">Michael Roberts</h5>
+                <p class="text-muted mb-0">Corporate Event</p>
+              </div>
+            </div>
+            <p>"We've used Elegant Eats for several corporate functions and they never disappoint. Professional, reliable, and the food is always a hit with our employees and clients."</p>
+            <div class="text-warning">
+              <i class="fas fa-star"></i>
+              <i class="fas fa-star"></i>
+              <i class="fas fa-star"></i>
+              <i class="fas fa-star"></i>
+              <i class="fas fa-star-half-alt"></i>
+            </div>
+          </div>
+        </div>
+        <div class="col-md-4">
+          <div class="testimonial-card h-100">
+            <div class="d-flex align-items-center mb-3">
+              <img src="https://randomuser.me/api/portraits/women/74.jpg" class="rounded-circle me-3" width="60" alt="Client">
+              <div>
+                <h5 class="mb-0">Sophia Chen</h5>
+                <p class="text-muted mb-0">Birthday Party</p>
+              </div>
+            </div>
+            <p>"The team at Elegant Eats went above and beyond for my 50th birthday celebration. The menu was customized perfectly to my preferences, and the presentation was stunning."</p>
+            <div class="text-warning">
+              <i class="fas fa-star"></i>
+              <i class="fas fa-star"></i>
+              <i class="fas fa-star"></i>
+              <i class="fas fa-star"></i>
+              <i class="fas fa-star"></i>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Feature 7: Booking Form -->
+  <section id="booking" class="py-5">
+    <div class="container">
+      <div class="row">
+        <div class="col-lg-6">
+          <h2 class="fw-bold mb-4">Book Our Catering Services</h2>
+          <p class="mb-4">Planning an event? Let us take care of the food. Fill out the form and our team will contact you within 24 hours to discuss your requirements.</p>
+          <div class="mb-4">
+            <h5>Why Choose Us?</h5>
+            <ul class="list-group list-group-flush">
+              <li class="list-group-item border-0 ps-0"><i class="fas fa-check-circle text-success me-2"></i> Customized menus tailored to your event</li>
+              <li class="list-group-item border-0 ps-0"><i class="fas fa-check-circle text-success me-2"></i> Professional staff and service</li>
+              <li class="list-group-item border-0 ps-0"><i class="fas fa-check-circle text-success me-2"></i> Locally sourced, fresh ingredients</li>
+              <li class="list-group-item border-0 ps-0"><i class="fas fa-check-circle text-success me-2"></i> Accommodations for dietary restrictions</li>
+              <li class="list-group-item border-0 ps-0"><i class="fas fa-check-circle text-success me-2"></i> Full event planning services available</li>
+            </ul>
+          </div>
+        </div>
+        <div class="col-lg-6">
+          <div class="booking-form">
+            <form id="bookingForm">
+              <div class="mb-3">
+                <label for="name" class="form-label">Full Name</label>
+                <input type="text" class="form-control" id="name" required>
+              </div>
+              <div class="mb-3">
+                <label for="email" class="form-label">Email Address</label>
+                <input type="email" class="form-control" id="email" required>
+              </div>
+              <div class="mb-3">
+                <label for="phone" class="form-label">Phone Number</label>
+                <input type="tel" class="form-control" id="phone" required>
+              </div>
+              <div class="row mb-3">
+                <div class="col-md-6">
+                  <label for="eventDate" class="form-label">Event Date</label>
+                  <input type="date" class="form-control" id="eventDate" required>
+                </div>
+                <div class="col-md-6">
+                  <label for="guests" class="form-label">Number of Guests</label>
+                  <input type="number" class="form-control" id="guests" min="10" required>
+                </div>
+              </div>
+              <div class="mb-3">
+                <label for="eventType" class="form-label">Event Type</label>
+                <select class="form-select" id="eventType" required>
+                  <option value="" selected disabled>Select Event Type</option>
+                  <option value="wedding">Wedding</option>
+                  <option value="corporate">Corporate Event</option>
+                  <option value="birthday">Birthday Party</option>
+                  <option value="anniversary">Anniversary</option>
+                  <option value="other">Other</option>
+                </select>
+              </div>
+              <div class="mb-3">
+                <label for="message" class="form-label">Special Requirements</label>
+                <textarea class="form-control" id="message" rows="3"></textarea>
+              </div>
+              <button type="submit" class="btn btn-primary w-100">Request Quote</button>
+            </form>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Feature 8: Featured Chef Profiles -->
+  <section class="py-5 bg-light">
+    <div class="container">
+      <div class="text-center mb-5">
+        <h2 class="fw-bold">Meet Our Expert Chefs</h2>
+        <p class="text-muted">The culinary talents behind our exquisite dishes</p>
+      </div>
+      
+      <div class="row g-4">
+        <div class="col-md-4">
+          <div class="card border-0 shadow-sm h-100">
+            <img src="https://images.unsplash.com/photo-1577219491135-ce391730fb2c?ixlib=rb-1.2.1&auto=format&fit=crop&w=600&q=80" class="card-img-top" alt="Chef">
+            <div class="card-body text-center">
+              <h5 class="card-title">Chef David Laurent</h5>
+              <p class="text-muted">Executive Chef</p>
+              <p class="card-text">With over 15 years of experience in fine dining restaurants across Europe, Chef David brings creativity and precision to every dish.</p>
+              <div class="d-flex justify-content-center gap-2">
+                <a href="#" class="text-primary"><i class="fab fa-instagram fa-lg"></i></a>
+                <a href="#" class="text-primary"><i class="fab fa-twitter fa-lg"></i></a>
+                <a href="#" class="text-primary"><i class="fab fa-linkedin fa-lg"></i></a>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="col-md-4">
+          <div class="card border-0 shadow-sm h-100">
+            <img src="https://images.unsplash.com/photo-1581299894007-aaa50297cf16?ixlib=rb-1.2.1&auto=format&fit=crop&w=600&q=80" class="card-img-top" alt="Chef">
+            <div class="card-body text-center">
+              <h5 class="card-title">Chef Maria Rodriguez</h5>
+              <p class="text-muted">Pastry Chef</p>
+              <p class="card-text">A master of sweet creations, Chef Maria's desserts are works of art that delight both the eye and the palate.</p>
+              <div class="d-flex justify-content-center gap-2">
+                <a href="#" class="text-primary"><i class="fab fa-instagram fa-lg"></i></a>
+                <a href="#" class="text-primary"><i class="fab fa-twitter fa-lg"></i></a>
+                <a href="#" class="text-primary"><i class="fab fa-linkedin fa-lg"></i></a>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="col-md-4">
+          <div class="card border-0 shadow-sm h-100">
+            <img src="https://images.unsplash.com/photo-1566554273541-37a9ca77b91f?ixlib=rb-1.2.1&auto=format&fit=crop&w=600&q=80" class="card-img-top" alt="Chef">
+            <div class="card-body text-center">
+              <h5 class="card-title">Chef James Wong</h5>
+              <p class="text-muted">Sous Chef</p>
+              <p class="card-text">Chef James specializes in fusion cuisine, blending Asian techniques with classic European flavors for unique taste experiences.</p>
+              <div class="d-flex justify-content-center gap-2">
+                <a href="#" class="text-primary"><i class="fab fa-instagram fa-lg"></i></a>
+                <a href="#" class="text-primary"><i class="fab fa-twitter fa-lg"></i></a>
+                <a href="#" class="text-primary"><i class="fab fa-linkedin fa-lg"></i></a>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Feature 9: Services Packages -->
+  <section class="py-5">
+    <div class="container">
+      <div class="text-center mb-5">
+        <h2 class="fw-bold">Our Catering Packages</h2>
+        <p class="text-muted">Choose the perfect package for your event</p>
+      </div>
+      
+      <div class="row g-4">
+        <div class="col-md-4">
+          <div class="card border-0 shadow h-100">
+            <div class="card-body text-center p-4">
+              <h5 class="card-title">Essential Package</h5>
+              <p class="display-6 fw-bold my-3">$45<span class="fs-6 text-muted fw-normal">/person</span></p>
+              <ul class="list-unstyled mb-4">
+                <li class="py-2 border-bottom">3 appetizer options</li>
+                <li class="py-2 border-bottom">2 main course options</li>
+                <li class="py-2 border-bottom">1 dessert option</li>
+                <li class="py-2 border-bottom">Soft drinks included</li>
+                <li class="py-2 border-bottom">Basic table setup</li>
+                <li class="py-2">Staff for serving</li>
+              </ul>
+              <a href="#booking" class="btn btn-outline-primary">Select Package</a>
+            </div>
+          </div>
+        </div>
+        <div class="col-md-4">
+          <div class="card border-0 shadow h-100 border border-primary">
+            <div class="card-header bg-primary text-white text-center py-3">
+              <h6 class="mb-0">Most Popular</h6>
+            </div>
+            <div class="card-body text-center p-4">
+              <h5 class="card-title">Premium Package</h5>
+              <p class="display-6 fw-bold my-3">$75<span class="fs-6 text-muted fw-normal">/person</span></p>
+              <ul class="list-unstyled mb-4">
+                <li class="py-2 border-bottom">5 appetizer options</li>
+                <li class="py-2 border-bottom">3 main course options</li>
+                <li class="py-2 border-bottom">2 dessert options</li>
+                <li class="py-2 border-bottom">Wine and soft drinks included</li>
+                <li class="py-2 border-bottom">Full table setup with decor</li>
+                <li class="py-2">Professional wait staff</li>
+              </ul>
+              <a href="#booking" class="btn btn-primary">Select Package</a>
+            </div>
+          </div>
+        </div>
+        <div class="col-md-4">
+          <div class="card border-0 shadow h-100">
+            <div class="card-body text-center p-4">
+              <h5 class="card-title">Luxury Package</h5>
+              <p class="display-6 fw-bold my-3">$120<span class="fs-6 text-muted fw-normal">/person</span></p>
+              <ul class="list-unstyled mb-4">
+                <li class="py-2 border-bottom">7 appetizer options</li>
+                <li class="py-2 border-bottom">4 main course options</li>
+                <li class="py-2 border-bottom">3 dessert options</li>
+                <li class="py-2 border-bottom">Premium open bar</li>
+                <li class="py-2 border-bottom">Luxury table setup and decor</li>
+                <li class="py-2">VIP service staff & personal event coordinator</li>
+              </ul>
+              <a href="#booking" class="btn btn-outline-primary">Select Package</a>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Feature 10: FAQ Section -->
+  <section class="py-5 bg-light">
+    <div class="container">
+      <div class="text-center mb-5">
+        <h2 class="fw-bold">Frequently Asked Questions</h2>
+        <p class="text-muted">Everything you need to know about our catering services</p>
+      </div>
+      
+      <div class="row">
+        <div class="col-lg-8 mx-auto">
+          <div class="accordion" id="faqAccordion">
+            <div class="accordion-item border mb-3 rounded">
+              <h2 class="accordion-header" id="headingOne">
+                <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#collapseOne">
+                  How far in advance should I book your catering services?
+                </button>
+              </h2>
+              <div id="collapseOne" class="accordion-collapse collapse show" data-bs-parent="#faqAccordion">
+                <div class="accordion-body">
+                  We recommend booking at least 4-6 weeks in advance for most events. For weddings and large corporate events, 2-3 months notice is preferable. However, we do understand that sometimes events are planned at short notice, so please contact us regardless and we'll do our best to accommodate you.
+                </div>
+              </div>
+            </div>
+            <div class="accordion-item border mb-3 rounded">
+              <h2 class="accordion-header" id="headingTwo">
+                <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseTwo">
+                  Can you accommodate dietary restrictions and allergies?
+                </button>
+              </h2>
+              <div id="collapseTwo" class="accordion-collapse collapse" data-bs-parent="#faqAccordion">
+                <div class="accordion-body">
+                  Absolutely! We can accommodate a wide range of dietary needs including vegetarian, vegan, gluten-free, dairy-free, and nut-free options. Please inform us of any allergies or dietary restrictions when booking, and our chefs will create appropriate alternatives.
+                </div>
+              </div>
+            </div>
+            <div class="accordion-item border mb-3 rounded">
+              <h2 class="accordion-header" id="headingThree">
+                <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseThree">
+                  Do you provide staff for the event?
+                </button>
+              </h2>
+              <div id="collapseThree" class="accordion-collapse collapse" data-bs-parent="#faqAccordion">
+                <div class="accordion-body">
+                  Yes, all our packages include professional staff for food service. The number of staff depends on the size of your event and the package selected. For full-service events, we provide wait staff, bartenders, and a dedicated event manager.
+                </div>
+              </div>
+            </div>
+            <div class="accordion-item border mb-3 rounded">
+              <h2 class="accordion-header" id="headingFour">
+                <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseFour">
+                  Can I customize the menu for my event?
+                </button>
+              </h2>
+              <div id="collapseFour" class="accordion-collapse collapse" data-bs-parent="#faqAccordion">
+                <div class="accordion-body">
+                  Definitely! We encourage customization to make your event unique. After you book, we'll schedule a consultation to discuss your preferences, and our chef will work with you to create a personalized menu that suits your taste and budget.
+                </div>
+              </div>
+            </div>
+            <div class="accordion-item border mb-3 rounded">
+              <h2 class="accordion-header" id="headingFive">
+                <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseFive">
+                  What is your cancellation policy?
+                </button>
+              </h2>
+              <div id="collapseFive" class="accordion-collapse collapse" data-bs-parent="#faqAccordion">
+                <div class="accordion-body">
+                  We require a 50% deposit to secure your booking. This deposit is fully refundable if you cancel more than 30 days before the event. For cancellations within 14-30 days, 50% of the deposit is refundable. Cancellations less than 14 days before the event are non-refundable.
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Feature 11: Blog/Recipe Section -->
+  <section class="py-5">
+    <div class="container">
+      <div class="text-center mb-5">
+        <h2 class="fw-bold">Culinary Insights</h2>
+        <p class="text-muted">Recipes, tips, and event planning ideas from our expert team</p>
+      </div>
+      
+      <div class="row g-4">
+        <div class="col-md-4">
+          <div class="card border-0 shadow-sm h-100">
+            <img src="https://images.unsplash.com/photo-1484723091739-30a097e8f929?ixlib=rb-1.2.1&auto=format&fit=crop&w=600&q=80" class="card-img-top" alt="Blog Post">
+            <div class="card-body">
+              <span class="badge bg-primary mb-2">Recipe</span>
+              <h5 class="card-title">5 Appetizers That Will Wow Your Guests</h5>
+              <p class="card-text">Discover easy yet impressive appetizer recipes that will elevate your home entertaining game.</p>
+            </div>
+            <div class="card-footer bg-white border-0">
+              <div class="d-flex align-items-center">
+                <img src="https://randomuser.me/api/portraits/women/68.jpg" class="rounded-circle me-2" width="40" alt="Author">
+                <div>
+                  <p class="mb-0 small">By Chef Maria</p>
+                  <p class="text-muted small mb-0">June 15, 2023</p>
+                </div>
+              </div>
+            </div>
+            <a href="#" class="stretched-link"></a>
+          </div>
+        </div>
+        <div class="col-md-4">
+          <div class="card border-0 shadow-sm h-100">
+            <img src="https://images.unsplash.com/photo-1519225421980-715cb0215aed?ixlib=rb-1.2.1&auto=format&fit=crop&w=600&q=80" class="card-img-top" alt="Blog Post">
+            <div class="card-body">
+              <span class="badge bg-success mb-2">Event Planning</span>
+              <h5 class="card-title">The Ultimate Wedding Catering Guide</h5>
+              <p class="card-text">Everything you need to know about planning the perfect wedding menu, from tastings to service styles.</p>
+            </div>
+            <div class="card-footer bg-white border-0">
+              <div class="d-flex align-items-center">
+                <img src="https://randomuser.me/api/portraits/men/22.jpg" class="rounded-circle me-2" width="40" alt="Author">
+                <div>
+                  <p class="mb-0 small">By Event Director Alex</p>
+                  <p class="text-muted small mb-0">May 3, 2023</p>
+                </div>
+              </div>
+            </div>
+            <a href="#" class="stretched-link"></a>
+          </div>
+        </div>
+        <div class="col-md-4">
+          <div class="card border-0 shadow-sm h-100">
+            <img src="https://images.unsplash.com/photo-1541795795328-f073b763494e?ixlib=rb-1.2.1&auto=format&fit=crop&w=600&q=80" class="card-img-top" alt="Blog Post">
+            <div class="card-body">
+              <span class="badge bg-danger mb-2">Tips & Tricks</span>
+              <h5 class="card-title">Seasonal Ingredients: Fall Edition</h5>
+              <p class="card-text">How to incorporate autumn's bounty into your event menu for maximum flavor and freshness.</p>
+            </div>
+            <div class="card-footer bg-white border-0">
+              <div class="d-flex align-items-center">
+                <img src="https://randomuser.me/api/portraits/men/42.jpg" class="rounded-circle me-2" width="40" alt="Author">
+                <div>
+                  <p class="mb-0 small">By Chef David</p>
+                  <p class="text-muted small mb-0">September 21, 2023</p>
+                </div>
+              </div>
+            </div>
+            <a href="#" class="stretched-link"></a>
+          </div>
+        </div>
+      </div>
+      
+      <div class="text-center mt-4">
+        <a href="#" class="btn btn-outline-primary">Read More Articles</a>
+      </div>
+    </div>
+  </section>
+
+  <!-- Feature 12: Live Chat Widget -->
+  <div class="chat-widget">
+    <div class="chat-button" id="chatButton">
+      <i class="fas fa-comment-dots"></i>
+    </div>
+    <div class="chat-popup" id="chatPopup">
+      <div class="chat-header">
+        <h6 class="mb-0">Live Support</h6>
+        <button class="btn-close btn-close-white" id="chatClose"></button>
+      </div>
+      <div class="chat-body" id="chatBody">
+        <div class="d-flex mb-3">
+          <div class="bg-light p-2 rounded-3 me-auto" style="max-width: 75%;">
+            <p class="mb-0 small">Hello! How can we assist you with your catering needs today?</p>
+            <span class="text-muted small">10:05 AM</span>
+          </div>
+        </div>
+      </div>
+      <div class="chat-input">
+        <input type="text" class="form-control me-2" id="chatInput" placeholder="Type your message...">
+        <button class="btn btn-primary" id="sendMessage">
+          <i class="fas fa-paper-plane"></i>
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Contact Section -->
+  <section id="contact" class="py-5 bg-dark text-white">
+    <div class="container">
+      <div class="row">
+        <div class="col-lg-6">
+          <h2 class="fw-bold mb-4">Contact Us</h2>
+          <p class="mb-4">Have questions or ready to start planning your event? Reach out to us through any of these channels:</p>
+          <div class="d-flex align-items-center mb-3">
+            <div class="bg-primary p-3 rounded-circle me-3">
+              <i class="fas fa-map-marker-alt"></i>
+            </div>
+            <div>
+              <h5 class="mb-0">Address</h5>
+              <p class="mb-0">123 Culinary Ave, Gourmet City, GC 12345</p>
+            </div>
+          </div>
+          <div class="d-flex align-items-center mb-3">
+            <div class="bg-primary p-3 rounded-circle me-3">
+              <i class="fas fa-phone"></i>
+            </div>
+            <div>
+              <h5 class="mb-0">Phone</h5>
+              <p class="mb-0">(123) 456-7890</p>
+            </div>
+          </div>
+          <div class="d-flex align-items-center mb-3">
+            <div class="bg-primary p-3 rounded-circle me-3">
+              <i class="fas fa-envelope"></i>
+            </div>
+            <div>
+              <h5 class="mb-0">Email</h5>
+              <p class="mb-0">info@eleganteats.com</p>
+            </div>
+          </div>
+          <div class="mt-4">
+            <h5>Follow Us</h5>
+            <div class="d-flex gap-3 mt-3">
+              <a href="#" class="text-white fs-4"><i class="fab fa-facebook"></i></a>
+              <a href="#" class="text-white fs-4"><i class="fab fa-instagram"></i></a>
+              <a href="#" class="text-white fs-4"><i class="fab fa-twitter"></i></a>
+              <a href="#" class="text-white fs-4"><i class="fab fa-linkedin"></i></a>
+              <a href="#" class="text-white fs-4"><i class="fab fa-pinterest"></i></a>
+            </div>
+          </div>
+        </div>
+        <div class="col-lg-6">
+          <div class="map-container mt-4 mt-lg-0">
+            <iframe src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3022.215747698687!2d-73.98780132422904!3d40.75798833440646!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x0%3A0x0!2zNDDCsDQ1JzI4LjgiTiA3M8KwNTknMTMuOSJX!5e0!3m2!1sen!2sus!4v1628208901203!5m2!1sen!2sus" width="100%" height="350" style="border:0; border-radius: 10px;" allowfullscreen="" loading="lazy"></iframe>
+          </div>
+          <div class="mt-4 d-flex flex-wrap gap-2">
+            <button class="btn btn-outline-light"><i class="fas fa-directions me-2"></i> Get Directions</button>
+            <button class="btn btn-outline-light"><i class="fas fa-calendar-alt me-2"></i> Schedule a Visit</button>
+            <button class="btn btn-outline-light"><i class="fas fa-utensils me-2"></i> Taste Testing</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Footer -->
+  <footer class="py-4 bg-darker text-white-50" style="background-color: #111;">
+    <div class="container">
+      <div class="row g-4">
+        <div class="col-lg-4">
+          <h5 class="text-white mb-3">Elegant Eats</h5>
+          <p class="mb-3">Premium catering for all occasions. Making your events memorable with extraordinary culinary experiences.</p>
+          <p class="mb-0"><i class="fas fa-envelope me-2"></i> info@eleganteats.com</p>
+          <p><i class="fas fa-phone me-2"></i> (123) 456-7890</p>
+        </div>
+        <div class="col-lg-2 col-md-3 col-6">
+          <h6 class="text-white mb-3">Services</h6>
+          <ul class="list-unstyled">
+            <li class="mb-2"><a href="#" class="text-light text-decoration-none">Wedding Catering</a></li>
+            <li class="mb-2"><a href="#" class="text-light text-decoration-none">Corporate Events</a></li>
+            <li class="mb-2"><a href="#" class="text-light text-decoration-none">Private Parties</a></li>
+            <li class="mb-2"><a href="#" class="text-light text-decoration-none">Special Occasions</a></li>
+          </ul>
+        </div>
+        <div class="col-lg-2 col-md-3 col-6">
+          <h6 class="text-white mb-3">About</h6>
+          <ul class="list-unstyled">
+            <li class="mb-2"><a href="#" class="text-light text-decoration-none">Our Story</a></li>
+            <li class="mb-2"><a href="#" class="text-light text-decoration-none">Meet the Team</a></li>
+            <li class="mb-2"><a href="#" class="text-light text-decoration-none">Careers</a></li>
+            <li class="mb-2"><a href="#" class="text-light text-decoration-none">Testimonials</a></li>
+          </ul>
+        </div>
+        <div class="col-lg-4 col-md-6">
+          <h6 class="text-white mb-3">Subscribe to Our Newsletter</h6>
+          <p class="small mb-3">Get updates on our latest menus, seasonal offers, and event planning tips.</p>
+          <div class="input-group mb-3">
+            <input type="email" class="form-control" placeholder="Your email address" aria-label="Your email address">
+            <button class="btn btn-primary" type="button">Subscribe</button>
+          </div>
+          <div class="d-flex gap-2">
+            <a href="#" class="text-light"><i class="fab fa-facebook-f"></i></a>
+            <a href="#" class="text-light"><i class="fab fa-twitter"></i></a>
+            <a href="#" class="text-light"><i class="fab fa-instagram"></i></a>
+            <a href="#" class="text-light"><i class="fab fa-linkedin-in"></i></a>
+          </div>
+        </div>
+      </div>
+      <hr class="my-4 bg-secondary">
+      <div class="row">
+        <div class="col-md-6 small">
+          <p class="mb-0">&copy; 2023 Elegant Eats Catering. All rights reserved.</p>
+        </div>
+        <div class="col-md-6 text-md-end small">
+          <a href="#" class="text-light text-decoration-none me-3">Privacy Policy</a>
+          <a href="#" class="text-light text-decoration-none me-3">Terms of Service</a>
+          <a href="#" class="text-light text-decoration-none">Sitemap</a>
+        </div>
+      </div>
+    </div>
+  </footer>
+
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+  <script>
+    // Navbar color change on scroll
+    window.addEventListener('scroll', function() {
+      if (window.scrollY > 50) {
+        document.querySelector('.navbar').classList.add('scrolled');
+      } else {
+        document.querySelector('.navbar').classList.remove('scrolled');
+      }
+    });
+    
+    // Form submission
+    document.getElementById('bookingForm').addEventListener('submit', function(e) {
+      e.preventDefault();
+      alert('Thank you for your inquiry! Our team will contact you within 24 hours.');
+      this.reset();
+    });
+    
+    // Chat widget functionality
+    document.getElementById('chatButton').addEventListener('click', function() {
+      document.getElementById('chatPopup').style.display = 'block';
+    });
+    
+    document.getElementById('chatClose').addEventListener('click', function() {
+      document.getElementById('chatPopup').style.display = 'none';
+    });
+    
+    document.getElementById('sendMessage').addEventListener('click', function() {
+      const chatInput = document.getElementById('chatInput');
+      const message = chatInput.value.trim();
+      
+      if (message) {
+        const chatBody = document.getElementById('chatBody');
+        const currentTime = new Date().toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'});
+        
+        // Add user message
+        chatBody.innerHTML += `
+          <div class="d-flex mb-3 justify-content-end">
+            <div class="bg-primary text-white p-2 rounded-3 ms-auto" style="max-width: 75%;">
+              <p class="mb-0 small">${message}</p>
+              <span class="text-white-50 small">${currentTime}</span>
+            </div>
+          </div>
+        `;
+        
+        // Simulate response after 1 second
+        setTimeout(function() {
+          chatBody.innerHTML += `
+            <div class="d-flex mb-3">
+              <div class="bg-light p-2 rounded-3 me-auto" style="max-width: 75%;">
+                <p class="mb-0 small">Thank you for your message! One of our catering specialists will respond shortly.</p>
+                <span class="text-muted small">${currentTime}</span>
+              </div>
+            </div>
+          `;
+          chatBody.scrollTop = chatBody.scrollHeight;
+        }, 1000);
+        
+        chatInput.value = '';
+        chatBody.scrollTop = chatBody.scrollHeight;
+      }
+    });
+    
+    // Allow Enter key to send message
+    document.getElementById('chatInput').addEventListener('keypress', function(e) {
+      if (e.key === 'Enter') {
+        document.getElementById('sendMessage').click();
+      }
+    });
+  </script>
+</body>
+</html>

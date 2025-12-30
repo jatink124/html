@@ -1,0 +1,549 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PaperTrader - Real-Time</title>
+    <style>
+        :root {
+            --primary: #dc2626;
+            --success: #16a34a;
+            --danger: #dc2626;
+            --bg: #0a0a0a;
+            --card: #171717;
+            --text: #fafafa;
+            --border: #404040;
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Inter', sans-serif;
+        }
+        
+        body {
+            background-color: var(--bg);
+            color: var(--text);
+            line-height: 1.6;
+            overflow-x: hidden;
+        }
+        
+        .container {
+            max-width: 100%;
+            padding: 0;
+        }
+        
+        .trading-header {
+            background-color: var(--card);
+            padding: 15px;
+            border-bottom: 1px solid var(--border);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+        
+        .asset-info {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 10px;
+        }
+        
+        .asset-name {
+            font-size: 18px;
+            font-weight: 700;
+        }
+        
+        .asset-price {
+            font-size: 24px;
+            font-weight: 700;
+        }
+        
+        .price-change {
+            font-size: 14px;
+            font-weight: 600;
+            padding: 3px 8px;
+            border-radius: 4px;
+        }
+        
+        .positive {
+            background-color: rgba(22, 163, 74, 0.2);
+            color: var(--success);
+        }
+        
+        .negative {
+            background-color: rgba(220, 38, 38, 0.2);
+            color: var(--danger);
+        }
+        
+        .chart-container {
+            height: 300px;
+            background-color: var(--card);
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .chart {
+            height: 100%;
+            width: 100%;
+            position: relative;
+        }
+        
+        .price-line {
+            position: absolute;
+            height: 1px;
+            width: 100%;
+            background-color: var(--primary);
+            opacity: 0.3;
+        }
+        
+        .price-label {
+            position: absolute;
+            right: 10px;
+            background-color: var(--primary);
+            padding: 2px 6px;
+            border-radius: 3px;
+            font-size: 12px;
+        }
+        
+        .timeframes {
+            display: flex;
+            background-color: var(--card);
+            padding: 10px 15px;
+            border-bottom: 1px solid var(--border);
+        }
+        
+        .timeframe {
+            padding: 5px 10px;
+            margin-right: 10px;
+            border-radius: 4px;
+            font-size: 14px;
+            cursor: pointer;
+        }
+        
+        .timeframe.active {
+            background-color: var(--primary);
+        }
+        
+        .order-panel {
+            background-color: var(--card);
+            padding: 15px;
+            margin: 15px;
+            border-radius: 8px;
+        }
+        
+        .order-type-tabs {
+            display: flex;
+            margin-bottom: 15px;
+            border-bottom: 1px solid var(--border);
+        }
+        
+        .order-tab {
+            padding: 10px 15px;
+            cursor: pointer;
+            border-bottom: 2px solid transparent;
+        }
+        
+        .order-tab.active {
+            border-bottom-color: var(--primary);
+            color: var(--primary);
+        }
+        
+        .order-form {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 10px;
+        }
+        
+        .form-group {
+            display: flex;
+            flex-direction: column;
+        }
+        
+        .full-width {
+            grid-column: 1 / -1;
+        }
+        
+        label {
+            font-size: 12px;
+            color: #a3a3a3;
+            margin-bottom: 5px;
+        }
+        
+        input, select {
+            padding: 10px;
+            background-color: #0a0a0a;
+            border: 1px solid var(--border);
+            border-radius: 4px;
+            color: var(--text);
+        }
+        
+        .order-buttons {
+            grid-column: 1 / -1;
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 10px;
+            margin-top: 10px;
+        }
+        
+        button {
+            padding: 12px;
+            border: none;
+            border-radius: 4px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        
+        button:active {
+            transform: scale(0.98);
+        }
+        
+        .buy-btn {
+            background-color: var(--success);
+            color: white;
+        }
+        
+        .sell-btn {
+            background-color: var(--danger);
+            color: white;
+        }
+        
+        .quick-actions {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 10px;
+            margin: 15px;
+        }
+        
+        .quick-btn {
+            background-color: var(--card);
+            padding: 10px;
+            border-radius: 6px;
+            text-align: center;
+            font-size: 12px;
+            cursor: pointer;
+            border: 1px solid var(--border);
+        }
+        
+        .positions-panel {
+            background-color: var(--card);
+            margin: 15px;
+            border-radius: 8px;
+            overflow: hidden;
+        }
+        
+        .panel-header {
+            padding: 15px;
+            border-bottom: 1px solid var(--border);
+            display: flex;
+            justify-content: space-between;
+        }
+        
+        .positions-list {
+            max-height: 200px;
+            overflow-y: auto;
+        }
+        
+        .position-item {
+            display: flex;
+            justify-content: space-between;
+            padding: 12px 15px;
+            border-bottom: 1px solid var(--border);
+        }
+        
+        .position-info {
+            display: flex;
+            flex-direction: column;
+        }
+        
+        .position-asset {
+            font-weight: 600;
+        }
+        
+        .position-details {
+            font-size: 12px;
+            color: #a3a3a3;
+        }
+        
+        .position-pnl {
+            text-align: right;
+            font-weight: 600;
+        }
+        
+        .flashing {
+            animation: flash 1s;
+        }
+        
+        @keyframes flash {
+            0% { background-color: transparent; }
+            50% { background-color: rgba(220, 38, 38, 0.3); }
+            100% { background-color: transparent; }
+        }
+        
+        .price-up {
+            color: var(--success);
+        }
+        
+        .price-down {
+            color: var(--danger);
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="trading-header">
+            <div class="asset-info">
+                <div class="asset-name">NIFTY 50</div>
+                <div class="asset-price">₹22,450.75</div>
+                <div class="price-change positive">+1.2%</div>
+            </div>
+            <div>Open: ₹22,420.50 | High: ₹22,480.25 | Low: ₹22,380.75</div>
+        </div>
+        
+        <div class="timeframes">
+            <div class="timeframe active">1m</div>
+            <div class="timeframe">5m</div>
+            <div class="timeframe">15m</div>
+            <div class="timeframe">1h</div>
+            <div class="timeframe">4h</div>
+            <div class="timeframe">1d</div>
+        </div>
+        
+        <div class="chart-container">
+            <div class="chart" id="priceChart">
+                <!-- Price chart will be generated by JavaScript -->
+            </div>
+        </div>
+        
+        <div class="quick-actions">
+            <div class="quick-btn">Buy Market</div>
+            <div class="quick-btn">Sell Market</div>
+            <div class="quick-btn">+1% Limit</div>
+            <div class="quick-btn">-1% Stop</div>
+        </div>
+        
+        <div class="order-panel">
+            <div class="order-type-tabs">
+                <div class="order-tab active">Market</div>
+                <div class="order-tab">Limit</div>
+                <div class="order-tab">Stop</div>
+            </div>
+            
+            <div class="order-form">
+                <div class="form-group">
+                    <label>Quantity</label>
+                    <input type="number" value="1" min="1">
+                </div>
+                
+                <div class="form-group">
+                    <label>Price</label>
+                    <input type="number" value="22450.75" step="0.01">
+                </div>
+                
+                <div class="form-group full-width">
+                    <label>Total</label>
+                    <input type="text" value="₹22,450.75" readonly>
+                </div>
+                
+                <div class="order-buttons">
+                    <button class="buy-btn">Buy NIFTY</button>
+                    <button class="sell-btn">Sell NIFTY</button>
+                </div>
+            </div>
+        </div>
+        
+        <div class="positions-panel">
+            <div class="panel-header">
+                <h3>Open Positions</h3>
+                <span>P&L: <span id="totalPnl">-₹32,026.24</span></span>
+            </div>
+            
+            <div class="positions-list">
+                <div class="position-item">
+                    <div class="position-info">
+                        <div class="position-asset">NIFTY 50</div>
+                        <div class="position-details">5 units @ ₹22,100.50</div>
+                    </div>
+                    <div class="position-pnl positive">+₹1,751.25</div>
+                </div>
+                
+                <div class="position-item">
+                    <div class="position-info">
+                        <div class="position-asset">Bitcoin (BTC)</div>
+                        <div class="position-details">0.05 BTC @ ₹59,00,000.00</div>
+                    </div>
+                    <div class="position-pnl negative">-₹33,777.49</div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Generate a simple price chart
+            const chart = document.getElementById('priceChart');
+            const chartWidth = chart.offsetWidth;
+            const chartHeight = chart.offsetHeight;
+            
+            // Create a canvas for the chart
+            const canvas = document.createElement('canvas');
+            canvas.width = chartWidth;
+            canvas.height = chartHeight;
+            chart.appendChild(canvas);
+            const ctx = canvas.getContext('2d');
+            
+            // Generate random price data
+            let prices = [22450];
+            for (let i = 1; i < 100; i++) {
+                // Random walk with slight upward bias
+                const change = (Math.random() - 0.4) * 50;
+                prices.push(Math.max(22300, prices[i-1] + change));
+            }
+            
+            // Draw the chart
+            function drawChart() {
+                ctx.clearRect(0, 0, canvas.width, canvas.height);
+                
+                // Find min and max for scaling
+                const minPrice = Math.min(...prices);
+                const maxPrice = Math.max(...prices);
+                const priceRange = maxPrice - minPrice;
+                
+                // Draw price line
+                ctx.beginPath();
+                ctx.strokeStyle = '#dc2626';
+                ctx.lineWidth = 2;
+                
+                for (let i = 0; i < prices.length; i++) {
+                    const x = (i / (prices.length - 1)) * chartWidth;
+                    const y = chartHeight - ((prices[i] - minPrice) / priceRange) * chartHeight;
+                    
+                    if (i === 0) {
+                        ctx.moveTo(x, y);
+                    } else {
+                        ctx.lineTo(x, y);
+                    }
+                }
+                
+                ctx.stroke();
+                
+                // Add current price line
+                const currentPrice = prices[prices.length - 1];
+                const currentY = chartHeight - ((currentPrice - minPrice) / priceRange) * chartHeight;
+                
+                ctx.beginPath();
+                ctx.strokeStyle = 'rgba(220, 38, 38, 0.3)';
+                ctx.setLineDash([5, 5]);
+                ctx.moveTo(0, currentY);
+                ctx.lineTo(chartWidth, currentY);
+                ctx.stroke();
+                ctx.setLineDash([]);
+                
+                // Add price label
+                ctx.fillStyle = '#dc2626';
+                ctx.fillRect(chartWidth - 60, currentY - 10, 60, 20);
+                ctx.fillStyle = 'white';
+                ctx.font = '12px Inter';
+                ctx.fillText('₹' + currentPrice.toFixed(2), chartWidth - 55, currentY + 4);
+            }
+            
+            drawChart();
+            
+            // Simulate real-time price updates
+            function updatePrice() {
+                // Remove first price and add new one
+                prices.shift();
+                
+                // Generate new price with random walk
+                const lastPrice = prices[prices.length - 1];
+                const change = (Math.random() - 0.45) * 40; // Slight downward bias for demo
+                const newPrice = Math.max(22000, Math.min(22700, lastPrice + change));
+                prices.push(newPrice);
+                
+                // Update UI
+                const priceEl = document.querySelector('.asset-price');
+                const changeEl = document.querySelector('.price-change');
+                
+                const previousPrice = parseFloat(priceEl.textContent.replace('₹', '').replace(',', ''));
+                const changeAmount = newPrice - previousPrice;
+                const changePercent = (changeAmount / previousPrice * 100);
+                
+                priceEl.textContent = '₹' + newPrice.toLocaleString('en-IN', {maximumFractionDigits: 2});
+                changeEl.textContent = (changeAmount >= 0 ? '+' : '') + changePercent.toFixed(2) + '%';
+                changeEl.className = 'price-change ' + (changeAmount >= 0 ? 'positive' : 'negative');
+                
+                // Flash effect for price changes
+                if (Math.abs(changePercent) > 0.05) {
+                    priceEl.classList.add(changeAmount >= 0 ? 'price-up' : 'price-down');
+                    setTimeout(() => {
+                        priceEl.classList.remove('price-up', 'price-down');
+                    }, 500);
+                }
+                
+                // Redraw chart
+                drawChart();
+                
+                // Update order form price
+                document.querySelector('.order-form input[type="number"]:last-child').value = newPrice.toFixed(2);
+                document.querySelector('.order-form input[type="text"]').value = 
+                    '₹' + (newPrice * parseInt(document.querySelector('.order-form input[type="number"]:first-child').value)).toLocaleString('en-IN');
+            }
+            
+            // Update price every 2 seconds
+            setInterval(updatePrice, 2000);
+            
+            // Timeframe switching
+            document.querySelectorAll('.timeframe').forEach(timeframe => {
+                timeframe.addEventListener('click', function() {
+                    document.querySelectorAll('.timeframe').forEach(t => t.classList.remove('active'));
+                    this.classList.add('active');
+                    
+                    // In a real app, this would change the chart timeframe
+                    alert(`Switching to ${this.textContent} timeframe`);
+                });
+            });
+            
+            // Order type tabs
+            document.querySelectorAll('.order-tab').forEach(tab => {
+                tab.addEventListener('click', function() {
+                    document.querySelectorAll('.order-tab').forEach(t => t.classList.remove('active'));
+                    this.classList.add('active');
+                    
+                    // Show/hide price input based on order type
+                    const priceInput = document.querySelector('.order-form input[type="number"]:last-child');
+                    priceInput.disabled = this.textContent === 'Market';
+                });
+            });
+            
+            // Quick actions
+            document.querySelectorAll('.quick-btn').forEach(btn => {
+                btn.addEventListener('click', function() {
+                    const action = this.textContent;
+                    alert(`Quick action: ${action}`);
+                });
+            });
+            
+            // Buy/Sell buttons
+            document.querySelectorAll('.buy-btn, .sell-btn').forEach(button => {
+                button.addEventListener('click', function() {
+                    const quantity = document.querySelector('.order-form input[type="number"]:first-child').value;
+                    const price = document.querySelector('.order-form input[type="number"]:last-child').value;
+                    const orderType = document.querySelector('.order-tab.active').textContent;
+                    const action = this.classList.contains('buy-btn') ? 'Buy' : 'Sell';
+                    
+                    alert(`${action} ${orderType} order placed for ${quantity} NIFTY at ₹${price}`);
+                });
+            });
+            
+            // Update total when quantity changes
+            document.querySelector('.order-form input[type="number"]:first-child').addEventListener('input', function() {
+                const quantity = parseInt(this.value) || 0;
+                const price = parseFloat(document.querySelector('.order-form input[type="number"]:last-child').value) || 0;
+                document.querySelector('.order-form input[type="text"]').value = '₹' + (quantity * price).toLocaleString('en-IN');
+            });
+        });
+    </script>
+</body>
+</html>

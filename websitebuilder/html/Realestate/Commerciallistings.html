@@ -1,0 +1,1313 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>BizNest Bazaar - Commercial Real Estate Listings</title>
+    <meta name="description" content="Find premium office spaces, warehouses, and business properties for your company." />
+    <meta name="author" content="BizNest Bazaar" />
+
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+
+    <!-- Font Awesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+      tailwind.config = {
+        theme: {
+          extend: {
+            colors: {
+              primary: {
+                DEFAULT: '#1a56db',
+                50: '#f0f5ff',
+                100: '#e5edff',
+                500: '#1a56db',
+                600: '#1345b8',
+                700: '#0e3592',
+                800: '#0a246c',
+                900: '#07184d',
+              },
+              secondary: {
+                DEFAULT: '#f97316',
+                50: '#fff7ed',
+                100: '#ffedd5',
+                600: '#ea580c',
+              },
+              gray: {
+                50: '#f9fafb',
+                100: '#f3f4f6',
+                200: '#e5e7eb',
+                300: '#d1d5db',
+                400: '#9ca3af',
+                500: '#6b7280',
+                600: '#4b5563',
+                700: '#374151',
+                800: '#1f2937',
+                900: '#111827',
+              }
+            },
+            fontFamily: {
+              sans: ['Inter', 'sans-serif'],
+            },
+          },
+        },
+      }
+    </script>
+
+    <style>
+      /* Custom Styles */
+      .property-card {
+        transition: transform 0.3s ease, box-shadow 0.3s ease;
+      }
+      .property-card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+      }
+      .carousel {
+        scroll-behavior: smooth;
+      }
+      .feature-icon {
+        transition: all 0.3s ease;
+      }
+      .feature-icon:hover {
+        transform: scale(1.1);
+        color: #1a56db;
+      }
+      .testimonial-card {
+        transition: all 0.3s ease;
+      }
+      .testimonial-card:hover {
+        transform: scale(1.02);
+      }
+      #map {
+        height: 400px;
+        width: 100%; 
+        border-radius: 0.5rem;
+      }
+      .agent-card:hover img {
+        transform: scale(1.05);
+        transition: transform 0.3s ease;
+      }
+      .agent-card img {
+        transition: transform 0.3s ease;
+      }
+      .comparison-table th {
+        position: sticky;
+        top: 0;
+        background-color: #fff;
+        z-index: 10;
+      }
+    </style>
+    <!-- IMPORTANT: DO NOT REMOVE THIS SCRIPT TAG OR THIS VERY COMMENT! -->
+    <script src="https://cdn.gpteng.co/gptengineer.js" type="module"></script>
+  </head>
+
+  <body class="bg-gray-50 font-sans">
+    <!-- Header with Navigation -->
+    <header class="bg-white shadow-md sticky top-0 z-50">
+      <div class="container mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="flex justify-between items-center py-4">
+          <div class="flex items-center">
+            <a href="#" class="flex items-center">
+              <i class="fa-solid fa-building text-primary text-2xl mr-2"></i>
+              <span class="font-bold text-xl text-gray-800">BizNest Bazaar</span>
+            </a>
+          </div>
+          
+          <nav class="hidden md:flex space-x-8">
+            <a href="#properties" class="text-gray-600 hover:text-primary font-medium">Properties</a>
+            <a href="#featured" class="text-gray-600 hover:text-primary font-medium">Featured</a>
+            <a href="#agents" class="text-gray-600 hover:text-primary font-medium">Agents</a>
+            <a href="#testimonials" class="text-gray-600 hover:text-primary font-medium">Testimonials</a>
+            <a href="#contact" class="text-gray-600 hover:text-primary font-medium">Contact</a>
+          </nav>
+          
+          <div class="flex items-center">
+            <a href="#contact" class="hidden md:inline-block bg-primary hover:bg-primary-600 text-white font-medium py-2 px-4 rounded-md transition duration-200">
+              List Your Property
+            </a>
+            <button class="md:hidden text-gray-600 hover:text-primary focus:outline-none">
+              <i class="fa-solid fa-bars text-xl"></i>
+            </button>
+          </div>
+        </div>
+      </div>
+      
+      <!-- Mobile Navigation (Hidden by default) -->
+      <div class="hidden md:hidden bg-white border-t" id="mobile-menu">
+        <div class="container mx-auto px-4 py-2">
+          <nav class="flex flex-col space-y-2">
+            <a href="#properties" class="py-2 text-gray-600 hover:text-primary font-medium">Properties</a>
+            <a href="#featured" class="py-2 text-gray-600 hover:text-primary font-medium">Featured</a>
+            <a href="#agents" class="py-2 text-gray-600 hover:text-primary font-medium">Agents</a>
+            <a href="#testimonials" class="py-2 text-gray-600 hover:text-primary font-medium">Testimonials</a>
+            <a href="#contact" class="py-2 text-gray-600 hover:text-primary font-medium">Contact</a>
+            <a href="#contact" class="inline-block bg-primary hover:bg-primary-600 text-white font-medium py-2 px-4 rounded-md transition duration-200 text-center">
+              List Your Property
+            </a>
+          </nav>
+        </div>
+      </div>
+    </header>
+
+    <!-- Hero Section with Search -->
+    <section class="relative bg-gray-900 text-white">
+      <div class="absolute inset-0 overflow-hidden">
+        <img src="https://images.unsplash.com/photo-1486406146926-c627a92ad1ab?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2070&q=80" alt="Office Building" class="w-full h-full object-cover opacity-30">
+      </div>
+      <div class="container mx-auto px-4 sm:px-6 lg:px-8 relative z-10 py-24 md:py-32">
+        <div class="max-w-3xl mx-auto text-center">
+          <h1 class="text-4xl md:text-5xl lg:text-6xl font-bold mb-6">Find Your Perfect Commercial Space</h1>
+          <p class="text-xl mb-10 text-gray-200">Premium office spaces, warehouses, and business properties for your company</p>
+          
+          <!-- Search Form -->
+          <div class="bg-white p-4 rounded-lg shadow-lg">
+            <form class="grid grid-cols-1 md:grid-cols-4 gap-4">
+              <div>
+                <label for="property-type" class="block text-gray-700 text-sm font-medium mb-1">Property Type</label>
+                <select id="property-type" class="w-full py-2 px-3 border border-gray-300 rounded-md text-gray-700 focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent">
+                  <option value="">All Types</option>
+                  <option value="office">Office Space</option>
+                  <option value="warehouse">Warehouse</option>
+                  <option value="retail">Retail Space</option>
+                  <option value="industrial">Industrial</option>
+                </select>
+              </div>
+              <div>
+                <label for="location" class="block text-gray-700 text-sm font-medium mb-1">Location</label>
+                <input type="text" id="location" placeholder="City, State or ZIP" class="w-full py-2 px-3 border border-gray-300 rounded-md text-gray-700 focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent">
+              </div>
+              <div>
+                <label for="price" class="block text-gray-700 text-sm font-medium mb-1">Price Range</label>
+                <select id="price" class="w-full py-2 px-3 border border-gray-300 rounded-md text-gray-700 focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent">
+                  <option value="">Any Price</option>
+                  <option value="0-1000">$0 - $1,000 /mo</option>
+                  <option value="1000-3000">$1,000 - $3,000 /mo</option>
+                  <option value="3000-5000">$3,000 - $5,000 /mo</option>
+                  <option value="5000-10000">$5,000 - $10,000 /mo</option>
+                  <option value="10000+">$10,000+ /mo</option>
+                </select>
+              </div>
+              <div class="flex items-end">
+                <button type="submit" class="w-full bg-primary hover:bg-primary-600 text-white font-medium py-2 px-4 rounded-md transition duration-200">
+                  <i class="fa-solid fa-search mr-2"></i> Search Properties
+                </button>
+              </div>
+            </form>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Features Section -->
+    <section class="py-16 bg-white">
+      <div class="container mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="text-center mb-12">
+          <h2 class="text-3xl font-bold text-gray-800">Discover Our Advantages</h2>
+          <p class="mt-4 text-lg text-gray-600">What makes our commercial properties stand out from the rest</p>
+        </div>
+        
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
+          <div class="text-center p-6 rounded-lg hover:bg-gray-50 transition duration-300">
+            <div class="feature-icon mx-auto mb-4 w-16 h-16 bg-primary-50 rounded-full flex items-center justify-center">
+              <i class="fa-solid fa-building text-primary text-2xl"></i>
+            </div>
+            <h3 class="text-xl font-semibold text-gray-800 mb-2">Premium Locations</h3>
+            <p class="text-gray-600">Strategically located properties in prime business districts and commercial hubs.</p>
+          </div>
+          
+          <div class="text-center p-6 rounded-lg hover:bg-gray-50 transition duration-300">
+            <div class="feature-icon mx-auto mb-4 w-16 h-16 bg-primary-50 rounded-full flex items-center justify-center">
+              <i class="fa-solid fa-wifi text-primary text-2xl"></i>
+            </div>
+            <h3 class="text-xl font-semibold text-gray-800 mb-2">Modern Amenities</h3>
+            <p class="text-gray-600">High-speed internet, smart building features, and state-of-the-art facilities.</p>
+          </div>
+          
+          <div class="text-center p-6 rounded-lg hover:bg-gray-50 transition duration-300">
+            <div class="feature-icon mx-auto mb-4 w-16 h-16 bg-primary-50 rounded-full flex items-center justify-center">
+              <i class="fa-solid fa-leaf text-primary text-2xl"></i>
+            </div>
+            <h3 class="text-xl font-semibold text-gray-800 mb-2">Eco-Friendly</h3>
+            <p class="text-gray-600">Energy-efficient buildings with sustainable features and green certifications.</p>
+          </div>
+          
+          <div class="text-center p-6 rounded-lg hover:bg-gray-50 transition duration-300">
+            <div class="feature-icon mx-auto mb-4 w-16 h-16 bg-primary-50 rounded-full flex items-center justify-center">
+              <i class="fa-solid fa-lock text-primary text-2xl"></i>
+            </div>
+            <h3 class="text-xl font-semibold text-gray-800 mb-2">Security & Safety</h3>
+            <p class="text-gray-600">24/7 surveillance, access control systems, and comprehensive security measures.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Properties Section -->
+    <section id="properties" class="py-16 bg-gray-50">
+      <div class="container mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="text-center mb-12">
+          <h2 class="text-3xl font-bold text-gray-800">Browse Our Properties</h2>
+          <p class="mt-4 text-lg text-gray-600">Explore our extensive collection of premium commercial spaces</p>
+        </div>
+        
+        <!-- Property Filters -->
+        <div class="mb-10 flex flex-wrap justify-center gap-4">
+          <button class="bg-primary text-white px-4 py-2 rounded-md hover:bg-primary-600 transition duration-200">
+            All Properties
+          </button>
+          <button class="bg-white text-gray-700 px-4 py-2 rounded-md hover:bg-gray-100 transition duration-200">
+            Office Spaces
+          </button>
+          <button class="bg-white text-gray-700 px-4 py-2 rounded-md hover:bg-gray-100 transition duration-200">
+            Warehouses
+          </button>
+          <button class="bg-white text-gray-700 px-4 py-2 rounded-md hover:bg-gray-100 transition duration-200">
+            Retail Spaces
+          </button>
+          <button class="bg-white text-gray-700 px-4 py-2 rounded-md hover:bg-gray-100 transition duration-200">
+            Industrial
+          </button>
+        </div>
+        
+        <!-- Property Grid -->
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+          <!-- Property Card 1 -->
+          <div class="property-card bg-white rounded-lg overflow-hidden shadow-md">
+            <div class="relative">
+              <img src="https://images.unsplash.com/photo-1497366811353-6870744d04b2?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2069&q=80" alt="Office Space" class="w-full h-64 object-cover">
+              <div class="absolute top-4 left-4 bg-primary text-white px-3 py-1 rounded-md text-sm font-medium">
+                Office Space
+              </div>
+              <div class="absolute top-4 right-4 bg-secondary text-white px-3 py-1 rounded-md text-sm font-medium">
+                Featured
+              </div>
+            </div>
+            <div class="p-6">
+              <h3 class="text-xl font-bold text-gray-800 mb-2">Premium Downtown Office Suite</h3>
+              <div class="flex items-center mb-4">
+                <i class="fa-solid fa-location-dot text-primary mr-2"></i>
+                <span class="text-gray-600">123 Business Ave, New York, NY</span>
+              </div>
+              <div class="flex flex-wrap gap-4 mb-6">
+                <div class="flex items-center text-gray-600">
+                  <i class="fa-solid fa-ruler-combined mr-2 text-primary"></i>
+                  <span>2,500 sq ft</span>
+                </div>
+                <div class="flex items-center text-gray-600">
+                  <i class="fa-solid fa-car mr-2 text-primary"></i>
+                  <span>5 Parking</span>
+                </div>
+                <div class="flex items-center text-gray-600">
+                  <i class="fa-solid fa-user-group mr-2 text-primary"></i>
+                  <span>Up to 25 people</span>
+                </div>
+              </div>
+              <div class="flex justify-between items-center">
+                <div class="text-primary font-bold text-xl">$4,500 /month</div>
+                <a href="#" class="bg-primary hover:bg-primary-600 text-white font-medium py-2 px-4 rounded-md transition duration-200">
+                  View Details
+                </a>
+              </div>
+            </div>
+          </div>
+          
+          <!-- Property Card 2 -->
+          <div class="property-card bg-white rounded-lg overflow-hidden shadow-md">
+            <div class="relative">
+              <img src="https://images.unsplash.com/photo-1586528116311-ad8dd3c8310d?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2070&q=80" alt="Warehouse" class="w-full h-64 object-cover">
+              <div class="absolute top-4 left-4 bg-primary text-white px-3 py-1 rounded-md text-sm font-medium">
+                Warehouse
+              </div>
+            </div>
+            <div class="p-6">
+              <h3 class="text-xl font-bold text-gray-800 mb-2">Modern Distribution Warehouse</h3>
+              <div class="flex items-center mb-4">
+                <i class="fa-solid fa-location-dot text-primary mr-2"></i>
+                <span class="text-gray-600">456 Industrial Pkwy, Chicago, IL</span>
+              </div>
+              <div class="flex flex-wrap gap-4 mb-6">
+                <div class="flex items-center text-gray-600">
+                  <i class="fa-solid fa-ruler-combined mr-2 text-primary"></i>
+                  <span>10,000 sq ft</span>
+                </div>
+                <div class="flex items-center text-gray-600">
+                  <i class="fa-solid fa-truck mr-2 text-primary"></i>
+                  <span>5 Loading Docks</span>
+                </div>
+                <div class="flex items-center text-gray-600">
+                  <i class="fa-solid fa-temperature-arrow-up mr-2 text-primary"></i>
+                  <span>Climate Controlled</span>
+                </div>
+              </div>
+              <div class="flex justify-between items-center">
+                <div class="text-primary font-bold text-xl">$7,200 /month</div>
+                <a href="#" class="bg-primary hover:bg-primary-600 text-white font-medium py-2 px-4 rounded-md transition duration-200">
+                  View Details
+                </a>
+              </div>
+            </div>
+          </div>
+          
+          <!-- Property Card 3 -->
+          <div class="property-card bg-white rounded-lg overflow-hidden shadow-md">
+            <div class="relative">
+              <img src="https://images.unsplash.com/photo-1604328698692-f76ea9498e76?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2070&q=80" alt="Retail Space" class="w-full h-64 object-cover">
+              <div class="absolute top-4 left-4 bg-primary text-white px-3 py-1 rounded-md text-sm font-medium">
+                Retail Space
+              </div>
+              <div class="absolute top-4 right-4 bg-secondary text-white px-3 py-1 rounded-md text-sm font-medium">
+                Featured
+              </div>
+            </div>
+            <div class="p-6">
+              <h3 class="text-xl font-bold text-gray-800 mb-2">Prime Shopping Center Location</h3>
+              <div class="flex items-center mb-4">
+                <i class="fa-solid fa-location-dot text-primary mr-2"></i>
+                <span class="text-gray-600">789 Retail Row, San Francisco, CA</span>
+              </div>
+              <div class="flex flex-wrap gap-4 mb-6">
+                <div class="flex items-center text-gray-600">
+                  <i class="fa-solid fa-ruler-combined mr-2 text-primary"></i>
+                  <span>1,800 sq ft</span>
+                </div>
+                <div class="flex items-center text-gray-600">
+                  <i class="fa-solid fa-people-group mr-2 text-primary"></i>
+                  <span>High Foot Traffic</span>
+                </div>
+                <div class="flex items-center text-gray-600">
+                  <i class="fa-solid fa-shop mr-2 text-primary"></i>
+                  <span>Storefront</span>
+                </div>
+              </div>
+              <div class="flex justify-between items-center">
+                <div class="text-primary font-bold text-xl">$6,800 /month</div>
+                <a href="#" class="bg-primary hover:bg-primary-600 text-white font-medium py-2 px-4 rounded-md transition duration-200">
+                  View Details
+                </a>
+              </div>
+            </div>
+          </div>
+          
+          <!-- Property Card 4 -->
+          <div class="property-card bg-white rounded-lg overflow-hidden shadow-md">
+            <div class="relative">
+              <img src="https://images.unsplash.com/photo-1617979442093-7625a1683a25?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2070&q=80" alt="Office Space" class="w-full h-64 object-cover">
+              <div class="absolute top-4 left-4 bg-primary text-white px-3 py-1 rounded-md text-sm font-medium">
+                Office Space
+              </div>
+            </div>
+            <div class="p-6">
+              <h3 class="text-xl font-bold text-gray-800 mb-2">Luxury Corporate Headquarters</h3>
+              <div class="flex items-center mb-4">
+                <i class="fa-solid fa-location-dot text-primary mr-2"></i>
+                <span class="text-gray-600">101 Executive Blvd, Austin, TX</span>
+              </div>
+              <div class="flex flex-wrap gap-4 mb-6">
+                <div class="flex items-center text-gray-600">
+                  <i class="fa-solid fa-ruler-combined mr-2 text-primary"></i>
+                  <span>5,000 sq ft</span>
+                </div>
+                <div class="flex items-center text-gray-600">
+                  <i class="fa-solid fa-car mr-2 text-primary"></i>
+                  <span>10 Parking</span>
+                </div>
+                <div class="flex items-center text-gray-600">
+                  <i class="fa-solid fa-building mr-2 text-primary"></i>
+                  <span>Full Floor</span>
+                </div>
+              </div>
+              <div class="flex justify-between items-center">
+                <div class="text-primary font-bold text-xl">$12,000 /month</div>
+                <a href="#" class="bg-primary hover:bg-primary-600 text-white font-medium py-2 px-4 rounded-md transition duration-200">
+                  View Details
+                </a>
+              </div>
+            </div>
+          </div>
+          
+          <!-- Property Card 5 -->
+          <div class="property-card bg-white rounded-lg overflow-hidden shadow-md">
+            <div class="relative">
+              <img src="https://images.unsplash.com/photo-1581578017093-cd30fce4eace?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2070&q=80" alt="Industrial Space" class="w-full h-64 object-cover">
+              <div class="absolute top-4 left-4 bg-primary text-white px-3 py-1 rounded-md text-sm font-medium">
+                Industrial
+              </div>
+            </div>
+            <div class="p-6">
+              <h3 class="text-xl font-bold text-gray-800 mb-2">Manufacturing Facility</h3>
+              <div class="flex items-center mb-4">
+                <i class="fa-solid fa-location-dot text-primary mr-2"></i>
+                <span class="text-gray-600">555 Factory Lane, Detroit, MI</span>
+              </div>
+              <div class="flex flex-wrap gap-4 mb-6">
+                <div class="flex items-center text-gray-600">
+                  <i class="fa-solid fa-ruler-combined mr-2 text-primary"></i>
+                  <span>15,000 sq ft</span>
+                </div>
+                <div class="flex items-center text-gray-600">
+                  <i class="fa-solid fa-bolt mr-2 text-primary"></i>
+                  <span>High Power Capacity</span>
+                </div>
+                <div class="flex items-center text-gray-600">
+                  <i class="fa-solid fa-truck-ramp-box mr-2 text-primary"></i>
+                  <span>3 Loading Bays</span>
+                </div>
+              </div>
+              <div class="flex justify-between items-center">
+                <div class="text-primary font-bold text-xl">$9,500 /month</div>
+                <a href="#" class="bg-primary hover:bg-primary-600 text-white font-medium py-2 px-4 rounded-md transition duration-200">
+                  View Details
+                </a>
+              </div>
+            </div>
+          </div>
+          
+          <!-- Property Card 6 -->
+          <div class="property-card bg-white rounded-lg overflow-hidden shadow-md">
+            <div class="relative">
+              <img src="https://images.unsplash.com/photo-1600607687644-c7e5eacd4e20?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2070&q=80" alt="Office Space" class="w-full h-64 object-cover">
+              <div class="absolute top-4 left-4 bg-primary text-white px-3 py-1 rounded-md text-sm font-medium">
+                Office Space
+              </div>
+              <div class="absolute top-4 right-4 bg-secondary text-white px-3 py-1 rounded-md text-sm font-medium">
+                Featured
+              </div>
+            </div>
+            <div class="p-6">
+              <h3 class="text-xl font-bold text-gray-800 mb-2">Creative Co-working Space</h3>
+              <div class="flex items-center mb-4">
+                <i class="fa-solid fa-location-dot text-primary mr-2"></i>
+                <span class="text-gray-600">222 Innovation Way, Seattle, WA</span>
+              </div>
+              <div class="flex flex-wrap gap-4 mb-6">
+                <div class="flex items-center text-gray-600">
+                  <i class="fa-solid fa-ruler-combined mr-2 text-primary"></i>
+                  <span>3,200 sq ft</span>
+                </div>
+                <div class="flex items-center text-gray-600">
+                  <i class="fa-solid fa-mug-hot mr-2 text-primary"></i>
+                  <span>On-site Café</span>
+                </div>
+                <div class="flex items-center text-gray-600">
+                  <i class="fa-solid fa-clock mr-2 text-primary"></i>
+                  <span>24/7 Access</span>
+                </div>
+              </div>
+              <div class="flex justify-between items-center">
+                <div class="text-primary font-bold text-xl">$5,800 /month</div>
+                <a href="#" class="bg-primary hover:bg-primary-600 text-white font-medium py-2 px-4 rounded-md transition duration-200">
+                  View Details
+                </a>
+              </div>
+            </div>
+          </div>
+        </div>
+        
+        <div class="mt-12 text-center">
+          <a href="#" class="inline-block bg-primary hover:bg-primary-600 text-white font-medium py-3 px-8 rounded-md transition duration-200">
+            Load More Properties
+          </a>
+        </div>
+      </div>
+    </section>
+
+    <!-- Featured Properties Carousel Section -->
+    <section id="featured" class="py-16 bg-white">
+      <div class="container mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="text-center mb-12">
+          <h2 class="text-3xl font-bold text-gray-800">Featured Properties</h2>
+          <p class="mt-4 text-lg text-gray-600">Our most exclusive commercial listings</p>
+        </div>
+        
+        <div class="relative">
+          <!-- Carousel Container -->
+          <div class="carousel overflow-x-auto flex space-x-6 pb-8 hide-scrollbar">
+            <!-- Featured Property 1 -->
+            <div class="min-w-[300px] md:min-w-[350px] property-card bg-white rounded-lg overflow-hidden shadow-md flex-shrink-0">
+              <div class="relative">
+                <img src="https://images.unsplash.com/photo-1622168801137-f8b4118d0c7c?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1974&q=80" alt="Luxury Office" class="w-full h-64 object-cover">
+                <div class="absolute top-4 left-4 bg-primary text-white px-3 py-1 rounded-md text-sm font-medium">
+                  Office Space
+                </div>
+                <div class="absolute top-4 right-4 bg-secondary text-white px-3 py-1 rounded-md text-sm font-medium">
+                  Featured
+                </div>
+              </div>
+              <div class="p-6">
+                <h3 class="text-xl font-bold text-gray-800 mb-2">Skyline Executive Suites</h3>
+                <div class="flex items-center mb-4">
+                  <i class="fa-solid fa-location-dot text-primary mr-2"></i>
+                  <span class="text-gray-600">Manhattan, New York</span>
+                </div>
+                <div class="flex justify-between items-center">
+                  <div class="text-primary font-bold text-xl">$18,500 /month</div>
+                  <a href="#" class="bg-primary hover:bg-primary-600 text-white font-medium py-2 px-4 rounded-md transition duration-200">
+                    View Details
+                  </a>
+                </div>
+              </div>
+            </div>
+            
+            <!-- Featured Property 2 -->
+            <div class="min-w-[300px] md:min-w-[350px] property-card bg-white rounded-lg overflow-hidden shadow-md flex-shrink-0">
+              <div class="relative">
+                <img src="https://images.unsplash.com/photo-1600573472550-8090733a173d?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2070&q=80" alt="Warehouse Complex" class="w-full h-64 object-cover">
+                <div class="absolute top-4 left-4 bg-primary text-white px-3 py-1 rounded-md text-sm font-medium">
+                  Warehouse
+                </div>
+                <div class="absolute top-4 right-4 bg-secondary text-white px-3 py-1 rounded-md text-sm font-medium">
+                  Featured
+                </div>
+              </div>
+              <div class="p-6">
+                <h3 class="text-xl font-bold text-gray-800 mb-2">Mega Distribution Center</h3>
+                <div class="flex items-center mb-4">
+                  <i class="fa-solid fa-location-dot text-primary mr-2"></i>
+                  <span class="text-gray-600">Dallas, Texas</span>
+                </div>
+                <div class="flex justify-between items-center">
+                  <div class="text-primary font-bold text-xl">$22,000 /month</div>
+                  <a href="#" class="bg-primary hover:bg-primary-600 text-white font-medium py-2 px-4 rounded-md transition duration-200">
+                    View Details
+                  </a>
+                </div>
+              </div>
+            </div>
+            
+            <!-- Featured Property 3 -->
+            <div class="min-w-[300px] md:min-w-[350px] property-card bg-white rounded-lg overflow-hidden shadow-md flex-shrink-0">
+              <div class="relative">
+                <img src="https://images.unsplash.com/photo-1582883040775-f98dd8c04597?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2012&q=80" alt="Retail Space" class="w-full h-64 object-cover">
+                <div class="absolute top-4 left-4 bg-primary text-white px-3 py-1 rounded-md text-sm font-medium">
+                  Retail Space
+                </div>
+                <div class="absolute top-4 right-4 bg-secondary text-white px-3 py-1 rounded-md text-sm font-medium">
+                  Featured
+                </div>
+              </div>
+              <div class="p-6">
+                <h3 class="text-xl font-bold text-gray-800 mb-2">Downtown Flagship Store</h3>
+                <div class="flex items-center mb-4">
+                  <i class="fa-solid fa-location-dot text-primary mr-2"></i>
+                  <span class="text-gray-600">San Francisco, California</span>
+                </div>
+                <div class="flex justify-between items-center">
+                  <div class="text-primary font-bold text-xl">$15,800 /month</div>
+                  <a href="#" class="bg-primary hover:bg-primary-600 text-white font-medium py-2 px-4 rounded-md transition duration-200">
+                    View Details
+                  </a>
+                </div>
+              </div>
+            </div>
+            
+            <!-- Featured Property 4 -->
+            <div class="min-w-[300px] md:min-w-[350px] property-card bg-white rounded-lg overflow-hidden shadow-md flex-shrink-0">
+              <div class="relative">
+                <img src="https://images.unsplash.com/photo-1497366754035-f200968a6e72?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2069&q=80" alt="Modern Office" class="w-full h-64 object-cover">
+                <div class="absolute top-4 left-4 bg-primary text-white px-3 py-1 rounded-md text-sm font-medium">
+                  Office Space
+                </div>
+                <div class="absolute top-4 right-4 bg-secondary text-white px-3 py-1 rounded-md text-sm font-medium">
+                  Featured
+                </div>
+              </div>
+              <div class="p-6">
+                <h3 class="text-xl font-bold text-gray-800 mb-2">Tech Innovation Hub</h3>
+                <div class="flex items-center mb-4">
+                  <i class="fa-solid fa-location-dot text-primary mr-2"></i>
+                  <span class="text-gray-600">Austin, Texas</span>
+                </div>
+                <div class="flex justify-between items-center">
+                  <div class="text-primary font-bold text-xl">$14,200 /month</div>
+                  <a href="#" class="bg-primary hover:bg-primary-600 text-white font-medium py-2 px-4 rounded-md transition duration-200">
+                    View Details
+                  </a>
+                </div>
+              </div>
+            </div>
+          </div>
+          
+          <!-- Carousel Controls -->
+          <button id="prev-btn" class="absolute top-1/2 left-0 -translate-y-1/2 -translate-x-2 bg-white p-2 rounded-full shadow-md text-primary hover:bg-primary hover:text-white transition duration-200">
+            <i class="fa-solid fa-chevron-left text-xl"></i>
+          </button>
+          <button id="next-btn" class="absolute top-1/2 right-0 -translate-y-1/2 translate-x-2 bg-white p-2 rounded-full shadow-md text-primary hover:bg-primary hover:text-white transition duration-200">
+            <i class="fa-solid fa-chevron-right text-xl"></i>
+          </button>
+        </div>
+      </div>
+    </section>
+
+    <!-- Property Comparison Tool -->
+    <section class="py-16 bg-gray-50">
+      <div class="container mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="text-center mb-12">
+          <h2 class="text-3xl font-bold text-gray-800">Compare Properties</h2>
+          <p class="mt-4 text-lg text-gray-600">Find the perfect commercial space for your business needs</p>
+        </div>
+        
+        <div class="bg-white rounded-lg shadow-md overflow-x-auto">
+          <table class="w-full comparison-table">
+            <thead>
+              <tr class="bg-gray-100 border-b">
+                <th class="px-6 py-4 text-left text-gray-800 font-semibold">Property</th>
+                <th class="px-6 py-4 text-left text-gray-800 font-semibold">Type</th>
+                <th class="px-6 py-4 text-left text-gray-800 font-semibold">Location</th>
+                <th class="px-6 py-4 text-left text-gray-800 font-semibold">Size</th>
+                <th class="px-6 py-4 text-left text-gray-800 font-semibold">Price</th>
+                <th class="px-6 py-4 text-left text-gray-800 font-semibold">Amenities</th>
+                <th class="px-6 py-4 text-left text-gray-800 font-semibold">Action</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr class="border-b hover:bg-gray-50">
+                <td class="px-6 py-4">
+                  <div class="flex items-center space-x-3">
+                    <img src="https://images.unsplash.com/photo-1497366754035-f200968a6e72?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=100&q=80" alt="Property" class="w-12 h-12 rounded-md object-cover">
+                    <div>
+                      <div class="font-medium text-gray-800">Tech Innovation Hub</div>
+                    </div>
+                  </div>
+                </td>
+                <td class="px-6 py-4 text-gray-600">Office Space</td>
+                <td class="px-6 py-4 text-gray-600">Austin, TX</td>
+                <td class="px-6 py-4 text-gray-600">3,200 sq ft</td>
+                <td class="px-6 py-4 text-primary font-semibold">$14,200 /mo</td>
+                <td class="px-6 py-4">
+                  <div class="flex flex-wrap gap-2">
+                    <span class="bg-gray-100 px-2 py-1 rounded text-xs text-gray-600">24/7 Access</span>
+                    <span class="bg-gray-100 px-2 py-1 rounded text-xs text-gray-600">Meeting Rooms</span>
+                    <span class="bg-gray-100 px-2 py-1 rounded text-xs text-gray-600">Parking</span>
+                  </div>
+                </td>
+                <td class="px-6 py-4">
+                  <a href="#" class="text-primary hover:text-primary-700">View</a>
+                </td>
+              </tr>
+              <tr class="border-b hover:bg-gray-50">
+                <td class="px-6 py-4">
+                  <div class="flex items-center space-x-3">
+                    <img src="https://images.unsplash.com/photo-1497366811353-6870744d04b2?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=100&q=80" alt="Property" class="w-12 h-12 rounded-md object-cover">
+                    <div>
+                      <div class="font-medium text-gray-800">Premium Downtown Office</div>
+                    </div>
+                  </div>
+                </td>
+                <td class="px-6 py-4 text-gray-600">Office Space</td>
+                <td class="px-6 py-4 text-gray-600">New York, NY</td>
+                <td class="px-6 py-4 text-gray-600">2,500 sq ft</td>
+                <td class="px-6 py-4 text-primary font-semibold">$4,500 /mo</td>
+                <td class="px-6 py-4">
+                  <div class="flex flex-wrap gap-2">
+                    <span class="bg-gray-100 px-2 py-1 rounded text-xs text-gray-600">Reception</span>
+                    <span class="bg-gray-100 px-2 py-1 rounded text-xs text-gray-600">High-Speed Internet</span>
+                    <span class="bg-gray-100 px-2 py-1 rounded text-xs text-gray-600">Kitchen</span>
+                  </div>
+                </td>
+                <td class="px-6 py-4">
+                  <a href="#" class="text-primary hover:text-primary-700">View</a>
+                </td>
+              </tr>
+              <tr class="border-b hover:bg-gray-50">
+                <td class="px-6 py-4">
+                  <div class="flex items-center space-x-3">
+                    <img src="https://images.unsplash.com/photo-1586528116311-ad8dd3c8310d?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=100&q=80" alt="Property" class="w-12 h-12 rounded-md object-cover">
+                    <div>
+                      <div class="font-medium text-gray-800">Modern Distribution Warehouse</div>
+                    </div>
+                  </div>
+                </td>
+                <td class="px-6 py-4 text-gray-600">Warehouse</td>
+                <td class="px-6 py-4 text-gray-600">Chicago, IL</td>
+                <td class="px-6 py-4 text-gray-600">10,000 sq ft</td>
+                <td class="px-6 py-4 text-primary font-semibold">$7,200 /mo</td>
+                <td class="px-6 py-4">
+                  <div class="flex flex-wrap gap-2">
+                    <span class="bg-gray-100 px-2 py-1 rounded text-xs text-gray-600">Loading Docks</span>
+                    <span class="bg-gray-100 px-2 py-1 rounded text-xs text-gray-600">Climate Control</span>
+                    <span class="bg-gray-100 px-2 py-1 rounded text-xs text-gray-600">Security</span>
+                  </div>
+                </td>
+                <td class="px-6 py-4">
+                  <a href="#" class="text-primary hover:text-primary-700">View</a>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+        
+        <div class="mt-8 text-center">
+          <p class="text-gray-600 mb-4">Want to compare more properties? Use our advanced comparison tool.</p>
+          <a href="#" class="inline-block bg-primary hover:bg-primary-600 text-white font-medium py-2 px-6 rounded-md transition duration-200">
+            Advanced Compare
+          </a>
+        </div>
+      </div>
+    </section>
+
+    <!-- Location Map Section -->
+    <section class="py-16 bg-white">
+      <div class="container mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="text-center mb-12">
+          <h2 class="text-3xl font-bold text-gray-800">Find Properties by Location</h2>
+          <p class="mt-4 text-lg text-gray-600">Explore our listings across different areas</p>
+        </div>
+        
+        <div id="map" class="h-96 rounded-lg shadow-md">
+          <!-- This is where the map will be rendered -->
+          <div class="flex items-center justify-center h-full bg-gray-100 text-gray-500">
+            <p>Map loading... Please enable JavaScript to view the map.</p>
+          </div>
+        </div>
+        
+        <div class="mt-8 grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-4">
+          <button class="p-3 bg-white shadow-sm rounded-md hover:bg-primary hover:text-white transition duration-200 text-gray-700">
+            New York
+          </button>
+          <button class="p-3 bg-white shadow-sm rounded-md hover:bg-primary hover:text-white transition duration-200 text-gray-700">
+            Los Angeles
+          </button>
+          <button class="p-3 bg-white shadow-sm rounded-md hover:bg-primary hover:text-white transition duration-200 text-gray-700">
+            Chicago
+          </button>
+          <button class="p-3 bg-white shadow-sm rounded-md hover:bg-primary hover:text-white transition duration-200 text-gray-700">
+            Dallas
+          </button>
+          <button class="p-3 bg-white shadow-sm rounded-md hover:bg-primary hover:text-white transition duration-200 text-gray-700">
+            San Francisco
+          </button>
+          <button class="p-3 bg-white shadow-sm rounded-md hover:bg-primary hover:text-white transition duration-200 text-gray-700">
+            Miami
+          </button>
+        </div>
+      </div>
+    </section>
+
+    <!-- Agents Section -->
+    <section id="agents" class="py-16 bg-gray-50">
+      <div class="container mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="text-center mb-12">
+          <h2 class="text-3xl font-bold text-gray-800">Meet Our Agents</h2>
+          <p class="mt-4 text-lg text-gray-600">Expert professionals ready to help you find the perfect commercial space</p>
+        </div>
+        
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
+          <!-- Agent Card 1 -->
+          <div class="agent-card bg-white rounded-lg overflow-hidden shadow-md">
+            <div class="relative overflow-hidden">
+              <img src="https://images.unsplash.com/photo-1560250097-0b93528c311a?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=774&q=80" alt="Agent" class="w-full h-80 object-cover">
+            </div>
+            <div class="p-6">
+              <h3 class="text-xl font-bold text-gray-800 mb-1">Michael Smith</h3>
+              <p class="text-primary font-medium mb-3">Commercial Director</p>
+              <div class="flex items-center mb-3">
+                <i class="fa-solid fa-star text-yellow-400 mr-1"></i>
+                <i class="fa-solid fa-star text-yellow-400 mr-1"></i>
+                <i class="fa-solid fa-star text-yellow-400 mr-1"></i>
+                <i class="fa-solid fa-star text-yellow-400 mr-1"></i>
+                <i class="fa-solid fa-star text-yellow-400 mr-1"></i>
+                <span class="text-gray-600 ml-1">(47 reviews)</span>
+              </div>
+              <div class="flex items-center text-gray-600 mb-4">
+                <i class="fa-solid fa-briefcase mr-2 text-primary"></i>
+                <span>120+ Listings</span>
+              </div>
+              <div class="flex space-x-3">
+                <a href="#" class="flex-1 bg-primary hover:bg-primary-600 text-white text-center font-medium py-2 px-4 rounded-md transition duration-200">
+                  Contact
+                </a>
+                <a href="#" class="flex items-center justify-center w-10 h-10 border border-gray-300 rounded-md hover:bg-gray-100 transition duration-200">
+                  <i class="fa-solid fa-phone text-primary"></i>
+                </a>
+              </div>
+            </div>
+          </div>
+          
+          <!-- Agent Card 2 -->
+          <div class="agent-card bg-white rounded-lg overflow-hidden shadow-md">
+            <div class="relative overflow-hidden">
+              <img src="https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=776&q=80" alt="Agent" class="w-full h-80 object-cover">
+            </div>
+            <div class="p-6">
+              <h3 class="text-xl font-bold text-gray-800 mb-1">Sarah Johnson</h3>
+              <p class="text-primary font-medium mb-3">Office Space Specialist</p>
+              <div class="flex items-center mb-3">
+                <i class="fa-solid fa-star text-yellow-400 mr-1"></i>
+                <i class="fa-solid fa-star text-yellow-400 mr-1"></i>
+                <i class="fa-solid fa-star text-yellow-400 mr-1"></i>
+                <i class="fa-solid fa-star text-yellow-400 mr-1"></i>
+                <i class="fa-regular fa-star text-yellow-400 mr-1"></i>
+                <span class="text-gray-600 ml-1">(32 reviews)</span>
+              </div>
+              <div class="flex items-center text-gray-600 mb-4">
+                <i class="fa-solid fa-briefcase mr-2 text-primary"></i>
+                <span>85+ Listings</span>
+              </div>
+              <div class="flex space-x-3">
+                <a href="#" class="flex-1 bg-primary hover:bg-primary-600 text-white text-center font-medium py-2 px-4 rounded-md transition duration-200">
+                  Contact
+                </a>
+                <a href="#" class="flex items-center justify-center w-10 h-10 border border-gray-300 rounded-md hover:bg-gray-100 transition duration-200">
+                  <i class="fa-solid fa-phone text-primary"></i>
+                </a>
+              </div>
+            </div>
+          </div>
+          
+          <!-- Agent Card 3 -->
+          <div class="agent-card bg-white rounded-lg overflow-hidden shadow-md">
+            <div class="relative overflow-hidden">
+              <img src="https://images.unsplash.com/photo-1566492031773-4f4e44671857?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=774&q=80" alt="Agent" class="w-full h-80 object-cover">
+            </div>
+            <div class="p-6">
+              <h3 class="text-xl font-bold text-gray-800 mb-1">David Rodriguez</h3>
+              <p class="text-primary font-medium mb-3">Industrial Expert</p>
+              <div class="flex items-center mb-3">
+                <i class="fa-solid fa-star text-yellow-400 mr-1"></i>
+                <i class="fa-solid fa-star text-yellow-400 mr-1"></i>
+                <i class="fa-solid fa-star text-yellow-400 mr-1"></i>
+                <i class="fa-solid fa-star text-yellow-400 mr-1"></i>
+                <i class="fa-solid fa-star-half-stroke text-yellow-400 mr-1"></i>
+                <span class="text-gray-600 ml-1">(29 reviews)</span>
+              </div>
+              <div class="flex items-center text-gray-600 mb-4">
+                <i class="fa-solid fa-briefcase mr-2 text-primary"></i>
+                <span>94+ Listings</span>
+              </div>
+              <div class="flex space-x-3">
+                <a href="#" class="flex-1 bg-primary hover:bg-primary-600 text-white text-center font-medium py-2 px-4 rounded-md transition duration-200">
+                  Contact
+                </a>
+                <a href="#" class="flex items-center justify-center w-10 h-10 border border-gray-300 rounded-md hover:bg-gray-100 transition duration-200">
+                  <i class="fa-solid fa-phone text-primary"></i>
+                </a>
+              </div>
+            </div>
+          </div>
+          
+          <!-- Agent Card 4 -->
+          <div class="agent-card bg-white rounded-lg overflow-hidden shadow-md">
+            <div class="relative overflow-hidden">
+              <img src="https://images.unsplash.com/photo-1580489944761-15a19d654956?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1061&q=80" alt="Agent" class="w-full h-80 object-cover">
+            </div>
+            <div class="p-6">
+              <h3 class="text-xl font-bold text-gray-800 mb-1">Emily Chen</h3>
+              <p class="text-primary font-medium mb-3">Retail Space Consultant</p>
+              <div class="flex items-center mb-3">
+                <i class="fa-solid fa-star text-yellow-400 mr-1"></i>
+                <i class="fa-solid fa-star text-yellow-400 mr-1"></i>
+                <i class="fa-solid fa-star text-yellow-400 mr-1"></i>
+                <i class="fa-solid fa-star text-yellow-400 mr-1"></i>
+                <i class="fa-solid fa-star text-yellow-400 mr-1"></i>
+                <span class="text-gray-600 ml-1">(41 reviews)</span>
+              </div>
+              <div class="flex items-center text-gray-600 mb-4">
+                <i class="fa-solid fa-briefcase mr-2 text-primary"></i>
+                <span>108+ Listings</span>
+              </div>
+              <div class="flex space-x-3">
+                <a href="#" class="flex-1 bg-primary hover:bg-primary-600 text-white text-center font-medium py-2 px-4 rounded-md transition duration-200">
+                  Contact
+                </a>
+                <a href="#" class="flex items-center justify-center w-10 h-10 border border-gray-300 rounded-md hover:bg-gray-100 transition duration-200">
+                  <i class="fa-solid fa-phone text-primary"></i>
+                </a>
+              </div>
+            </div>
+          </div>
+        </div>
+        
+        <div class="mt-12 text-center">
+          <a href="#" class="inline-block bg-primary hover:bg-primary-600 text-white font-medium py-3 px-8 rounded-md transition duration-200">
+            View All Agents
+          </a>
+        </div>
+      </div>
+    </section>
+
+    <!-- Testimonials Section -->
+    <section id="testimonials" class="py-16 bg-white">
+      <div class="container mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="text-center mb-12">
+          <h2 class="text-3xl font-bold text-gray-800">Client Testimonials</h2>
+          <p class="mt-4 text-lg text-gray-600">What our clients say about their experience with us</p>
+        </div>
+        
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+          <!-- Testimonial 1 -->
+          <div class="testimonial-card bg-gray-50 p-8 rounded-lg shadow-md">
+            <div class="flex items-center mb-6">
+              <img src="https://randomuser.me/api/portraits/men/32.jpg" alt="Client" class="w-14 h-14 rounded-full object-cover mr-4">
+              <div>
+                <h4 class="text-lg font-bold text-gray-800">Robert Williams</h4>
+                <p class="text-gray-600">CEO, TechStart Inc</p>
+              </div>
+            </div>
+            <div class="mb-4">
+              <i class="fa-solid fa-star text-yellow-400"></i>
+              <i class="fa-solid fa-star text-yellow-400"></i>
+              <i class="fa-solid fa-star text-yellow-400"></i>
+              <i class="fa-solid fa-star text-yellow-400"></i>
+              <i class="fa-solid fa-star text-yellow-400"></i>
+            </div>
+            <p class="text-gray-700 mb-4">
+              "Working with BizNest Bazaar to find our new office space was an excellent experience. They understood our needs perfectly and found us the ideal location with all the amenities we required. The process was smooth from start to finish."
+            </p>
+            <p class="text-gray-500 italic text-sm">Leased a 3,500 sq ft office space in Downtown</p>
+          </div>
+          
+          <!-- Testimonial 2 -->
+          <div class="testimonial-card bg-gray-50 p-8 rounded-lg shadow-md">
+            <div class="flex items-center mb-6">
+              <img src="https://randomuser.me/api/portraits/women/44.jpg" alt="Client" class="w-14 h-14 rounded-full object-cover mr-4">
+              <div>
+                <h4 class="text-lg font-bold text-gray-800">Jennifer Lopez</h4>
+                <p class="text-gray-600">Founder, Retail Solutions</p>
+              </div>
+            </div>
+            <div class="mb-4">
+              <i class="fa-solid fa-star text-yellow-400"></i>
+              <i class="fa-solid fa-star text-yellow-400"></i>
+              <i class="fa-solid fa-star text-yellow-400"></i>
+              <i class="fa-solid fa-star text-yellow-400"></i>
+              <i class="fa-solid fa-star-half-stroke text-yellow-400"></i>
+            </div>
+            <p class="text-gray-700 mb-4">
+              "The team at BizNest Bazaar helped me find the perfect retail location for my business. Their market knowledge and attention to detail made all the difference. They negotiated a great lease term and I couldn't be happier with the results."
+            </p>
+            <p class="text-gray-500 italic text-sm">Leased a 2,000 sq ft retail space in Fashion District</p>
+          </div>
+          
+          <!-- Testimonial 3 -->
+          <div class="testimonial-card bg-gray-50 p-8 rounded-lg shadow-md">
+            <div class="flex items-center mb-6">
+              <img src="https://randomuser.me/api/portraits/men/22.jpg" alt="Client" class="w-14 h-14 rounded-full object-cover mr-4">
+              <div>
+                <h4 class="text-lg font-bold text-gray-800">Mark Anderson</h4>
+                <p class="text-gray-600">Operations Director, Logistics Pro</p>
+              </div>
+            </div>
+            <div class="mb-4">
+              <i class="fa-solid fa-star text-yellow-400"></i>
+              <i class="fa-solid fa-star text-yellow-400"></i>
+              <i class="fa-solid fa-star text-yellow-400"></i>
+              <i class="fa-solid fa-star text-yellow-400"></i>
+              <i class="fa-solid fa-star text-yellow-400"></i>
+            </div>
+            <p class="text-gray-700 mb-4">
+              "Finding a warehouse with the right specifications was crucial for our business. BizNest Bazaar provided multiple options that met our criteria and helped us compare them effectively. Their expertise in industrial properties is unmatched!"
+            </p>
+            <p class="text-gray-500 italic text-sm">Leased a 12,000 sq ft warehouse space in Industrial Park</p>
+          </div>
+        </div>
+        
+        <div class="mt-12 text-center">
+          <a href="#" class="inline-block text-primary hover:text-primary-700 font-medium underline">
+            Read More Client Stories
+          </a>
+        </div>
+      </div>
+    </section>
+
+    <!-- Newsletter Section -->
+    <section class="py-16 bg-primary text-white">
+      <div class="container mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="max-w-3xl mx-auto text-center">
+          <h2 class="text-3xl font-bold mb-4">Subscribe to Our Newsletter</h2>
+          <p class="text-lg mb-8 text-white/80">Stay updated with the latest commercial property listings and market trends</p>
+          
+          <form class="flex flex-col md:flex-row gap-4">
+            <input type="email" placeholder="Your Email Address" class="flex-1 px-4 py-3 rounded-md text-gray-800 focus:outline-none focus:ring-2 focus:ring-white">
+            <button type="submit" class="bg-white text-primary hover:bg-gray-100 font-medium py-3 px-6 rounded-md transition duration-200 whitespace-nowrap">
+              Subscribe Now
+            </button>
+          </form>
+          
+          <p class="mt-4 text-sm text-white/70">
+            By subscribing, you agree to our Privacy Policy and consent to receive updates from our company.
+          </p>
+        </div>
+      </div>
+    </section>
+
+    <!-- Contact Section -->
+    <section id="contact" class="py-16 bg-gray-50">
+      <div class="container mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="max-w-7xl mx-auto">
+          <div class="grid grid-cols-1 lg:grid-cols-2 gap-12">
+            <div>
+              <h2 class="text-3xl font-bold text-gray-800 mb-6">Get in Touch</h2>
+              <p class="text-lg text-gray-600 mb-8">
+                Have questions about a property or need assistance? Fill out the form, and our team will get back to you shortly.
+              </p>
+              
+              <form class="space-y-6">
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                  <div>
+                    <label for="name" class="block text-gray-700 font-medium mb-2">Full Name</label>
+                    <input type="text" id="name" class="w-full px-4 py-3 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent">
+                  </div>
+                  <div>
+                    <label for="email" class="block text-gray-700 font-medium mb-2">Email Address</label>
+                    <input type="email" id="email" class="w-full px-4 py-3 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent">
+                  </div>
+                </div>
+                
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                  <div>
+                    <label for="phone" class="block text-gray-700 font-medium mb-2">Phone Number</label>
+                    <input type="tel" id="phone" class="w-full px-4 py-3 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent">
+                  </div>
+                  <div>
+                    <label for="interest" class="block text-gray-700 font-medium mb-2">I'm Interested In</label>
+                    <select id="interest" class="w-full px-4 py-3 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent">
+                      <option value="">Select an Option</option>
+                      <option value="office">Office Space</option>
+                      <option value="warehouse">Warehouse</option>
+                      <option value="retail">Retail Space</option>
+                      <option value="industrial">Industrial Property</option>
+                      <option value="other">Other</option>
+                    </select>
+                  </div>
+                </div>
+                
+                <div>
+                  <label for="message" class="block text-gray-700 font-medium mb-2">Message</label>
+                  <textarea id="message" rows="5" class="w-full px-4 py-3 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent"></textarea>
+                </div>
+                
+                <div class="flex items-start">
+                  <input type="checkbox" id="consent" class="mt-1">
+                  <label for="consent" class="ml-2 text-gray-600 text-sm">
+                    I consent to having this website store my information for future correspondence.
+                  </label>
+                </div>
+                
+                <button type="submit" class="bg-primary hover:bg-primary-600 text-white font-medium py-3 px-6 rounded-md transition duration-200">
+                  Send Message
+                </button>
+              </form>
+            </div>
+            
+            <div>
+              <div class="bg-white p-8 rounded-lg shadow-md h-full">
+                <h3 class="text-2xl font-bold text-gray-800 mb-6">Contact Information</h3>
+                
+                <div class="space-y-6">
+                  <div class="flex items-start">
+                    <div class="flex-shrink-0 bg-primary-50 p-3 rounded-full">
+                      <i class="fa-solid fa-location-dot text-primary text-xl"></i>
+                    </div>
+                    <div class="ml-4">
+                      <h4 class="text-lg font-semibold text-gray-800">Office Address</h4>
+                      <p class="text-gray-600 mt-1">
+                        123 Business Avenue, Suite 500<br>
+                        New York, NY 10001, USA
+                      </p>
+                    </div>
+                  </div>
+                  
+                  <div class="flex items-start">
+                    <div class="flex-shrink-0 bg-primary-50 p-3 rounded-full">
+                      <i class="fa-solid fa-phone text-primary text-xl"></i>
+                    </div>
+                    <div class="ml-4">
+                      <h4 class="text-lg font-semibold text-gray-800">Phone Numbers</h4>
+                      <p class="text-gray-600 mt-1">
+                        Main Office: +1 (555) 123-4567<br>
+                        Support: +1 (555) 765-4321
+                      </p>
+                    </div>
+                  </div>
+                  
+                  <div class="flex items-start">
+                    <div class="flex-shrink-0 bg-primary-50 p-3 rounded-full">
+                      <i class="fa-solid fa-envelope text-primary text-xl"></i>
+                    </div>
+                    <div class="ml-4">
+                      <h4 class="text-lg font-semibold text-gray-800">Email Addresses</h4>
+                      <p class="text-gray-600 mt-1">
+                        Information: info@biznestbazaar.com<br>
+                        Support: support@biznestbazaar.com
+                      </p>
+                    </div>
+                  </div>
+                  
+                  <div class="flex items-start">
+                    <div class="flex-shrink-0 bg-primary-50 p-3 rounded-full">
+                      <i class="fa-solid fa-clock text-primary text-xl"></i>
+                    </div>
+                    <div class="ml-4">
+                      <h4 class="text-lg font-semibold text-gray-800">Business Hours</h4>
+                      <p class="text-gray-600 mt-1">
+                        Monday - Friday: 9:00 AM - 6:00 PM<br>
+                        Saturday: 10:00 AM - 4:00 PM<br>
+                        Sunday: Closed
+                      </p>
+                    </div>
+                  </div>
+                </div>
+                
+                <div class="mt-8">
+                  <h4 class="text-lg font-semibold text-gray-800 mb-4">Connect With Us</h4>
+                  <div class="flex space-x-4">
+                    <a href="#" class="w-10 h-10 rounded-full bg-primary-50 flex items-center justify-center text-primary hover:bg-primary hover:text-white transition duration-200">
+                      <i class="fa-brands fa-facebook-f"></i>
+                    </a>
+                    <a href="#" class="w-10 h-10 rounded-full bg-primary-50 flex items-center justify-center text-primary hover:bg-primary hover:text-white transition duration-200">
+                      <i class="fa-brands fa-twitter"></i>
+                    </a>
+                    <a href="#" class="w-10 h-10 rounded-full bg-primary-50 flex items-center justify-center text-primary hover:bg-primary hover:text-white transition duration-200">
+                      <i class="fa-brands fa-linkedin-in"></i>
+                    </a>
+                    <a href="#" class="w-10 h-10 rounded-full bg-primary-50 flex items-center justify-center text-primary hover:bg-primary hover:text-white transition duration-200">
+                      <i class="fa-brands fa-instagram"></i>
+                    </a>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="bg-gray-900 text-white pt-16 pb-8">
+      <div class="container mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-12">
+          <div>
+            <div class="flex items-center mb-6">
+              <i class="fa-solid fa-building text-primary text-2xl mr-2"></i>
+              <span class="font-bold text-xl">BizNest Bazaar</span>
+            </div>
+            <p class="text-gray-400 mb-6">
+              Finding the perfect commercial property for your business needs. Premium office spaces, warehouses, and retail locations available.
+            </p>
+            <div class="flex space-x-4">
+              <a href="#" class="text-gray-400 hover:text-primary">
+                <i class="fa-brands fa-facebook-f"></i>
+              </a>
+              <a href="#" class="text-gray-400 hover:text-primary">
+                <i class="fa-brands fa-twitter"></i>
+              </a>
+              <a href="#" class="text-gray-400 hover:text-primary">
+                <i class="fa-brands fa-linkedin-in"></i>
+              </a>
+              <a href="#" class="text-gray-400 hover:text-primary">
+                <i class="fa-brands fa-instagram"></i>
+              </a>
+            </div>
+          </div>
+          
+          <div>
+            <h3 class="text-lg font-bold mb-6">Quick Links</h3>
+            <ul class="space-y-4">
+              <li><a href="#" class="text-gray-400 hover:text-white">Home</a></li>
+              <li><a href="#properties" class="text-gray-400 hover:text-white">Properties</a></li>
+              <li><a href="#agents" class="text-gray-400 hover:text-white">Agents</a></li>
+              <li><a href="#testimonials" class="text-gray-400 hover:text-white">Testimonials</a></li>
+              <li><a href="#contact" class="text-gray-400 hover:text-white">Contact Us</a></li>
+            </ul>
+          </div>
+          
+          <div>
+            <h3 class="text-lg font-bold mb-6">Property Types</h3>
+            <ul class="space-y-4">
+              <li><a href="#" class="text-gray-400 hover:text-white">Office Spaces</a></li>
+              <li><a href="#" class="text-gray-400 hover:text-white">Warehouses</a></li>
+              <li><a href="#" class="text-gray-400 hover:text-white">Retail Spaces</a></li>
+              <li><a href="#" class="text-gray-400 hover:text-white">Industrial Properties</a></li>
+              <li><a href="#" class="text-gray-400 hover:text-white">Co-working Spaces</a></li>
+            </ul>
+          </div>
+          
+          <div>
+            <h3 class="text-lg font-bold mb-6">Contact Info</h3>
+            <ul class="space-y-4">
+              <li class="flex items-start">
+                <i class="fa-solid fa-location-dot mt-1 mr-3 text-primary"></i>
+                <span class="text-gray-400">123 Business Avenue, Suite 500, New York, NY 10001</span>
+              </li>
+              <li class="flex items-start">
+                <i class="fa-solid fa-phone mt-1 mr-3 text-primary"></i>
+                <span class="text-gray-400">+1 (555) 123-4567</span>
+              </li>
+              <li class="flex items-start">
+                <i class="fa-solid fa-envelope mt-1 mr-3 text-primary"></i>
+                <span class="text-gray-400">info@biznestbazaar.com</span>
+              </li>
+              <li class="flex items-start">
+                <i class="fa-solid fa-clock mt-1 mr-3 text-primary"></i>
+                <span class="text-gray-400">Mon - Fri: 9:00 AM - 6:00 PM</span>
+              </li>
+            </ul>
+          </div>
+        </div>
+        
+        <hr class="border-gray-800 my-8">
+        
+        <div class="flex flex-col md:flex-row justify-between items-center">
+          <p class="text-gray-400 text-sm">
+            &copy; 2023 BizNest Bazaar. All rights reserved.
+          </p>
+          <div class="flex space-x-4 mt-4 md:mt-0">
+            <a href="#" class="text-gray-400 hover:text-white text-sm">Privacy Policy</a>
+            <a href="#" class="text-gray-400 hover:text-white text-sm">Terms of Service</a>
+            <a href="#" class="text-gray-400 hover:text-white text-sm">Cookie Policy</a>
+          </div>
+        </div>
+      </div>
+    </footer>
+
+    <!-- JavaScript -->
+    <script>
+      // Mobile Menu Toggle
+      document.addEventListener('DOMContentLoaded', function() {
+        const mobileMenuButton = document.querySelector('.md\\:hidden');
+        const mobileMenu = document.getElementById('mobile-menu');
+        
+        mobileMenuButton.addEventListener('click', function() {
+          mobileMenu.classList.toggle('hidden');
+        });
+        
+        // Featured Properties Carousel
+        const carousel = document.querySelector('.carousel');
+        const prevBtn = document.getElementById('prev-btn');
+        const nextBtn = document.getElementById('next-btn');
+        
+        prevBtn.addEventListener('click', function() {
+          carousel.scrollBy({
+            left: -350,
+            behavior: 'smooth'
+          });
+        });
+        
+        nextBtn.addEventListener('click', function() {
+          carousel.scrollBy({
+            left: 350,
+            behavior: 'smooth'
+          });
+        });
+        
+        // Map initialization placeholder (replace with actual map API)
+        // This would be where you'd initialize a map service like Google Maps, Mapbox, etc.
+        // For example, with Google Maps:
+        /*
+        function initMap() {
+          const map = new google.maps.Map(document.getElementById("map"), {
+            center: { lat: 40.7128, lng: -74.0060 },
+            zoom: 12,
+          });
+        }
+        */
+      });
+    </script>
+  </body>
+</html>

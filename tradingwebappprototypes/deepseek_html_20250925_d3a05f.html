@@ -1,0 +1,458 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PaperTrader - Mobile</title>
+    <style>
+        :root {
+            --primary: #3b82f6;
+            --success: #10b981;
+            --danger: #ef4444;
+            --bg: #ffffff;
+            --card: #f8fafc;
+            --text: #1e293b;
+            --border: #e2e8f0;
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Inter', sans-serif;
+        }
+        
+        body {
+            background-color: var(--bg);
+            color: var(--text);
+            line-height: 1.6;
+        }
+        
+        .container {
+            max-width: 100%;
+            padding: 15px;
+        }
+        
+        header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 15px 0;
+            margin-bottom: 20px;
+            position: sticky;
+            top: 0;
+            background-color: var(--bg);
+            z-index: 10;
+        }
+        
+        .logo {
+            font-size: 20px;
+            font-weight: 700;
+            color: var(--primary);
+        }
+        
+        .balance-card {
+            background: linear-gradient(135deg, var(--primary), #60a5fa);
+            color: white;
+            border-radius: 16px;
+            padding: 20px;
+            margin-bottom: 20px;
+            box-shadow: 0 4px 12px rgba(59, 130, 246, 0.3);
+        }
+        
+        .balance-label {
+            font-size: 14px;
+            opacity: 0.9;
+        }
+        
+        .balance-amount {
+            font-size: 28px;
+            font-weight: 700;
+            margin: 5px 0;
+        }
+        
+        .balance-available {
+            font-size: 14px;
+            opacity: 0.9;
+        }
+        
+        .asset-tabs {
+            display: flex;
+            overflow-x: auto;
+            margin-bottom: 20px;
+            padding-bottom: 5px;
+            -webkit-overflow-scrolling: touch;
+        }
+        
+        .asset-tab {
+            padding: 10px 20px;
+            white-space: nowrap;
+            border-radius: 20px;
+            margin-right: 10px;
+            background-color: var(--card);
+            border: 1px solid var(--border);
+            font-weight: 500;
+        }
+        
+        .asset-tab.active {
+            background-color: var(--primary);
+            color: white;
+            border-color: var(--primary);
+        }
+        
+        .price-card {
+            background-color: var(--card);
+            border-radius: 12px;
+            padding: 15px;
+            margin-bottom: 15px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+        }
+        
+        .price-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 10px;
+        }
+        
+        .asset-name {
+            font-weight: 600;
+            font-size: 16px;
+        }
+        
+        .asset-price {
+            font-size: 22px;
+            font-weight: 700;
+            margin-bottom: 5px;
+        }
+        
+        .price-change {
+            font-size: 14px;
+            font-weight: 600;
+            padding: 3px 8px;
+            border-radius: 4px;
+        }
+        
+        .positive {
+            background-color: rgba(16, 185, 129, 0.1);
+            color: var(--success);
+        }
+        
+        .negative {
+            background-color: rgba(239, 68, 68, 0.1);
+            color: var(--danger);
+        }
+        
+        .trade-buttons {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 10px;
+            margin-top: 15px;
+        }
+        
+        button {
+            padding: 12px;
+            border: none;
+            border-radius: 8px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        
+        .buy-btn {
+            background-color: var(--success);
+            color: white;
+        }
+        
+        .sell-btn {
+            background-color: var(--danger);
+            color: white;
+        }
+        
+        button:active {
+            transform: scale(0.98);
+        }
+        
+        .order-form {
+            background-color: var(--card);
+            border-radius: 12px;
+            padding: 15px;
+            margin-bottom: 15px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+        }
+        
+        .form-group {
+            margin-bottom: 15px;
+        }
+        
+        label {
+            display: block;
+            margin-bottom: 5px;
+            font-size: 14px;
+            color: #64748b;
+        }
+        
+        input, select {
+            width: 100%;
+            padding: 12px;
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            font-size: 16px;
+        }
+        
+        .positions {
+            background-color: var(--card);
+            border-radius: 12px;
+            padding: 15px;
+            margin-bottom: 80px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+        }
+        
+        .positions-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 15px;
+        }
+        
+        .position-item {
+            display: flex;
+            justify-content: space-between;
+            padding: 12px 0;
+            border-bottom: 1px solid var(--border);
+        }
+        
+        .position-info {
+            flex: 1;
+        }
+        
+        .position-asset {
+            font-weight: 600;
+            margin-bottom: 3px;
+        }
+        
+        .position-details {
+            font-size: 12px;
+            color: #64748b;
+        }
+        
+        .position-pnl {
+            text-align: right;
+            font-weight: 600;
+        }
+        
+        .bottom-nav {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background-color: white;
+            display: flex;
+            justify-content: space-around;
+            padding: 10px 0;
+            border-top: 1px solid var(--border);
+            box-shadow: 0 -2px 10px rgba(0, 0, 0, 0.05);
+        }
+        
+        .nav-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            font-size: 12px;
+            color: #64748b;
+        }
+        
+        .nav-item.active {
+            color: var(--primary);
+        }
+        
+        .nav-icon {
+            font-size: 20px;
+            margin-bottom: 3px;
+        }
+        
+        @media (min-width: 768px) {
+            .container {
+                max-width: 500px;
+                margin: 0 auto;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <div class="logo">PaperTrader</div>
+            <div>☰</div>
+        </header>
+        
+        <div class="balance-card">
+            <div class="balance-label">Paper Balance</div>
+            <div class="balance-amount">₹100,000.00</div>
+            <div class="balance-available">Available: ₹85,250.00</div>
+        </div>
+        
+        <div class="asset-tabs">
+            <div class="asset-tab active">NIFTY 50</div>
+            <div class="asset-tab">Bitcoin (BTC)</div>
+            <div class="asset-tab">Bank Nifty</div>
+            <div class="asset-tab">Ethereum</div>
+            <div class="asset-tab">Gold</div>
+        </div>
+        
+        <div class="price-card">
+            <div class="price-header">
+                <div class="asset-name">NIFTY 50</div>
+                <div class="price-change positive">+1.2%</div>
+            </div>
+            <div class="asset-price">₹22,450.75</div>
+            <div>Open: ₹22,420.50 | High: ₹22,480.25</div>
+            <div class="trade-buttons">
+                <button class="buy-btn">Buy</button>
+                <button class="sell-btn">Sell</button>
+            </div>
+        </div>
+        
+        <div class="order-form">
+            <h3>Place Order</h3>
+            <div class="form-group">
+                <label>Order Type</label>
+                <select>
+                    <option>Market</option>
+                    <option>Limit</option>
+                    <option>Stop Loss</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <label>Quantity</label>
+                <input type="number" value="1" min="1">
+            </div>
+            <div class="form-group">
+                <label>Price (₹)</label>
+                <input type="number" value="22450.75" step="0.01">
+            </div>
+            <div class="trade-buttons">
+                <button class="buy-btn">Buy NIFTY</button>
+                <button class="sell-btn">Sell NIFTY</button>
+            </div>
+        </div>
+        
+        <div class="positions">
+            <div class="positions-header">
+                <h3>Open Positions</h3>
+                <span>2</span>
+            </div>
+            
+            <div class="position-item">
+                <div class="position-info">
+                    <div class="position-asset">NIFTY 50</div>
+                    <div class="position-details">5 units @ ₹22,100.50</div>
+                </div>
+                <div class="position-pnl positive">+₹1,751.25</div>
+            </div>
+            
+            <div class="position-item">
+                <div class="position-info">
+                    <div class="position-asset">Bitcoin (BTC)</div>
+                    <div class="position-details">0.05 BTC @ ₹59,00,000.00</div>
+                </div>
+                <div class="position-pnl negative">-₹33,777.49</div>
+            </div>
+        </div>
+        
+        <div class="bottom-nav">
+            <div class="nav-item active">
+                <div class="nav-icon">📈</div>
+                <div>Trade</div>
+            </div>
+            <div class="nav-item">
+                <div class="nav-icon">💼</div>
+                <div>Portfolio</div>
+            </div>
+            <div class="nav-item">
+                <div class="nav-icon">📋</div>
+                <div>Orders</div>
+            </div>
+            <div class="nav-item">
+                <div class="nav-icon">👤</div>
+                <div>Account</div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Asset tab switching
+            document.querySelectorAll('.asset-tab').forEach(tab => {
+                tab.addEventListener('click', function() {
+                    document.querySelectorAll('.asset-tab').forEach(t => t.classList.remove('active'));
+                    this.classList.add('active');
+                    
+                    // Update price card based on selected asset
+                    const priceCard = document.querySelector('.price-card');
+                    const assetName = this.textContent;
+                    const isBtc = assetName.includes('Bitcoin');
+                    
+                    priceCard.querySelector('.asset-name').textContent = assetName;
+                    priceCard.querySelector('.asset-price').textContent = 
+                        isBtc ? '₹58,32,450.25' : '₹22,450.75';
+                    
+                    // Update order form
+                    const quantityInput = document.querySelector('.order-form input[type="number"]:first-child');
+                    const priceInput = document.querySelector('.order-form input[type="number"]:last-child');
+                    const buyBtn = document.querySelector('.order-form .buy-btn');
+                    const sellBtn = document.querySelector('.order-form .sell-btn');
+                    
+                    if (isBtc) {
+                        quantityInput.value = '0.01';
+                        quantityInput.min = '0.001';
+                        priceInput.value = '5832450.25';
+                        buyBtn.textContent = 'Buy BTC';
+                        sellBtn.textContent = 'Sell BTC';
+                    } else {
+                        quantityInput.value = '1';
+                        quantityInput.min = '1';
+                        priceInput.value = '22450.75';
+                        buyBtn.textContent = 'Buy NIFTY';
+                        sellBtn.textContent = 'Sell NIFTY';
+                    }
+                });
+            });
+            
+            // Trade buttons
+            document.querySelectorAll('.buy-btn, .sell-btn').forEach(button => {
+                button.addEventListener('click', function() {
+                    const isPriceCardBtn = this.closest('.price-card');
+                    let asset, quantity, price;
+                    
+                    if (isPriceCardBtn) {
+                        asset = document.querySelector('.price-card .asset-name').textContent;
+                        quantity = '1'; // Default quantity for quick trade
+                        price = document.querySelector('.price-card .asset-price').textContent.replace('₹', '');
+                    } else {
+                        asset = document.querySelector('.order-form .buy-btn').textContent.replace('Buy ', '');
+                        quantity = document.querySelector('.order-form input[type="number"]:first-child').value;
+                        price = document.querySelector('.order-form input[type="number"]:last-child').value;
+                    }
+                    
+                    const action = this.classList.contains('buy-btn') ? 'Buy' : 'Sell';
+                    
+                    alert(`${action} order placed for ${quantity} ${asset} at ₹${price}`);
+                });
+            });
+            
+            // Bottom navigation
+            document.querySelectorAll('.nav-item').forEach(item => {
+                item.addEventListener('click', function() {
+                    document.querySelectorAll('.nav-item').forEach(i => i.classList.remove('active'));
+                    this.classList.add('active');
+                    
+                    // In a real app, this would navigate to different sections
+                    const section = this.querySelector('div:last-child').textContent;
+                    alert(`Navigating to ${section} section`);
+                });
+            });
+        });
+    </script>
+</body>
+</html>

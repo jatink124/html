@@ -1,0 +1,326 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Personal Budget Tracker</title>
+    <!-- Load Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Use Inter font family -->
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@100..900&display=swap');
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #f7f9fb; /* Light background */
+        }
+        .app-container {
+            min-height: 100vh;
+        }
+        /* Custom styles for financial theme colors */
+        .header-bg {
+            background-color: #eef2ff; /* Indigo-50 */
+        }
+        .income-color {
+            color: #10b981; /* Green-500 */
+        }
+        .expense-color {
+            color: #ef4444; /* Red-500 */
+        }
+        .balance-positive {
+            background-color: #d1fae5; /* Green-100 */
+        }
+        .balance-negative {
+            background-color: #fee2e2; /* Red-100 */
+        }
+        .primary-action {
+            background-color: #4f46e5; /* Indigo-600 */
+        }
+        .focus-ring-color:focus {
+            --tw-ring-color: #4f46e5; /* Indigo-600 */
+        }
+    </style>
+</head>
+<body class="selection:bg-indigo-200 selection:text-indigo-900">
+
+    <div class="app-container p-4 sm:p-8">
+        <!-- Header -->
+        <header class="mb-8 p-4 header-bg shadow-lg rounded-xl border-l-4 border-indigo-600">
+            <h1 class="text-3xl font-bold text-gray-800">Monthly Budget Tracker</h1>
+            <p class="text-gray-600 mt-1">Log income and expenses to visualize your cash flow.</p>
+        </header>
+
+        <!-- P&L Summary Dashboard -->
+        <section class="mb-8 grid grid-cols-1 md:grid-cols-3 gap-4">
+            <!-- Total Income Card -->
+            <div class="bg-white p-6 rounded-xl shadow-lg border-b-4 border-green-500">
+                <p class="text-sm font-medium text-gray-500">Total Income (This Month)</p>
+                <h3 id="totalIncome" class="text-3xl font-bold income-color mt-1">₹0.00</h3>
+            </div>
+            
+            <!-- Total Expense Card -->
+            <div class="bg-white p-6 rounded-xl shadow-lg border-b-4 border-red-500">
+                <p class="text-sm font-medium text-gray-500">Total Expenses (This Month)</p>
+                <h3 id="totalExpense" class="text-3xl font-bold expense-color mt-1">₹0.00</h3>
+            </div>
+            
+            <!-- Net Balance Card -->
+            <div id="netBalanceCard" class="balance-positive p-6 rounded-xl shadow-lg border-b-4 border-indigo-500">
+                <p class="text-sm font-medium text-gray-700">Net Monthly Balance</p>
+                <h3 id="netBalance" class="text-3xl font-bold text-gray-900 mt-1">₹0.00</h3>
+            </div>
+        </section>
+
+        <!-- Transaction Entry Form & Custom Field Management -->
+        <section class="bg-white p-6 rounded-xl shadow-lg mb-8">
+            <h2 class="text-xl font-semibold text-gray-700 mb-4 flex items-center">
+                <svg class="w-6 h-6 mr-2 text-indigo-500" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8c1.657 0 3 .895 3 2s-1.343 2-3 2-3 .895-3 2 1.343 2 3 2m0-8c2.164 0 4 1.251 4 3.5S14.164 15 12 15s-4-1.251-4-3.5S9.836 8 12 8z"></path>
+                </svg>
+                Log New Transaction
+            </h2>
+            <form id="transactionForm" class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                <input type="hidden" id="transactionId">
+
+                <!-- Standard Transaction Fields -->
+                <div class="col-span-1">
+                    <label for="type" class="block text-sm font-medium text-gray-700">Type</label>
+                    <select id="type" required class="mt-1 p-2 w-full border border-gray-300 rounded-lg shadow-sm focus-ring-color focus:ring-1 focus:border-indigo-500">
+                        <option value="expense">Expense</option>
+                        <option value="income">Income</option>
+                    </select>
+                </div>
+                <div class="col-span-1">
+                    <label for="amount" class="block text-sm font-medium text-gray-700">Amount (₹)</label>
+                    <input type="number" id="amount" required step="0.01" placeholder="0.00" class="mt-1 p-2 w-full border border-gray-300 rounded-lg shadow-sm focus-ring-color focus:ring-1 focus:border-indigo-500">
+                </div>
+                <div class="col-span-1">
+                    <label for="category" class="block text-sm font-medium text-gray-700">Category</label>
+                    <select id="category" required class="mt-1 p-2 w-full border border-gray-300 rounded-lg shadow-sm focus-ring-color focus:ring-1 focus:border-indigo-500">
+                        <option value="">Select Category</option>
+                        <option value="Food">Food & Dining</option>
+                        <option value="Rent">Rent/Housing</option>
+                        <option value="Salary">Salary/Income</option>
+                        <option value="Investment">Investment</option>
+                        <option value="Travel">Travel</option>
+                        <option value="Other">Other</option>
+                    </select>
+                </div>
+                
+                <div class="col-span-1">
+                    <label for="date" class="block text-sm font-medium text-gray-700">Date</label>
+                    <input type="date" id="date" required class="mt-1 p-2 w-full border border-gray-300 rounded-lg shadow-sm focus-ring-color focus:ring-1 focus:border-indigo-500">
+                </div>
+                <div class="col-span-1 md:col-span-2">
+                    <label for="description" class="block text-sm font-medium text-gray-700">Description / Merchant</label>
+                    <input type="text" id="description" placeholder="e.g., Grocery shopping at XYZ Store" required class="mt-1 p-2 w-full border border-gray-300 rounded-lg shadow-sm focus-ring-color focus:ring-1 focus:border-indigo-500">
+                </div>
+                
+                <!-- Dynamic Custom Fields Container (for inputs) -->
+                <div id="customFieldsContainer" class="col-span-1 md:col-span-3 grid grid-cols-1 md:grid-cols-3 gap-4">
+                    <!-- Dynamic fields will be rendered here by JS -->
+                </div>
+
+                <!-- Submit Button -->
+                <div class="md:col-span-3 pt-4 flex justify-end space-x-4">
+                    <button type="submit" class="w-full md:w-auto px-6 py-2 primary-action text-white font-medium rounded-lg shadow-md hover:bg-indigo-700 transition duration-150 ease-in-out">
+                        Save Transaction
+                    </button>
+                    <button type="button" id="resetFormButton" class="w-full md:w-auto px-6 py-2 border border-gray-300 text-gray-700 bg-white font-medium rounded-lg shadow-sm hover:bg-gray-50 transition duration-150 ease-in-out">
+                        Clear Form
+                    </button>
+                </div>
+            </form>
+
+            <!-- Custom Field Management -->
+            <div class="mt-8 border-t pt-4">
+                <h3 class="text-lg font-medium text-gray-700 mb-3">Custom Field Management</h3>
+                <div class="flex flex-col sm:flex-row space-y-3 sm:space-y-0 sm:space-x-4 mb-6">
+                    <input type="text" id="newFieldName" placeholder="Enter new field name (e.g., Account Used, Receipt ID)" class="p-2 flex-grow border border-gray-300 rounded-lg shadow-sm focus-ring-color focus:ring-1 focus:border-indigo-500">
+                    
+                    <!-- Field Type Dropdown -->
+                    <select id="newFieldType" class="p-2 border border-gray-300 rounded-lg shadow-sm focus-ring-color focus:ring-1 focus:border-indigo-500 w-full sm:w-auto">
+                        <option value="text">Text</option>
+                        <option value="number">Number</option>
+                        <option value="textarea">Long Note</option>
+                        <option value="checkbox">Checkbox</option>
+                        <option value="date">Date</option>
+                        <option value="time">Time</option>
+                        <option value="dropdown">Dropdown</option>
+                    </select>
+                    
+                    <button type="button" onclick="addCustomField()" class="px-4 py-2 bg-green-600 text-white font-medium rounded-lg shadow-md hover:bg-green-700 transition duration-150 ease-in-out">
+                        Add Field
+                    </button>
+                </div>
+
+                <!-- List of existing custom fields for removal -->
+                <div id="fieldManagementList" class="flex flex-wrap gap-2">
+                    <!-- Custom fields will be shown as removable badges -->
+                </div>
+            </div>
+        </section>
+
+
+        <!-- Transaction History Table -->
+        <section class="bg-white p-6 rounded-xl shadow-lg">
+            <h2 class="text-xl font-semibold text-gray-700 mb-4">Transaction History</h2>
+            <div class="overflow-x-auto">
+                <table class="min-w-full divide-y divide-gray-200">
+                    <thead class="bg-indigo-50" id="transactionTableHead">
+                        <!-- Table headers will be dynamically populated here -->
+                    </thead>
+                    <tbody class="bg-white divide-y divide-gray-200" id="transactionTableBody">
+                        <!-- Mock data for design preview -->
+                        <tr>
+                            <td class="px-3 py-4 whitespace-nowrap text-sm font-medium text-gray-900">25 Oct, 2025</td>
+                            <td class="px-3 py-4 whitespace-nowrap text-sm font-medium income-color">Income</td>
+                            <td class="px-3 py-4 whitespace-nowrap text-sm text-gray-500">Salary</td>
+                            <td class="px-3 py-4 whitespace-nowrap text-sm font-semibold income-color">+₹50,000.00</td>
+                            <td class="px-3 py-4 whitespace-nowrap text-sm text-gray-500">Bank Transfer</td>
+                            <td class="px-3 py-4 whitespace-nowrap text-right text-sm font-medium space-x-2">
+                                <button onclick="editTransaction('mock1')" class="text-indigo-600 hover:text-indigo-900 transition duration-150">Edit</button>
+                                <button onclick="handleDeleteTransaction('mock1')" class="text-red-600 hover:text-red-900 transition duration-150">Delete</button>
+                            </td>
+                        </tr>
+                         <tr>
+                            <td class="px-3 py-4 whitespace-nowrap text-sm font-medium text-gray-900">26 Oct, 2025</td>
+                            <td class="px-3 py-4 whitespace-nowrap text-sm font-medium expense-color">Expense</td>
+                            <td class="px-3 py-4 whitespace-nowrap text-sm text-gray-500">Food & Dining</td>
+                            <td class="px-3 py-4 whitespace-nowrap text-sm font-semibold expense-color">-₹1,250.00</td>
+                            <td class="px-3 py-4 whitespace-nowrap text-sm text-gray-500">Credit Card</td>
+                            <td class="px-3 py-4 whitespace-nowrap text-right text-sm font-medium space-x-2">
+                                <button onclick="editTransaction('mock2')" class="text-indigo-600 hover:text-indigo-900 transition duration-150">Edit</button>
+                                <button onclick="handleDeleteTransaction('mock2')" class="text-red-600 hover:text-red-900 transition duration-150">Delete</button>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+            <p id="noTransactionsMessage" class="text-center text-gray-500 p-4 hidden">No transactions logged yet. Start by logging one above!</p>
+        </section>
+    </div>
+
+    <!-- Custom Modal (for Confirmation/Alert) -->
+    <div id="customModal" class="custom-modal-overlay hidden">
+        <div class="custom-modal-content">
+            <h3 id="modalTitle" class="text-xl font-semibold text-gray-800 mb-4"></h3>
+            <p id="modalMessage" class="text-gray-600 mb-6"></p>
+            <div id="modalActions" class="flex justify-end space-x-3">
+                <!-- Buttons will be dynamically added here -->
+            </div>
+        </div>
+    </div>
+
+    <!-- JavaScript for Data & Rendering Logic -->
+    <script>
+        // MOCK DATA STRUCTURE
+        let customFields = [
+            { name: 'Account Used', type: 'text' },
+            { name: 'Recurring', type: 'checkbox' }
+        ];
+
+        // MOCK Monthly Summary Data (for display only)
+        let mockIncome = 50000;
+        let mockExpense = 1250;
+        let mockNet = mockIncome - mockExpense;
+
+
+        function fieldNameToId(fieldName) {
+            return 'custom-' + fieldName.replace(/[^a-zA-Z0-9]/g, '-').toLowerCase();
+        }
+        
+        // --- MOCK Functions for Initial Load (Replace with real CRUD logic later) ---
+        
+        function renderCustomFormFields() {
+            const container = document.getElementById('customFieldsContainer');
+            container.innerHTML = ''; 
+
+            customFields.forEach(field => {
+                const fieldId = fieldNameToId(field.name);
+                let inputElement;
+                let divClass = 'col-span-1';
+
+                if (field.type === 'textarea') {
+                    inputElement = `<textarea id="${fieldId}" name="${fieldId}" rows="2" class="mt-1 p-2 w-full border border-gray-300 rounded-lg shadow-sm focus-ring-color focus:ring-1 focus:border-indigo-500"></textarea>`;
+                    divClass = 'col-span-1 md:col-span-3'; 
+                } else if (field.type === 'checkbox') {
+                    divClass = 'col-span-1 flex items-center pt-2'; 
+                    inputElement = `
+                        <input type="checkbox" id="${fieldId}" name="${fieldId}" class="h-4 w-4 text-indigo-600 border-gray-300 rounded focus:ring-indigo-500">
+                        <label for="${fieldId}" class="block text-sm font-medium text-gray-700 ml-2">${field.name}</label>
+                    `;
+                } else {
+                    const inputType = field.type === 'dropdown' ? 'text' : field.type;
+                    inputElement = `<input type="${inputType}" id="${fieldId}" name="${fieldId}" class="mt-1 p-2 w-full border border-gray-300 rounded-lg shadow-sm focus-ring-color focus:ring-1 focus:border-indigo-500">`;
+                }
+
+                const div = document.createElement('div');
+                div.className = divClass;
+                
+                if (field.type === 'checkbox') {
+                    div.innerHTML = inputElement;
+                } else {
+                    div.innerHTML = `
+                        <label for="${fieldId}" class="block text-sm font-medium text-gray-700">${field.name}</label>
+                        ${inputElement}
+                    `;
+                }
+                container.appendChild(div);
+            });
+        }
+
+        function renderSummaryDashboard() {
+            document.getElementById('totalIncome').textContent = `₹${mockIncome.toLocaleString('en-IN', { minimumFractionDigits: 2 })}`;
+            document.getElementById('totalExpense').textContent = `₹${mockExpense.toLocaleString('en-IN', { minimumFractionDigits: 2 })}`;
+            document.getElementById('netBalance').textContent = `₹${mockNet.toLocaleString('en-IN', { minimumFractionDigits: 2 })}`;
+            
+            const balanceCard = document.getElementById('netBalanceCard');
+            balanceCard.classList.remove('balance-positive', 'balance-negative');
+            
+            if (mockNet >= 0) {
+                 balanceCard.classList.add('balance-positive');
+            } else {
+                 balanceCard.classList.add('balance-negative');
+            }
+        }
+
+        function renderTableHeaders() {
+            const tableHead = document.getElementById('transactionTableHead');
+            const standardHeaders = ['Date', 'Type', 'Category', 'Amount'];
+            const customHeaders = customFields.map(field => field.name);
+            const allHeaders = standardHeaders.concat(customHeaders).concat(['Actions']);
+
+            tableHead.innerHTML = `
+                <tr>
+                    ${allHeaders.map(header => `<th scope="col" class="px-3 py-3 text-left text-xs font-medium text-indigo-700 uppercase tracking-wider">${header}</th>`).join('')}
+                </tr>
+            `;
+        }
+        
+        // MOCK functions to avoid JS errors in the design preview
+        function addCustomField() { alert("Field added (mock)"); }
+        function editTransaction(id) { alert(`Editing transaction: ${id}`); }
+        function handleDeleteTransaction(id) { alert(`Deleting transaction: ${id}`); }
+        
+        // INITIALIZATION
+        window.onload = function() {
+            renderSummaryDashboard();
+            renderCustomFormFields();
+            renderTableHeaders();
+            
+            // Set today's date for convenience
+            const today = new Date().toISOString().split('T')[0];
+            document.getElementById('date').value = today;
+        }
+
+        // MOCK Modal function (simplified)
+        function showModal({ title, message }) {
+            document.getElementById('modalTitle').textContent = title;
+            document.getElementById('modalMessage').textContent = message;
+            document.getElementById('modalActions').innerHTML = `<button onclick="document.getElementById('customModal').classList.add('hidden')" class="px-4 py-2 primary-action text-white font-medium rounded-lg shadow-md">OK</button>`;
+            document.getElementById('customModal').classList.remove('hidden');
+        }
+
+    </script>
+</body>
+</html>

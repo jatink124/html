@@ -1,0 +1,345 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Focus Funnel - Work Manager</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <style>
+        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background-color: #f3f4f6; }
+        .hidden-section { display: none; }
+        .active-section { display: block; animation: fadeIn 0.3s ease-in-out; }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+        
+        /* Custom Scrollbar */
+        ::-webkit-scrollbar { width: 8px; }
+        ::-webkit-scrollbar-track { background: #f1f1f1; }
+        ::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 4px; }
+        ::-webkit-scrollbar-thumb:hover { background: #94a3b8; }
+    </style>
+</head>
+<body class="h-screen flex flex-col overflow-hidden text-gray-800">
+
+    <header class="bg-white border-b border-gray-200 px-6 py-4 flex justify-between items-center shadow-sm z-10">
+        <div class="flex items-center gap-3">
+            <div class="bg-indigo-600 text-white p-2 rounded-lg">
+                <i class="fas fa-filter"></i>
+            </div>
+            <div>
+                <h1 class="font-bold text-xl text-gray-900">Focus Funnel</h1>
+                <p class="text-xs text-gray-500">Manage Disintegrated Tasks</p>
+            </div>
+        </div>
+        
+        <nav class="flex bg-gray-100 p-1 rounded-lg">
+            <button onclick="switchTab('capture')" id="btn-capture" class="px-4 py-2 text-sm font-medium rounded-md transition-all text-indigo-600 bg-white shadow-sm">
+                1. Capture <span id="badge-capture" class="ml-1 bg-gray-200 text-xs px-2 py-0.5 rounded-full text-gray-600">0</span>
+            </button>
+            <button onclick="switchTab('triage')" id="btn-triage" class="px-4 py-2 text-sm font-medium rounded-md text-gray-500 hover:text-gray-700 transition-all">
+                2. Triage <span id="badge-triage" class="ml-1 bg-red-100 text-xs px-2 py-0.5 rounded-full text-red-600">0</span>
+            </button>
+            <button onclick="switchTab('execute')" id="btn-execute" class="px-4 py-2 text-sm font-medium rounded-md text-gray-500 hover:text-gray-700 transition-all">
+                3. Execute
+            </button>
+        </nav>
+
+        <button onclick="clearData()" class="text-xs text-red-400 hover:text-red-600 underline">Reset App</button>
+    </header>
+
+    <main class="flex-1 overflow-auto p-6 flex justify-center">
+
+        <div id="view-capture" class="active-section w-full max-w-2xl">
+            <div class="bg-white rounded-xl shadow-lg p-8 border border-gray-100">
+                <h2 class="text-2xl font-bold mb-2">The Brain Dump</h2>
+                <p class="text-gray-500 mb-6">Paste your disintegrated list here. Don't organize. Just dump. Each line becomes a task.</p>
+                
+                <textarea id="dump-input" class="w-full h-64 p-4 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 outline-none resize-none font-mono text-sm" placeholder="- Fix the login bug&#10;- Call the client&#10;- Email regarding invoice&#10;- Check server logs..."></textarea>
+                
+                <div class="mt-4 flex justify-end">
+                    <button onclick="processDump()" class="bg-indigo-600 hover:bg-indigo-700 text-white px-6 py-3 rounded-lg font-medium shadow-md transition-transform active:scale-95 flex items-center gap-2">
+                        <i class="fas fa-file-import"></i> Process into Inbox
+                    </button>
+                </div>
+            </div>
+            
+            <div class="mt-8">
+                <h3 class="text-sm font-bold text-gray-400 uppercase tracking-wider mb-3">Current Inbox Pile</h3>
+                <ul id="inbox-preview" class="space-y-2">
+                    </ul>
+            </div>
+        </div>
+
+        <div id="view-triage" class="hidden-section w-full max-w-xl">
+            <div class="text-center mb-6">
+                <h2 class="text-2xl font-bold">Triage Mode</h2>
+                <p class="text-gray-500">Categorize one task at a time to reduce noise.</p>
+            </div>
+
+            <div id="triage-card-container" class="relative h-80">
+                <div id="triage-card" class="bg-white rounded-xl shadow-xl border border-gray-200 p-8 h-full flex flex-col justify-between absolute w-full transition-all">
+                    
+                    <div class="flex justify-between items-start">
+                        <span class="bg-indigo-50 text-indigo-600 text-xs font-bold px-2 py-1 rounded">UNSORTED</span>
+                        <span id="items-remaining" class="text-gray-400 text-xs">5 remaining</span>
+                    </div>
+
+                    <div class="flex-1 flex items-center justify-center text-center">
+                        <h3 id="current-task-text" class="text-2xl font-medium text-gray-800">
+                            Inbox Zero!
+                        </h3>
+                    </div>
+
+                    <div id="triage-actions" class="grid grid-cols-3 gap-3">
+                        <button onclick="triageAction('trash')" class="border border-red-200 text-red-500 hover:bg-red-50 py-3 rounded-lg font-medium text-sm">
+                            <i class="fas fa-trash mb-1 block"></i> Trash
+                        </button>
+                        <button onclick="triageAction('later')" class="border border-yellow-200 text-yellow-600 hover:bg-yellow-50 py-3 rounded-lg font-medium text-sm">
+                            <i class="fas fa-clock mb-1 block"></i> Later
+                        </button>
+                        <button onclick="showContextOptions()" class="bg-indigo-600 text-white hover:bg-indigo-700 py-3 rounded-lg font-medium text-sm shadow-md">
+                            <i class="fas fa-check mb-1 block"></i> Do Today
+                        </button>
+                    </div>
+
+                    <div id="context-options" class="hidden grid grid-cols-2 gap-3">
+                        <div class="col-span-2 text-center text-sm text-gray-500 mb-1">Select Effort Level</div>
+                        <button onclick="triageAction('active', 'quick')" class="bg-green-100 text-green-700 hover:bg-green-200 py-3 rounded-lg font-medium text-sm">
+                            ⚡ Quick Win (5m)
+                        </button>
+                        <button onclick="triageAction('active', 'deep')" class="bg-purple-100 text-purple-700 hover:bg-purple-200 py-3 rounded-lg font-medium text-sm">
+                            🧠 Deep Focus (1h+)
+                        </button>
+                        <button onclick="hideContextOptions()" class="col-span-2 text-xs text-gray-400 hover:text-gray-600 mt-1">Back</button>
+                    </div>
+
+                </div>
+                
+                <div id="triage-empty" class="hidden h-full flex flex-col items-center justify-center bg-gray-50 rounded-xl border-2 border-dashed border-gray-300">
+                    <i class="fas fa-check-circle text-4xl text-green-500 mb-3"></i>
+                    <p class="text-gray-500 font-medium">Inbox is empty!</p>
+                    <button onclick="switchTab('capture')" class="mt-4 text-indigo-600 hover:underline">Add more tasks</button>
+                </div>
+            </div>
+        </div>
+
+        <div id="view-execute" class="hidden-section w-full max-w-5xl">
+            <h2 class="text-2xl font-bold mb-6">Today's Plan</h2>
+            
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div class="bg-white rounded-xl shadow-sm border border-gray-200 flex flex-col h-[calc(100vh-180px)]">
+                    <div class="p-4 border-b border-gray-100 bg-green-50 rounded-t-xl flex justify-between items-center">
+                        <h3 class="font-bold text-green-800"><i class="fas fa-bolt mr-2"></i>Quick Wins</h3>
+                        <span id="count-quick" class="text-xs bg-white px-2 py-1 rounded text-green-700 font-bold shadow-sm">0</span>
+                    </div>
+                    <div id="list-quick" class="p-4 overflow-y-auto space-y-3 flex-1">
+                        </div>
+                </div>
+
+                <div class="bg-white rounded-xl shadow-sm border border-gray-200 flex flex-col h-[calc(100vh-180px)]">
+                    <div class="p-4 border-b border-gray-100 bg-purple-50 rounded-t-xl flex justify-between items-center">
+                        <h3 class="font-bold text-purple-800"><i class="fas fa-brain mr-2"></i>Deep Focus</h3>
+                        <span id="count-deep" class="text-xs bg-white px-2 py-1 rounded text-purple-700 font-bold shadow-sm">0</span>
+                    </div>
+                    <div id="list-deep" class="p-4 overflow-y-auto space-y-3 flex-1">
+                        </div>
+                </div>
+            </div>
+        </div>
+
+    </main>
+
+    <script>
+        // --- State Management ---
+        let tasks = JSON.parse(localStorage.getItem('focusFunnelTasks')) || [];
+
+        function saveTasks() {
+            localStorage.setItem('focusFunnelTasks', JSON.stringify(tasks));
+            updateUI();
+        }
+
+        function clearData() {
+            if(confirm("Delete all tasks and reset?")) {
+                tasks = [];
+                saveTasks();
+                location.reload();
+            }
+        }
+
+        // --- Core Functions ---
+
+        // 1. Process Dump
+        function processDump() {
+            const input = document.getElementById('dump-input');
+            const lines = input.value.split('\n');
+            let addedCount = 0;
+
+            lines.forEach(line => {
+                const cleanLine = line.trim().replace(/^-\s*/, ''); // Remove leading dash
+                if (cleanLine) {
+                    tasks.push({
+                        id: Date.now() + Math.random(),
+                        text: cleanLine,
+                        status: 'inbox', // inbox, trash, later, active, done
+                        type: null, // quick, deep
+                        created: new Date()
+                    });
+                    addedCount++;
+                }
+            });
+
+            input.value = '';
+            saveTasks();
+            if(addedCount > 0) switchTab('triage');
+        }
+
+        // 2. Triage Logic
+        function getNextInboxItem() {
+            return tasks.find(t => t.status === 'inbox');
+        }
+
+        function triageAction(action, type = null) {
+            const currentItem = getNextInboxItem();
+            if (!currentItem) return;
+
+            currentItem.status = action;
+            if (type) currentItem.type = type;
+
+            hideContextOptions();
+            saveTasks();
+        }
+
+        function toggleTaskDone(id) {
+            const task = tasks.find(t => t.id === id);
+            if (task) {
+                task.status = task.status === 'done' ? 'active' : 'done';
+                saveTasks();
+            }
+        }
+
+        function deleteTask(id) {
+            tasks = tasks.filter(t => t.id !== id);
+            saveTasks();
+        }
+
+        // --- UI Rendering ---
+
+        function updateUI() {
+            renderInboxPreview();
+            renderTriageCard();
+            renderExecuteLists();
+            updateBadges();
+        }
+
+        function renderInboxPreview() {
+            const list = document.getElementById('inbox-preview');
+            const inboxItems = tasks.filter(t => t.status === 'inbox');
+            
+            list.innerHTML = inboxItems.slice(0, 3).map(t => `
+                <li class="text-sm text-gray-600 bg-gray-50 p-2 rounded truncate border border-gray-200">
+                    <i class="fas fa-circle text-[8px] text-gray-400 mr-2"></i>${t.text}
+                </li>
+            `).join('');
+
+            if (inboxItems.length > 3) {
+                list.innerHTML += `<li class="text-xs text-gray-400 pl-2">+ ${inboxItems.length - 3} more items</li>`;
+            }
+        }
+
+        function renderTriageCard() {
+            const currentItem = getNextInboxItem();
+            const card = document.getElementById('triage-card');
+            const empty = document.getElementById('triage-empty');
+            const inboxCount = tasks.filter(t => t.status === 'inbox').length;
+
+            if (currentItem) {
+                card.classList.remove('hidden');
+                empty.classList.add('hidden');
+                document.getElementById('current-task-text').textContent = currentItem.text;
+                document.getElementById('items-remaining').textContent = `${inboxCount} pending`;
+            } else {
+                card.classList.add('hidden');
+                empty.classList.remove('hidden');
+            }
+        }
+
+        function renderExecuteLists() {
+            const quickList = document.getElementById('list-quick');
+            const deepList = document.getElementById('list-deep');
+
+            const activeTasks = tasks.filter(t => t.status === 'active' || t.status === 'done');
+            
+            const generateHTML = (task) => `
+                <div class="group flex items-start gap-3 p-3 rounded-lg transition-all ${task.status === 'done' ? 'bg-gray-50 opacity-60' : 'bg-white border border-gray-100 shadow-sm hover:shadow-md'}">
+                    <button onclick="toggleTaskDone(${task.id})" class="mt-1 text-gray-400 hover:text-indigo-600 transition-colors">
+                        <i class="${task.status === 'done' ? 'fas fa-check-square text-indigo-600' : 'far fa-square'} text-xl"></i>
+                    </button>
+                    <div class="flex-1">
+                        <p class="text-sm font-medium ${task.status === 'done' ? 'line-through text-gray-400' : 'text-gray-800'}">${task.text}</p>
+                    </div>
+                    <button onclick="deleteTask(${task.id})" class="text-gray-300 hover:text-red-400 opacity-0 group-hover:opacity-100 transition-opacity">
+                        <i class="fas fa-times"></i>
+                    </button>
+                </div>
+            `;
+
+            quickList.innerHTML = activeTasks.filter(t => t.type === 'quick').map(generateHTML).join('');
+            deepList.innerHTML = activeTasks.filter(t => t.type === 'deep').map(generateHTML).join('');
+
+            document.getElementById('count-quick').innerText = activeTasks.filter(t => t.type === 'quick' && t.status !== 'done').length;
+            document.getElementById('count-deep').innerText = activeTasks.filter(t => t.type === 'deep' && t.status !== 'done').length;
+        }
+
+        function updateBadges() {
+            const inboxCount = tasks.filter(t => t.status === 'inbox').length;
+            document.getElementById('badge-capture').innerText = inboxCount;
+            document.getElementById('badge-triage').innerText = inboxCount;
+            
+            // Hide badge if 0
+            document.getElementById('badge-triage').style.display = inboxCount > 0 ? 'inline-block' : 'none';
+        }
+
+        // --- Interaction Logic ---
+
+        function switchTab(tabName) {
+            // Update Buttons
+            ['capture', 'triage', 'execute'].forEach(t => {
+                const btn = document.getElementById(`btn-${t}`);
+                if (t === tabName) {
+                    btn.classList.add('bg-white', 'text-indigo-600', 'shadow-sm');
+                    btn.classList.remove('text-gray-500', 'hover:text-gray-700');
+                } else {
+                    btn.classList.remove('bg-white', 'text-indigo-600', 'shadow-sm');
+                    btn.classList.add('text-gray-500', 'hover:text-gray-700');
+                }
+                
+                // Show/Hide Views
+                const view = document.getElementById(`view-${t}`);
+                if (t === tabName) {
+                    view.classList.remove('hidden-section');
+                    view.classList.add('active-section');
+                } else {
+                    view.classList.add('hidden-section');
+                    view.classList.remove('active-section');
+                }
+            });
+        }
+
+        function showContextOptions() {
+            document.getElementById('triage-actions').classList.add('hidden');
+            document.getElementById('context-options').classList.remove('hidden');
+            document.getElementById('context-options').classList.add('grid');
+        }
+
+        function hideContextOptions() {
+            document.getElementById('context-options').classList.add('hidden');
+            document.getElementById('context-options').classList.remove('grid');
+            document.getElementById('triage-actions').classList.remove('hidden');
+        }
+
+        // Init
+        updateUI();
+
+    </script>
+</body>
+</html>

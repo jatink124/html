@@ -1,0 +1,2437 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>QuickBite | Food Delivery Service</title>
+  <!-- Tailwind CSS via CDN -->
+  <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+  <!-- Font Awesome Icons -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <!-- Google Fonts -->
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&family=Montserrat:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --primary: #FF4757;
+      --primary-dark: #E6323F;
+      --secondary: #2ED573;
+      --dark: #2F3542;
+      --light: #F8F9FA;
+      --gray: #747D8C;
+    }
+    
+    body {
+      font-family: 'Poppins', sans-serif;
+      scroll-behavior: smooth;
+    }
+    
+    h1, h2, h3, h4, h5, h6 {
+      font-family: 'Montserrat', sans-serif;
+    }
+    
+    .text-gradient {
+      background: linear-gradient(to right, var(--primary), #FF9F43);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+    
+    .nav-link {
+      position: relative;
+    }
+    
+    .nav-link::after {
+      content: '';
+      position: absolute;
+      width: 0;
+      height: 2px;
+      bottom: -4px;
+      left: 0;
+      background-color: var(--primary);
+      transition: width 0.3s ease;
+    }
+    
+    .nav-link:hover::after {
+      width: 100%;
+    }
+    
+    .restaurant-card {
+      transition: all 0.3s ease;
+      transform-origin: center;
+    }
+    
+    .restaurant-card:hover {
+      transform: translateY(-10px);
+      box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+    }
+    
+    .food-card {
+      transition: all 0.3s ease;
+    }
+    
+    .food-card:hover {
+      transform: translateY(-5px);
+    }
+    
+    .food-card img {
+      transition: transform 0.5s ease;
+    }
+    
+    .food-card:hover img {
+      transform: scale(1.05);
+    }
+    
+    .appear {
+      opacity: 0;
+      transform: translateY(30px);
+      transition: all 0.8s ease;
+    }
+    
+    .appear.visible {
+      opacity: 1;
+      transform: translateY(0);
+    }
+    
+    /* Food category filter buttons */
+    .filter-btn {
+      transition: all 0.3s ease;
+    }
+    
+    .filter-btn.active {
+      background-color: var(--primary);
+      color: white;
+    }
+    
+    /* Dark mode toggle */
+    .theme-toggle {
+      position: relative;
+      width: 50px;
+      height: 24px;
+    }
+    
+    .theme-toggle input {
+      opacity: 0;
+      width: 0;
+      height: 0;
+    }
+    
+    .slider {
+      position: absolute;
+      cursor: pointer;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background-color: #ccc;
+      transition: .4s;
+      border-radius: 24px;
+    }
+    
+    .slider:before {
+      position: absolute;
+      content: "";
+      height: 18px;
+      width: 18px;
+      left: 3px;
+      bottom: 3px;
+      background-color: white;
+      transition: .4s;
+      border-radius: 50%;
+    }
+    
+    input:checked + .slider {
+      background-color: var(--primary);
+    }
+    
+    input:checked + .slider:before {
+      transform: translateX(26px);
+    }
+    
+    /* Dark mode styles */
+    .dark-mode {
+      background-color: var(--dark);
+      color: var(--light);
+    }
+    
+    .dark-mode .bg-white {
+      background-color: #3D3D3D;
+    }
+    
+    .dark-mode .text-gray-800 {
+      color: #f1f5f9;
+    }
+    
+    .dark-mode .text-gray-600 {
+      color: #cbd5e1;
+    }
+    
+    .dark-mode .border-gray-200 {
+      border-color: #4B5563;
+    }
+    
+    .dark-mode .bg-gray-50 {
+      background-color: #2C2C2C;
+    }
+    
+    .dark-mode .bg-gray-100 {
+      background-color: #343434;
+    }
+    
+    /* Custom scrollbar */
+    ::-webkit-scrollbar {
+      width: 8px;
+    }
+    
+    ::-webkit-scrollbar-track {
+      background: #f1f1f1;
+    }
+    
+    ::-webkit-scrollbar-thumb {
+      background: #888;
+      border-radius: 10px;
+    }
+    
+    ::-webkit-scrollbar-thumb:hover {
+      background: #555;
+    }
+    
+    /* Food Gallery Lightbox */
+    .lightbox {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background-color: rgba(0, 0, 0, 0.9);
+      display: none;
+      justify-content: center;
+      align-items: center;
+      z-index: 1000;
+    }
+    
+    .lightbox.active {
+      display: flex;
+    }
+    
+    .lightbox-img {
+      max-width: 80%;
+      max-height: 80%;
+      object-fit: contain;
+    }
+    
+    .lightbox-close {
+      position: absolute;
+      top: 20px;
+      right: 20px;
+      color: white;
+      font-size: 30px;
+      cursor: pointer;
+    }
+    
+    .lightbox-prev, .lightbox-next {
+      position: absolute;
+      top: 50%;
+      transform: translateY(-50%);
+      color: white;
+      font-size: 30px;
+      cursor: pointer;
+      padding: 15px;
+    }
+    
+    .lightbox-prev {
+      left: 20px;
+    }
+    
+    .lightbox-next {
+      right: 20px;
+    }
+    
+    /* Food nutrition info tooltip */
+    .tooltip {
+      position: relative;
+      display: inline-block;
+    }
+    
+    .tooltip .tooltiptext {
+      visibility: hidden;
+      width: 200px;
+      background-color: #555;
+      color: #fff;
+      text-align: center;
+      border-radius: 6px;
+      padding: 10px;
+      position: absolute;
+      z-index: 1;
+      bottom: 125%;
+      left: 50%;
+      transform: translateX(-50%);
+      opacity: 0;
+      transition: opacity 0.3s;
+    }
+    
+    .tooltip .tooltiptext::after {
+      content: "";
+      position: absolute;
+      top: 100%;
+      left: 50%;
+      margin-left: -5px;
+      border-width: 5px;
+      border-style: solid;
+      border-color: #555 transparent transparent transparent;
+    }
+    
+    .tooltip:hover .tooltiptext {
+      visibility: visible;
+      opacity: 1;
+    }
+    
+    /* Live order tracking map */
+    .map-container {
+      height: 400px;
+      border-radius: 1rem;
+      overflow: hidden;
+    }
+    
+    /* Floating Labels for Forms */
+    .form-floating {
+      position: relative;
+    }
+    
+    .form-floating input,
+    .form-floating textarea,
+    .form-floating select {
+      padding-top: 24px;
+      padding-bottom: 8px;
+    }
+    
+    .form-floating label {
+      position: absolute;
+      top: 0;
+      left: 12px;
+      height: 100%;
+      padding: 16px 0;
+      pointer-events: none;
+      transform-origin: 0 0;
+      transition: opacity .1s ease-in-out,transform .1s ease-in-out;
+    }
+    
+    .form-floating input:focus ~ label,
+    .form-floating input:not(:placeholder-shown) ~ label,
+    .form-floating textarea:focus ~ label,
+    .form-floating textarea:not(:placeholder-shown) ~ label,
+    .form-floating select:focus ~ label,
+    .form-floating select:not(:placeholder-shown) ~ label {
+      transform: scale(.85) translateY(-10px);
+      opacity: .65;
+    }
+    
+    /* Food Ordering Counter */
+    .quantity-counter {
+      display: flex;
+      align-items: center;
+      border: 1px solid #e5e7eb;
+      border-radius: 0.5rem;
+      overflow: hidden;
+    }
+    
+    .quantity-counter button {
+      width: 36px;
+      height: 36px;
+      background-color: #f9fafb;
+      border: none;
+      font-size: 1.25rem;
+      cursor: pointer;
+      transition: all 0.2s ease;
+    }
+    
+    .quantity-counter button:hover {
+      background-color: #f3f4f6;
+    }
+    
+    .quantity-counter input {
+      width: 40px;
+      height: 36px;
+      text-align: center;
+      border: none;
+      border-left: 1px solid #e5e7eb;
+      border-right: 1px solid #e5e7eb;
+    }
+    
+    /* Delivery time slider */
+    .delivery-time-slider {
+      width: 100%;
+      height: 8px;
+      background-color: #e5e7eb;
+      border-radius: 10px;
+      position: relative;
+    }
+    
+    .delivery-time-progress {
+      height: 100%;
+      background-color: var(--primary);
+      border-radius: 10px;
+      position: absolute;
+      left: 0;
+      transition: width 0.3s ease;
+    }
+    
+    .delivery-time-handle {
+      width: 20px;
+      height: 20px;
+      background-color: white;
+      border: 3px solid var(--primary);
+      border-radius: 50%;
+      position: absolute;
+      top: 50%;
+      transform: translate(-50%, -50%);
+      cursor: pointer;
+    }
+    
+    /* Animations */
+    @keyframes pulse {
+      0%, 100% {
+        opacity: 1;
+      }
+      50% {
+        opacity: 0.5;
+      }
+    }
+    
+    .animate-pulse {
+      animation: pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+    }
+    
+    @keyframes bounce {
+      0%, 100% {
+        transform: translateY(0);
+      }
+      50% {
+        transform: translateY(-10px);
+      }
+    }
+    
+    .animate-bounce {
+      animation: bounce 2s infinite;
+    }
+    
+    @keyframes fadeIn {
+      from {
+        opacity: 0;
+        transform: translateY(20px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+    
+    .animate-fade-in {
+      animation: fadeIn 0.5s ease forwards;
+    }
+    
+    .shake {
+      animation: shake 0.82s cubic-bezier(.36,.07,.19,.97) both;
+      transform: translate3d(0, 0, 0);
+    }
+
+    @keyframes shake {
+      10%, 90% {
+        transform: translate3d(-1px, 0, 0);
+      }
+      
+      20%, 80% {
+        transform: translate3d(2px, 0, 0);
+      }
+
+      30%, 50%, 70% {
+        transform: translate3d(-4px, 0, 0);
+      }
+
+      40%, 60% {
+        transform: translate3d(4px, 0, 0);
+      }
+    }
+    
+    /* Order process timeline */
+    .timeline {
+      position: relative;
+      max-width: 1200px;
+      margin: 0 auto;
+    }
+    
+    .timeline::after {
+      content: '';
+      position: absolute;
+      width: 6px;
+      background-color: #e5e7eb;
+      top: 0;
+      bottom: 0;
+      left: 50%;
+      margin-left: -3px;
+    }
+    
+    .timeline-container {
+      padding: 10px 40px;
+      position: relative;
+      background-color: inherit;
+      width: 50%;
+    }
+    
+    .timeline-container::after {
+      content: '';
+      position: absolute;
+      width: 25px;
+      height: 25px;
+      right: -13px;
+      background-color: white;
+      border: 4px solid var(--primary);
+      top: 15px;
+      border-radius: 50%;
+      z-index: 1;
+    }
+    
+    .left {
+      left: 0;
+    }
+    
+    .right {
+      left: 50%;
+    }
+    
+    .left::before {
+      content: " ";
+      height: 0;
+      position: absolute;
+      top: 22px;
+      width: 0;
+      z-index: 1;
+      right: 30px;
+      border: medium solid #f3f4f6;
+      border-width: 10px 0 10px 10px;
+      border-color: transparent transparent transparent #f3f4f6;
+    }
+    
+    .right::before {
+      content: " ";
+      height: 0;
+      position: absolute;
+      top: 22px;
+      width: 0;
+      z-index: 1;
+      left: 30px;
+      border: medium solid #f3f4f6;
+      border-width: 10px 10px 10px 0;
+      border-color: transparent #f3f4f6 transparent transparent;
+    }
+    
+    .right::after {
+      left: -12px;
+    }
+    
+    .timeline-content {
+      padding: 20px 30px;
+      background-color: #f3f4f6;
+      position: relative;
+      border-radius: 6px;
+    }
+    
+    @media screen and (max-width: 768px) {
+      .timeline::after {
+        left: 31px;
+      }
+      
+      .timeline-container {
+        width: 100%;
+        padding-left: 70px;
+        padding-right: 25px;
+      }
+      
+      .timeline-container::before {
+        left: 60px;
+        border: medium solid #f3f4f6;
+        border-width: 10px 10px 10px 0;
+        border-color: transparent #f3f4f6 transparent transparent;
+      }
+      
+      .left::after, .right::after {
+        left: 18px;
+      }
+      
+      .right {
+        left: 0%;
+      }
+    }
+  </style>
+</head>
+<body class="antialiased">
+  <!-- Header with Navigation - Feature 1: Responsive Navigation -->
+  <header class="bg-white shadow-sm sticky top-0 z-50 transition-all duration-300">
+    <div class="container mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="flex justify-between items-center py-4">
+        <div class="flex items-center">
+          <a href="#" class="flex items-center">
+            <span class="text-3xl font-bold text-gray-900">Quick<span class="text-red-500">Bite</span></span>
+          </a>
+        </div>
+        
+        <!-- Desktop Navigation -->
+        <nav class="hidden md:flex space-x-8">
+          <a href="#home" class="nav-link text-gray-800 hover:text-red-500 font-medium transition-colors">Home</a>
+          <a href="#restaurants" class="nav-link text-gray-800 hover:text-red-500 font-medium transition-colors">Restaurants</a>
+          <a href="#menu" class="nav-link text-gray-800 hover:text-red-500 font-medium transition-colors">Menu</a>
+          <a href="#how-it-works" class="nav-link text-gray-800 hover:text-red-500 font-medium transition-colors">How It Works</a>
+          <a href="#app" class="nav-link text-gray-800 hover:text-red-500 font-medium transition-colors">App</a>
+          <a href="#contact" class="nav-link text-gray-800 hover:text-red-500 font-medium transition-colors">Contact</a>
+        </nav>
+        
+        <div class="flex items-center space-x-4">
+          <!-- Feature 2: Dark Mode Toggle -->
+          <label class="theme-toggle hidden md:block">
+            <input type="checkbox" id="theme-toggle">
+            <span class="slider"></span>
+          </label>
+          
+          <!-- Language Selector -->
+          <div class="hidden md:block relative">
+            <select class="appearance-none bg-transparent border border-gray-300 rounded px-3 py-1 pr-8 focus:outline-none focus:ring-2 focus:ring-red-500">
+              <option>English</option>
+              <option>Español</option>
+              <option>Français</option>
+              <option>Deutsch</option>
+            </select>
+            <div class="pointer-events-none absolute inset-y-0 right-0 flex items-center px-2 text-gray-700">
+              <i class="fas fa-chevron-down text-xs"></i>
+            </div>
+          </div>
+          
+          <!-- Cart Button -->
+          <a href="#cart" class="relative text-gray-800 hover:text-red-500 transition-colors">
+            <i class="fas fa-shopping-cart text-xl"></i>
+            <span class="absolute -top-2 -right-2 bg-red-500 text-white text-xs w-5 h-5 flex items-center justify-center rounded-full">3</span>
+          </a>
+          
+          <a href="#login" class="hidden md:block text-gray-800 hover:text-red-500 transition-colors">
+            <i class="fas fa-user mr-1"></i> Sign In
+          </a>
+          
+          <!-- Mobile menu button -->
+          <div class="md:hidden">
+            <button id="mobile-menu-button" class="text-gray-800 focus:outline-none">
+              <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16" />
+              </svg>
+            </button>
+          </div>
+        </div>
+      </div>
+      
+      <!-- Mobile Navigation -->
+      <div id="mobile-menu" class="md:hidden hidden pb-4">
+        <div class="flex flex-col space-y-3">
+          <a href="#home" class="text-gray-800 hover:text-red-500 font-medium transition-colors py-2">Home</a>
+          <a href="#restaurants" class="text-gray-800 hover:text-red-500 font-medium transition-colors py-2">Restaurants</a>
+          <a href="#menu" class="text-gray-800 hover:text-red-500 font-medium transition-colors py-2">Menu</a>
+          <a href="#how-it-works" class="text-gray-800 hover:text-red-500 font-medium transition-colors py-2">How It Works</a>
+          <a href="#app" class="text-gray-800 hover:text-red-500 font-medium transition-colors py-2">App</a>
+          <a href="#contact" class="text-gray-800 hover:text-red-500 font-medium transition-colors py-2">Contact</a>
+          
+          <div class="flex items-center justify-between pt-3">
+            <label class="theme-toggle">
+              <input type="checkbox" id="mobile-theme-toggle">
+              <span class="slider"></span>
+            </label>
+            
+            <select class="appearance-none bg-transparent border border-gray-300 rounded px-3 py-1 focus:outline-none focus:ring-2 focus:ring-red-500">
+              <option>English</option>
+              <option>Español</option>
+              <option>Français</option>
+              <option>Deutsch</option>
+            </select>
+
+            <a href="#login" class="text-gray-800 hover:text-red-500 transition-colors">
+              <i class="fas fa-user"></i>
+            </a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <!-- Hero Section - Feature 3: Dynamic Hero with Search -->
+  <section id="home" class="relative pt-16 md:pt-0 md:h-screen flex items-center bg-gray-50">
+    <div class="absolute inset-0 z-0 overflow-hidden">
+      <div class="absolute inset-0 bg-black opacity-50 z-10"></div>
+      <img src="https://images.unsplash.com/photo-1504674900247-0877df9cc836?ixlib=rb-1.2.1&auto=format&fit=crop&w=1350&q=80" 
+           alt="Food Background" class="absolute inset-0 w-full h-full object-cover z-0">
+    </div>
+    
+    <div class="container mx-auto px-4 sm:px-6 lg:px-8 relative z-20">
+      <div class="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center py-20">
+        <div class="appear">
+          <span class="inline-block px-3 py-1 rounded-full bg-red-100 text-red-600 text-sm font-semibold mb-4">
+            #1 Food Delivery App
+          </span>
+          <h1 class="text-4xl md:text-5xl lg:text-6xl font-bold leading-tight mb-6 text-white">
+            Delicious Food <br>
+            <span class="text-red-400">Delivered To Your Door</span>
+          </h1>
+          <p class="text-lg text-gray-200 mb-8 max-w-xl">
+            Order from your favorite restaurants, grocery stores, and more. We deliver food with attitude.
+          </p>
+          <div class="flex flex-col sm:flex-row gap-4">
+            <a href="#menu" class="bg-red-500 hover:bg-red-600 text-white px-6 py-3 rounded-md transition-all duration-300 text-center font-medium">
+              Order Now
+            </a>
+            <a href="#restaurants" class="bg-white hover:bg-gray-100 text-gray-800 px-6 py-3 rounded-md transition-all duration-300 text-center font-medium">
+              View Restaurants
+            </a>
+          </div>
+        </div>
+        
+        <!-- Feature 4: Advanced Search/Filter Form -->
+        <div class="bg-white bg-opacity-95 rounded-xl p-8 shadow-lg appear hidden lg:block">
+          <h2 class="text-2xl font-bold mb-6">Find Food Near You</h2>
+          <form action="#" method="POST">
+            <div class="mb-4">
+              <label for="location" class="block text-sm font-medium text-gray-700 mb-1">Delivery Address</label>
+              <div class="relative">
+                <input type="text" id="location" placeholder="Enter your delivery address" class="w-full px-4 py-3 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-red-500">
+                <button type="button" class="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-400 hover:text-red-500">
+                  <i class="fas fa-map-marker-alt"></i>
+                </button>
+              </div>
+            </div>
+            
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
+              <div>
+                <label for="food-type" class="block text-sm font-medium text-gray-700 mb-1">Food Type</label>
+                <select id="food-type" class="w-full px-4 py-3 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-red-500">
+                  <option value="">All Types</option>
+                  <option>Pizza</option>
+                  <option>Burgers</option>
+                  <option>Sushi</option>
+                  <option>Chinese</option>
+                  <option>Italian</option>
+                  <option>Mexican</option>
+                  <option>Vegetarian</option>
+                </select>
+              </div>
+              
+              <div>
+                <label for="delivery-time" class="block text-sm font-medium text-gray-700 mb-1">Delivery Time</label>
+                <select id="delivery-time" class="w-full px-4 py-3 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-red-500">
+                  <option value="">Any Time</option>
+                  <option>Under 30 min</option>
+                  <option>Under 45 min</option>
+                  <option>Under 60 min</option>
+                </select>
+              </div>
+            </div>
+            
+            <div class="mb-6">
+              <label for="min-order" class="block text-sm font-medium text-gray-700 mb-1">Price Range</label>
+              <div class="relative pt-1">
+                <input type="range" id="min-order" min="0" max="100" value="25" class="w-full h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer">
+                <div class="flex justify-between text-xs text-gray-500 px-2 mt-2">
+                  <span>$0</span>
+                  <span>$25</span>
+                  <span>$50</span>
+                  <span>$75</span>
+                  <span>$100+</span>
+                </div>
+              </div>
+            </div>
+            
+            <button type="submit" class="w-full bg-red-500 hover:bg-red-600 text-white py-3 rounded-md transition-all duration-300 font-medium">
+              <i class="fas fa-search mr-2"></i> Find Food
+            </button>
+          </form>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Features Section -->
+  <section class="py-16 bg-white">
+    <div class="container mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="grid grid-cols-1 md:grid-cols-4 gap-8">
+        <div class="text-center appear">
+          <div class="w-16 h-16 rounded-full bg-red-100 flex items-center justify-center mx-auto mb-6">
+            <i class="fas fa-utensils text-red-500 text-2xl"></i>
+          </div>
+          <h3 class="text-xl font-bold mb-3">Wide Selection</h3>
+          <p class="text-gray-600">
+            Choose from hundreds of restaurants and thousands of dishes to satisfy any craving.
+          </p>
+        </div>
+        
+        <div class="text-center appear">
+          <div class="w-16 h-16 rounded-full bg-red-100 flex items-center justify-center mx-auto mb-6">
+            <i class="fas fa-truck text-red-500 text-2xl"></i>
+          </div>
+          <h3 class="text-xl font-bold mb-3">Fast Delivery</h3>
+          <p class="text-gray-600">
+            Hot food delivered to your door in as little as 30 minutes from order confirmation.
+          </p>
+        </div>
+        
+        <div class="text-center appear">
+          <div class="w-16 h-16 rounded-full bg-red-100 flex items-center justify-center mx-auto mb-6">
+            <i class="fas fa-mobile-alt text-red-500 text-2xl"></i>
+          </div>
+          <h3 class="text-xl font-bold mb-3">Easy Ordering</h3>
+          <p class="text-gray-600">
+            Order with our easy-to-use mobile app or website for a seamless experience.
+          </p>
+        </div>
+        
+        <div class="text-center appear">
+          <div class="w-16 h-16 rounded-full bg-red-100 flex items-center justify-center mx-auto mb-6">
+            <i class="fas fa-shield-alt text-red-500 text-2xl"></i>
+          </div>
+          <h3 class="text-xl font-bold mb-3">Secure Payments</h3>
+          <p class="text-gray-600">
+            Multiple secure payment options including credit cards, PayPal, and cash on delivery.
+          </p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Popular Restaurants - Feature 5: Interactive Restaurant Cards -->
+  <section id="restaurants" class="py-16 bg-gray-50">
+    <div class="container mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="text-center mb-12">
+        <span class="inline-block px-3 py-1 rounded-full bg-red-100 text-red-600 text-sm font-semibold">
+          Top Rated
+        </span>
+        <h2 class="text-3xl md:text-4xl font-bold mt-4 mb-6">Popular Restaurants</h2>
+        <p class="text-lg text-gray-600 max-w-3xl mx-auto">
+          Discover the best restaurants in your area with quick delivery and top ratings.
+        </p>
+      </div>
+      
+      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+        <!-- Restaurant 1 -->
+        <div class="restaurant-card bg-white rounded-xl overflow-hidden shadow-md appear">
+          <div class="relative h-48">
+            <img src="https://images.unsplash.com/photo-1555396273-367ea4eb4db5?ixlib=rb-1.2.1&auto=format&fit=crop&w=1350&q=80" 
+                 alt="Burger Joint" class="w-full h-full object-cover">
+            <div class="absolute top-0 left-0 bg-red-500 text-white text-xs px-3 py-1 m-4 rounded-full">
+              Free Delivery
+            </div>
+          </div>
+          <div class="p-6">
+            <div class="flex justify-between mb-2">
+              <h3 class="text-xl font-bold">Burger Bliss</h3>
+              <div class="flex items-center">
+                <i class="fas fa-star text-yellow-400"></i>
+                <span class="ml-1 text-gray-600">4.8</span>
+              </div>
+            </div>
+            <div class="flex flex-wrap gap-2 mb-4">
+              <span class="text-xs bg-gray-100 px-3 py-1 rounded-full">Burgers</span>
+              <span class="text-xs bg-gray-100 px-3 py-1 rounded-full">American</span>
+              <span class="text-xs bg-gray-100 px-3 py-1 rounded-full">Fast Food</span>
+            </div>
+            <div class="flex justify-between items-center text-sm text-gray-500 mb-4">
+              <span><i class="fas fa-clock mr-1"></i> 25-35 min</span>
+              <span><i class="fas fa-dollar-sign mr-1"></i> Min: $10</span>
+            </div>
+            <a href="#menu" class="block text-center bg-red-500 hover:bg-red-600 text-white py-2 px-4 rounded-md transition-all duration-300">
+              Order Now
+            </a>
+          </div>
+        </div>
+        
+        <!-- Restaurant 2 -->
+        <div class="restaurant-card bg-white rounded-xl overflow-hidden shadow-md appear">
+          <div class="relative h-48">
+            <img src="https://images.unsplash.com/photo-1513104890138-7c749659a591?ixlib=rb-1.2.1&auto=format&fit=crop&w=1350&q=80" 
+                 alt="Pizza Place" class="w-full h-full object-cover">
+            <div class="absolute top-0 left-0 bg-green-500 text-white text-xs px-3 py-1 m-4 rounded-full">
+              20% Off
+            </div>
+          </div>
+          <div class="p-6">
+            <div class="flex justify-between mb-2">
+              <h3 class="text-xl font-bold">Pizza Paradise</h3>
+              <div class="flex items-center">
+                <i class="fas fa-star text-yellow-400"></i>
+                <span class="ml-1 text-gray-600">4.7</span>
+              </div>
+            </div>
+            <div class="flex flex-wrap gap-2 mb-4">
+              <span class="text-xs bg-gray-100 px-3 py-1 rounded-full">Pizza</span>
+              <span class="text-xs bg-gray-100 px-3 py-1 rounded-full">Italian</span>
+              <span class="text-xs bg-gray-100 px-3 py-1 rounded-full">Pasta</span>
+            </div>
+            <div class="flex justify-between items-center text-sm text-gray-500 mb-4">
+              <span><i class="fas fa-clock mr-1"></i> 30-45 min</span>
+              <span><i class="fas fa-dollar-sign mr-1"></i> Min: $15</span>
+            </div>
+            <a href="#menu" class="block text-center bg-red-500 hover:bg-red-600 text-white py-2 px-4 rounded-md transition-all duration-300">
+              Order Now
+            </a>
+          </div>
+        </div>
+        
+        <!-- Restaurant 3 -->
+        <div class="restaurant-card bg-white rounded-xl overflow-hidden shadow-md appear">
+          <div class="relative h-48">
+            <img src="https://images.unsplash.com/photo-1563245372-f21724e3856d?ixlib=rb-1.2.1&auto=format&fit=crop&w=1350&q=80" 
+                 alt="Sushi Restaurant" class="w-full h-full object-cover">
+          </div>
+          <div class="p-6">
+            <div class="flex justify-between mb-2">
+              <h3 class="text-xl font-bold">Sushi Sensation</h3>
+              <div class="flex items-center">
+                <i class="fas fa-star text-yellow-400"></i>
+                <span class="ml-1 text-gray-600">4.9</span>
+              </div>
+            </div>
+            <div class="flex flex-wrap gap-2 mb-4">
+              <span class="text-xs bg-gray-100 px-3 py-1 rounded-full">Sushi</span>
+              <span class="text-xs bg-gray-100 px-3 py-1 rounded-full">Japanese</span>
+              <span class="text-xs bg-gray-100 px-3 py-1 rounded-full">Asian</span>
+            </div>
+            <div class="flex justify-between items-center text-sm text-gray-500 mb-4">
+              <span><i class="fas fa-clock mr-1"></i> 40-55 min</span>
+              <span><i class="fas fa-dollar-sign mr-1"></i> Min: $20</span>
+            </div>
+            <a href="#menu" class="block text-center bg-red-500 hover:bg-red-600 text-white py-2 px-4 rounded-md transition-all duration-300">
+              Order Now
+            </a>
+          </div>
+        </div>
+        
+        <!-- Restaurant 4 -->
+        <div class="restaurant-card bg-white rounded-xl overflow-hidden shadow-md appear">
+          <div class="relative h-48">
+            <img src="https://images.unsplash.com/photo-1496116218417-1a781b1c416c?ixlib=rb-1.2.1&auto=format&fit=crop&w=1350&q=80" 
+                 alt="Mexican Restaurant" class="w-full h-full object-cover">
+            <div class="absolute top-0 left-0 bg-purple-500 text-white text-xs px-3 py-1 m-4 rounded-full">
+              New
+            </div>
+          </div>
+          <div class="p-6">
+            <div class="flex justify-between mb-2">
+              <h3 class="text-xl font-bold">Taco Fiesta</h3>
+              <div class="flex items-center">
+                <i class="fas fa-star text-yellow-400"></i>
+                <span class="ml-1 text-gray-600">4.6</span>
+              </div>
+            </div>
+            <div class="flex flex-wrap gap-2 mb-4">
+              <span class="text-xs bg-gray-100 px-3 py-1 rounded-full">Mexican</span>
+              <span class="text-xs bg-gray-100 px-3 py-1 rounded-full">Tacos</span>
+              <span class="text-xs bg-gray-100 px-3 py-1 rounded-full">Tex-Mex</span>
+            </div>
+            <div class="flex justify-between items-center text-sm text-gray-500 mb-4">
+              <span><i class="fas fa-clock mr-1"></i> 25-40 min</span>
+              <span><i class="fas fa-dollar-sign mr-1"></i> Min: $12</span>
+            </div>
+            <a href="#menu" class="block text-center bg-red-500 hover:bg-red-600 text-white py-2 px-4 rounded-md transition-all duration-300">
+              Order Now
+            </a>
+          </div>
+        </div>
+        
+        <!-- Restaurant 5 -->
+        <div class="restaurant-card bg-white rounded-xl overflow-hidden shadow-md appear">
+          <div class="relative h-48">
+            <img src="https://images.unsplash.com/photo-1511910849309-0dffb8785146?ixlib=rb-1.2.1&auto=format&fit=crop&w=1350&q=80" 
+                 alt="Thai Restaurant" class="w-full h-full object-cover">
+          </div>
+          <div class="p-6">
+            <div class="flex justify-between mb-2">
+              <h3 class="text-xl font-bold">Thai Delight</h3>
+              <div class="flex items-center">
+                <i class="fas fa-star text-yellow-400"></i>
+                <span class="ml-1 text-gray-600">4.7</span>
+              </div>
+            </div>
+            <div class="flex flex-wrap gap-2 mb-4">
+              <span class="text-xs bg-gray-100 px-3 py-1 rounded-full">Thai</span>
+              <span class="text-xs bg-gray-100 px-3 py-1 rounded-full">Curry</span>
+              <span class="text-xs bg-gray-100 px-3 py-1 rounded-full">Asian</span>
+            </div>
+            <div class="flex justify-between items-center text-sm text-gray-500 mb-4">
+              <span><i class="fas fa-clock mr-1"></i> 35-50 min</span>
+              <span><i class="fas fa-dollar-sign mr-1"></i> Min: $15</span>
+            </div>
+            <a href="#menu" class="block text-center bg-red-500 hover:bg-red-600 text-white py-2 px-4 rounded-md transition-all duration-300">
+              Order Now
+            </a>
+          </div>
+        </div>
+        
+        <!-- Restaurant 6 -->
+        <div class="restaurant-card bg-white rounded-xl overflow-hidden shadow-md appear">
+          <div class="relative h-48">
+            <img src="https://images.unsplash.com/photo-1414235077428-338989a2e8c0?ixlib=rb-1.2.1&auto=format&fit=crop&w=1350&q=80" 
+                 alt="Italian Restaurant" class="w-full h-full object-cover">
+            <div class="absolute top-0 left-0 bg-blue-500 text-white text-xs px-3 py-1 m-4 rounded-full">
+              Popular
+            </div>
+          </div>
+          <div class="p-6">
+            <div class="flex justify-between mb-2">
+              <h3 class="text-xl font-bold">Pasta Palace</h3>
+              <div class="flex items-center">
+                <i class="fas fa-star text-yellow-400"></i>
+                <span class="ml-1 text-gray-600">4.8</span>
+              </div>
+            </div>
+            <div class="flex flex-wrap gap-2 mb-4">
+              <span class="text-xs bg-gray-100 px-3 py-1 rounded-full">Italian</span>
+              <span class="text-xs bg-gray-100 px-3 py-1 rounded-full">Pasta</span>
+              <span class="text-xs bg-gray-100 px-3 py-1 rounded-full">Wine</span>
+            </div>
+            <div class="flex justify-between items-center text-sm text-gray-500 mb-4">
+              <span><i class="fas fa-clock mr-1"></i> 40-55 min</span>
+              <span><i class="fas fa-dollar-sign mr-1"></i> Min: $18</span>
+            </div>
+            <a href="#menu" class="block text-center bg-red-500 hover:bg-red-600 text-white py-2 px-4 rounded-md transition-all duration-300">
+              Order Now
+            </a>
+          </div>
+        </div>
+      </div>
+      
+      <div class="text-center mt-12">
+        <a href="#" class="inline-block bg-red-500 hover:bg-red-600 text-white px-6 py-3 rounded-md transition-all duration-300 font-medium">
+          View All Restaurants
+        </a>
+      </div>
+    </div>
+  </section>
+
+  <!-- Menu Section - Feature 6: Interactive Menu with Filtering -->
+  <section id="menu" class="py-16 bg-white">
+    <div class="container mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="text-center mb-12">
+        <span class="inline-block px-3 py-1 rounded-full bg-red-100 text-red-600 text-sm font-semibold">
+          Tasty Options
+        </span>
+        <h2 class="text-3xl md:text-4xl font-bold mt-4 mb-6">Popular Menu Items</h2>
+        <p class="text-lg text-gray-600 max-w-3xl mx-auto">
+          Check out our most ordered dishes from top-rated restaurants.
+        </p>
+      </div>
+      
+      <!-- Menu Filter Buttons -->
+      <div class="flex flex-wrap justify-center gap-4 mb-12">
+        <button class="filter-btn active px-4 py-2 rounded-md border border-gray-300 font-medium" data-filter="all">
+          All
+        </button>
+        <button class="filter-btn px-4 py-2 rounded-md border border-gray-300 font-medium" data-filter="pizza">
+          Pizza
+        </button>
+        <button class="filter-btn px-4 py-2 rounded-md border border-gray-300 font-medium" data-filter="burger">
+          Burgers
+        </button>
+        <button class="filter-btn px-4 py-2 rounded-md border border-gray-300 font-medium" data-filter="sushi">
+          Sushi
+        </button>
+        <button class="filter-btn px-4 py-2 rounded-md border border-gray-300 font-medium" data-filter="dessert">
+          Desserts
+        </button>
+        <button class="filter-btn px-4 py-2 rounded-md border border-gray-300 font-medium" data-filter="drink">
+          Drinks
+        </button>
+      </div>
+      
+      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+        <!-- Food Item 1 (Pizza) -->
+        <div class="food-card bg-white rounded-xl overflow-hidden shadow-md appear" data-category="pizza">
+          <div class="relative h-48">
+            <img src="https://images.unsplash.com/photo-1513104890138-7c749659a591?ixlib=rb-1.2.1&auto=format&fit=crop&w=1350&q=80" 
+                 alt="Pepperoni Pizza" class="w-full h-full object-cover">
+            <div class="absolute top-0 right-0 bg-red-500 text-white text-xs px-3 py-1 m-4 rounded-full">
+              Popular
+            </div>
+          </div>
+          <div class="p-4">
+            <div class="flex justify-between mb-2">
+              <h3 class="font-bold">Pepperoni Pizza</h3>
+              <div class="tooltip">
+                <span class="text-gray-500 text-sm"><i class="fas fa-info-circle"></i></span>
+                <div class="tooltiptext">
+                  <p class="text-sm mb-1">Calories: 285 per slice</p>
+                  <p class="text-sm mb-1">Protein: 12g</p>
+                  <p class="text-sm mb-1">Carbs: 36g</p>
+                  <p class="text-sm">Fat: 10g</p>
+                </div>
+              </div>
+            </div>
+            <p class="text-gray-600 text-sm mb-4">
+              Classic pepperoni pizza with mozzarella cheese and tomato sauce on a hand-tossed crust.
+            </p>
+            <div class="flex justify-between items-center">
+              <span class="text-lg font-bold text-red-500">$12.99</span>
+              <div class="quantity-counter">
+                <button class="quantity-decrease">−</button>
+                <input type="number" min="1" value="1" class="quantity-input">
+                <button class="quantity-increase">+</button>
+              </div>
+            </div>
+          </div>
+          <div class="px-4 pb-4">
+            <button class="w-full bg-red-500 hover:bg-red-600 text-white py-2 px-4 rounded-md transition-all duration-300">
+              Add to Cart
+            </button>
+          </div>
+        </div>
+        
+        <!-- Food Item 2 (Burger) -->
+        <div class="food-card bg-white rounded-xl overflow-hidden shadow-md appear" data-category="burger">
+          <div class="relative h-48">
+            <img src="https://images.unsplash.com/photo-1568901346375-23c9450c58cd?ixlib=rb-1.2.1&auto=format&fit=crop&w=1350&q=80" 
+                 alt="Deluxe Burger" class="w-full h-full object-cover">
+          </div>
+          <div class="p-4">
+            <div class="flex justify-between mb-2">
+              <h3 class="font-bold">Deluxe Burger</h3>
+              <div class="tooltip">
+                <span class="text-gray-500 text-sm"><i class="fas fa-info-circle"></i></span>
+                <div class="tooltiptext">
+                  <p class="text-sm mb-1">Calories: 650</p>
+                  <p class="text-sm mb-1">Protein: 35g</p>
+                  <p class="text-sm mb-1">Carbs: 40g</p>
+                  <p class="text-sm">Fat: 38g</p>
+                </div>
+              </div>
+            </div>
+            <p class="text-gray-600 text-sm mb-4">
+              Angus beef patty with cheese, lettuce, tomato, pickles, onions, and special sauce.
+            </p>
+            <div class="flex justify-between items-center">
+              <span class="text-lg font-bold text-red-500">$10.49</span>
+              <div class="quantity-counter">
+                <button class="quantity-decrease">−</button>
+                <input type="number" min="1" value="1" class="quantity-input">
+                <button class="quantity-increase">+</button>
+              </div>
+            </div>
+          </div>
+          <div class="px-4 pb-4">
+            <button class="w-full bg-red-500 hover:bg-red-600 text-white py-2 px-4 rounded-md transition-all duration-300">
+              Add to Cart
+            </button>
+          </div>
+        </div>
+        
+        <!-- Food Item 3 (Sushi) -->
+        <div class="food-card bg-white rounded-xl overflow-hidden shadow-md appear" data-category="sushi">
+          <div class="relative h-48">
+            <img src="https://images.unsplash.com/photo-1579871494447-9811cf80d66c?ixlib=rb-1.2.1&auto=format&fit=crop&w=1350&q=80" 
+                 alt="Rainbow Roll" class="w-full h-full object-cover">
+          </div>
+          <div class="p-4">
+            <div class="flex justify-between mb-2">
+              <h3 class="font-bold">Rainbow Roll</h3>
+              <div class="tooltip">
+                <span class="text-gray-500 text-sm"><i class="fas fa-info-circle"></i></span>
+                <div class="tooltiptext">
+                  <p class="text-sm mb-1">Calories: 420</p>
+                  <p class="text-sm mb-1">Protein: 20g</p>
+                  <p class="text-sm mb-1">Carbs: 58g</p>
+                  <p class="text-sm">Fat: 12g</p>
+                </div>
+              </div>
+            </div>
+            <p class="text-gray-600 text-sm mb-4">
+              California roll topped with tuna, salmon, yellowtail, avocado, and shrimp.
+            </p>
+            <div class="flex justify-between items-center">
+              <span class="text-lg font-bold text-red-500">$15.99</span>
+              <div class="quantity-counter">
+                <button class="quantity-decrease">−</button>
+                <input type="number" min="1" value="1" class="quantity-input">
+                <button class="quantity-increase">+</button>
+              </div>
+            </div>
+          </div>
+          <div class="px-4 pb-4">
+            <button class="w-full bg-red-500 hover:bg-red-600 text-white py-2 px-4 rounded-md transition-all duration-300">
+              Add to Cart
+            </button>
+          </div>
+        </div>
+        
+        <!-- Food Item 4 (Dessert) -->
+        <div class="food-card bg-white rounded-xl overflow-hidden shadow-md appear" data-category="dessert">
+          <div class="relative h-48">
+            <img src="https://images.unsplash.com/photo-1488477181946-6428a0291777?ixlib=rb-1.2.1&auto=format&fit=crop&w=1350&q=80" 
+                 alt="Chocolate Cake" class="w-full h-full object-cover">
+          </div>
+          <div class="p-4">
+            <div class="flex justify-between mb-2">
+              <h3 class="font-bold">Chocolate Lava Cake</h3>
+              <div class="tooltip">
+                <span class="text-gray-500 text-sm"><i class="fas fa-info-circle"></i></span>
+                <div class="tooltiptext">
+                  <p class="text-sm mb-1">Calories: 380</p>
+                  <p class="text-sm mb-1">Protein: 5g</p>
+                  <p class="text-sm mb-1">Carbs: 52g</p>
+                  <p class="text-sm">Fat: 18g</p>
+                </div>
+              </div>
+            </div>
+            <p class="text-gray-600 text-sm mb-4">
+              Warm chocolate cake with a molten center, served with vanilla ice cream.
+            </p>
+            <div class="flex justify-between items-center">
+              <span class="text-lg font-bold text-red-500">$7.99</span>
+              <div class="quantity-counter">
+                <button class="quantity-decrease">−</button>
+                <input type="number" min="1" value="1" class="quantity-input">
+                <button class="quantity-increase">+</button>
+              </div>
+            </div>
+          </div>
+          <div class="px-4 pb-4">
+            <button class="w-full bg-red-500 hover:bg-red-600 text-white py-2 px-4 rounded-md transition-all duration-300">
+              Add to Cart
+            </button>
+          </div>
+        </div>
+        
+        <!-- Food Item 5 (Pizza) -->
+        <div class="food-card bg-white rounded-xl overflow-hidden shadow-md appear" data-category="pizza">
+          <div class="relative h-48">
+            <img src="https://images.unsplash.com/photo-1565299624946-b28f40a0ae38?ixlib=rb-1.2.1&auto=format&fit=crop&w=1350&q=80" 
+                 alt="Margherita Pizza" class="w-full h-full object-cover">
+          </div>
+          <div class="p-4">
+            <div class="flex justify-between mb-2">
+              <h3 class="font-bold">Margherita Pizza</h3>
+              <div class="tooltip">
+                <span class="text-gray-500 text-sm"><i class="fas fa-info-circle"></i></span>
+                <div class="tooltiptext">
+                  <p class="text-sm mb-1">Calories: 260 per slice</p>
+                  <p class="text-sm mb-1">Protein: 10g</p>
+                  <p class="text-sm mb-1">Carbs: 33g</p>
+                  <p class="text-sm">Fat: 8g</p>
+                </div>
+              </div>
+            </div>
+            <p class="text-gray-600 text-sm mb-4">
+              Classic pizza with tomato sauce, fresh mozzarella, basil, olive oil, and salt.
+            </p>
+            <div class="flex justify-between items-center">
+              <span class="text-lg font-bold text-red-500">$11.99</span>
+              <div class="quantity-counter">
+                <button class="quantity-decrease">−</button>
+                <input type="number" min="1" value="1" class="quantity-input">
+                <button class="quantity-increase">+</button>
+              </div>
+            </div>
+          </div>
+          <div class="px-4 pb-4">
+            <button class="w-full bg-red-500 hover:bg-red-600 text-white py-2 px-4 rounded-md transition-all duration-300">
+              Add to Cart
+            </button>
+          </div>
+        </div>
+        
+        <!-- Food Item 6 (Drink) -->
+        <div class="food-card bg-white rounded-xl overflow-hidden shadow-md appear" data-category="drink">
+          <div class="relative h-48">
+            <img src="https://images.unsplash.com/photo-1620574387735-499aed31d463?ixlib=rb-1.2.1&auto=format&fit=crop&w=1350&q=80" 
+                 alt="Smoothie" class="w-full h-full object-cover">
+          </div>
+          <div class="p-4">
+            <div class="flex justify-between mb-2">
+              <h3 class="font-bold">Berry Smoothie</h3>
+              <div class="tooltip">
+                <span class="text-gray-500 text-sm"><i class="fas fa-info-circle"></i></span>
+                <div class="tooltiptext">
+                  <p class="text-sm mb-1">Calories: 230</p>
+                  <p class="text-sm mb-1">Protein: 4g</p>
+                  <p class="text-sm mb-1">Carbs: 52g</p>
+                  <p class="text-sm">Fat: 1g</p>
+                </div>
+              </div>
+            </div>
+            <p class="text-gray-600 text-sm mb-4">
+              Blend of strawberries, blueberries, raspberries, yogurt, and honey.
+            </p>
+            <div class="flex justify-between items-center">
+              <span class="text-lg font-bold text-red-500">$5.99</span>
+              <div class="quantity-counter">
+                <button class="quantity-decrease">−</button>
+                <input type="number" min="1" value="1" class="quantity-input">
+                <button class="quantity-increase">+</button>
+              </div>
+            </div>
+          </div>
+          <div class="px-4 pb-4">
+            <button class="w-full bg-red-500 hover:bg-red-600 text-white py-2 px-4 rounded-md transition-all duration-300">
+              Add to Cart
+            </button>
+          </div>
+        </div>
+        
+        <!-- Food Item 7 (Burger) -->
+        <div class="food-card bg-white rounded-xl overflow-hidden shadow-md appear" data-category="burger">
+          <div class="relative h-48">
+            <img src="https://images.unsplash.com/photo-1553979459-d2229ba7433b?ixlib=rb-1.2.1&auto=format&fit=crop&w=1350&q=80" 
+                 alt="Veggie Burger" class="w-full h-full object-cover">
+          </div>
+          <div class="p-4">
+            <div class="flex justify-between mb-2">
+              <h3 class="font-bold">Veggie Burger</h3>
+              <div class="tooltip">
+                <span class="text-gray-500 text-sm"><i class="fas fa-info-circle"></i></span>
+                <div class="tooltiptext">
+                  <p class="text-sm mb-1">Calories: 480</p>
+                  <p class="text-sm mb-1">Protein: 15g</p>
+                  <p class="text-sm mb-1">Carbs: 62g</p>
+                  <p class="text-sm">Fat: 22g</p>
+                </div>
+              </div>
+            </div>
+            <p class="text-gray-600 text-sm mb-4">
+              Plant-based patty with lettuce, tomato, onions, pickles, and vegan mayo.
+            </p>
+            <div class="flex justify-between items-center">
+              <span class="text-lg font-bold text-red-500">$9.49</span>
+              <div class="quantity-counter">
+                <button class="quantity-decrease">−</button>
+                <input type="number" min="1" value="1" class="quantity-input">
+                <button class="quantity-increase">+</button>
+              </div>
+            </div>
+          </div>
+          <div class="px-4 pb-4">
+            <button class="w-full bg-red-500 hover:bg-red-600 text-white py-2 px-4 rounded-md transition-all duration-300">
+              Add to Cart
+            </button>
+          </div>
+        </div>
+        
+        <!-- Food Item 8 (Dessert) -->
+        <div class="food-card bg-white rounded-xl overflow-hidden shadow-md appear" data-category="dessert">
+          <div class="relative h-48">
+            <img src="https://images.unsplash.com/photo-1551024601-bec78aea704b?ixlib=rb-1.2.1&auto=format&fit=crop&w=1350&q=80" 
+                 alt="Cheesecake" class="w-full h-full object-cover">
+          </div>
+          <div class="p-4">
+            <div class="flex justify-between mb-2">
+              <h3 class="font-bold">New York Cheesecake</h3>
+              <div class="tooltip">
+                <span class="text-gray-500 text-sm"><i class="fas fa-info-circle"></i></span>
+                <div class="tooltiptext">
+                  <p class="text-sm mb-1">Calories: 350</p>
+                  <p class="text-sm mb-1">Protein: 7g</p>
+                  <p class="text-sm mb-1">Carbs: 29g</p>
+                  <p class="text-sm">Fat: 23g</p>
+                </div>
+              </div>
+            </div>
+            <p class="text-gray-600 text-sm mb-4">
+              Creamy cheesecake with a graham cracker crust, topped with berry compote.
+            </p>
+            <div class="flex justify-between items-center">
+              <span class="text-lg font-bold text-red-500">$6.99</span>
+              <div class="quantity-counter">
+                <button class="quantity-decrease">−</button>
+                <input type="number" min="1" value="1" class="quantity-input">
+                <button class="quantity-increase">+</button>
+              </div>
+            </div>
+          </div>
+          <div class="px-4 pb-4">
+            <button class="w-full bg-red-500 hover:bg-red-600 text-white py-2 px-4 rounded-md transition-all duration-300">
+              Add to Cart
+            </button>
+          </div>
+        </div>
+      </div>
+      
+      <div class="text-center mt-12">
+        <a href="#" class="inline-block bg-red-500 hover:bg-red-600 text-white px-6 py-3 rounded-md transition-all duration-300 font-medium">
+          View Full Menu
+        </a>
+      </div>
+    </div>
+  </section>
+
+  <!-- How It Works - Feature 7: Interactive Process Timeline -->
+  <section id="how-it-works" class="py-16 bg-gray-50">
+    <div class="container mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="text-center mb-16">
+        <span class="inline-block px-3 py-1 rounded-full bg-red-100 text-red-600 text-sm font-semibold">
+          Simple Steps
+        </span>
+        <h2 class="text-3xl md:text-4xl font-bold mt-4 mb-6">How QuickBite Works</h2>
+        <p class="text-lg text-gray-600 max-w-3xl mx-auto">
+          Ordering your favorite food has never been easier. Just follow these simple steps.
+        </p>
+      </div>
+      
+      <div class="timeline">
+        <!-- Step 1 -->
+        <div class="timeline-container left appear">
+          <div class="timeline-content">
+            <div class="flex items-center mb-4">
+              <div class="w-12 h-12 rounded-full bg-red-100 flex items-center justify-center mr-4">
+                <i class="fas fa-map-marker-alt text-red-500 text-xl"></i>
+              </div>
+              <h3 class="text-xl font-bold">Set Your Location</h3>
+            </div>
+            <p class="text-gray-600">
+              Enter your address to find restaurants and food options available for delivery in your area.
+            </p>
+          </div>
+        </div>
+        
+        <!-- Step 2 -->
+        <div class="timeline-container right appear">
+          <div class="timeline-content">
+            <div class="flex items-center mb-4">
+              <div class="w-12 h-12 rounded-full bg-red-100 flex items-center justify-center mr-4">
+                <i class="fas fa-utensils text-red-500 text-xl"></i>
+              </div>
+              <h3 class="text-xl font-bold">Choose a Restaurant</h3>
+            </div>
+            <p class="text-gray-600">
+              Browse through a variety of restaurants and cuisines to find what you're craving.
+            </p>
+          </div>
+        </div>
+        
+        <!-- Step 3 -->
+        <div class="timeline-container left appear">
+          <div class="timeline-content">
+            <div class="flex items-center mb-4">
+              <div class="w-12 h-12 rounded-full bg-red-100 flex items-center justify-center mr-4">
+                <i class="fas fa-hamburger text-red-500 text-xl"></i>
+              </div>
+              <h3 class="text-xl font-bold">Select Your Dishes</h3>
+            </div>
+            <p class="text-gray-600">
+              Choose from the restaurant's menu and customize your order according to your preferences.
+            </p>
+          </div>
+        </div>
+        
+        <!-- Step 4 -->
+        <div class="timeline-container right appear">
+          <div class="timeline-content">
+            <div class="flex items-center mb-4">
+              <div class="w-12 h-12 rounded-full bg-red-100 flex items-center justify-center mr-4">
+                <i class="fas fa-credit-card text-red-500 text-xl"></i>
+              </div>
+              <h3 class="text-xl font-bold">Place Your Order</h3>
+            </div>
+            <p class="text-gray-600">
+              Review your order, add any special instructions, and proceed to checkout with secure payment options.
+            </p>
+          </div>
+        </div>
+        
+        <!-- Step 5 -->
+        <div class="timeline-container left appear">
+          <div class="timeline-content">
+            <div class="flex items-center mb-4">
+              <div class="w-12 h-12 rounded-full bg-red-100 flex items-center justify-center mr-4">
+                <i class="fas fa-truck text-red-500 text-xl"></i>
+              </div>
+              <h3 class="text-xl font-bold">Track Your Delivery</h3>
+            </div>
+            <p class="text-gray-600">
+              Follow your order's progress in real-time with our live tracking system from preparation to delivery.
+            </p>
+          </div>
+        </div>
+        
+        <!-- Step 6 -->
+        <div class="timeline-container right appear">
+          <div class="timeline-content">
+            <div class="flex items-center mb-4">
+              <div class="w-12 h-12 rounded-full bg-red-100 flex items-center justify-center mr-4">
+                <i class="fas fa-smile text-red-500 text-xl"></i>
+              </div>
+              <h3 class="text-xl font-bold">Enjoy Your Food</h3>
+            </div>
+            <p class="text-gray-600">
+              Receive your food, enjoy your meal, and don't forget to rate your experience to help others.
+            </p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Order Tracking - Feature 8: Live Order Tracking -->
+  <section class="py-16 bg-white">
+    <div class="container mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="text-center mb-16">
+        <span class="inline-block px-3 py-1 rounded-full bg-red-100 text-red-600 text-sm font-semibold">
+          Real-Time Tracking
+        </span>
+        <h2 class="text-3xl md:text-4xl font-bold mt-4 mb-6">Track Your Order Live</h2>
+        <p class="text-lg text-gray-600 max-w-3xl mx-auto">
+          Know exactly where your food is with our real-time delivery tracking system.
+        </p>
+      </div>
+      
+      <div class="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
+        <div class="appear">
+          <h3 class="text-2xl font-bold mb-6">Your Current Order</h3>
+          
+          <div class="bg-gray-50 rounded-xl p-6 border border-gray-200 mb-8">
+            <div class="flex justify-between mb-4">
+              <div>
+                <h4 class="font-bold">Order #12345</h4>
+                <p class="text-gray-500 text-sm">Burger Bliss</p>
+              </div>
+              <div class="text-right">
+                <span class="inline-block px-3 py-1 rounded-full bg-yellow-100 text-yellow-600 text-xs font-semibold">
+                  On the way
+                </span>
+                <p class="text-gray-500 text-sm mt-1">Est. Delivery: 3:45 PM</p>
+              </div>
+            </div>
+            
+            <div class="mb-6">
+              <div class="flex justify-between text-sm text-gray-500 mb-2">
+                <span>Order Placed</span>
+                <span>Out for Delivery</span>
+                <span>Delivered</span>
+              </div>
+              <div class="delivery-time-slider mb-1">
+                <div class="delivery-time-progress" style="width: 65%"></div>
+                <div class="delivery-time-handle" style="left: 65%"></div>
+              </div>
+            </div>
+            
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">
+              <div>
+                <h5 class="font-medium mb-2">Order Details:</h5>
+                <ul class="space-y-1 text-sm">
+                  <li>1 × Deluxe Burger</li>
+                  <li>1 × Large Fries</li>
+                  <li>1 × Chocolate Shake</li>
+                </ul>
+              </div>
+              <div>
+                <h5 class="font-medium mb-2">Delivery Address:</h5>
+                <p class="text-sm">1234 Main Street, Apt 5B<br>New York, NY 10001</p>
+              </div>
+            </div>
+            
+            <div class="flex flex-col sm:flex-row gap-4">
+              <button class="bg-red-500 hover:bg-red-600 text-white px-4 py-2 rounded-md transition-all duration-300 flex items-center justify-center">
+                <i class="fas fa-phone-alt mr-2"></i> Contact Driver
+              </button>
+              <button class="border border-red-500 text-red-500 hover:bg-red-50 px-4 py-2 rounded-md transition-all duration-300 flex items-center justify-center">
+                <i class="fas fa-comment-alt mr-2"></i> Special Instructions
+              </button>
+            </div>
+          </div>
+          
+          <div class="bg-green-50 rounded-xl p-6 border border-green-200">
+            <div class="flex items-start">
+              <div class="w-10 h-10 rounded-full bg-green-100 flex items-center justify-center mr-4">
+                <i class="fas fa-user text-green-500"></i>
+              </div>
+              <div>
+                <h4 class="font-bold">Your Driver</h4>
+                <p class="text-gray-600 mb-4">Michael is on the way with your order</p>
+                <div class="flex items-center">
+                  <div class="flex items-center text-yellow-400 mr-2">
+                    <i class="fas fa-star"></i>
+                    <i class="fas fa-star"></i>
+                    <i class="fas fa-star"></i>
+                    <i class="fas fa-star"></i>
+                    <i class="fas fa-star-half-alt"></i>
+                  </div>
+                  <span class="text-sm text-gray-500">4.8 (350+ deliveries)</span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        
+        <div class="appear">
+          <div class="map-container">
+            <iframe src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3022.9503398796587!2d-73.98651908459369!3d40.74851457932881!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x0%3A0x0!2zNDDCsDE1JzQxLjciTiA3M8KwMTAnMjUuMSJX!5e0!3m2!1sen!2sus!4v1623175307241!5m2!1sen!2sus" width="100%" height="100%" style="border:0;" allowfullscreen="" loading="lazy"></iframe>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- App Showcase - Feature 9: Mobile App Showcase -->
+  <section id="app" class="py-16 bg-gray-50">
+    <div class="container mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
+        <div class="order-2 lg:order-1 appear">
+          <span class="inline-block px-3 py-1 rounded-full bg-red-100 text-red-600 text-sm font-semibold mb-4">
+            Mobile Experience
+          </span>
+          <h2 class="text-3xl md:text-4xl font-bold mb-6">Download Our App</h2>
+          <p class="text-lg text-gray-600 mb-8">
+            Get the full QuickBite experience on your smartphone. Order food, track deliveries, and earn rewards with our mobile app.
+          </p>
+          
+          <div class="space-y-6 mb-8">
+            <div class="flex items-start">
+              <div class="flex-shrink-0 w-10 h-10 rounded-full bg-red-100 flex items-center justify-center mr-4">
+                <i class="fas fa-search text-red-500"></i>
+              </div>
+              <div>
+                <h4 class="font-bold text-lg">Discover Local Restaurants</h4>
+                <p class="text-gray-600">Find new restaurants and dishes in your area with personalized recommendations.</p>
+              </div>
+            </div>
+            
+            <div class="flex items-start">
+              <div class="flex-shrink-0 w-10 h-10 rounded-full bg-red-100 flex items-center justify-center mr-4">
+                <i class="fas fa-bolt text-red-500"></i>
+              </div>
+              <div>
+                <h4 class="font-bold text-lg">Quick Reordering</h4>
+                <p class="text-gray-600">Reorder your favorite meals with just a few taps based on your order history.</p>
+              </div>
+            </div>
+            
+            <div class="flex items-start">
+              <div class="flex-shrink-0 w-10 h-10 rounded-full bg-red-100 flex items-center justify-center mr-4">
+                <i class="fas fa-gift text-red-500"></i>
+              </div>
+              <div>
+                <h4 class="font-bold text-lg">Exclusive Rewards</h4>
+                <p class="text-gray-600">Earn points with every order and redeem them for discounts and free items.</p>
+              </div>
+            </div>
+            
+            <div class="flex items-start">
+              <div class="flex-shrink-0 w-10 h-10 rounded-full bg-red-100 flex items-center justify-center mr-4">
+                <i class="fas fa-bell text-red-500"></i>
+              </div>
+              <div>
+                <h4 class="font-bold text-lg">Real-Time Notifications</h4>
+                <p class="text-gray-600">Get updates on your order status from confirmation to delivery at your door.</p>
+              </div>
+            </div>
+          </div>
+          
+          <div class="flex flex-wrap gap-4">
+            <a href="#" class="bg-black flex items-center px-5 py-3 rounded-lg hover:bg-gray-900 transition-colors">
+              <i class="fab fa-apple text-2xl mr-3 text-white"></i>
+              <div class="text-white">
+                <div class="text-xs">Download on the</div>
+                <div class="font-semibold">App Store</div>
+              </div>
+            </a>
+            
+            <a href="#" class="bg-black flex items-center px-5 py-3 rounded-lg hover:bg-gray-900 transition-colors">
+              <i class="fab fa-google-play text-2xl mr-3 text-white"></i>
+              <div class="text-white">
+                <div class="text-xs">Get it on</div>
+                <div class="font-semibold">Google Play</div>
+              </div>
+            </a>
+          </div>
+        </div>
+        
+        <div class="order-1 lg:order-2 flex justify-center appear">
+          <div class="relative w-[280px] h-[580px] bg-black rounded-[40px] p-3 shadow-xl">
+            <div class="absolute w-36 h-6 bg-black rounded-b-[16px] top-0 left-1/2 transform -translate-x-1/2"></div>
+            <div class="w-full h-full bg-red-50 rounded-[32px] overflow-hidden">
+              <img src="https://images.unsplash.com/photo-1504674900247-0877df9cc836?ixlib=rb-1.2.1&auto=format&fit=crop&w=1350&q=80" alt="App Screenshot" class="w-full h-full object-cover">
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Testimonials - Feature 10: Testimonial Carousel -->
+  <section class="py-16 bg-white">
+    <div class="container mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="text-center mb-12">
+        <span class="inline-block px-3 py-1 rounded-full bg-red-100 text-red-600 text-sm font-semibold">
+          Customer Stories
+        </span>
+        <h2 class="text-3xl md:text-4xl font-bold mt-4 mb-6">What Our Customers Say</h2>
+        <p class="text-lg text-gray-600 max-w-3xl mx-auto">
+          Read what people are saying about their QuickBite experience.
+        </p>
+      </div>
+      
+      <div class="max-w-4xl mx-auto">
+        <div class="testimonial-slider">
+          <!-- Testimonial 1 -->
+          <div class="bg-white p-8 rounded-xl shadow-md border border-gray-200 appear active">
+            <div class="flex items-center mb-4">
+              <div class="text-yellow-400 flex mr-2">
+                <i class="fas fa-star"></i>
+                <i class="fas fa-star"></i>
+                <i class="fas fa-star"></i>
+                <i class="fas fa-star"></i>
+                <i class="fas fa-star"></i>
+              </div>
+              <span class="text-sm text-gray-500">5.0</span>
+            </div>
+            <blockquote class="text-xl italic text-gray-800 mb-6">
+              "QuickBite has completely changed how I order food. The app is so easy to use, and the delivery is always fast and accurate. I love the variety of restaurants available!"
+            </blockquote>
+            <div class="flex items-center">
+              <img src="https://randomuser.me/api/portraits/women/33.jpg" alt="Customer" class="w-12 h-12 rounded-full mr-4">
+              <div>
+                <h4 class="font-bold">Emily Johnson</h4>
+                <p class="text-sm text-gray-500">Regular Customer</p>
+              </div>
+            </div>
+          </div>
+          
+          <!-- Testimonial 2 (hidden by default) -->
+          <div class="bg-white p-8 rounded-xl shadow-md border border-gray-200 appear hidden">
+            <div class="flex items-center mb-4">
+              <div class="text-yellow-400 flex mr-2">
+                <i class="fas fa-star"></i>
+                <i class="fas fa-star"></i>
+                <i class="fas fa-star"></i>
+                <i class="fas fa-star"></i>
+                <i class="fas fa-star-half-alt"></i>
+              </div>
+              <span class="text-sm text-gray-500">4.5</span>
+            </div>
+            <blockquote class="text-xl italic text-gray-800 mb-6">
+              "As a busy professional, I rely on QuickBite for quick and convenient meals. Their tracking feature is amazing - I know exactly when my food will arrive so I can plan accordingly."
+            </blockquote>
+            <div class="flex items-center">
+              <img src="https://randomuser.me/api/portraits/men/54.jpg" alt="Customer" class="w-12 h-12 rounded-full mr-4">
+              <div>
+                <h4 class="font-bold">Michael Rodriguez</h4>
+                <p class="text-sm text-gray-500">Business Executive</p>
+              </div>
+            </div>
+          </div>
+          
+          <!-- Testimonial 3 (hidden by default) -->
+          <div class="bg-white p-8 rounded-xl shadow-md border border-gray-200 appear hidden">
+            <div class="flex items-center mb-4">
+              <div class="text-yellow-400 flex mr-2">
+                <i class="fas fa-star"></i>
+                <i class="fas fa-star"></i>
+                <i class="fas fa-star"></i>
+                <i class="fas fa-star"></i>
+                <i class="fas fa-star"></i>
+              </div>
+              <span class="text-sm text-gray-500">5.0</span>
+            </div>
+            <blockquote class="text-xl italic text-gray-800 mb-6">
+              "I've tried many food delivery services, but QuickBite stands out with their customer service. When there was an issue with my order, they immediately resolved it and offered compensation."
+            </blockquote>
+            <div class="flex items-center">
+              <img src="https://randomuser.me/api/portraits/women/67.jpg" alt="Customer" class="w-12 h-12 rounded-full mr-4">
+              <div>
+                <h4 class="font-bold">Sarah Thompson</h4>
+                <p class="text-sm text-gray-500">Food Blogger</p>
+              </div>
+            </div>
+          </div>
+        </div>
+        
+        <div class="flex justify-center mt-8">
+          <button class="testimonial-dot active mx-1 w-3 h-3 rounded-full bg-gray-300" data-index="0"></button>
+          <button class="testimonial-dot mx-1 w-3 h-3 rounded-full bg-gray-300" data-index="1"></button>
+          <button class="testimonial-dot mx-1 w-3 h-3 rounded-full bg-gray-300" data-index="2"></button>
+        </div>
+        
+        <div class="flex justify-center mt-8">
+          <button class="testimonial-prev bg-white border border-gray-300 rounded-full w-10 h-10 flex items-center justify-center mr-4 hover:bg-gray-100 transition-colors">
+            <i class="fas fa-chevron-left"></i>
+          </button>
+          <button class="testimonial-next bg-white border border-gray-300 rounded-full w-10 h-10 flex items-center justify-center hover:bg-gray-100 transition-colors">
+            <i class="fas fa-chevron-right"></i>
+          </button>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Contact & Delivery Areas - Feature 11: Interactive Map -->
+  <section id="contact" class="py-16 bg-gray-50">
+    <div class="container mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="text-center mb-12">
+        <span class="inline-block px-3 py-1 rounded-full bg-red-100 text-red-600 text-sm font-semibold">
+          Get In Touch
+        </span>
+        <h2 class="text-3xl md:text-4xl font-bold mt-4 mb-6">Contact Us</h2>
+        <p class="text-lg text-gray-600 max-w-3xl mx-auto">
+          Have questions, feedback, or need support? We're here to help.
+        </p>
+      </div>
+      
+      <div class="grid grid-cols-1 lg:grid-cols-5 gap-8">
+        <div class="lg:col-span-2 appear">
+          <div class="bg-white rounded-xl p-8 shadow-md border border-gray-200 mb-8">
+            <h3 class="text-xl font-bold mb-6">Send Us a Message</h3>
+            <form action="#" method="POST">
+              <div class="grid grid-cols-1 sm:grid-cols-2 gap-6 mb-6">
+                <div class="form-floating">
+                  <input type="text" id="name" name="name" placeholder=" " required class="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-red-500">
+                  <label for="name" class="text-gray-500">Your Name</label>
+                </div>
+                
+                <div class="form-floating">
+                  <input type="email" id="email" name="email" placeholder=" " required class="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-red-500">
+                  <label for="email" class="text-gray-500">Your Email</label>
+                </div>
+              </div>
+              
+              <div class="mb-6 form-floating">
+                <select id="subject" name="subject" placeholder=" " required class="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-red-500">
+                  <option value="">Select a subject</option>
+                  <option>General Inquiry</option>
+                  <option>Order Issue</option>
+                  <option>Technical Support</option>
+                  <option>Partnership</option>
+                  <option>Feedback</option>
+                </select>
+                <label for="subject" class="text-gray-500">Subject</label>
+              </div>
+              
+              <div class="mb-6 form-floating">
+                <textarea id="message" name="message" rows="4" placeholder=" " required class="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-red-500"></textarea>
+                <label for="message" class="text-gray-500">Your Message</label>
+              </div>
+              
+              <button type="submit" class="w-full bg-red-500 hover:bg-red-600 text-white py-2 px-4 rounded-md transition-all duration-300">
+                Send Message
+              </button>
+            </form>
+          </div>
+          
+          <div class="bg-white rounded-xl p-8 shadow-md border border-gray-200">
+            <h3 class="text-xl font-bold mb-6">Contact Information</h3>
+            <div class="space-y-4">
+              <div class="flex items-start">
+                <div class="flex-shrink-0 w-10 h-10 rounded-full bg-red-100 flex items-center justify-center mr-4">
+                  <i class="fas fa-phone-alt text-red-500"></i>
+                </div>
+                <div>
+                  <h4 class="font-bold">Phone</h4>
+                  <p class="text-gray-600">+1 (800) 123-4567</p>
+                </div>
+              </div>
+              
+              <div class="flex items-start">
+                <div class="flex-shrink-0 w-10 h-10 rounded-full bg-red-100 flex items-center justify-center mr-4">
+                  <i class="fas fa-envelope text-red-500"></i>
+                </div>
+                <div>
+                  <h4 class="font-bold">Email</h4>
+                  <p class="text-gray-600">support@quickbite.com</p>
+                </div>
+              </div>
+              
+              <div class="flex items-start">
+                <div class="flex-shrink-0 w-10 h-10 rounded-full bg-red-100 flex items-center justify-center mr-4">
+                  <i class="fas fa-map-marker-alt text-red-500"></i>
+                </div>
+                <div>
+                  <h4 class="font-bold">Headquarters</h4>
+                  <p class="text-gray-600">123 Delivery Street, Suite 100<br>San Francisco, CA 94103</p>
+                </div>
+              </div>
+              
+              <div class="flex items-start">
+                <div class="flex-shrink-0 w-10 h-10 rounded-full bg-red-100 flex items-center justify-center mr-4">
+                  <i class="fas fa-clock text-red-500"></i>
+                </div>
+                <div>
+                  <h4 class="font-bold">Support Hours</h4>
+                  <p class="text-gray-600">Monday-Friday: 9AM-9PM<br>Saturday-Sunday: 10AM-6PM</p>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        
+        <div class="lg:col-span-3 appear">
+          <div class="bg-white rounded-xl p-8 shadow-md border border-gray-200 h-full">
+            <h3 class="text-xl font-bold mb-6">Our Delivery Areas</h3>
+            <p class="text-gray-600 mb-6">
+              QuickBite is available in major cities across the country. Check our delivery zones to see if we deliver to your area.
+            </p>
+            
+            <div class="map-container h-[500px] mb-6">
+              <iframe src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d423286.27405770525!2d-118.69192047471653!3d34.02016130653036!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x80c2c75ddc27da13%3A0xe22fdf6f254608f4!2sLos%20Angeles%2C%20CA%2C%20USA!5e0!3m2!1sen!2sca!4v1623175307241!5m2!1sen!2sca" width="100%" height="100%" style="border:0;" allowfullscreen="" loading="lazy"></iframe>
+            </div>
+            
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+              <div class="bg-gray-50 rounded-lg p-4 border border-gray-200">
+                <h4 class="font-bold mb-2">New York City</h4>
+                <p class="text-sm text-gray-600">Manhattan, Brooklyn, Queens, Bronx</p>
+              </div>
+              
+              <div class="bg-gray-50 rounded-lg p-4 border border-gray-200">
+                <h4 class="font-bold mb-2">Los Angeles</h4>
+                <p class="text-sm text-gray-600">Downtown, Hollywood, Santa Monica</p>
+              </div>
+              
+              <div class="bg-gray-50 rounded-lg p-4 border border-gray-200">
+                <h4 class="font-bold mb-2">Chicago</h4>
+                <p class="text-sm text-gray-600">Loop, River North, Lincoln Park</p>
+              </div>
+              
+              <div class="bg-gray-50 rounded-lg p-4 border border-gray-200">
+                <h4 class="font-bold mb-2">San Francisco</h4>
+                <p class="text-sm text-gray-600">SoMa, Mission, Marina</p>
+              </div>
+              
+              <div class="bg-gray-50 rounded-lg p-4 border border-gray-200">
+                <h4 class="font-bold mb-2">Miami</h4>
+                <p class="text-sm text-gray-600">Downtown, South Beach, Brickell</p>
+              </div>
+              
+              <div class="bg-gray-50 rounded-lg p-4 border border-gray-200">
+                <h4 class="font-bold mb-2">Boston</h4>
+                <p class="text-sm text-gray-600">Downtown, Back Bay, Cambridge</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Newsletter & Download - Feature 12: Interactive Newsletter Form -->
+  <section class="py-16 bg-gradient-to-r from-red-500 to-orange-500 text-white">
+    <div class="container mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
+        <div class="appear">
+          <h2 class="text-3xl md:text-4xl font-bold mb-6">Never Miss a Deal</h2>
+          <p class="text-xl mb-8">
+            Subscribe to our newsletter and get exclusive offers, discounts, and updates delivered straight to your inbox.
+          </p>
+          
+          <form action="#" method="POST" class="mb-8">
+            <div class="flex flex-col sm:flex-row gap-4">
+              <div class="form-floating flex-1">
+                <input type="email" id="newsletter-email" name="newsletter-email" placeholder=" " required class="w-full px-4 py-3 rounded-md border-0 focus:outline-none focus:ring-2 focus:ring-white/50 text-gray-800">
+                <label for="newsletter-email" class="text-gray-500">Your Email Address</label>
+              </div>
+              <button type="submit" class="bg-black hover:bg-gray-900 text-white px-6 py-3 rounded-md transition-all duration-300 whitespace-nowrap">
+                Subscribe Now
+              </button>
+            </div>
+          </form>
+          
+          <div class="flex items-center space-x-2 mb-6">
+            <i class="fas fa-shield-alt"></i>
+            <span class="text-sm text-white/90">We respect your privacy and will never share your information.</span>
+          </div>
+          
+          <div class="flex flex-wrap gap-8 items-center">
+            <div>
+              <p class="font-bold mb-2">Follow Us:</p>
+              <div class="flex space-x-4">
+                <a href="#" class="text-white hover:text-white/80 transition-colors text-xl">
+                  <i class="fab fa-facebook-f"></i>
+                </a>
+                <a href="#" class="text-white hover:text-white/80 transition-colors text-xl">
+                  <i class="fab fa-twitter"></i>
+                </a>
+                <a href="#" class="text-white hover:text-white/80 transition-colors text-xl">
+                  <i class="fab fa-instagram"></i>
+                </a>
+                <a href="#" class="text-white hover:text-white/80 transition-colors text-xl">
+                  <i class="fab fa-tiktok"></i>
+                </a>
+              </div>
+            </div>
+            
+            <div>
+              <p class="font-bold mb-2">Customer Support:</p>
+              <p class="text-lg">1-800-QUICKBITE</p>
+            </div>
+          </div>
+        </div>
+        
+        <div class="appear text-center">
+          <h3 class="text-2xl font-bold mb-6">Get the App</h3>
+          <p class="mb-8">Download our mobile app for a better experience</p>
+          
+          <div class="flex flex-col sm:flex-row gap-6 justify-center mb-8">
+            <a href="#" class="bg-black flex items-center px-6 py-3 rounded-lg hover:bg-gray-900 transition-colors max-w-[200px] mx-auto sm:mx-0">
+              <i class="fab fa-apple text-3xl mr-4"></i>
+              <div>
+                <div class="text-xs">Download on the</div>
+                <div class="font-semibold text-lg">App Store</div>
+              </div>
+            </a>
+            
+            <a href="#" class="bg-black flex items-center px-6 py-3 rounded-lg hover:bg-gray-900 transition-colors max-w-[200px] mx-auto sm:mx-0">
+              <i class="fab fa-google-play text-3xl mr-4"></i>
+              <div>
+                <div class="text-xs">Get it on</div>
+                <div class="font-semibold text-lg">Google Play</div>
+              </div>
+            </a>
+          </div>
+          
+          <div class="flex justify-center">
+            <img src="https://via.placeholder.com/300x300" alt="QR Code" class="w-32 h-32 bg-white p-2 rounded-lg">
+          </div>
+          <p class="mt-2 text-sm">Scan to download the app</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Footer -->
+  <footer class="bg-gray-900 text-white pt-16 pb-6">
+    <div class="container mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-8 mb-12">
+        <div class="lg:col-span-2">
+          <a href="#" class="inline-block mb-6">
+            <span class="text-3xl font-bold">Quick<span class="text-red-500">Bite</span></span>
+          </a>
+          <p class="text-gray-400 mb-6 max-w-md">
+            QuickBite is your go-to food delivery service, connecting you with the best restaurants in your area for a seamless dining experience delivered straight to your door.
+          </p>
+          <div class="flex space-x-4">
+            <a href="#" class="text-gray-400 hover:text-white transition-colors">
+              <i class="fab fa-facebook-f"></i>
+            </a>
+            <a href="#" class="text-gray-400 hover:text-white transition-colors">
+              <i class="fab fa-twitter"></i>
+            </a>
+            <a href="#" class="text-gray-400 hover:text-white transition-colors">
+              <i class="fab fa-instagram"></i>
+            </a>
+            <a href="#" class="text-gray-400 hover:text-white transition-colors">
+              <i class="fab fa-linkedin-in"></i>
+            </a>
+          </div>
+        </div>
+        
+        <div>
+          <h4 class="text-lg font-bold mb-6">Quick Links</h4>
+          <ul class="space-y-3">
+            <li><a href="#home" class="text-gray-400 hover:text-white transition-colors">Home</a></li>
+            <li><a href="#restaurants" class="text-gray-400 hover:text-white transition-colors">Restaurants</a></li>
+            <li><a href="#menu" class="text-gray-400 hover:text-white transition-colors">Popular Items</a></li>
+            <li><a href="#how-it-works" class="text-gray-400 hover:text-white transition-colors">How It Works</a></li>
+            <li><a href="#app" class="text-gray-400 hover:text-white transition-colors">Mobile App</a></li>
+            <li><a href="#contact" class="text-gray-400 hover:text-white transition-colors">Contact Us</a></li>
+          </ul>
+        </div>
+        
+        <div>
+          <h4 class="text-lg font-bold mb-6">Support</h4>
+          <ul class="space-y-3">
+            <li><a href="#" class="text-gray-400 hover:text-white transition-colors">Help Center</a></li>
+            <li><a href="#" class="text-gray-400 hover:text-white transition-colors">FAQ</a></li>
+            <li><a href="#" class="text-gray-400 hover:text-white transition-colors">Delivery Areas</a></li>
+            <li><a href="#" class="text-gray-400 hover:text-white transition-colors">Become a Partner</a></li>
+            <li><a href="#" class="text-gray-400 hover:text-white transition-colors">Careers</a></li>
+            <li><a href="#" class="text-gray-400 hover:text-white transition-colors">Driver Opportunities</a></li>
+          </ul>
+        </div>
+        
+        <div>
+          <h4 class="text-lg font-bold mb-6">Legal</h4>
+          <ul class="space-y-3">
+            <li><a href="#" class="text-gray-400 hover:text-white transition-colors">Terms of Service</a></li>
+            <li><a href="#" class="text-gray-400 hover:text-white transition-colors">Privacy Policy</a></li>
+            <li><a href="#" class="text-gray-400 hover:text-white transition-colors">Cookie Policy</a></li>
+            <li><a href="#" class="text-gray-400 hover:text-white transition-colors">Refund Policy</a></li>
+            <li><a href="#" class="text-gray-400 hover:text-white transition-colors">Accessibility</a></li>
+          </ul>
+        </div>
+      </div>
+      
+      <div class="border-t border-gray-800 pt-8">
+        <div class="flex flex-col md:flex-row justify-between items-center">
+          <p class="text-gray-400 text-sm text-center md:text-left mb-4 md:mb-0">
+            &copy; 2023 QuickBite Food Delivery Service. All rights reserved.
+          </p>
+          <div class="flex flex-wrap justify-center gap-4">
+            <img src="https://via.placeholder.com/60x30/f8fafc/0f172a?text=Visa" alt="Visa" class="h-8">
+            <img src="https://via.placeholder.com/60x30/f8fafc/0f172a?text=Mastercard" alt="Mastercard" class="h-8">
+            <img src="https://via.placeholder.com/60x30/f8fafc/0f172a?text=Amex" alt="American Express" class="h-8">
+            <img src="https://via.placeholder.com/60x30/f8fafc/0f172a?text=PayPal" alt="PayPal" class="h-8">
+            <img src="https://via.placeholder.com/60x30/f8fafc/0f172a?text=ApplePay" alt="Apple Pay" class="h-8">
+          </div>
+        </div>
+      </div>
+    </div>
+  </footer>
+
+  <!-- Cart Sidebar - Feature 13: Shopping Cart with Live Updates -->
+  <div id="cart-sidebar" class="fixed top-0 right-0 h-full w-full md:w-96 bg-white shadow-xl transform translate-x-full transition-transform duration-300 z-50">
+    <div class="flex flex-col h-full">
+      <div class="p-6 border-b">
+        <div class="flex justify-between items-center">
+          <h2 class="text-2xl font-bold">Your Cart</h2>
+          <button id="close-cart" class="text-gray-500 hover:text-gray-700">
+            <i class="fas fa-times text-xl"></i>
+          </button>
+        </div>
+      </div>
+      
+      <div class="flex-grow overflow-y-auto p-6">
+        <div class="space-y-4">
+          <!-- Cart Item 1 -->
+          <div class="flex items-center justify-between bg-gray-50 rounded-lg p-4">
+            <div class="flex items-center">
+              <img src="https://images.unsplash.com/photo-1568901346375-23c9450c58cd?ixlib=rb-1.2.1&auto=format&fit=crop&w=150&q=80" alt="Deluxe Burger" class="w-16 h-16 object-cover rounded-md mr-4">
+              <div>
+                <h4 class="font-bold">Deluxe Burger</h4>
+                <p class="text-sm text-gray-500">Burger Bliss</p>
+                <div class="quantity-counter mt-2 w-24 h-8">
+                  <button class="quantity-decrease w-6 h-full">−</button>
+                  <input type="number" min="1" value="1" class="quantity-input w-12 h-full">
+                  <button class="quantity-increase w-6 h-full">+</button>
+                </div>
+              </div>
+            </div>
+            <div class="text-right">
+              <p class="font-bold text-red-500">$10.49</p>
+              <button class="text-red-500 hover:text-red-700 text-sm mt-2">
+                <i class="fas fa-trash-alt"></i> Remove
+              </button>
+            </div>
+          </div>
+          
+          <!-- Cart Item 2 -->
+          <div class="flex items-center justify-between bg-gray-50 rounded-lg p-4">
+            <div class="flex items-center">
+              <img src="https://images.unsplash.com/photo-1630384060421-cb20d0e0649d?ixlib=rb-1.2.1&auto=format&fit=crop&w=150&q=80" alt="French Fries" class="w-16 h-16 object-cover rounded-md mr-4">
+              <div>
+                <h4 class="font-bold">Large Fries</h4>
+                <p class="text-sm text-gray-500">Burger Bliss</p>
+                <div class="quantity-counter mt-2 w-24 h-8">
+                  <button class="quantity-decrease w-6 h-full">−</button>
+                  <input type="number" min="1" value="1" class="quantity-input w-12 h-full">
+                  <button class="quantity-increase w-6 h-full">+</button>
+                </div>
+              </div>
+            </div>
+            <div class="text-right">
+              <p class="font-bold text-red-500">$4.99</p>
+              <button class="text-red-500 hover:text-red-700 text-sm mt-2">
+                <i class="fas fa-trash-alt"></i> Remove
+              </button>
+            </div>
+          </div>
+          
+          <!-- Cart Item 3 -->
+          <div class="flex items-center justify-between bg-gray-50 rounded-lg p-4">
+            <div class="flex items-center">
+              <img src="https://images.unsplash.com/photo-1572490122747-3968b75cc699?ixlib=rb-1.2.1&auto=format&fit=crop&w=150&q=80" alt="Chocolate Shake" class="w-16 h-16 object-cover rounded-md mr-4">
+              <div>
+                <h4 class="font-bold">Chocolate Shake</h4>
+                <p class="text-sm text-gray-500">Burger Bliss</p>
+                <div class="quantity-counter mt-2 w-24 h-8">
+                  <button class="quantity-decrease w-6 h-full">−</button>
+                  <input type="number" min="1" value="1" class="quantity-input w-12 h-full">
+                  <button class="quantity-increase w-6 h-full">+</button>
+                </div>
+              </div>
+            </div>
+            <div class="text-right">
+              <p class="font-bold text-red-500">$5.49</p>
+              <button class="text-red-500 hover:text-red-700 text-sm mt-2">
+                <i class="fas fa-trash-alt"></i> Remove
+              </button>
+            </div>
+          </div>
+        </div>
+        
+        <div class="mt-6 pt-6 border-t">
+          <div class="form-floating mb-4">
+            <input type="text" id="promo-code" name="promo-code" placeholder=" " class="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-red-500">
+            <label for="promo-code" class="text-gray-500">Promo Code</label>
+          </div>
+          <button class="w-full bg-gray-200 hover:bg-gray-300 text-gray-800 py-2 px-4 rounded-md transition-all duration-300">
+            Apply Promo Code
+          </button>
+        </div>
+      </div>
+      
+      <div class="p-6 border-t">
+        <div class="space-y-3 mb-6">
+          <div class="flex justify-between">
+            <span class="text-gray-600">Subtotal</span>
+            <span class="font-medium">$20.97</span>
+          </div>
+          <div class="flex justify-between">
+            <span class="text-gray-600">Delivery Fee</span>
+            <span class="font-medium">$2.99</span>
+          </div>
+          <div class="flex justify-between">
+            <span class="text-gray-600">Tax</span>
+            <span class="font-medium">$1.89</span>
+          </div>
+          <div class="flex justify-between font-bold text-lg pt-3 border-t">
+            <span>Total</span>
+            <span>$25.85</span>
+          </div>
+        </div>
+        
+        <button class="w-full bg-red-500 hover:bg-red-600 text-white py-3 px-4 rounded-md transition-all duration-300 font-medium">
+          Checkout Now
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Back to top button -->
+  <button id="back-to-top" class="fixed bottom-6 right-6 bg-red-500 hover:bg-red-600 text-white p-3 rounded-full shadow-lg opacity-0 invisible transition-all duration-300 z-50">
+    <i class="fas fa-arrow-up"></i>
+  </button>
+
+  <!-- Scripts -->
+  <script>
+    // Mobile menu toggle
+    const mobileMenuButton = document.getElementById('mobile-menu-button');
+    const mobileMenu = document.getElementById('mobile-menu');
+    
+    mobileMenuButton.addEventListener('click', () => {
+      mobileMenu.classList.toggle('hidden');
+    });
+    
+    // Dark mode toggle
+    const themeToggle = document.getElementById('theme-toggle');
+    const mobileThemeToggle = document.getElementById('mobile-theme-toggle');
+    const body = document.body;
+    
+    function toggleDarkMode() {
+      body.classList.toggle('dark-mode');
+    }
+    
+    themeToggle.addEventListener('change', toggleDarkMode);
+    mobileThemeToggle.addEventListener('change', toggleDarkMode);
+    
+    // Smooth scroll
+    document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+      anchor.addEventListener('click', function(e) {
+        e.preventDefault();
+        
+        const targetId = this.getAttribute('href');
+        if (targetId === '#') return;
+        
+        const targetElement = document.querySelector(targetId);
+        if (targetElement) {
+          window.scrollTo({
+            top: targetElement.offsetTop - 80,
+            behavior: 'smooth'
+          });
+          
+          // Close mobile menu if open
+          if (!mobileMenu.classList.contains('hidden')) {
+            mobileMenu.classList.add('hidden');
+          }
+        }
+      });
+    });
+    
+    // Back to top button
+    const backToTopButton = document.getElementById('back-to-top');
+    
+    window.addEventListener('scroll', () => {
+      if (window.scrollY > 300) {
+        backToTopButton.classList.remove('opacity-0', 'invisible');
+        backToTopButton.classList.add('opacity-100', 'visible');
+      } else {
+        backToTopButton.classList.remove('opacity-100', 'visible');
+        backToTopButton.classList.add('opacity-0', 'invisible');
+      }
+      
+      // Add shadow to header on scroll
+      const header = document.querySelector('header');
+      if (window.scrollY > 50) {
+        header.classList.add('shadow-md');
+      } else {
+        header.classList.remove('shadow-md');
+      }
+    });
+    
+    backToTopButton.addEventListener('click', () => {
+      window.scrollTo({
+        top: 0,
+        behavior: 'smooth'
+      });
+    });
+    
+    // Menu filtering
+    const filterButtons = document.querySelectorAll('.filter-btn');
+    const foodItems = document.querySelectorAll('.food-card');
+    
+    filterButtons.forEach(button => {
+      button.addEventListener('click', () => {
+        // Remove active class from all buttons
+        filterButtons.forEach(btn => btn.classList.remove('active'));
+        
+        // Add active class to clicked button
+        button.classList.add('active');
+        
+        // Get filter value
+        const filterValue = button.getAttribute('data-filter');
+        
+        // Filter food items
+        foodItems.forEach(item => {
+          if (filterValue === 'all' || item.getAttribute('data-category') === filterValue) {
+            item.style.display = 'block';
+          } else {
+            item.style.display = 'none';
+          }
+        });
+      });
+    });
+    
+    // Testimonial carousel
+    const testimonials = document.querySelectorAll('.testimonial-slider > div');
+    const dots = document.querySelectorAll('.testimonial-dot');
+    const prevButton = document.querySelector('.testimonial-prev');
+    const nextButton = document.querySelector('.testimonial-next');
+    
+    let currentTestimonial = 0;
+    
+    function showTestimonial(index) {
+      // Hide all testimonials
+      testimonials.forEach(testimonial => {
+        testimonial.classList.add('hidden');
+        testimonial.classList.remove('active');
+      });
+      
+      // Remove active class from all dots
+      dots.forEach(dot => {
+        dot.classList.remove('active', 'bg-red-500');
+        dot.classList.add('bg-gray-300');
+      });
+      
+      // Show the current testimonial
+      testimonials[index].classList.remove('hidden');
+      testimonials[index].classList.add('active');
+      
+      // Add active class to current dot
+      dots[index].classList.add('active', 'bg-red-500');
+      dots[index].classList.remove('bg-gray-300');
+      
+      // Update current testimonial index
+      currentTestimonial = index;
+    }
+    
+    // Add event listeners to dots
+    dots.forEach((dot, index) => {
+      dot.addEventListener('click', () => {
+        showTestimonial(index);
+      });
+    });
+    
+    // Add event listeners to prev/next buttons
+    prevButton.addEventListener('click', () => {
+      let prevIndex = currentTestimonial - 1;
+      if (prevIndex < 0) prevIndex = testimonials.length - 1;
+      showTestimonial(prevIndex);
+    });
+    
+    nextButton.addEventListener('click', () => {
+      let nextIndex = currentTestimonial + 1;
+      if (nextIndex >= testimonials.length) nextIndex = 0;
+      showTestimonial(nextIndex);
+    });
+    
+    // Auto-rotate testimonials
+    let testimonialInterval = setInterval(() => {
+      let nextIndex = currentTestimonial + 1;
+      if (nextIndex >= testimonials.length) nextIndex = 0;
+      showTestimonial(nextIndex);
+    }, 5000);
+    
+    // Cart sidebar toggle
+    const cartLinks = document.querySelectorAll('a[href="#cart"]');
+    const cartSidebar = document.getElementById('cart-sidebar');
+    const closeCartButton = document.getElementById('close-cart');
+    
+    cartLinks.forEach(link => {
+      link.addEventListener('click', (e) => {
+        e.preventDefault();
+        cartSidebar.classList.remove('translate-x-full');
+        body.style.overflow = 'hidden'; // Prevent scrolling
+      });
+    });
+    
+    closeCartButton.addEventListener('click', () => {
+      cartSidebar.classList.add('translate-x-full');
+      body.style.overflow = ''; // Restore scrolling
+    });
+    
+    // Close cart when clicking outside
+    document.addEventListener('click', (e) => {
+      if (cartSidebar && !cartSidebar.contains(e.target) && !e.target.closest('a[href="#cart"]')) {
+        cartSidebar.classList.add('translate-x-full');
+        body.style.overflow = ''; // Restore scrolling
+      }
+    });
+    
+    // Quantity counter buttons
+    const quantityCounters = document.querySelectorAll('.quantity-counter');
+    
+    quantityCounters.forEach(counter => {
+      const decreaseButton = counter.querySelector('.quantity-decrease');
+      const increaseButton = counter.querySelector('.quantity-increase');
+      const input = counter.querySelector('.quantity-input');
+      
+      decreaseButton.addEventListener('click', () => {
+        let value = parseInt(input.value);
+        if (value > 1) {
+          input.value = value - 1;
+        }
+      });
+      
+      increaseButton.addEventListener('click', () => {
+        let value = parseInt(input.value);
+        input.value = value + 1;
+      });
+    });
+    
+    // Add to cart animation
+    const addToCartButtons = document.querySelectorAll('.food-card button');
+    
+    addToCartButtons.forEach(button => {
+      button.addEventListener('click', () => {
+        button.classList.add('shake');
+        setTimeout(() => {
+          button.classList.remove('shake');
+        }, 820);
+        
+        // Show cart sidebar after a short delay
+        setTimeout(() => {
+          cartSidebar.classList.remove('translate-x-full');
+          body.style.overflow = 'hidden'; // Prevent scrolling
+        }, 300);
+      });
+    });
+    
+    // Scroll animations
+    const appearElements = document.querySelectorAll('.appear');
+    
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          entry.target.classList.add('visible');
+        }
+      });
+    }, {
+      threshold: 0.1
+    });
+    
+    appearElements.forEach(element => {
+      observer.observe(element);
+    });
+  </script>
+</body>
+</html>

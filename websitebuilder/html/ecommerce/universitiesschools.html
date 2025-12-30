@@ -1,0 +1,1060 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Horizon University - Shaping Tomorrow's Leaders</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
+    <style>
+        :root {
+            --primary: #1a56db;
+            --secondary: #7e3af2;
+            --success: #047857;
+            --light: #f9fafb;
+            --dark: #1e293b;
+        }
+        
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            color: #333;
+            background-color: #f5f7fa;
+        }
+        
+        .navbar {
+            background-color: rgba(255, 255, 255, 0.95);
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+        }
+        
+        .hero-section {
+            background: linear-gradient(135deg, #1a56db 0%, #7e3af2 100%);
+            color: white;
+            padding: 6rem 0;
+            position: relative;
+        }
+        
+        .hero-section::before {
+            content: "";
+            position: absolute;
+            top: 0;
+            right: 0;
+            bottom: 0;
+            left: 0;
+            background-image: url('https://images.unsplash.com/photo-1517486808906-6ca8b3f8e1c1?ixlib=rb-4.0.3&auto=format&fit=crop&w=1950&q=80');
+            background-size: cover;
+            opacity: 0.1;
+        }
+        
+        .feature-card {
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+            transition: transform 0.3s ease;
+        }
+        
+        .feature-card:hover {
+            transform: translateY(-5px);
+        }
+        
+        .counter-section {
+            background-color: var(--primary);
+            color: white;
+        }
+        
+        .testimonial-card {
+            background-color: white;
+            border-radius: 12px;
+            padding: 2rem;
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+        }
+        
+        .faculty-card img {
+            border-radius: 12px 12px 0 0;
+            height: 250px;
+            object-fit: cover;
+        }
+        
+        .login-section {
+            background: linear-gradient(135deg, #7e3af2 0%, #1a56db 100%);
+            color: white;
+            border-radius: 12px;
+            box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.15);
+        }
+        
+        .news-card {
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+        }
+        
+        .news-card img {
+            height: 200px;
+            object-fit: cover;
+        }
+        
+        footer {
+            background-color: var(--dark);
+            color: var(--light);
+        }
+        
+        .course-search {
+            background-color: white;
+            border-radius: 12px;
+            padding: 2rem;
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+        }
+        
+        .event-card {
+            position: relative;
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+        }
+        
+        .event-date {
+            position: absolute;
+            top: 15px;
+            left: 15px;
+            background-color: var(--primary);
+            color: white;
+            padding: 10px 15px;
+            border-radius: 6px;
+            font-weight: bold;
+        }
+        
+        .campus-tour {
+            background-color: var(--light);
+            border-radius: 12px;
+            overflow: hidden;
+        }
+        
+        #chatbot {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            z-index: 1000;
+        }
+        
+        .chat-window {
+            position: fixed;
+            bottom: 80px;
+            right: 20px;
+            width: 300px;
+            height: 400px;
+            background-color: white;
+            border-radius: 12px;
+            box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.2);
+            display: none;
+            overflow: hidden;
+            z-index: 1000;
+        }
+        
+        .chat-header {
+            background-color: var(--primary);
+            color: white;
+            padding: 15px;
+        }
+        
+        .chat-body {
+            height: 310px;
+            overflow-y: auto;
+            padding: 15px;
+        }
+        
+        .chat-input {
+            padding: 10px;
+            border-top: 1px solid #eee;
+        }
+        
+        /* Virtual Tour Styles */
+        .virtual-tour {
+            position: relative;
+            height: 400px;
+            border-radius: 12px;
+            overflow: hidden;
+        }
+        
+        /* Calendar Styles */
+        .calendar-container {
+            background-color: white;
+            border-radius: 12px;
+            padding: 20px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+        
+        .calendar-header {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 10px;
+        }
+        
+        .calendar-grid {
+            display: grid;
+            grid-template-columns: repeat(7, 1fr);
+            gap: 5px;
+        }
+        
+        .calendar-day {
+            height: 40px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+        
+        .calendar-day:hover {
+            background-color: #f0f4ff;
+        }
+        
+        .calendar-day.event {
+            background-color: rgba(26, 86, 219, 0.1);
+            color: var(--primary);
+            font-weight: bold;
+        }
+        
+        /* Responsive adjustments */
+        @media (max-width: 768px) {
+            .hero-section {
+                padding: 4rem 0;
+            }
+            
+            .feature-card {
+                margin-bottom: 20px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- 1. Responsive Navigation with Mega Menu -->
+    <nav class="navbar navbar-expand-lg navbar-light sticky-top py-3">
+        <div class="container">
+            <a class="navbar-brand fw-bold" href="#">
+                <span class="text-primary">HORIZON</span> UNIVERSITY
+            </a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav ms-auto">
+                    <li class="nav-item">
+                        <a class="nav-link" href="#">Home</a>
+                    </li>
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown">
+                            Academics
+                        </a>
+                        <div class="dropdown-menu mega-menu p-3" style="width: 500px;">
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <h6 class="fw-bold">Undergraduate Programs</h6>
+                                    <a class="dropdown-item" href="#">Computer Science</a>
+                                    <a class="dropdown-item" href="#">Business Administration</a>
+                                    <a class="dropdown-item" href="#">Engineering</a>
+                                    <a class="dropdown-item" href="#">Liberal Arts</a>
+                                </div>
+                                <div class="col-md-6">
+                                    <h6 class="fw-bold">Graduate Programs</h6>
+                                    <a class="dropdown-item" href="#">MBA</a>
+                                    <a class="dropdown-item" href="#">M.S. in Data Science</a>
+                                    <a class="dropdown-item" href="#">Ph.D. Programs</a>
+                                    <a class="dropdown-item" href="#">Executive Education</a>
+                                </div>
+                            </div>
+                        </div>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#">Admissions</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#">Campus Life</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#">Research</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#">About Us</a>
+                    </li>
+                    <li class="nav-item ms-2">
+                        <a class="btn btn-outline-primary" href="#student-portal">Student Portal</a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <!-- 2. Hero Section with Dynamic Slider -->
+    <section class="hero-section position-relative">
+        <div class="container">
+            <div class="row align-items-center">
+                <div class="col-lg-6 position-relative">
+                    <h1 class="display-4 fw-bold mb-4">Inspiring Leaders for Tomorrow's World</h1>
+                    <p class="lead mb-4">Join Horizon University for a transformative educational journey that prepares you for success in a rapidly changing global environment.</p>
+                    <div class="d-flex gap-3">
+                        <a href="#" class="btn btn-light btn-lg">Apply Now</a>
+                        <a href="#" class="btn btn-outline-light btn-lg">Take a Tour</a>
+                    </div>
+                </div>
+                <div class="col-lg-6 mt-5 mt-lg-0">
+                    <div id="heroCarousel" class="carousel slide" data-bs-ride="carousel">
+                        <div class="carousel-indicators">
+                            <button type="button" data-bs-target="#heroCarousel" data-bs-slide-to="0" class="active"></button>
+                            <button type="button" data-bs-target="#heroCarousel" data-bs-slide-to="1"></button>
+                            <button type="button" data-bs-target="#heroCarousel" data-bs-slide-to="2"></button>
+                        </div>
+                        <div class="carousel-inner rounded shadow-lg">
+                            <div class="carousel-item active">
+                                <img src="https://images.unsplash.com/photo-1523050854058-8df90110c9f1?ixlib=rb-4.0.3&auto=format&fit=crop&w=1350&q=80" class="d-block w-100" alt="Campus Life">
+                            </div>
+                            <div class="carousel-item">
+                                <img src="https://images.unsplash.com/photo-1541339907198-e08756dedf3f?ixlib=rb-4.0.3&auto=format&fit=crop&w=1350&q=80" class="d-block w-100" alt="Graduation">
+                            </div>
+                            <div class="carousel-item">
+                                <img src="https://images.unsplash.com/photo-1498243691581-b145c3f54a5a?ixlib=rb-4.0.3&auto=format&fit=crop&w=1350&q=80" class="d-block w-100" alt="Research">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- 3. Feature Programs Section -->
+    <section class="py-5 bg-white">
+        <div class="container py-4">
+            <div class="text-center mb-5">
+                <h2 class="fw-bold">Discover Our Programs</h2>
+                <p class="text-muted">Explore our diverse range of undergraduate and graduate programs</p>
+            </div>
+            <div class="row g-4">
+                <div class="col-md-4">
+                    <div class="feature-card h-100">
+                        <img src="https://images.unsplash.com/photo-1581092335399-fd6eed62921c?ixlib=rb-4.0.3&auto=format&fit=crop&w=1350&q=80" class="card-img-top" alt="Computer Science">
+                        <div class="card-body">
+                            <h5 class="card-title fw-bold">Computer Science & Technology</h5>
+                            <p class="card-text">Develop cutting-edge skills in programming, artificial intelligence, and software engineering.</p>
+                            <a href="#" class="btn btn-outline-primary">Learn More</a>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="feature-card h-100">
+                        <img src="https://images.unsplash.com/photo-1454165804606-c3d57bc86b40?ixlib=rb-4.0.3&auto=format&fit=crop&w=1350&q=80" class="card-img-top" alt="Business">
+                        <div class="card-body">
+                            <h5 class="card-title fw-bold">Business & Management</h5>
+                            <p class="card-text">Gain the knowledge and skills needed to excel in today's complex business landscape.</p>
+                            <a href="#" class="btn btn-outline-primary">Learn More</a>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="feature-card h-100">
+                        <img src="https://images.unsplash.com/photo-1532187863486-abf9dbad1b69?ixlib=rb-4.0.3&auto=format&fit=crop&w=1350&q=80" class="card-img-top" alt="Science">
+                        <div class="card-body">
+                            <h5 class="card-title fw-bold">Science & Research</h5>
+                            <p class="card-text">Engage in groundbreaking research and develop innovative solutions to global challenges.</p>
+                            <a href="#" class="btn btn-outline-primary">Learn More</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- 4. Stats Counter Section -->
+    <section class="counter-section py-5">
+        <div class="container py-4">
+            <div class="row text-center">
+                <div class="col-md-3 mb-4 mb-md-0">
+                    <h2 class="display-4 fw-bold">25,000+</h2>
+                    <p class="fw-light">Students</p>
+                </div>
+                <div class="col-md-3 mb-4 mb-md-0">
+                    <h2 class="display-4 fw-bold">1,200+</h2>
+                    <p class="fw-light">Faculty Members</p>
+                </div>
+                <div class="col-md-3 mb-4 mb-md-0">
+                    <h2 class="display-4 fw-bold">150+</h2>
+                    <p class="fw-light">Programs</p>
+                </div>
+                <div class="col-md-3">
+                    <h2 class="display-4 fw-bold">92%</h2>
+                    <p class="fw-light">Employment Rate</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- 5. Course Search & Filter (Interactive Feature) -->
+    <section class="py-5 bg-light">
+        <div class="container py-4">
+            <div class="row justify-content-center">
+                <div class="col-lg-10">
+                    <div class="course-search">
+                        <h3 class="fw-bold mb-4">Find Your Perfect Course</h3>
+                        <div class="row g-3">
+                            <div class="col-md-6">
+                                <input type="text" class="form-control" placeholder="Search for courses...">
+                            </div>
+                            <div class="col-md-3">
+                                <select class="form-select">
+                                    <option selected>Program Level</option>
+                                    <option>Undergraduate</option>
+                                    <option>Graduate</option>
+                                    <option>Doctorate</option>
+                                    <option>Certificate</option>
+                                </select>
+                            </div>
+                            <div class="col-md-3">
+                                <select class="form-select">
+                                    <option selected>Department</option>
+                                    <option>Computer Science</option>
+                                    <option>Business</option>
+                                    <option>Engineering</option>
+                                    <option>Arts & Humanities</option>
+                                    <option>Medicine</option>
+                                </select>
+                            </div>
+                        </div>
+                        <hr class="my-4">
+                        <div class="row">
+                            <div class="col-md-3 mb-3">
+                                <div class="form-check">
+                                    <input class="form-check-input" type="checkbox" id="online">
+                                    <label class="form-check-label" for="online">Online Courses</label>
+                                </div>
+                            </div>
+                            <div class="col-md-3 mb-3">
+                                <div class="form-check">
+                                    <input class="form-check-input" type="checkbox" id="evening">
+                                    <label class="form-check-label" for="evening">Evening Classes</label>
+                                </div>
+                            </div>
+                            <div class="col-md-3 mb-3">
+                                <div class="form-check">
+                                    <input class="form-check-input" type="checkbox" id="weekend">
+                                    <label class="form-check-label" for="weekend">Weekend Programs</label>
+                                </div>
+                            </div>
+                            <div class="col-md-3 mb-3">
+                                <div class="form-check">
+                                    <input class="form-check-input" type="checkbox" id="financial">
+                                    <label class="form-check-label" for="financial">Financial Aid Available</label>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="text-end mt-3">
+                            <button class="btn btn-primary px-4">Search Courses</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- 6. Virtual Campus Tour (Interactive Feature) -->
+    <section class="py-5 bg-white">
+        <div class="container py-4">
+            <div class="row align-items-center">
+                <div class="col-lg-6 mb-4 mb-lg-0">
+                    <h2 class="fw-bold mb-4">Explore Our Campus</h2>
+                    <p class="mb-4">Take a virtual tour of our state-of-the-art facilities, including classrooms, laboratories, libraries, and recreational spaces.</p>
+                    <div class="d-flex gap-3">
+                        <button class="btn btn-outline-primary tour-btn" data-target="library">Library</button>
+                        <button class="btn btn-outline-primary tour-btn" data-target="lab">Science Labs</button>
+                        <button class="btn btn-outline-primary tour-btn" data-target="dorm">Dormitories</button>
+                        <button class="btn btn-outline-primary tour-btn" data-target="sports">Sports Complex</button>
+                    </div>
+                </div>
+                <div class="col-lg-6">
+                    <div class="virtual-tour">
+                        <img src="https://images.unsplash.com/photo-1497633762265-9d179a990aa6?ixlib=rb-4.0.3&auto=format&fit=crop&w=1350&q=80" id="tourImage" class="w-100 h-100 object-fit-cover" alt="Campus Tour">
+                        <div class="position-absolute bottom-0 start-0 end-0 bg-dark bg-opacity-75 text-white p-3">
+                            <h5 id="tourLocation">Main Library</h5>
+                            <p id="tourDescription" class="mb-0">Our modern library houses over 1 million books and provides digital access to thousands of academic journals and resources.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- 7. Upcoming Events with Interactive Calendar -->
+    <section class="py-5 bg-light">
+        <div class="container py-4">
+            <div class="text-center mb-5">
+                <h2 class="fw-bold">Upcoming Events</h2>
+                <p class="text-muted">Stay updated with the latest happenings on campus</p>
+            </div>
+            <div class="row g-4">
+                <div class="col-md-7">
+                    <div class="row g-4">
+                        <div class="col-md-6">
+                            <div class="event-card">
+                                <img src="https://images.unsplash.com/photo-1540575467063-178a50c2df87?ixlib=rb-4.0.3&auto=format&fit=crop&w=1350&q=80" class="card-img-top" alt="Event">
+                                <div class="event-date">
+                                    <div>MAY</div>
+                                    <div>15</div>
+                                </div>
+                                <div class="card-body">
+                                    <h5 class="card-title fw-bold">Spring Research Symposium</h5>
+                                    <p class="card-text">Join us for presentations of groundbreaking research by our faculty and students.</p>
+                                    <div class="d-flex align-items-center text-muted">
+                                        <i class="fas fa-clock me-2"></i>
+                                        <span>9:00 AM - 5:00 PM</span>
+                                    </div>
+                                    <div class="d-flex align-items-center text-muted mt-2">
+                                        <i class="fas fa-map-marker-alt me-2"></i>
+                                        <span>Science Center Auditorium</span>
+                                    </div>
+                                    <a href="#" class="btn btn-sm btn-outline-primary mt-3">Register</a>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="event-card">
+                                <img src="https://images.unsplash.com/photo-1523580494863-6f3031224c94?ixlib=rb-4.0.3&auto=format&fit=crop&w=1350&q=80" class="card-img-top" alt="Workshop">
+                                <div class="event-date">
+                                    <div>MAY</div>
+                                    <div>22</div>
+                                </div>
+                                <div class="card-body">
+                                    <h5 class="card-title fw-bold">AI & Machine Learning Workshop</h5>
+                                    <p class="card-text">A hands-on workshop exploring the latest developments in artificial intelligence.</p>
+                                    <div class="d-flex align-items-center text-muted">
+                                        <i class="fas fa-clock me-2"></i>
+                                        <span>1:00 PM - 4:00 PM</span>
+                                    </div>
+                                    <div class="d-flex align-items-center text-muted mt-2">
+                                        <i class="fas fa-map-marker-alt me-2"></i>
+                                        <span>Computer Science Building, Room 203</span>
+                                    </div>
+                                    <a href="#" class="btn btn-sm btn-outline-primary mt-3">Register</a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-5">
+                    <!-- Interactive Calendar -->
+                    <div class="calendar-container">
+                        <div class="calendar-header">
+                            <h5 class="fw-bold mb-0">May 2023</h5>
+                            <div>
+                                <button class="btn btn-sm btn-outline-secondary me-1">
+                                    <i class="fas fa-chevron-left"></i>
+                                </button>
+                                <button class="btn btn-sm btn-outline-secondary">
+                                    <i class="fas fa-chevron-right"></i>
+                                </button>
+                            </div>
+                        </div>
+                        <div class="text-muted d-flex justify-content-between mb-2">
+                            <div class="calendar-grid w-100">
+                                <div class="text-center">S</div>
+                                <div class="text-center">M</div>
+                                <div class="text-center">T</div>
+                                <div class="text-center">W</div>
+                                <div class="text-center">T</div>
+                                <div class="text-center">F</div>
+                                <div class="text-center">S</div>
+                            </div>
+                        </div>
+                        <div class="calendar-grid">
+                            <div class="calendar-day text-muted">30</div>
+                            <div class="calendar-day">1</div>
+                            <div class="calendar-day">2</div>
+                            <div class="calendar-day">3</div>
+                            <div class="calendar-day">4</div>
+                            <div class="calendar-day event">5</div>
+                            <div class="calendar-day">6</div>
+                            <div class="calendar-day">7</div>
+                            <div class="calendar-day">8</div>
+                            <div class="calendar-day event">9</div>
+                            <div class="calendar-day">10</div>
+                            <div class="calendar-day">11</div>
+                            <div class="calendar-day">12</div>
+                            <div class="calendar-day">13</div>
+                            <div class="calendar-day event">14</div>
+                            <div class="calendar-day event">15</div>
+                            <div class="calendar-day">16</div>
+                            <div class="calendar-day">17</div>
+                            <div class="calendar-day">18</div>
+                            <div class="calendar-day">19</div>
+                            <div class="calendar-day">20</div>
+                            <div class="calendar-day">21</div>
+                            <div class="calendar-day event">22</div>
+                            <div class="calendar-day">23</div>
+                            <div class="calendar-day">24</div>
+                            <div class="calendar-day event">25</div>
+                            <div class="calendar-day">26</div>
+                            <div class="calendar-day">27</div>
+                            <div class="calendar-day">28</div>
+                            <div class="calendar-day">29</div>
+                            <div class="calendar-day">30</div>
+                            <div class="calendar-day">31</div>
+                            <div class="calendar-day text-muted">1</div>
+                            <div class="calendar-day text-muted">2</div>
+                            <div class="calendar-day text-muted">3</div>
+                        </div>
+                        <div class="mt-3">
+                            <div class="d-flex align-items-center">
+                                <div class="bg-primary rounded-circle" style="width: 10px; height: 10px;"></div>
+                                <span class="ms-2 small">Events</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="text-center mt-5">
+                <a href="#" class="btn btn-primary">View All Events</a>
+            </div>
+        </div>
+    </section>
+
+    <!-- 8. Faculty Showcase -->
+    <section class="py-5 bg-white">
+        <div class="container py-4">
+            <div class="text-center mb-5">
+                <h2 class="fw-bold">Meet Our Distinguished Faculty</h2>
+                <p class="text-muted">Learn from leading experts in their fields</p>
+            </div>
+            <div class="row g-4">
+                <div class="col-md-3">
+                    <div class="faculty-card">
+                        <img src="https://images.unsplash.com/photo-1573497019940-1c28c88b4f3e?ixlib=rb-4.0.3&auto=format&fit=crop&w=1350&q=80" class="card-img-top" alt="Professor Sarah Johnson">
+                        <div class="card-body">
+                            <h5 class="card-title fw-bold">Dr. Sarah Johnson</h5>
+                            <p class="text-primary">Professor of Computer Science</p>
+                            <p class="card-text small">Expert in artificial intelligence and machine learning with over 15 years of research experience.</p>
+                            <div class="d-flex gap-2 mt-3">
+                                <a href="#" class="text-primary"><i class="fab fa-linkedin"></i></a>
+                                <a href="#" class="text-primary"><i class="fas fa-envelope"></i></a>
+                                <a href="#" class="text-primary"><i class="fas fa-globe"></i></a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <div class="faculty-card">
+                        <img src="https://images.unsplash.com/photo-1560250097-0b93528c311a?ixlib=rb-4.0.3&auto=format&fit=crop&w=1350&q=80" class="card-img-top" alt="Professor Michael Chen">
+                        <div class="card-body">
+                            <h5 class="card-title fw-bold">Dr. Michael Chen</h5>
+                            <p class="text-primary">Dean, Business School</p>
+                            <p class="card-text small">Leading expert in international finance and business strategy. Former consultant for Fortune 500 companies.</p>
+                            <div class="d-flex gap-2 mt-3">
+                                <a href="#" class="text-primary"><i class="fab fa-linkedin"></i></a>
+                                <a href="#" class="text-primary"><i class="fas fa-envelope"></i></a>
+                                <a href="#" class="text-primary"><i class="fas fa-globe"></i></a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <div class="faculty-card">
+                        <img src="https://images.unsplash.com/photo-1551836022-d5d88e9218df?ixlib=rb-4.0.3&auto=format&fit=crop&w=1350&q=80" class="card-img-top" alt="Professor Emily Rodriguez">
+                        <div class="card-body">
+                            <h5 class="card-title fw-bold">Dr. Emily Rodriguez</h5>
+                            <p class="text-primary">Professor of Biology</p>
+                            <p class="card-text small">Renowned researcher in molecular biology with groundbreaking work in genomics and RNA sequencing.</p>
+                            <div class="d-flex gap-2 mt-3">
+                                <a href="#" class="text-primary"><i class="fab fa-linkedin"></i></a>
+                                <a href="#" class="text-primary"><i class="fas fa-envelope"></i></a>
+                                <a href="#" class="text-primary"><i class="fas fa-globe"></i></a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <div class="faculty-card">
+                        <img src="https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?ixlib=rb-4.0.3&auto=format&fit=crop&w=1350&q=80" class="card-img-top" alt="Professor James Wilson">
+                        <div class="card-body">
+                            <h5 class="card-title fw-bold">Dr. James Wilson</h5>
+                            <p class="text-primary">Chair, Engineering Department</p>
+                            <p class="card-text small">Specializes in sustainable engineering solutions and renewable energy systems with numerous patents.</p>
+                            <div class="d-flex gap-2 mt-3">
+                                <a href="#" class="text-primary"><i class="fab fa-linkedin"></i></a>
+                                <a href="#" class="text-primary"><i class="fas fa-envelope"></i></a>
+                                <a href="#" class="text-primary"><i class="fas fa-globe"></i></a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="text-center mt-5">
+                <a href="#" class="btn btn-outline-primary">View All Faculty</a>
+            </div>
+        </div>
+    </section>
+
+    <!-- 9. Student Portal Login Section -->
+    <section id="student-portal" class="py-5 bg-light">
+        <div class="container py-4">
+            <div class="row justify-content-center">
+                <div class="col-md-10">
+                    <div class="login-section p-4 p-md-5">
+                        <div class="row align-items-center">
+                            <div class="col-lg-6 mb-4 mb-lg-0">
+                                <h2 class="fw-bold">Student Portal</h2>
+                                <p class="mb-4">Access your courses, grades, assignments, and university resources through our comprehensive student portal.</p>
+                                <ul class="list-unstyled mb-4">
+                                    <li class="mb-2"><i class="fas fa-check-circle me-2"></i> View your academic records and grades</li>
+                                    <li class="mb-2"><i class="fas fa-check-circle me-2"></i> Access online course materials</li>
+                                    <li class="mb-2"><i class="fas fa-check-circle me-2"></i> Submit assignments and view feedback</li>
+                                    <li class="mb-2"><i class="fas fa-check-circle me-2"></i> Register for classes and manage your schedule</li>
+                                    <li class="mb-2"><i class="fas fa-check-circle me-2"></i> Access university resources and support services</li>
+                                </ul>
+                                <a href="#" class="btn btn-light">Learn More</a>
+                            </div>
+                            <div class="col-lg-6">
+                                <div class="card border-0 shadow-sm">
+                                    <div class="card-body p-4">
+                                        <h5 class="card-title fw-bold mb-4">Login to Your Account</h5>
+                                        <form>
+                                            <div class="mb-3">
+                                                <label for="studentId" class="form-label">Student ID</label>
+                                                <input type="text" class="form-control" id="studentId" placeholder="Enter your student ID">
+                                            </div>
+                                            <div class="mb-3">
+                                                <label for="password" class="form-label">Password</label>
+                                                <input type="password" class="form-control" id="password" placeholder="Enter your password">
+                                            </div>
+                                            <div class="mb-3 form-check">
+                                                <input type="checkbox" class="form-check-input" id="rememberMe">
+                                                <label class="form-check-label" for="rememberMe">Remember me</label>
+                                            </div>
+                                            <button type="submit" class="btn btn-primary w-100">Login</button>
+                                            <div class="d-flex justify-content-between mt-3">
+                                                <a href="#" class="text-decoration-none small">Forgot Password?</a>
+                                                <a href="#" class="text-decoration-none small">Need Help?</a>
+                                            </div>
+                                        </form>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- 10. Latest News & Research Highlights -->
+    <section class="py-5 bg-white">
+        <div class="container py-4">
+            <div class="text-center mb-5">
+                <h2 class="fw-bold">Latest News & Research</h2>
+                <p class="text-muted">Stay updated with university news and breakthrough research</p>
+            </div>
+            <div class="row g-4">
+                <div class="col-md-4">
+                    <div class="news-card h-100">
+                        <img src="https://images.unsplash.com/photo-1517486808906-6ca8b3f8e1c1?ixlib=rb-4.0.3&auto=format&fit=crop&w=1350&q=80" class="card-img-top" alt="News">
+                        <div class="card-body">
+                            <span class="badge bg-primary mb-2">Research</span>
+                            <h5 class="card-title fw-bold">Breakthrough in Quantum Computing Research</h5>
+                            <p class="card-text">Our quantum computing research team has made significant progress in developing stable qubits for quantum information processing.</p>
+                            <div class="d-flex justify-content-between align-items-center mt-3">
+                                <small class="text-muted">May 10, 2023</small>
+                                <a href="#" class="fw-bold text-primary text-decoration-none">Read More</a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="news-card h-100">
+                        <img src="https://images.unsplash.com/photo-1576267423445-b2e0074d68a4?ixlib=rb-4.0.3&auto=format&fit=crop&w=1350&q=80" class="card-img-top" alt="News">
+                        <div class="card-body">
+                            <span class="badge bg-success mb-2">Campus Life</span>
+                            <h5 class="card-title fw-bold">New Student Center Opening This Fall</h5>
+                            <p class="card-text">The state-of-the-art student center featuring collaborative spaces, dining options, and recreational facilities will open in September.</p>
+                            <div class="d-flex justify-content-between align-items-center mt-3">
+                                <small class="text-muted">May 8, 2023</small>
+                                <a href="#" class="fw-bold text-primary text-decoration-none">Read More</a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="news-card h-100">
+                        <img src="https://images.unsplash.com/photo-1523240795612-9a054b0db644?ixlib=rb-4.0.3&auto=format&fit=crop&w=1350&q=80" class="card-img-top" alt="News">
+                        <div class="card-body">
+                            <span class="badge bg-warning mb-2">Awards</span>
+                            <h5 class="card-title fw-bold">Professor Williams Receives National Science Award</h5>
+                            <p class="card-text">Dr. Emma Williams from our Physics Department has been recognized with the prestigious National Science Foundation Award for her work in particle physics.</p>
+                            <div class="d-flex justify-content-between align-items-center mt-3">
+                                <small class="text-muted">May 5, 2023</small>
+                                <a href="#" class="fw-bold text-primary text-decoration-none">Read More</a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="text-center mt-5">
+                <a href="#" class="btn btn-outline-primary">View All News</a>
+            </div>
+        </div>
+    </section>
+
+    <!-- 11. Testimonials & Student Success Stories -->
+    <section class="py-5 bg-light">
+        <div class="container py-4">
+            <div class="text-center mb-5">
+                <h2 class="fw-bold">Student Success Stories</h2>
+                <p class="text-muted">Hear what our alumni have to say about their experiences</p>
+            </div>
+            <div class="row g-4">
+                <div class="col-md-6">
+                    <div class="testimonial-card h-100">
+                        <div class="d-flex mb-4">
+                            <img src="https://images.unsplash.com/photo-1580489944761-15a19d654956?ixlib=rb-4.0.3&auto=format&fit=crop&w=200&q=80" class="rounded-circle" width="60" height="60" alt="Student">
+                            <div class="ms-3">
+                                <h5 class="fw-bold mb-0">Jennifer Lee</h5>
+                                <p class="text-muted mb-0">Computer Science, Class of 2022</p>
+                                <p class="text-muted mb-0">Software Engineer at Google</p>
+                            </div>
+                        </div>
+                        <p class="mb-0">"My time at Horizon University prepared me exceptionally well for my career in software engineering. The rigorous curriculum, combined with numerous opportunities for hands-on projects and internships, gave me the skills and confidence needed to succeed in a competitive industry. The mentorship from professors was invaluable, and the connections I made continue to support my professional growth."</p>
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="testimonial-card h-100">
+                        <div class="d-flex mb-4">
+                            <img src="https://images.unsplash.com/photo-1500648767791-00dcc994a43e?ixlib=rb-4.0.3&auto=format&fit=crop&w=200&q=80" class="rounded-circle" width="60" height="60" alt="Student">
+                            <div class="ms-3">
+                                <h5 class="fw-bold mb-0">Marcus Thompson</h5>
+                                <p class="text-muted mb-0">Business Administration, Class of 2020</p>
+                                <p class="text-muted mb-0">Founder & CEO of EcoSteps</p>
+                            </div>
+                        </div>
+                        <p class="mb-0">"Horizon University didn't just teach me business theories - it taught me how to think and act like an entrepreneur. The entrepreneurship program, with its focus on sustainable business practices, directly influenced my decision to start EcoSteps. The network of alumni and business connections I made through the university's incubator program was instrumental in securing our first round of funding."</p>
+                    </div>
+                </div>
+            </div>
+            <div class="text-center mt-5">
+                <a href="#" class="btn btn-primary">Read More Success Stories</a>
+            </div>
+        </div>
+    </section>
+
+    <!-- 12. AI Chatbot For Student Assistance -->
+    <button id="chatbotButton" class="btn btn-primary rounded-circle p-3 shadow-lg" style="position: fixed; bottom: 20px; right: 20px; z-index: 1000;">
+        <i class="fas fa-comment"></i>
+    </button>
+    
+    <div id="chatWindow" class="chat-window">
+        <div class="chat-header d-flex justify-content-between align-items-center">
+            <div>
+                <h6 class="mb-0">Campus Assistant</h6>
+                <small>Online | Typically replies instantly</small>
+            </div>
+            <button id="closeChat" class="btn-close btn-close-white"></button>
+        </div>
+        <div class="chat-body" id="chatBody">
+            <div class="d-flex mb-3">
+                <div class="bg-light rounded p-3">
+                    <p class="mb-0">Hi there! I'm your Campus Assistant. How can I help you today?</p>
+                </div>
+            </div>
+        </div>
+        <div class="chat-input">
+            <div class="input-group">
+                <input type="text" id="userMessage" class="form-control" placeholder="Type your question...">
+                <button class="btn btn-primary" id="sendMessage">
+                    <i class="fas fa-paper-plane"></i>
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <footer class="py-5">
+        <div class="container">
+            <div class="row g-4">
+                <div class="col-lg-4">
+                    <h4 class="text-white fw-bold mb-4">HORIZON UNIVERSITY</h4>
+                    <p class="text-white-50">Inspiring leaders for tomorrow's world through innovative education, cutting-edge research, and a commitment to excellence.</p>
+                    <div class="d-flex gap-3 mt-4">
+                        <a href="#" class="text-white-50 fs-5"><i class="fab fa-facebook"></i></a>
+                        <a href="#" class="text-white-50 fs-5"><i class="fab fa-twitter"></i></a>
+                        <a href="#" class="text-white-50 fs-5"><i class="fab fa-instagram"></i></a>
+                        <a href="#" class="text-white-50 fs-5"><i class="fab fa-linkedin"></i></a>
+                        <a href="#" class="text-white-50 fs-5"><i class="fab fa-youtube"></i></a>
+                    </div>
+                </div>
+                <div class="col-lg-2 col-md-4">
+                    <h5 class="text-white mb-4">Quick Links</h5>
+                    <ul class="list-unstyled">
+                        <li class="mb-2"><a href="#" class="text-white-50 text-decoration-none">About Us</a></li>
+                        <li class="mb-2"><a href="#" class="text-white-50 text-decoration-none">Programs</a></li>
+                        <li class="mb-2"><a href="#" class="text-white-50 text-decoration-none">Admissions</a></li>
+                        <li class="mb-2"><a href="#" class="text-white-50 text-decoration-none">Campus Life</a></li>
+                        <li class="mb-2"><a href="#" class="text-white-50 text-decoration-none">Research</a></li>
+                        <li class="mb-2"><a href="#" class="text-white-50 text-decoration-none">News & Events</a></li>
+                    </ul>
+                </div>
+                <div class="col-lg-2 col-md-4">
+                    <h5 class="text-white mb-4">Resources</h5>
+                    <ul class="list-unstyled">
+                        <li class="mb-2"><a href="#" class="text-white-50 text-decoration-none">Student Portal</a></li>
+                        <li class="mb-2"><a href="#" class="text-white-50 text-decoration-none">Library</a></li>
+                        <li class="mb-2"><a href="#" class="text-white-50 text-decoration-none">Career Services</a></li>
+                        <li class="mb-2"><a href="#" class="text-white-50 text-decoration-none">Academic Calendar</a></li>
+                        <li class="mb-2"><a href="#" class="text-white-50 text-decoration-none">Support Services</a></li>
+                        <li class="mb-2"><a href="#" class="text-white-50 text-decoration-none">IT Help Desk</a></li>
+                    </ul>
+                </div>
+                <div class="col-lg-4 col-md-4">
+                    <h5 class="text-white mb-4">Contact Us</h5>
+                    <ul class="list-unstyled">
+                        <li class="d-flex mb-3">
+                            <i class="fas fa-map-marker-alt text-white-50 me-3 mt-1"></i>
+                            <span class="text-white-50">123 University Avenue, Academic City, CA 90210, United States</span>
+                        </li>
+                        <li class="d-flex mb-3">
+                            <i class="fas fa-phone text-white-50 me-3 mt-1"></i>
+                            <span class="text-white-50">+1 (800) 123-4567</span>
+                        </li>
+                        <li class="d-flex mb-3">
+                            <i class="fas fa-envelope text-white-50 me-3 mt-1"></i>
+                            <span class="text-white-50">admissions@horizonuniversity.edu</span>
+                        </li>
+                    </ul>
+                    <form class="mt-4">
+                        <div class="input-group">
+                            <input type="email" class="form-control" placeholder="Subscribe to our newsletter">
+                            <button class="btn btn-primary">Subscribe</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+            <hr class="mt-5 mb-4 border-white-50">
+            <div class="row">
+                <div class="col-md-6">
+                    <p class="text-white-50 mb-0">&copy; 2023 Horizon University. All rights reserved.</p>
+                </div>
+                <div class="col-md-6 text-md-end">
+                    <a href="#" class="text-white-50 text-decoration-none me-3">Privacy Policy</a>
+                    <a href="#" class="text-white-50 text-decoration-none me-3">Terms of Service</a>
+                    <a href="#" class="text-white-50 text-decoration-none">Accessibility</a>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Bootstrap JS and other scripts -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        // Virtual Tour Functionality
+        const tourButtons = document.querySelectorAll('.tour-btn');
+        const tourImage = document.getElementById('tourImage');
+        const tourLocation = document.getElementById('tourLocation');
+        const tourDescription = document.getElementById('tourDescription');
+        
+        const tourData = {
+            library: {
+                image: 'https://images.unsplash.com/photo-1497633762265-9d179a990aa6?ixlib=rb-4.0.3&auto=format&fit=crop&w=1350&q=80',
+                title: 'Main Library',
+                description: 'Our modern library houses over 1 million books and provides digital access to thousands of academic journals and resources.'
+            },
+            lab: {
+                image: 'https://images.unsplash.com/photo-1581093588401-fbb62a02f120?ixlib=rb-4.0.3&auto=format&fit=crop&w=1350&q=80',
+                title: 'Science Laboratories',
+                description: 'State-of-the-art laboratories equipped with advanced technology to support research and practical learning.'
+            },
+            dorm: {
+                image: 'https://images.unsplash.com/photo-1555854877-bab0e564b8d5?ixlib=rb-4.0.3&auto=format&fit=crop&w=1350&q=80',
+                title: 'Student Residences',
+                description: 'Comfortable and modern dormitories designed to create a supportive living and learning community.'
+            },
+            sports: {
+                image: 'https://images.unsplash.com/photo-1574629810360-7efbbe195018?ixlib=rb-4.0.3&auto=format&fit=crop&w=1350&q=80',
+                title: 'Sports Complex',
+                description: 'A comprehensive sports facility featuring a gymnasium, swimming pool, tennis courts, and indoor and outdoor fitness areas.'
+            }
+        };
+        
+        tourButtons.forEach(button => {
+            button.addEventListener('click', () => {
+                const target = button.getAttribute('data-target');
+                tourImage.src = tourData[target].image;
+                tourLocation.textContent = tourData[target].title;
+                tourDescription.textContent = tourData[target].description;
+                
+                // Update active button
+                tourButtons.forEach(btn => btn.classList.remove('btn-primary', 'text-white'));
+                tourButtons.forEach(btn => btn.classList.add('btn-outline-primary'));
+                button.classList.remove('btn-outline-primary');
+                button.classList.add('btn-primary', 'text-white');
+            });
+        });
+        
+        // Chatbot Functionality
+        document.getElementById('chatbotButton').addEventListener('click', function() {
+            document.getElementById('chatWindow').style.display = 'block';
+            this.style.display = 'none';
+        });
+        
+        document.getElementById('closeChat').addEventListener('click', function() {
+            document.getElementById('chatWindow').style.display = 'none';
+            document.getElementById('chatbotButton').style.display = 'block';
+        });
+        
+        document.getElementById('sendMessage').addEventListener('click', sendUserMessage);
+        document.getElementById('userMessage').addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') {
+                sendUserMessage();
+            }
+        });
+        
+        function sendUserMessage() {
+            const messageInput = document.getElementById('userMessage');
+            const message = messageInput.value.trim();
+            
+            if (message !== '') {
+                // Add user message
+                const chatBody = document.getElementById('chatBody');
+                chatBody.innerHTML += `
+                    <div class="d-flex justify-content-end mb-3">
+                        <div class="bg-primary text-white rounded p-3">
+                            <p class="mb-0">${message}</p>
+                        </div>
+                    </div>
+                `;
+                
+                // Clear input
+                messageInput.value = '';
+                
+                // Scroll to bottom
+                chatBody.scrollTop = chatBody.scrollHeight;
+                
+                // Simulate bot response after a short delay
+                setTimeout(() => {
+                    let botResponse = "Thanks for your message! Our support team will assist you with this inquiry. In the meantime, you can check our FAQ section or student resources for more information.";
+                    
+                    // Simple keyword responses for demo purposes
+                    if (message.toLowerCase().includes('admission')) {
+                        botResponse = "For admission inquiries, please visit our Admissions page or contact the Admissions Office at admissions@horizonuniversity.edu.";
+                    } else if (message.toLowerCase().includes('course') || message.toLowerCase().includes('class')) {
+                        botResponse = "You can browse our course catalog and register for classes through the Student Portal. Need help finding a specific course? Let me know the department or subject area.";
+                    } else if (message.toLowerCase().includes('financial') || message.toLowerCase().includes('scholarship')) {
+                        botResponse = "For financial aid and scholarship information, please visit the Financial Aid Office or check your eligibility in the Student Portal under 'Financial Services'.";
+                    }
+                    
+                    chatBody.innerHTML += `
+                        <div class="d-flex mb-3">
+                            <div class="bg-light rounded p-3">
+                                <p class="mb-0">${botResponse}</p>
+                            </div>
+                        </div>
+                    `;
+                    
+                    // Scroll to bottom again
+                    chatBody.scrollTop = chatBody.scrollHeight;
+                }, 1000);
+            }
+        }
+    </script>
+
+</body>
+</html>

@@ -1,0 +1,2249 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>UX Design Portfolio | Your Name</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700&family=Poppins:wght@300;400;500;600;700&display=swap">
+    <style>
+        :root {
+            --primary: #9b87f5;
+            --secondary: #7E69AB;
+            --dark: #1A1F2C;
+            --light: #F6F6F7;
+            --gray: #8E9196;
+            --white: #FFFFFF;
+            --accent: #D946EF;
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Poppins', sans-serif;
+            background-color: var(--light);
+            color: var(--dark);
+            line-height: 1.6;
+        }
+        
+        h1, h2, h3, h4, h5 {
+            font-family: 'Playfair Display', serif;
+            font-weight: 700;
+        }
+        
+        .container {
+            width: 90%;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+        
+        /* Navbar */
+        .navbar {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            padding: 20px 0;
+            z-index: 1000;
+            transition: all 0.3s ease;
+            backdrop-filter: blur(10px);
+            background-color: rgba(255, 255, 255, 0.8);
+        }
+        
+        .navbar.scrolled {
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+            padding: 15px 0;
+        }
+        
+        .navbar .container {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .logo {
+            font-size: 1.8rem;
+            font-weight: 700;
+            color: var(--primary);
+            text-decoration: none;
+        }
+        
+        .nav-links {
+            display: flex;
+            list-style: none;
+        }
+        
+        .nav-links li {
+            margin-left: 30px;
+        }
+        
+        .nav-links a {
+            text-decoration: none;
+            color: var(--dark);
+            font-weight: 500;
+            font-size: 1rem;
+            transition: color 0.3s ease;
+            position: relative;
+        }
+        
+        .nav-links a:after {
+            content: '';
+            position: absolute;
+            width: 0;
+            height: 2px;
+            bottom: -5px;
+            left: 0;
+            background-color: var(--primary);
+            transition: width 0.3s ease;
+        }
+        
+        .nav-links a:hover {
+            color: var(--primary);
+        }
+        
+        .nav-links a:hover:after {
+            width: 100%;
+        }
+        
+        .hamburger {
+            display: none;
+            cursor: pointer;
+        }
+        
+        /* Hero Section */
+    .hero {
+        height: 100vh;
+        min-height: 800px;
+        display: flex;
+        align-items: center;
+        padding-top: 80px;
+        position: relative;
+        overflow: hidden;
+        background: linear-gradient(135deg, #F6F6F7 0%, #f0f0f2 100%);
+    }
+
+    .hero-content {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        width: 100%;
+        max-width: 1200px;
+        margin: 0 auto;
+        padding: 0 20px;
+        position: relative;
+        z-index: 2;
+    }
+
+    .hero-text {
+        flex: 1;
+        max-width: 600px;
+        padding-right: 40px;
+    }
+
+    .hero-title {
+        font-family: 'Playfair Display', serif;
+        font-weight: 700;
+        font-size: 4rem;
+        line-height: 1.2;
+        margin-bottom: 30px;
+        color: #1A1F2C;
+    }
+
+    .title-line {
+        display: block;
+        opacity: 0;
+        transform: translateY(20px);
+        animation: fadeInUp 0.8s ease forwards;
+    }
+
+    .title-line:nth-child(1) {
+        animation-delay: 0.2s;
+    }
+
+    .title-line:nth-child(2) {
+        animation-delay: 0.4s;
+    }
+
+    .title-line:nth-child(3) {
+        animation-delay: 0.6s;
+    }
+
+    .title-line.accent {
+        color: #9b87f5;
+        position: relative;
+        display: inline-block;
+    }
+
+    .title-line.accent::after {
+        content: '';
+        position: absolute;
+        bottom: 10px;
+        left: 0;
+        width: 100%;
+        height: 12px;
+        background-color: rgba(155, 135, 245, 0.2);
+        z-index: -1;
+        transform: scaleX(0);
+        transform-origin: left;
+        animation: underlineGrow 1s ease forwards 0.8s;
+    }
+
+    .hero-subtitle {
+        font-size: 1.2rem;
+        line-height: 1.6;
+        color: #8E9196;
+        margin-bottom: 40px;
+        max-width: 500px;
+        opacity: 0;
+        transform: translateY(20px);
+        animation: fadeInUp 0.8s ease forwards 0.8s;
+    }
+
+    .hero-buttons {
+        display: flex;
+        gap: 20px;
+        opacity: 0;
+        transform: translateY(20px);
+        animation: fadeInUp 0.8s ease forwards 1s;
+    }
+
+    .btn {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        padding: 15px 30px;
+        border-radius: 50px;
+        font-weight: 500;
+        text-decoration: none;
+        transition: all 0.3s ease;
+        font-size: 1rem;
+    }
+
+    .btn-primary {
+        background-color: #9b87f5;
+        color: white;
+        box-shadow: 0 4px 15px rgba(155, 135, 245, 0.3);
+    }
+
+    .btn-primary:hover {
+        transform: translateY(-3px);
+        box-shadow: 0 8px 25px rgba(155, 135, 245, 0.4);
+        background-color: #8a75e8;
+    }
+
+    .btn-primary i {
+        margin-left: 10px;
+        transition: transform 0.3s ease;
+    }
+
+    .btn-primary:hover i {
+        transform: translateX(5px);
+    }
+
+    .btn-secondary {
+        background-color: transparent;
+        border: 2px solid #9b87f5;
+        color: #9b87f5;
+    }
+
+    .btn-secondary:hover {
+        background-color: rgba(155, 135, 245, 0.1);
+    }
+
+    .hero-image-container {
+        flex: 1;
+        display: flex;
+        justify-content: flex-end;
+        position: relative;
+    }
+
+    .hero-image-wrapper {
+        position: relative;
+        width: 100%;
+        max-width: 500px;
+    }
+
+    .hero-image {
+        width: 100%;
+        border-radius: 20px;
+        box-shadow: 0 30px 50px rgba(0, 0, 0, 0.1);
+        position: relative;
+        z-index: 2;
+        transform: perspective(1000px) rotateY(-15deg) rotateX(5deg);
+        animation: floatAnimation 6s ease-in-out infinite;
+    }
+
+    .hero-image-decoration {
+        position: absolute;
+        width: 100%;
+        height: 100%;
+        border: 2px solid #9b87f5;
+        border-radius: 20px;
+        top: 20px;
+        left: 20px;
+        z-index: 1;
+        opacity: 0;
+        animation: fadeIn 0.8s ease forwards 1.2s;
+    }
+
+    .hero-scroll-indicator {
+        position: absolute;
+        bottom: 40px;
+        left: 50%;
+        transform: translateX(-50%);
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        color: #8E9196;
+        font-size: 0.9rem;
+        opacity: 0;
+        animation: fadeIn 0.8s ease forwards 1.4s;
+    }
+
+    .scroll-line {
+        width: 1px;
+        height: 60px;
+        background-color: #8E9196;
+        margin-top: 15px;
+        position: relative;
+        overflow: hidden;
+    }
+
+    .scroll-line::after {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 20px;
+        background-color: #9b87f5;
+        animation: scrollIndicator 2s ease infinite;
+    }
+
+    @keyframes fadeInUp {
+        from {
+            opacity: 0;
+            transform: translateY(20px);
+        }
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
+
+    @keyframes fadeIn {
+        from {
+            opacity: 0;
+        }
+        to {
+            opacity: 1;
+        }
+    }
+
+    @keyframes floatAnimation {
+        0% {
+            transform: perspective(1000px) rotateY(-15deg) rotateX(5deg) translateY(0);
+        }
+        50% {
+            transform: perspective(1000px) rotateY(-15deg) rotateX(5deg) translateY(-20px);
+        }
+        100% {
+            transform: perspective(1000px) rotateY(-15deg) rotateX(5deg) translateY(0);
+        }
+    }
+
+    @keyframes underlineGrow {
+        from {
+            transform: scaleX(0);
+        }
+        to {
+            transform: scaleX(1);
+        }
+    }
+
+    @keyframes scrollIndicator {
+        0% {
+            transform: translateY(-20px);
+        }
+        100% {
+            transform: translateY(60px);
+        }
+    }
+
+    @media (max-width: 992px) {
+        .hero-content {
+            flex-direction: column;
+            text-align: center;
+            padding-top: 60px;
+        }
+
+        .hero-text {
+            padding-right: 0;
+            margin-bottom: 60px;
+            max-width: 100%;
+        }
+
+        .hero-title {
+            font-size: 3rem;
+        }
+
+        .hero-subtitle {
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        .hero-buttons {
+            justify-content: center;
+        }
+
+        .hero-image-container {
+            justify-content: center;
+        }
+
+        .hero-image-wrapper {
+            max-width: 400px;
+        }
+    }
+
+    @media (max-width: 768px) {
+        .hero-title {
+            font-size: 2.5rem;
+        }
+
+        .hero-subtitle {
+            font-size: 1rem;
+        }
+
+        .hero-buttons {
+            flex-direction: column;
+            gap: 15px;
+        }
+
+        .btn {
+            width: 100%;
+            max-width: 250px;
+            margin: 0 auto;
+        }
+    }
+        
+        /* About Section */
+        .about {
+            padding: 100px 0;
+            background-color: var(--white);
+        }
+        
+        .section-title {
+            text-align: center;
+            margin-bottom: 60px;
+        }
+        
+        .section-title h2 {
+            font-size: 2.5rem;
+            display: inline-block;
+            position: relative;
+        }
+        
+        .section-title h2:after {
+            content: '';
+            position: absolute;
+            width: 50%;
+            height: 3px;
+            background-color: var(--primary);
+            bottom: -10px;
+            left: 25%;
+        }
+        
+        .about-content {
+            display: flex;
+            align-items: center;
+            flex-wrap: wrap;
+        }
+        
+        .about-image {
+            width: 40%;
+            padding-right: 40px;
+        }
+        
+        .about-image img {
+            max-width: 100%;
+            border-radius: 10px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+        }
+        
+        .about-text {
+            width: 60%;
+        }
+        
+        .about-text h3 {
+            font-size: 1.8rem;
+            margin-bottom: 20px;
+        }
+        
+        .about-text p {
+            margin-bottom: 15px;
+        }
+        
+        .skills {
+            margin-top: 30px;
+        }
+        
+        .skills h4 {
+            margin-bottom: 15px;
+        }
+        
+        .skill-tag {
+            display: inline-block;
+            padding: 8px 15px;
+            background-color: rgba(155, 135, 245, 0.1);
+            color: var(--primary);
+            border-radius: 20px;
+            margin-right: 10px;
+            margin-bottom: 10px;
+            font-size: 0.9rem;
+            transition: all 0.3s ease;
+        }
+        
+        .skill-tag:hover {
+            background-color: var(--primary);
+            color: white;
+            transform: translateY(-3px);
+        }
+        
+        /* Projects Section */
+        .projects {
+            padding: 100px 0;
+            background-color: #f8f9fa;
+        }
+        
+        .filter-buttons {
+            display: flex;
+            justify-content: center;
+            margin-bottom: 40px;
+            flex-wrap: wrap;
+        }
+        
+        .filter-btn {
+            padding: 8px 20px;
+            margin: 0 10px 10px;
+            background-color: transparent;
+            border: none;
+            border-radius: 20px;
+            cursor: pointer;
+            font-size: 0.9rem;
+            font-weight: 500;
+            color: var(--dark);
+            transition: all 0.3s ease;
+        }
+        
+        .filter-btn.active, .filter-btn:hover {
+            background-color: var(--primary);
+            color: white;
+        }
+        
+        .projects-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(340px, 1fr));
+            gap: 30px;
+        }
+        
+        .project-card {
+            background-color: white;
+            border-radius: 10px;
+            overflow: hidden;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
+            transition: all 0.3s ease;
+            position: relative;
+        }
+        
+        .project-card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 15px 30px rgba(0, 0, 0, 0.1);
+        }
+        
+        .project-image {
+            height: 240px;
+            overflow: hidden;
+            position: relative;
+        }
+        
+        .project-image img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: transform 0.5s ease;
+        }
+        
+        .project-card:hover .project-image img {
+            transform: scale(1.1);
+        }
+        
+        .project-overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(155, 135, 245, 0.8);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+        
+        .project-card:hover .project-overlay {
+            opacity: 1;
+        }
+        
+        .project-link {
+            display: inline-block;
+            width: 50px;
+            height: 50px;
+            background-color: white;
+            border-radius: 50%;
+            text-align: center;
+            line-height: 50px;
+            margin: 0 10px;
+            color: var(--primary);
+            font-size: 1.2rem;
+            transform: translateY(20px);
+            opacity: 0;
+            transition: all 0.3s ease;
+        }
+        
+        .project-card:hover .project-link {
+            opacity: 1;
+            transform: translateY(0);
+        }
+        
+        .project-link:hover {
+            background-color: var(--dark);
+            color: white;
+        }
+        
+        .project-link:nth-child(2) {
+            transition-delay: 0.1s;
+        }
+        
+        .project-content {
+            padding: 20px;
+        }
+        
+        .project-content h3 {
+            font-size: 1.3rem;
+            margin-bottom: 10px;
+        }
+        
+        .project-content p {
+            color: var(--gray);
+            font-size: 0.9rem;
+            margin-bottom: 15px;
+        }
+        
+        .project-tags {
+            display: flex;
+            flex-wrap: wrap;
+        }
+        
+        .project-tag {
+            font-size: 0.8rem;
+            color: var(--primary);
+            background-color: rgba(155, 135, 245, 0.1);
+            padding: 3px 10px;
+            border-radius: 15px;
+            margin-right: 8px;
+            margin-bottom: 8px;
+        }
+        
+        /* Testimonials Section */
+        .testimonials {
+            padding: 100px 0;
+            background-color: white;
+        }
+        
+        .testimonial-slider {
+            position: relative;
+            max-width: 800px;
+            margin: 0 auto;
+        }
+        
+        .testimonial-item {
+            text-align: center;
+            padding: 30px;
+            display: none;
+        }
+        
+        .testimonial-item.active {
+            display: block;
+            animation: fadeIn 0.5s ease;
+        }
+        
+        .client-image {
+            width: 100px;
+            height: 100px;
+            border-radius: 50%;
+            overflow: hidden;
+            margin: 0 auto 20px;
+            border: 5px solid rgba(155, 135, 245, 0.1);
+        }
+        
+        .client-image img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+        
+        .testimonial-text {
+            font-size: 1.1rem;
+            line-height: 1.8;
+            margin-bottom: 20px;
+            position: relative;
+        }
+        
+        .testimonial-text:before, .testimonial-text:after {
+            content: '"';
+            font-size: 4rem;
+            color: rgba(155, 135, 245, 0.1);
+            position: absolute;
+            line-height: 1;
+        }
+        
+        .testimonial-text:before {
+            top: -20px;
+            left: -20px;
+        }
+        
+        .testimonial-text:after {
+            bottom: -40px;
+            right: -20px;
+        }
+        
+        .client-info h4 {
+            font-size: 1.2rem;
+            color: var(--dark);
+            margin-bottom: 5px;
+        }
+        
+        .client-info p {
+            color: var(--gray);
+            font-size: 0.9rem;
+        }
+        
+        .slider-controls {
+            display: flex;
+            justify-content: center;
+            margin-top: 30px;
+        }
+        
+        .slider-btn {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            border: none;
+            background-color: white;
+            box-shadow: 0 3px 10px rgba(0, 0, 0, 0.1);
+            color: var(--primary);
+            font-size: 1rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            margin: 0 10px;
+        }
+        
+        .slider-btn:hover {
+            background-color: var(--primary);
+            color: white;
+        }
+        
+        /* Process Section */
+        .process {
+            padding: 100px 0;
+            background-color: #f8f9fa;
+        }
+        
+        .process-steps {
+            display: flex;
+            justify-content: space-between;
+            flex-wrap: wrap;
+            margin-top: 50px;
+        }
+        
+        .process-step {
+            width: 23%;
+            text-align: center;
+            padding: 30px 20px;
+            background-color: white;
+            border-radius: 10px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
+            transition: all 0.3s ease;
+            position: relative;
+        }
+        
+        .process-step:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 15px 30px rgba(0, 0, 0, 0.1);
+        }
+        
+        .process-step:not(:last-child):after {
+            content: '';
+            position: absolute;
+            width: 100%;
+            height: 2px;
+            background-color: var(--primary);
+            top: 50%;
+            left: 100%;
+            transform: translate(10px, -50%);
+            z-index: -1;
+        }
+        
+        .step-number {
+            width: 60px;
+            height: 60px;
+            background-color: rgba(155, 135, 245, 0.1);
+            color: var(--primary);
+            border-radius: 50%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-size: 1.5rem;
+            font-weight: 600;
+            margin: 0 auto 20px;
+        }
+        
+        .process-step h3 {
+            font-size: 1.3rem;
+            margin-bottom: 15px;
+        }
+        
+        .process-step p {
+            color: var(--gray);
+            font-size: 0.9rem;
+        }
+        
+        /* Contact Section */
+        .contact {
+            padding: 100px 0;
+            background-color: white;
+        }
+        
+        .contact-content {
+            display: flex;
+            flex-wrap: wrap;
+        }
+        
+        .contact-info {
+            width: 40%;
+            padding-right: 40px;
+        }
+        
+        .contact-info h3 {
+            font-size: 1.8rem;
+            margin-bottom: 20px;
+        }
+        
+        .contact-info p {
+            margin-bottom: 30px;
+        }
+        
+        .contact-details {
+            margin-bottom: 30px;
+        }
+        
+        .contact-item {
+            display: flex;
+            align-items: center;
+            margin-bottom: 15px;
+        }
+        
+        .contact-icon {
+            width: 40px;
+            height: 40px;
+            background-color: rgba(155, 135, 245, 0.1);
+            color: var(--primary);
+            border-radius: 50%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            margin-right: 15px;
+            font-size: 1rem;
+        }
+        
+        .contact-text h4 {
+            font-size: 1rem;
+            margin-bottom: 5px;
+        }
+        
+        .contact-text p, .contact-text a {
+            color: var(--gray);
+            font-size: 0.9rem;
+            text-decoration: none;
+            transition: color 0.3s ease;
+        }
+        
+        .contact-text a:hover {
+            color: var(--primary);
+        }
+        
+        .contact-form {
+            width: 60%;
+            background-color: white;
+            border-radius: 10px;
+            padding: 30px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
+        }
+        
+        .form-group {
+            margin-bottom: 20px;
+        }
+        
+        .form-control {
+            width: 100%;
+            padding: 12px 15px;
+            border: 1px solid #e6e6e6;
+            border-radius: 5px;
+            font-family: 'Poppins', sans-serif;
+            font-size: 0.9rem;
+            transition: border-color 0.3s ease;
+        }
+        
+        .form-control:focus {
+            border-color: var(--primary);
+            outline: none;
+        }
+        
+        textarea.form-control {
+            height: 150px;
+            resize: none;
+        }
+        
+        /* Footer */
+        .footer {
+            background-color: var(--dark);
+            color: white;
+            padding: 60px 0 20px;
+        }
+        
+        .footer-content {
+            display: flex;
+            flex-wrap: wrap;
+            margin-bottom: 40px;
+        }
+        
+        .footer-col {
+            width: 25%;
+            padding: 0 15px;
+        }
+        
+        .footer-col h4 {
+            font-size: 1.2rem;
+            margin-bottom: 20px;
+            position: relative;
+            padding-bottom: 10px;
+        }
+        
+        .footer-col h4:after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 30px;
+            height: 2px;
+            background-color: var(--primary);
+        }
+        
+        .footer-links {
+            list-style: none;
+        }
+        
+        .footer-links li {
+            margin-bottom: 10px;
+        }
+        
+        .footer-links a {
+            color: #e6e6e6;
+            text-decoration: none;
+            font-size: 0.9rem;
+            transition: all 0.3s ease;
+            position: relative;
+            padding-left: 15px;
+        }
+        
+        .footer-links a:before {
+            content: '→';
+            position: absolute;
+            left: 0;
+            transition: transform 0.3s ease;
+        }
+        
+        .footer-links a:hover {
+            color: var(--primary);
+            padding-left: 20px;
+        }
+        
+        .footer-links a:hover:before {
+            transform: translateX(5px);
+        }
+        
+        .footer-social {
+            margin-top: 20px;
+        }
+        
+        .footer-social a {
+            display: inline-block;
+            width: 35px;
+            height: 35px;
+            background-color: rgba(255, 255, 255, 0.1);
+            border-radius: 50%;
+            text-align: center;
+            line-height: 35px;
+            color: white;
+            margin-right: 10px;
+            transition: all 0.3s ease;
+        }
+        
+        .footer-social a:hover {
+            background-color: var(--primary);
+            transform: translateY(-3px);
+        }
+        
+        .copyright {
+            text-align: center;
+            padding-top: 20px;
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+            font-size: 0.9rem;
+            color: #e6e6e6;
+        }
+        
+        /* Back to Top Button */
+        .back-to-top {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            width: 50px;
+            height: 50px;
+            background-color: var(--primary);
+            color: white;
+            border-radius: 50%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-size: 1.2rem;
+            cursor: pointer;
+            opacity: 0;
+            visibility: hidden;
+            transition: all 0.3s ease;
+            z-index: 999;
+        }
+        
+        .back-to-top.active {
+            opacity: 1;
+            visibility: visible;
+        }
+        
+        .back-to-top:hover {
+            background-color: var(--secondary);
+            transform: translateY(-3px);
+        }
+        
+        /* Theme Toggle */
+        .theme-toggle {
+            position: fixed;
+            bottom: 20px;
+            left: 20px;
+            width: 50px;
+            height: 50px;
+            background-color: var(--primary);
+            color: white;
+            border-radius: 50%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-size: 1.2rem;
+            cursor: pointer;
+            z-index: 999;
+            transition: all 0.3s ease;
+        }
+        
+        .theme-toggle:hover {
+            background-color: var(--secondary);
+            transform: translateY(-3px);
+        }
+        
+        /* Dark Theme */
+        body.dark-theme {
+            background-color: #121212;
+            color: #f5f5f5;
+        }
+        
+        body.dark-theme .navbar {
+            background-color: rgba(18, 18, 18, 0.8);
+        }
+        
+        body.dark-theme .nav-links a {
+            color: #f5f5f5;
+        }
+        
+        body.dark-theme .about,
+        body.dark-theme .testimonials,
+        body.dark-theme .contact,
+        body.dark-theme .project-card,
+        body.dark-theme .process-step,
+        body.dark-theme .contact-form {
+            background-color: #202020;
+        }
+        
+        body.dark-theme .projects,
+        body.dark-theme .process {
+            background-color: #181818;
+        }
+        
+        body.dark-theme .form-control {
+            background-color: #303030;
+            border-color: #404040;
+            color: #f5f5f5;
+        }
+        
+        /* Animations */
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+            }
+            to {
+                opacity: 1;
+            }
+        }
+        
+        @keyframes floatAnimation {
+            0% {
+                transform: translateY(0px);
+            }
+            50% {
+                transform: translateY(-15px);
+            }
+            100% {
+                transform: translateY(0px);
+            }
+        }
+        
+        /* Modal */
+        .modal {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.8);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 9999;
+            opacity: 0;
+            visibility: hidden;
+            transition: all 0.3s ease;
+        }
+        
+        .modal.active {
+            opacity: 1;
+            visibility: visible;
+        }
+        
+        .modal-content {
+            max-width: 800px;
+            width: 90%;
+            background-color: white;
+            border-radius: 10px;
+            overflow: hidden;
+            position: relative;
+            transform: scale(0.9);
+            transition: transform 0.3s ease;
+        }
+        
+        .modal.active .modal-content {
+            transform: scale(1);
+        }
+        
+        .modal-header {
+            padding: 20px;
+            border-bottom: 1px solid #e6e6e6;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .modal-title {
+            font-size: 1.5rem;
+            color: var(--dark);
+        }
+        
+        .close-modal {
+            background: none;
+            border: none;
+            font-size: 1.5rem;
+            cursor: pointer;
+            color: var(--gray);
+            transition: color 0.3s ease;
+        }
+        
+        .close-modal:hover {
+            color: var(--primary);
+        }
+        
+        .modal-body {
+            padding: 20px;
+            max-height: 70vh;
+            overflow-y: auto;
+        }
+        
+        .project-gallery {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+        
+        .gallery-item {
+            border-radius: 5px;
+            overflow: hidden;
+            cursor: pointer;
+        }
+        
+        .gallery-item img {
+            width: 100%;
+            height: 150px;
+            object-fit: cover;
+            transition: transform 0.3s ease;
+        }
+        
+        .gallery-item:hover img {
+            transform: scale(1.1);
+        }
+        
+        .modal-description {
+            margin: 20px 0;
+        }
+        
+        .modal-description h3 {
+            font-size: 1.3rem;
+            margin-bottom: 10px;
+        }
+        
+        /* Toast Notification */
+        .toast {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            padding: 15px 20px;
+            background-color: white;
+            color: var(--dark);
+            border-radius: 5px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+            display: flex;
+            align-items: center;
+            z-index: 9999;
+            transform: translateY(100px);
+            opacity: 0;
+            transition: all 0.3s ease;
+        }
+        
+        .toast.active {
+            transform: translateY(0);
+            opacity: 1;
+        }
+        
+        .toast-icon {
+            margin-right: 15px;
+            color: var(--primary);
+            font-size: 1.5rem;
+        }
+        
+        .toast-content h4 {
+            font-size: 1rem;
+            margin-bottom: 5px;
+        }
+        
+        .toast-content p {
+            font-size: 0.9rem;
+            color: var(--gray);
+        }
+        
+        /* Cursor Effect */
+        .cursor {
+            position: fixed;
+            width: 20px;
+            height: 20px;
+            border-radius: 50%;
+            background-color: rgba(155, 135, 245, 0.5);
+            pointer-events: none;
+            transform: translate(-50%, -50%);
+            transition: transform 0.1s ease;
+            z-index: 9999;
+        }
+        
+        .cursor-follower {
+            position: fixed;
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            border: 1px solid var(--primary);
+            pointer-events: none;
+            transform: translate(-50%, -50%);
+            transition: transform 0.3s ease, width 0.3s ease, height 0.3s ease;
+            z-index: 9998;
+        }
+        
+        /* Loading Indicator */
+        .loading {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: var(--light);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 99999;
+            transition: opacity 0.5s ease, visibility 0.5s ease;
+        }
+        
+        .loading.hide {
+            opacity: 0;
+            visibility: hidden;
+        }
+        
+        .loader {
+            width: 50px;
+            height: 50px;
+            border: 3px solid rgba(155, 135, 245, 0.2);
+            border-radius: 50%;
+            border-top-color: var(--primary);
+            animation: spin 1s linear infinite;
+        }
+        
+        @keyframes spin {
+            to {
+                transform: rotate(360deg);
+            }
+        }
+        
+        /* Responsive Design */
+        @media (max-width: 992px) {
+            .hero-content, .hero-image {
+                width: 100%;
+                text-align: center;
+            }
+            
+            .hero-image {
+                margin-top: 50px;
+            }
+            
+            .hero-image img {
+                max-width: 400px;
+            }
+            
+            .about-image, .about-text {
+                width: 100%;
+                padding-right: 0;
+            }
+            
+            .about-image {
+                margin-bottom: 40px;
+                text-align: center;
+            }
+            
+            .about-image img {
+                max-width: 400px;
+            }
+            
+            .process-step {
+                width: 48%;
+                margin-bottom: 30px;
+            }
+            
+            .process-step:not(:last-child):after {
+                display: none;
+            }
+            
+            .contact-info, .contact-form {
+                width: 100%;
+                padding-right: 0;
+            }
+            
+            .contact-info {
+                margin-bottom: 40px;
+            }
+            
+            .footer-col {
+                width: 50%;
+                margin-bottom: 30px;
+            }
+        }
+        
+        @media (max-width: 768px) {
+            .navbar .container {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+            
+            .nav-links {
+                display: none;
+                width: 100%;
+                flex-direction: column;
+                margin-top: 20px;
+            }
+            
+            .nav-links.active {
+                display: flex;
+            }
+            
+            .nav-links li {
+                margin-left: 0;
+                margin-bottom: 15px;
+            }
+            
+            .hamburger {
+                display: block;
+                position: absolute;
+                top: 20px;
+                right: 20px;
+                font-size: 1.5rem;
+            }
+            
+            .hero h1 {
+                font-size: 2.5rem;
+            }
+            
+            .hero p {
+                font-size: 1rem;
+            }
+            
+            .section-title h2 {
+                font-size: 2rem;
+            }
+            
+            .process-step {
+                width: 100%;
+            }
+            
+            .footer-col {
+                width: 100%;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Loading Indicator -->
+    <div class="loading">
+        <div class="loader"></div>
+    </div>
+    
+    <!-- Cursor Effect -->
+    <div class="cursor"></div>
+    <div class="cursor-follower"></div>
+    
+    <!-- Navigation -->
+    <nav class="navbar">
+        <div class="container">
+            <a href="#" class="logo">Alex.Design</a>
+            <div class="hamburger">
+                <i class="fas fa-bars"></i>
+            </div>
+            <ul class="nav-links">
+                <li><a href="#home">Home</a></li>
+                <li><a href="#about">About</a></li>
+                <li><a href="#projects">Projects</a></li>
+                <li><a href="#process">Process</a></li>
+                <li><a href="#testimonials">Testimonials</a></li>
+                <li><a href="#contact">Contact</a></li>
+            </ul>
+        </div>
+    </nav>
+    
+   <!-- Hero Section -->
+<section id="home" class="hero">
+    <div class="container">
+        <div class="hero-content">
+            <div class="hero-text">
+                <h1 class="hero-title">
+                    <span class="title-line">Crafting digital</span>
+                    <span class="title-line accent">experiences</span>
+                    <span class="title-line">that matter</span>
+                </h1>
+                <p class="hero-subtitle">I design intuitive interfaces and meaningful interactions that connect brands with their users.</p>
+                <div class="hero-buttons">
+                    <a href="#projects" class="btn btn-primary">
+                        <span>View my work</span>
+                        <i class="fas fa-arrow-right"></i>
+                    </a>
+                    <a href="#contact" class="btn btn-secondary">
+                        Let's collaborate
+                    </a>
+                </div>
+            </div>
+            <div class="hero-image-container">
+                <div class="hero-image-wrapper">
+                    <img src="https://images.unsplash.com/photo-1531403009284-440f080d1e12?ixlib=rb-1.2.1&auto=format&fit=crop&w=800&q=80" alt="UX Designer at work" class="hero-image">
+                    <div class="hero-image-decoration"></div>
+                </div>
+            </div>
+        </div>
+        <div class="hero-scroll-indicator">
+            <span>Scroll to explore</span>
+            <div class="scroll-line"></div>
+        </div>
+    </div>
+</section>
+    
+    <!-- About Section -->
+    <section id="about" class="about">
+        <div class="container">
+            <div class="section-title">
+                <h2>About Me</h2>
+            </div>
+            <div class="about-content">
+                <div class="about-image">
+                    <img src="https://images.unsplash.com/photo-1560250097-0b93528c311a?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1287&q=80" alt="About Image">
+                </div>
+                <div class="about-text">
+                    <h3>I'm Alex, a passionate UX Designer with 6+ years of experience</h3>
+                    <p>My journey in UX design has been driven by a curiosity about how people interact with technology and how design can enhance those interactions. I believe in creating intuitive, accessible, and delightful user experiences that solve real problems.</p>
+                    <p>With experience working on projects across various industries including fintech, healthcare, e-commerce, and education, I bring a diverse perspective to my design work. I prioritize understanding user needs through research and testing, ensuring that my designs are not just visually appealing but also functional and user-centered.</p>
+                    <div class="skills">
+                        <h4>My Skills & Tools</h4>
+                        <div class="skill-tag">User Research</div>
+                        <div class="skill-tag">Wireframing</div>
+                        <div class="skill-tag">Prototyping</div>
+                        <div class="skill-tag">Usability Testing</div>
+                        <div class="skill-tag">Information Architecture</div>
+                        <div class="skill-tag">Interaction Design</div>
+                        <div class="skill-tag">Figma</div>
+                        <div class="skill-tag">Adobe XD</div>
+                        <div class="skill-tag">Sketch</div>
+                        <div class="skill-tag">InVision</div>
+                        <div class="skill-tag">Miro</div>
+                        <div class="skill-tag">Principle</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+    
+    <!-- Projects Section -->
+    <section id="projects" class="projects">
+        <div class="container">
+            <div class="section-title">
+                <h2>My Projects</h2>
+            </div>
+            <div class="filter-buttons">
+                <button class="filter-btn active" data-filter="all">All</button>
+                <button class="filter-btn" data-filter="mobile">Mobile App</button>
+                <button class="filter-btn" data-filter="web">Web Design</button>
+                <button class="filter-btn" data-filter="saas">SaaS</button>
+                <button class="filter-btn" data-filter="ecommerce">E-commerce</button>
+            </div>
+            <div class="projects-grid">
+                <div class="project-card" data-category="mobile">
+                    <div class="project-image">
+                        <img src="https://images.unsplash.com/photo-1555774698-0b77e0d5fac6?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1770&q=80" alt="Project 1">
+                        <div class="project-overlay">
+                            <a href="#" class="project-link view-project" data-id="1"><i class="fas fa-eye"></i></a>
+                            <a href="#" class="project-link"><i class="fas fa-link"></i></a>
+                        </div>
+                    </div>
+                    <div class="project-content">
+                        <h3>HealthTrack Mobile App</h3>
+                        <p>A health monitoring app that helps users track their daily activities and reach their fitness goals.</p>
+                        <div class="project-tags">
+                            <span class="project-tag">UX Research</span>
+                            <span class="project-tag">UI Design</span>
+                            <span class="project-tag">Mobile</span>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="project-card" data-category="web">
+                    <div class="project-image">
+                        <img src="https://images.unsplash.com/photo-1551288049-bebda4e38f71?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1770&q=80" alt="Project 2">
+                        <div class="project-overlay">
+                            <a href="#" class="project-link view-project" data-id="2"><i class="fas fa-eye"></i></a>
+                            <a href="#" class="project-link"><i class="fas fa-link"></i></a>
+                        </div>
+                    </div>
+                    <div class="project-content">
+                        <h3>Educational Platform Redesign</h3>
+                        <p>Redesigning the user interface for an online learning platform to improve user engagement and learning outcomes.</p>
+                        <div class="project-tags">
+                            <span class="project-tag">UX Audit</span>
+                            <span class="project-tag">Wireframing</span>
+                            <span class="project-tag">Web Design</span>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="project-card" data-category="saas">
+                    <div class="project-image">
+                        <img src="https://images.unsplash.com/photo-1559028012-481c04fa702d?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1772&q=80" alt="Project 3">
+                        <div class="project-overlay">
+                            <a href="#" class="project-link view-project" data-id="3"><i class="fas fa-eye"></i></a>
+                            <a href="#" class="project-link"><i class="fas fa-link"></i></a>
+                        </div>
+                    </div>
+                    <div class="project-content">
+                        <h3>Project Management Tool</h3>
+                        <p>Designing a comprehensive project management solution for remote teams to enhance collaboration and productivity.</p>
+                        <div class="project-tags">
+                            <span class="project-tag">User Testing</span>
+                            <span class="project-tag">SaaS</span>
+                            <span class="project-tag">Prototyping</span>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="project-card" data-category="ecommerce">
+                    <div class="project-image">
+                        <img src="https://images.unsplash.com/photo-1610348725531-843dff563e2c?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1770&q=80" alt="Project 4">
+                        <div class="project-overlay">
+                            <a href="#" class="project-link view-project" data-id="4"><i class="fas fa-eye"></i></a>
+                            <a href="#" class="project-link"><i class="fas fa-link"></i></a>
+                        </div>
+                    </div>
+                    <div class="project-content">
+                        <h3>Fashion E-commerce App</h3>
+                        <p>Creating a seamless and personalized shopping experience for a fashion retailer's mobile application.</p>
+                        <div class="project-tags">
+                            <span class="project-tag">E-commerce</span>
+                            <span class="project-tag">Mobile</span>
+                            <span class="project-tag">UI Design</span>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="project-card" data-category="web">
+                    <div class="project-image">
+                        <img src="https://images.unsplash.com/photo-1497032628192-86f99bcd76bc?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1770&q=80" alt="Project 5">
+                        <div class="project-overlay">
+                            <a href="#" class="project-link view-project" data-id="5"><i class="fas fa-eye"></i></a>
+                            <a href="#" class="project-link"><i class="fas fa-link"></i></a>
+                        </div>
+                    </div>
+                    <div class="project-content">
+                        <h3>Financial Dashboard</h3>
+                        <p>Designing an intuitive dashboard that visualizes complex financial data for easy comprehension and analysis.</p>
+                        <div class="project-tags">
+                            <span class="project-tag">Data Visualization</span>
+                            <span class="project-tag">Dashboard</span>
+                            <span class="project-tag">Fintech</span>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="project-card" data-category="mobile">
+                    <div class="project-image">
+                        <img src="https://images.unsplash.com/photo-1616469829941-c7200edec809?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1770&q=80" alt="Project 6">
+                        <div class="project-overlay">
+                            <a href="#" class="project-link view-project" data-id="6"><i class="fas fa-eye"></i></a>
+                            <a href="#" class="project-link"><i class="fas fa-link"></i></a>
+                        </div>
+                    </div>
+                    <div class="project-content">
+                        <h3>Travel Booking Platform</h3>
+                        <p>Redesigning the user journey for a travel booking service to streamline the booking process and enhance user satisfaction.</p>
+                        <div class="project-tags">
+                            <span class="project-tag">User Journey</span>
+                            <span class="project-tag">Travel</span>
+                            <span class="project-tag">Booking System</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+    
+    <!-- Process Section -->
+    <section id="process" class="process">
+        <div class="container">
+            <div class="section-title">
+                <h2>My Design Process</h2>
+            </div>
+            <div class="process-steps">
+                <div class="process-step">
+                    <div class="step-number">01</div>
+                    <h3>Research</h3>
+                    <p>Understanding user needs, business requirements, and market context through various research methods.</p>
+                </div>
+                
+                <div class="process-step">
+                    <div class="step-number">02</div>
+                    <h3>Define</h3>
+                    <p>Analyzing research findings to define clear problems and opportunities for design innovation.</p>
+                </div>
+                
+                <div class="process-step">
+                    <div class="step-number">03</div>
+                    <h3>Ideate</h3>
+                    <p>Exploring multiple design solutions through sketching, wireframing, and collaborative ideation sessions.</p>
+                </div>
+                
+                <div class="process-step">
+                    <div class="step-number">04</div>
+                    <h3>Prototype</h3>
+                    <p>Creating interactive prototypes to test and validate design concepts before implementation.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+    
+    <!-- Testimonials Section -->
+    <section id="testimonials" class="testimonials">
+        <div class="container">
+            <div class="section-title">
+                <h2>Client Feedback</h2>
+            </div>
+            <div class="testimonial-slider">
+                <div class="testimonial-item active">
+                    <div class="client-image">
+                        <img src="https://images.unsplash.com/photo-1508214751196-bcfd4ca60f91?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1770&q=80" alt="Client 1">
+                    </div>
+                    <div class="testimonial-text">
+                        Alex's design work for our healthcare app was exceptional. The user-centered approach made the complex features intuitive and accessible to our diverse user base. The attention to detail and thoughtful interactions have significantly improved our user engagement.
+                    </div>
+                    <div class="client-info">
+                        <h4>Sarah Johnson</h4>
+                        <p>Product Manager, HealthTech Inc.</p>
+                    </div>
+                </div>
+                
+                <div class="testimonial-item">
+                    <div class="client-image">
+                        <img src="https://images.unsplash.com/photo-1500648767791-00dcc994a43e?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1287&q=80" alt="Client 2">
+                    </div>
+                    <div class="testimonial-text">
+                        Working with Alex on our e-commerce redesign was a game-changer. The research-driven approach and creative solutions resulted in a 40% increase in conversion rate and a significant improvement in customer satisfaction scores. I highly recommend their services.
+                    </div>
+                    <div class="client-info">
+                        <h4>Mark Thompson</h4>
+                        <p>CEO, FashionRetail Co.</p>
+                    </div>
+                </div>
+                
+                <div class="testimonial-item">
+                    <div class="client-image">
+                        <img src="https://images.unsplash.com/photo-1573497019940-1c28c88b4f3e?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1287&q=80" alt="Client 3">
+                    </div>
+                    <div class="testimonial-text">
+                        Alex's ability to translate complex requirements into elegant and functional designs is remarkable. Their collaborative approach made the entire design process smooth and enjoyable. The final product exceeded our expectations and has received fantastic feedback from our users.
+                    </div>
+                    <div class="client-info">
+                        <h4>Jennifer Kim</h4>
+                        <p>CTO, CloudSolutions</p>
+                    </div>
+                </div>
+            </div>
+            <div class="slider-controls">
+                <button class="slider-btn prev-btn"><i class="fas fa-arrow-left"></i></button>
+                <button class="slider-btn next-btn"><i class="fas fa-arrow-right"></i></button>
+            </div>
+        </div>
+    </section>
+    
+    <!-- Contact Section -->
+    <section id="contact" class="contact">
+        <div class="container">
+            <div class="section-title">
+                <h2>Get In Touch</h2>
+            </div>
+            <div class="contact-content">
+                <div class="contact-info">
+                    <h3>Let's discuss your project</h3>
+                    <p>Ready to bring your ideas to life? I'm here to help transform your vision into a beautifully designed and user-friendly experience.</p>
+                    <div class="contact-details">
+                        <div class="contact-item">
+                            <div class="contact-icon">
+                                <i class="fas fa-map-marker-alt"></i>
+                            </div>
+                            <div class="contact-text">
+                                <h4>Location</h4>
+                                <p>San Francisco, CA, USA</p>
+                            </div>
+                        </div>
+                        <div class="contact-item">
+                            <div class="contact-icon">
+                                <i class="fas fa-envelope"></i>
+                            </div>
+                            <div class="contact-text">
+                                <h4>Email</h4>
+                                <a href="mailto:hello@alexdesign.com">hello@alexdesign.com</a>
+                            </div>
+                        </div>
+                        <div class="contact-item">
+                            <div class="contact-icon">
+                                <i class="fas fa-phone"></i>
+                            </div>
+                            <div class="contact-text">
+                                <h4>Phone</h4>
+                                <a href="tel:+14159876543">+1 (415) 987-6543</a>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="social-icons">
+                        <a href="#"><i class="fab fa-behance"></i></a>
+                        <a href="#"><i class="fab fa-dribbble"></i></a>
+                        <a href="#"><i class="fab fa-linkedin-in"></i></a>
+                        <a href="#"><i class="fab fa-medium-m"></i></a>
+                    </div>
+                </div>
+                <form class="contact-form" id="contactForm">
+                    <div class="form-group">
+                        <input type="text" class="form-control" id="name" placeholder="Your Name" required>
+                    </div>
+                    <div class="form-group">
+                        <input type="email" class="form-control" id="email" placeholder="Your Email" required>
+                    </div>
+                    <div class="form-group">
+                        <input type="text" class="form-control" id="subject" placeholder="Subject" required>
+                    </div>
+                    <div class="form-group">
+                        <textarea class="form-control" id="message" placeholder="Your Message" required></textarea>
+                    </div>
+                    <button type="submit" class="btn">Send Message</button>
+                </form>
+            </div>
+        </div>
+    </section>
+    
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-col">
+                    <h4>Alex.Design</h4>
+                    <p>Passionate UX Designer creating intuitive and engaging digital experiences that solve real-world problems.</p>
+                    <div class="footer-social">
+                        <a href="#"><i class="fab fa-behance"></i></a>
+                        <a href="#"><i class="fab fa-dribbble"></i></a>
+                        <a href="#"><i class="fab fa-linkedin-in"></i></a>
+                        <a href="#"><i class="fab fa-medium-m"></i></a>
+                    </div>
+                </div>
+                <div class="footer-col">
+                    <h4>Quick Links</h4>
+                    <ul class="footer-links">
+                        <li><a href="#home">Home</a></li>
+                        <li><a href="#about">About</a></li>
+                        <li><a href="#projects">Projects</a></li>
+                        <li><a href="#process">Process</a></li>
+                        <li><a href="#contact">Contact</a></li>
+                    </ul>
+                </div>
+                <div class="footer-col">
+                    <h4>Services</h4>
+                    <ul class="footer-links">
+                        <li><a href="#">UX Research</a></li>
+                        <li><a href="#">UI Design</a></li>
+                        <li><a href="#">UX Audit</a></li>
+                        <li><a href="#">Design Systems</a></li>
+                        <li><a href="#">Prototyping</a></li>
+                    </ul>
+                </div>
+                <div class="footer-col">
+                    <h4>Newsletter</h4>
+                    <p>Subscribe to my newsletter for design tips and insights.</p>
+                    <form class="newsletter-form">
+                        <input type="email" placeholder="Your Email" class="form-control" required>
+                        <button type="submit" class="btn">Subscribe</button>
+                    </form>
+                </div>
+            </div>
+            <div class="copyright">
+                <p>&copy; 2023 Alex.Design. All Rights Reserved.</p>
+            </div>
+        </div>
+    </footer>
+    
+    <!-- Back to Top Button -->
+    <div class="back-to-top">
+        <i class="fas fa-arrow-up"></i>
+    </div>
+    
+    <!-- Theme Toggle -->
+    <div class="theme-toggle">
+        <i class="fas fa-moon"></i>
+    </div>
+    
+    <!-- Project Modal -->
+    <div class="modal" id="projectModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2 class="modal-title">Project Title</h2>
+                <button class="close-modal">&times;</button>
+            </div>
+            <div class="modal-body">
+                <div class="project-gallery">
+                    <!-- Gallery items will be dynamically added -->
+                </div>
+                <div class="modal-description">
+                    <h3>Project Overview</h3>
+                    <p>Project description will be loaded here.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Toast Notification -->
+    <div class="toast" id="toast">
+        <div class="toast-icon">
+            <i class="fas fa-check-circle"></i>
+        </div>
+        <div class="toast-content">
+            <h4>Success!</h4>
+            <p>Your message has been sent successfully.</p>
+        </div>
+    </div>
+    
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Loading Screen
+            setTimeout(function() {
+                document.querySelector('.loading').classList.add('hide');
+            }, 1500);
+            
+            // Navbar Scroll Effect
+            window.addEventListener('scroll', function() {
+                const navbar = document.querySelector('.navbar');
+                if (window.scrollY > 50) {
+                    navbar.classList.add('scrolled');
+                } else {
+                    navbar.classList.remove('scrolled');
+                }
+                
+                // Back to Top Button
+                const backToTop = document.querySelector('.back-to-top');
+                if (window.scrollY > 300) {
+                    backToTop.classList.add('active');
+                } else {
+                    backToTop.classList.remove('active');
+                }
+            });
+            
+            // Mobile Menu Toggle
+            const hamburger = document.querySelector('.hamburger');
+            const navLinks = document.querySelector('.nav-links');
+            
+            hamburger.addEventListener('click', function() {
+                navLinks.classList.toggle('active');
+            });
+            
+            // Smooth Scrolling for Anchor Links
+            document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+                anchor.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    
+                    navLinks.classList.remove('active');
+                    
+                    const targetId = this.getAttribute('href');
+                    const targetElement = document.querySelector(targetId);
+                    
+                    window.scrollTo({
+                        top: targetElement.offsetTop - 80,
+                        behavior: 'smooth'
+                    });
+                });
+            });
+            
+            // Project Filtering
+            const filterButtons = document.querySelectorAll('.filter-btn');
+            const projectCards = document.querySelectorAll('.project-card');
+            
+            filterButtons.forEach(button => {
+                button.addEventListener('click', function() {
+                    // Remove active class from all buttons
+                    filterButtons.forEach(btn => btn.classList.remove('active'));
+                    // Add active class to clicked button
+                    this.classList.add('active');
+                    
+                    const filterValue = this.getAttribute('data-filter');
+                    
+                    projectCards.forEach(card => {
+                        if (filterValue === 'all' || card.getAttribute('data-category') === filterValue) {
+                            card.style.display = 'block';
+                            setTimeout(() => {
+                                card.style.opacity = '1';
+                                card.style.transform = 'scale(1)';
+                            }, 10);
+                        } else {
+                            card.style.opacity = '0';
+                            card.style.transform = 'scale(0.8)';
+                            setTimeout(() => {
+                                card.style.display = 'none';
+                            }, 300);
+                        }
+                    });
+                });
+            });
+            
+            // Testimonial Slider
+            const testimonialItems = document.querySelectorAll('.testimonial-item');
+            const prevBtn = document.querySelector('.prev-btn');
+            const nextBtn = document.querySelector('.next-btn');
+            let currentSlide = 0;
+            
+            function showSlide(index) {
+                testimonialItems.forEach(item => item.classList.remove('active'));
+                
+                if (index < 0) {
+                    currentSlide = testimonialItems.length - 1;
+                } else if (index >= testimonialItems.length) {
+                    currentSlide = 0;
+                } else {
+                    currentSlide = index;
+                }
+                
+                testimonialItems[currentSlide].classList.add('active');
+            }
+            
+            prevBtn.addEventListener('click', () => {
+                showSlide(currentSlide - 1);
+            });
+            
+            nextBtn.addEventListener('click', () => {
+                showSlide(currentSlide + 1);
+            });
+            
+            // Auto slide
+            setInterval(() => {
+                showSlide(currentSlide + 1);
+            }, 5000);
+            
+            // Project Modal
+            const modal = document.getElementById('projectModal');
+            const modalTitle = document.querySelector('.modal-title');
+            const modalDescription = document.querySelector('.modal-description p');
+            const galleryContainer = document.querySelector('.project-gallery');
+            const closeModal = document.querySelector('.close-modal');
+            const viewProjectButtons = document.querySelectorAll('.view-project');
+            
+            // Project Data (in a real project, this would likely come from a database or API)
+            const projectData = [
+                {
+                    id: 1,
+                    title: 'HealthTrack Mobile App',
+                    description: 'HealthTrack is a comprehensive health monitoring application designed to help users track their daily activities, nutrition, and fitness goals. The app features an intuitive dashboard, personalized recommendations, and integration with various fitness devices.\n\nFor this project, I conducted extensive user research to understand the pain points of existing health apps and identify opportunities for improvement. The design process involved creating user personas, journey maps, wireframes, and interactive prototypes that were tested with real users.\n\nThe final design incorporates a clean and accessible interface with a focus on data visualization and personalized insights, making it easier for users to understand their health metrics and make informed decisions.',
+                    gallery: [
+                        'https://images.unsplash.com/photo-1555774698-0b77e0d5fac6?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1770&q=80',
+                        'https://images.unsplash.com/photo-1605296867304-46d5465a13f1?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1770&q=80',
+                        'https://images.unsplash.com/photo-1584438784894-089d6a62b8fa?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1770&q=80',
+                        'https://images.unsplash.com/photo-1551288049-bebda4e38f71?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1770&q=80'
+                    ]
+                },
+                {
+                    id: 2,
+                    title: 'Educational Platform Redesign',
+                    description: 'This project involved a complete redesign of an online learning platform to enhance user engagement and improve learning outcomes. The client was facing challenges with user retention and course completion rates, primarily due to an outdated and complex interface.\n\nI began with a comprehensive UX audit to identify usability issues and conducted interviews with students and instructors to understand their needs and pain points. Based on these insights, I created a new information architecture and user flow that simplified navigation and highlighted important content.\n\nThe redesigned interface features a clean, modern aesthetic with a focus on content hierarchy, accessibility, and responsive design. Key improvements include a personalized dashboard, streamlined course navigation, and enhanced interactive elements for a more engaging learning experience.\n\nAfter implementation, the platform saw a 45% increase in user engagement and a 30% improvement in course completion rates.',
+                    gallery: [
+                        'https://images.unsplash.com/photo-1551288049-bebda4e38f71?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1770&q=80',
+                        'https://images.unsplash.com/photo-1522202176988-66273c2fd55f?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1771&q=80',
+                        'https://images.unsplash.com/photo-1497633762265-9d179a990aa6?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1773&q=80',
+                        'https://images.unsplash.com/photo-1581078426770-6d336e5de7bf?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1770&q=80'
+                    ]
+                },
+                {
+                    id: 3,
+                    title: 'Project Management Tool',
+                    description: 'This project focused on designing a comprehensive project management solution for remote teams to enhance collaboration and productivity. In the post-pandemic work environment, there was a growing need for tools that could effectively bridge the gap between distributed team members.\n\nThe design process began with extensive research into the workflows and pain points of remote teams across different industries. I conducted user interviews, competitive analysis, and created journey maps to understand the key challenges these teams faced.\n\nThe resulting design features a modular and customizable interface that adapts to different project management methodologies (Agile, Waterfall, etc.). Key features include a visual task board, time tracking, document collaboration, and integrated communication tools. The interface was designed with a focus on reducing cognitive load and creating a sense of shared virtual workspace.\n\nThe solution also incorporates innovative features like ambient presence indicators and asynchronous collaboration tools that help maintain team cohesion despite physical separation.',
+                    gallery: [
+                        'https://images.unsplash.com/photo-1559028012-481c04fa702d?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1772&q=80',
+                        'https://images.unsplash.com/photo-1531403009284-440f080d1e12?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1770&q=80',
+                        'https://images.unsplash.com/photo-1561070791-2526d30994b5?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1764&q=80',
+                        'https://images.unsplash.com/photo-1512758017271-d7b84c2113f1?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1770&q=80'
+                    ]
+                },
+                {
+                    id: 4,
+                    title: 'Fashion E-commerce App',
+                    description: 'This project involved creating a seamless and personalized shopping experience for a fashion retailer\'s mobile application. The client wanted to transform their traditional retail business into an omnichannel experience with a strong digital presence.\n\nThe design process began with comprehensive market research and user interviews to understand shopping behaviors and preferences. I developed detailed user personas and journey maps to identify key touchpoints and opportunities for personalization.\n\nThe final design features a clean, image-focused interface that showcases products beautifully while maintaining excellent usability. Key features include personalized recommendations, virtual try-on using AR technology, social shopping elements, and a seamless checkout process.\n\nParticular attention was paid to the product detail pages, which include innovative features like fabric visualization, styling suggestions, and size recommendation based on the user\'s previous purchases. The design also incorporates sustainability information about products to appeal to environmentally conscious consumers.\n\nAfter implementation, the app achieved a 60% increase in mobile conversion rate and a 40% increase in average order value compared to the previous solution.',
+                    gallery: [
+                        'https://images.unsplash.com/photo-1610348725531-843dff563e2c?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1770&q=80',
+                        'https://images.unsplash.com/photo-1556742031-c6961e8560b0?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1287&q=80',
+                        'https://images.unsplash.com/photo-1556740758-90de374c12ad?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1770&q=80',
+                        'https://images.unsplash.com/photo-1571781926291-c477ebfd024b?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1288&q=80'
+                    ]
+                },
+                {
+                    id: 5,
+                    title: 'Financial Dashboard',
+                    description: 'This project involved designing an intuitive dashboard that visualizes complex financial data for easy comprehension and analysis. The client, a fintech startup, needed a solution that would make financial information accessible to users with varying levels of financial literacy.\n\nThe design process began with extensive research into data visualization best practices and interviews with both financial experts and average users. I created detailed information architecture and conducted card sorting exercises to organize financial metrics in a way that made sense to users.\n\nThe final design features a modular dashboard with customizable widgets, allowing users to focus on the metrics most relevant to them. Complex financial information is presented through intuitive visualizations with progressive disclosure of details. The interface includes interactive charts, predictive analytics, and automated insights that highlight important trends and anomalies.\n\nSpecial attention was paid to accessibility, ensuring that color combinations, text sizes, and interaction patterns were inclusive for users with different abilities. The design also incorporates helpful educational elements that explain financial concepts without being intrusive.\n\nThe solution has been particularly successful in increasing user engagement with financial data, with users spending 3x more time analyzing their finances compared to the previous solution.',
+                    gallery: [
+                        'https://images.unsplash.com/photo-1497032628192-86f99bcd76bc?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1770&q=80',
+                        'https://images.unsplash.com/photo-1460925895917-afdab827c52f?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1715&q=80',
+                        'https://images.unsplash.com/photo-1551288049-bebda4e38f71?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1770&q=80',
+                        'https://images.unsplash.com/photo-1523961131990-5ea7c61b2107?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1774&q=80'
+                    ]
+                },
+                {
+                    id: 6,
+                    title: 'Travel Booking Platform',
+                    description: 'This project focused on redesigning the user journey for a travel booking service to streamline the booking process and enhance user satisfaction. The client was struggling with high abandonment rates during the booking flow and wanted to create a more intuitive and enjoyable experience.\n\nI began by analyzing user data and conducting usability testing on the existing platform to identify pain points. The research revealed that users were overwhelmed by too many options, complex forms, and a lack of transparency in pricing.\n\nThe redesigned booking flow incorporates a step-by-step approach with a clear progress indicator and the ability to save and return to bookings. The search and filter functionality was reimagined to help users quickly find relevant options based on their preferences and constraints.\n\nA key innovation was the introduction of a visual comparison tool that allows users to easily evaluate different options based on features, prices, and user reviews. The checkout process was simplified with smart defaults and contextual help to reduce cognitive load.\n\nThe design also incorporates inspirational elements that tap into the emotional aspects of travel planning, with immersive imagery and storytelling that builds excitement for the trip.\n\nAfter implementation, the client saw a 35% reduction in booking abandonment and a significant increase in user satisfaction scores.',
+                    gallery: [
+                        'https://images.unsplash.com/photo-1616469829941-c7200edec809?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1770&q=80',
+                        'https://images.unsplash.com/photo-1476514525535-07fb3b4ae5f1?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1770&q=80',
+                        'https://images.unsplash.com/photo-1501785888041-af3ef285b470?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1770&q=80',
+                        'https://images.unsplash.com/photo-1530521954074-e64f6810b32d?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1770&q=80'
+                    ]
+                }
+            ];
+            
+            viewProjectButtons.forEach(button => {
+                button.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    
+                    const projectId = parseInt(this.getAttribute('data-id'));
+                    const project = projectData.find(p => p.id === projectId);
+                    
+                    if (project) {
+                        modalTitle.textContent = project.title;
+                        modalDescription.textContent = project.description;
+                        
+                        // Clear previous gallery items
+                        galleryContainer.innerHTML = '';
+                        
+                        // Add gallery images
+                        project.gallery.forEach(imgSrc => {
+                            const galleryItem = document.createElement('div');
+                            galleryItem.className = 'gallery-item';
+                            
+                            const img = document.createElement('img');
+                            img.src = imgSrc;
+                            img.alt = project.title;
+                            
+                            galleryItem.appendChild(img);
+                            galleryContainer.appendChild(galleryItem);
+                        });
+                        
+                        modal.classList.add('active');
+                        document.body.style.overflow = 'hidden';
+                    }
+                });
+            });
+            
+            closeModal.addEventListener('click', function() {
+                modal.classList.remove('active');
+                document.body.style.overflow = 'auto';
+            });
+            
+            window.addEventListener('click', function(e) {
+                if (e.target === modal) {
+                    modal.classList.remove('active');
+                    document.body.style.overflow = 'auto';
+                }
+            });
+            
+            // Contact Form Submission
+            const contactForm = document.getElementById('contactForm');
+            const toast = document.getElementById('toast');
+            
+            contactForm.addEventListener('submit', function(e) {
+                e.preventDefault();
+                
+                // In a real application, you would handle form submission to a server here
+                // For this example, we'll just show a success message
+                
+                // Reset form fields
+                contactForm.reset();
+                
+                // Show toast notification
+                toast.classList.add('active');
+                
+                // Hide toast after 3 seconds
+                setTimeout(function() {
+                    toast.classList.remove('active');
+                }, 3000);
+            });
+            
+            // Back to Top Button Click
+            const backToTop = document.querySelector('.back-to-top');
+            backToTop.addEventListener('click', function() {
+                window.scrollTo({
+                    top: 0,
+                    behavior: 'smooth'
+                });
+            });
+            
+            // Theme Toggle
+            const themeToggle = document.querySelector('.theme-toggle');
+            const themeIcon = themeToggle.querySelector('i');
+            const body = document.body;
+            
+            themeToggle.addEventListener('click', function() {
+                body.classList.toggle('dark-theme');
+                
+                if (body.classList.contains('dark-theme')) {
+                    themeIcon.className = 'fas fa-sun';
+                } else {
+                    themeIcon.className = 'fas fa-moon';
+                }
+            });
+            
+            // Cursor Effect
+            const cursor = document.querySelector('.cursor');
+            const cursorFollower = document.querySelector('.cursor-follower');
+            
+            document.addEventListener('mousemove', function(e) {
+                cursor.style.left = e.clientX + 'px';
+                cursor.style.top = e.clientY + 'px';
+                
+                setTimeout(function() {
+                    cursorFollower.style.left = e.clientX + 'px';
+                    cursorFollower.style.top = e.clientY + 'px';
+                }, 100);
+            });
+            
+            // Hover effect on links and buttons
+            const links = document.querySelectorAll('a, button, .project-card, .skill-tag');
+            
+            links.forEach(link => {
+                link.addEventListener('mouseenter', function() {
+                    cursor.style.transform = 'translate(-50%, -50%) scale(1.5)';
+                    cursorFollower.style.transform = 'translate(-50%, -50%) scale(1.5)';
+                    cursor.style.backgroundColor = 'rgba(155, 135, 245, 0)';
+                    cursorFollower.style.borderColor = 'rgba(155, 135, 245, 1)';
+                });
+                
+                link.addEventListener('mouseleave', function() {
+                    cursor.style.transform = 'translate(-50%, -50%) scale(1)';
+                    cursorFollower.style.transform = 'translate(-50%, -50%) scale(1)';
+                    cursor.style.backgroundColor = 'rgba(155, 135, 245, 0.5)';
+                    cursorFollower.style.borderColor = 'var(--primary)';
+                });
+            });
+            
+            // Hide cursor when leaving the window
+            document.addEventListener('mouseout', function(e) {
+                if (e.relatedTarget === null) {
+                    cursor.style.opacity = '0';
+                    cursorFollower.style.opacity = '0';
+                }
+            });
+            
+            document.addEventListener('mouseover', function() {
+                cursor.style.opacity = '1';
+                cursorFollower.style.opacity = '1';
+            });
+        });
+    </script>
+</body>
+</html>

@@ -1,0 +1,278 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Task Dependency Tracker</title>
+    <!-- Load Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Use Inter font family -->
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@100..900&display=swap');
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #f7f9fb; /* Light background */
+        }
+        .app-container {
+            min-height: 100vh;
+        }
+        /* Custom styles for Project Management theme (Indigo/Cyan) */
+        .header-bg {
+            background-color: #f5f3ff; /* Indigo-50 */
+        }
+        .primary-color {
+            color: #4f46e5; /* Indigo-600 */
+        }
+        .secondary-color {
+            color: #06b6d4; /* Cyan-500 */
+        }
+        .primary-action {
+            background-color: #4f46e5; /* Indigo-600 */
+        }
+        .primary-action:hover {
+            background-color: #4338ca; /* Indigo-700 */
+        }
+        .focus-ring-color:focus {
+            --tw-ring-color: #4f46e5; /* Indigo-600 */
+        }
+        .custom-modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.5);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+        }
+        .custom-modal-content {
+            background: white;
+            padding: 2rem;
+            border-radius: 12px;
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
+            max-width: 90%;
+            min-width: 350px;
+        }
+    </style>
+</head>
+<body class="selection:bg-indigo-200 selection:text-indigo-900">
+
+    <div class="app-container p-4 sm:p-8">
+        <!-- Header -->
+        <header class="mb-8 p-4 header-bg shadow-lg rounded-xl border-l-4 border-indigo-600">
+            <h1 class="text-3xl font-bold text-gray-800">Task Dependency Tracker</h1>
+            <p class="text-gray-600 mt-1">Efficiently track tasks, deadlines, and blocking dependencies across projects.</p>
+        </header>
+
+        <!-- Dynamic Form: Task Details & Custom Fields -->
+        <section class="bg-white p-6 rounded-xl shadow-lg mb-8">
+            <h2 class="text-xl font-semibold text-gray-700 mb-4 flex items-center">
+                <svg class="w-6 h-6 mr-2 primary-color" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-3 7h3m-3 4h3m-6-4h.01M9 16h.01"></path>
+                </svg>
+                Add/Edit Task
+            </h2>
+            <form id="taskForm" class="grid grid-cols-1 md:grid-cols-4 gap-4">
+                <input type="hidden" id="taskId">
+
+                <!-- Standard Fields -->
+                <div class="col-span-2">
+                    <label for="taskName" class="block text-sm font-medium text-gray-700">Task Name</label>
+                    <input type="text" id="taskName" placeholder="Design database schema" required class="mt-1 p-2 w-full border border-gray-300 rounded-lg shadow-sm focus-ring-color focus:ring-1 focus:border-indigo-600">
+                </div>
+                
+                <div class="col-span-1">
+                    <label for="dueDate" class="block text-sm font-medium text-gray-700">Due Date</label>
+                    <input type="date" id="dueDate" required class="mt-1 p-2 w-full border border-gray-300 rounded-lg shadow-sm focus-ring-color focus:ring-1 focus:border-indigo-600">
+                </div>
+
+                <div class="col-span-1">
+                    <label for="status" class="block text-sm font-medium text-gray-700">Status</label>
+                    <select id="status" required class="mt-1 p-2 w-full border border-gray-300 rounded-lg shadow-sm focus-ring-color focus:ring-1 focus:border-indigo-600">
+                        <option value="To Do">To Do</option>
+                        <option value="In Progress">In Progress</option>
+                        <option value="Review">In Review</option>
+                        <option value="Complete">Complete</option>
+                    </select>
+                </div>
+                
+                <div class="col-span-4">
+                    <label for="description" class="block text-sm font-medium text-gray-700">Description / Acceptance Criteria</label>
+                    <textarea id="description" rows="2" class="mt-1 p-2 w-full border border-gray-300 rounded-lg shadow-sm focus-ring-color focus:ring-1 focus:border-indigo-600"></textarea>
+                </div>
+
+                <!-- Dynamic Custom Fields Container (for inputs) -->
+                <div id="customFieldsContainer" class="col-span-1 md:col-span-4 grid grid-cols-1 md:grid-cols-4 gap-4 border-t pt-4 mt-4">
+                    <!-- Dynamic Dependency Fields -->
+                    <div class="col-span-1">
+                        <label class="block text-sm font-medium text-gray-700">Priority</label>
+                        <select disabled class="mt-1 p-2 w-full border border-gray-300 rounded-lg shadow-sm bg-gray-50">
+                             <option>High</option>
+                        </select>
+                    </div>
+                    <div class="col-span-2">
+                        <label class="block text-sm font-medium text-gray-700">Blocking Task (Dependency)</label>
+                        <select disabled class="mt-1 p-2 w-full border border-gray-300 rounded-lg shadow-sm bg-gray-50">
+                            <option>T-001: Initial Concept Review</option>
+                        </select>
+                    </div>
+                    <div class="col-span-1">
+                        <label class="block text-sm font-medium text-gray-700">Scheduled Time (Hours)</label>
+                        <input type="number" value="12" disabled class="mt-1 p-2 w-full border border-gray-300 rounded-lg shadow-sm bg-gray-50">
+                    </div>
+                </div>
+
+                <!-- Submit Button -->
+                <div class="md:col-span-4 pt-4 flex justify-end space-x-4">
+                    <button type="submit" class="w-full md:w-auto px-6 py-2 primary-action text-white font-medium rounded-lg shadow-md hover:bg-indigo-700 transition duration-150 ease-in-out">
+                        Save Task
+                    </button>
+                    <button type="button" id="resetFormButton" class="w-full md:w-auto px-6 py-2 border border-gray-300 text-gray-700 bg-white font-medium rounded-lg shadow-sm hover:bg-gray-50 transition duration-150 ease-in-out">
+                        Clear Form
+                    </button>
+                </div>
+            </form>
+
+            <!-- Custom Field Addition & Management -->
+            <div class="mt-8 border-t pt-4">
+                <h3 class="text-lg font-medium text-gray-700 mb-3">Custom Field Management</h3>
+                <div class="flex flex-col sm:flex-row space-y-3 sm:space-y-0 sm:space-x-4 mb-6">
+                    <input type="text" id="newFieldName" placeholder="Enter new field name (e.g., QA Signoff)" class="p-2 flex-grow border border-gray-300 rounded-lg shadow-sm focus-ring-color focus:ring-1 focus:border-cyan-500">
+                    
+                    <!-- Field Type Dropdown -->
+                    <select id="newFieldType" class="p-2 border border-gray-300 rounded-lg shadow-sm focus-ring-color focus:ring-1 focus:border-cyan-500 w-full sm:w-auto">
+                        <option value="text">Text (Notes/Tags)</option>
+                        <option value="number">Number (Effort/Cost)</option>
+                        <option value="textarea">Long Text (Details)</option>
+                        <option value="checkbox">Checkbox (Yes/No Feature)</option>
+                        <option value="date">Date Picker</option>
+                        <option value="time">Time Input</option>
+                        <option value="dropdown">Dropdown (Predefined Value)</option>
+                    </select>
+                    
+                    <button type="button" onclick="addCustomField()" class="px-4 py-2 bg-cyan-500 text-white font-medium rounded-lg shadow-md hover:bg-cyan-600 transition duration-150 ease-in-out">
+                        Add Custom Field
+                    </button>
+                </div>
+
+                <!-- List of existing custom fields for removal -->
+                <div id="fieldManagementList" class="flex flex-wrap gap-2">
+                    <span class="flex items-center space-x-1 px-3 py-1 bg-gray-200 text-gray-700 text-sm font-medium rounded-full shadow-sm">Priority (dropdown)</span>
+                    <span class="flex items-center space-x-1 px-3 py-1 bg-gray-200 text-gray-700 text-sm font-medium rounded-full shadow-sm">Blocking Task (dropdown)</span>
+                    <span class="flex items-center space-x-1 px-3 py-1 bg-gray-200 text-gray-700 text-sm font-medium rounded-full shadow-sm">Scheduled Time (number)</span>
+                </div>
+            </div>
+        </section>
+
+        <!-- Task Table -->
+        <section class="bg-white p-6 rounded-xl shadow-lg">
+            <h2 class="text-xl font-semibold text-gray-700 mb-4">Project Task List</h2>
+            <div class="overflow-x-auto">
+                <table class="min-w-full divide-y divide-gray-200">
+                    <thead class="bg-indigo-50" id="tasksTableHead">
+                        <tr>
+                            <th scope="col" class="px-3 py-3 text-left text-xs font-medium text-indigo-700 uppercase tracking-wider">ID / Task Name</th>
+                            <th scope="col" class="px-3 py-3 text-left text-xs font-medium text-indigo-700 uppercase tracking-wider">Status</th>
+                            <th scope="col" class="px-3 py-3 text-left text-xs font-medium text-indigo-700 uppercase tracking-wider">Due Date</th>
+                            <th scope="col" class="px-3 py-3 text-left text-xs font-medium text-indigo-700 uppercase tracking-wider">Blocking Task</th>
+                            <th scope="col" class="px-3 py-3 text-left text-xs font-medium text-indigo-700 uppercase tracking-wider">Priority</th>
+                            <th scope="col" class="px-3 py-3 text-left text-xs font-medium text-indigo-700 uppercase tracking-wider">Effort (Hrs)</th>
+                            <th scope="col" class="px-3 py-3 text-left text-xs font-medium text-indigo-700 uppercase tracking-wider">Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody class="bg-white divide-y divide-gray-200" id="tasksTableBody">
+                        <!-- Mock Task Rows -->
+                        <tr>
+                            <td class="px-3 py-4 text-sm font-medium text-gray-900">T-003: Build API Endpoints</td>
+                            <td class="px-3 py-4 whitespace-nowrap">
+                                <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-yellow-100 text-yellow-800">In Progress</span>
+                            </td>
+                            <td class="px-3 py-4 whitespace-nowrap text-sm text-gray-500">2024-12-15</td>
+                            <td class="px-3 py-4 max-w-xs overflow-hidden text-sm secondary-color font-medium">T-002: Deploy Backend DB</td>
+                            <td class="px-3 py-4 whitespace-nowrap text-sm text-red-600 font-medium">High</td>
+                            <td class="px-3 py-4 whitespace-nowrap text-sm text-gray-500">40</td>
+                            <td class="px-3 py-4 whitespace-nowrap text-right text-sm font-medium space-x-2">
+                                <button onclick="editTask('T3')" class="text-indigo-600 hover:text-indigo-900 transition duration-150">Edit</button>
+                                <button onclick="handleDeleteTask('T3')" class="text-red-600 hover:text-red-900 transition duration-150">Delete</button>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td class="px-3 py-4 text-sm font-medium text-gray-900">T-004: Develop Frontend UI</td>
+                            <td class="px-3 py-4 whitespace-nowrap">
+                                <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-green-100 text-green-800">Complete</span>
+                            </td>
+                            <td class="px-3 py-4 whitespace-nowrap text-sm text-gray-500">2024-12-01</td>
+                            <td class="px-3 py-4 max-w-xs overflow-hidden text-sm text-gray-500">- (None)</td>
+                            <td class="px-3 py-4 whitespace-nowrap text-sm text-gray-500">Medium</td>
+                            <td class="px-3 py-4 whitespace-nowrap text-sm text-gray-500">60</td>
+                            <td class="px-3 py-4 whitespace-nowrap text-right text-sm font-medium space-x-2">
+                                <button onclick="editTask('T4')" class="text-indigo-600 hover:text-indigo-900 transition duration-150">Edit</button>
+                                <button onclick="handleDeleteTask('T4')" class="text-red-600 hover:text-red-900 transition duration-150">Delete</button>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+            <p id="noTasksMessage" class="text-center text-gray-500 p-4 hidden">No tasks logged yet. Start by adding one above!</p>
+        </section>
+    </div>
+
+    <!-- Custom Modal (Mock for Confirmation/Alert) -->
+    <div id="customModal" class="custom-modal-overlay hidden">
+        <div class="custom-modal-content">
+            <h3 id="modalTitle" class="text-xl font-semibold text-gray-800 mb-4"></h3>
+            <p id="modalMessage" class="text-gray-600 mb-6"></p>
+            <div id="modalActions" class="flex justify-end space-x-3">
+                <!-- Buttons will be dynamically added here -->
+            </div>
+        </div>
+    </div>
+
+    <!-- JavaScript MOCK Logic (Simplified to demonstrate design) -->
+    <script>
+        // MOCK functions to demonstrate UX flow
+        function addCustomField() {
+            const fieldName = document.getElementById('newFieldName').value;
+            const fieldType = document.getElementById('newFieldType').value;
+            if (fieldName) {
+                showModal({ title: 'Dynamic Field Added Mockup', message: `Field "${fieldName}" (${fieldType}) added permanently to the list.` });
+            } else {
+                 showModal({ title: 'Input Error', message: 'Field name cannot be empty.' });
+            }
+        }
+        function editTask(id) { 
+            showModal({ title: 'Edit Task Mockup', message: `Editing Task ID: ${id}. Data would load into the form above.` });
+        }
+        function handleDeleteTask(id) { 
+            showModal({ title: 'Confirm Deletion Mockup', message: `Deleting Task ID: ${id}. This action is permanent.` });
+        }
+        
+        function showModal({ title, message, type = 'alert', onConfirm, onCancel }) {
+            const modal = document.getElementById('customModal');
+            document.getElementById('modalTitle').textContent = title;
+            document.getElementById('modalMessage').textContent = message;
+            
+            const actions = document.getElementById('modalActions');
+            actions.innerHTML = `<button onclick="document.getElementById('customModal').classList.add('hidden')" class="px-4 py-2 primary-action text-white font-medium rounded-lg shadow-md hover:bg-indigo-700">OK</button>`;
+            
+            modal.classList.remove('hidden');
+        }
+
+        function resetForm() {
+            document.getElementById('taskForm').reset();
+            showModal({ title: 'Form Cleared', message: 'All input fields have been reset.' });
+        }
+        
+        // INITIALIZATION
+        window.onload = function() {
+            document.getElementById('taskForm').addEventListener('submit', function(e) {
+                e.preventDefault();
+                showModal({ title: 'Save Task Mockup', message: 'In a real app, this data (including dynamic dependency fields) would be saved to Local Storage.' });
+            });
+            document.getElementById('resetFormButton').addEventListener('click', resetForm);
+        }
+    </script>
+</body>
+</html>

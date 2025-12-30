@@ -1,0 +1,1173 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Serene Mind - Mental Health & Therapy Services</title>
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root {
+            --primary: #9b87f5;
+            --primary-dark: #7E69AB;
+            --secondary: #D6BCFA;
+            --accent: #E5DEFF;
+            --light: #F1F0FB;
+            --dark: #1A1F2C;
+            --gray: #aaadb0;
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Inter', sans-serif;
+            line-height: 1.6;
+            color: var(--dark);
+            background-color: #fff;
+        }
+        
+        h1, h2, h3, h4, h5 {
+            font-family: 'Playfair Display', serif;
+            font-weight: 700;
+            line-height: 1.2;
+        }
+        
+        a {
+            text-decoration: none;
+            color: inherit;
+        }
+        
+        .container {
+            width: 90%;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        
+        /* Header & Navigation */
+        header {
+            padding: 20px 0;
+            background-color: #fff;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+        }
+        
+        .navbar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .logo {
+            font-size: 24px;
+            font-weight: 700;
+            color: var(--primary);
+        }
+        
+        .nav-links {
+            display: flex;
+            gap: 30px;
+        }
+        
+        .nav-links a {
+            position: relative;
+            font-weight: 500;
+            transition: color 0.3s;
+        }
+        
+        .nav-links a:hover {
+            color: var(--primary);
+        }
+        
+        .nav-links a:after {
+            content: '';
+            position: absolute;
+            width: 100%;
+            height: 2px;
+            bottom: -5px;
+            left: 0;
+            background-color: var(--primary);
+            transform: scaleX(0);
+            transition: transform 0.3s;
+        }
+        
+        .nav-links a:hover:after {
+            transform: scaleX(1);
+        }
+        
+        .cta-button {
+            background-color: var(--primary);
+            color: white;
+            padding: 10px 20px;
+            border-radius: 30px;
+            font-weight: 600;
+            transition: all 0.3s;
+        }
+        
+        .cta-button:hover {
+            background-color: var(--primary-dark);
+            transform: translateY(-2px);
+        }
+        
+        /* Hero Section */
+        .hero {
+            min-height: 90vh;
+            display: flex;
+            align-items: center;
+            background-color: var(--light);
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .hero-content {
+            width: 50%;
+            padding: 60px 0;
+            position: relative;
+            z-index: 2;
+        }
+        
+        .hero h1 {
+            font-size: 56px;
+            margin-bottom: 20px;
+            color: var(--dark);
+        }
+        
+        .hero p {
+            font-size: 18px;
+            margin-bottom: 30px;
+            color: var(--gray);
+        }
+        
+        .hero-image {
+            position: absolute;
+            right: 0;
+            top: 0;
+            width: 50%;
+            height: 100%;
+            background-image: url('https://images.unsplash.com/photo-1499209974431-9dddcece7f88?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2970&q=80');
+            background-size: cover;
+            background-position: center;
+        }
+        
+        .hero:before {
+            content: '';
+            position: absolute;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, rgba(241,240,251,1) 50%, rgba(241,240,251,0.7) 70%, rgba(241,240,251,0) 100%);
+            z-index: 1;
+        }
+        
+        /* Features Section */
+        .features {
+            padding: 100px 0;
+        }
+        
+        .section-title {
+            text-align: center;
+            margin-bottom: 60px;
+        }
+        
+        .section-title h2 {
+            font-size: 42px;
+            margin-bottom: 15px;
+        }
+        
+        .section-title p {
+            font-size: 18px;
+            color: var(--gray);
+            max-width: 600px;
+            margin: 0 auto;
+        }
+        
+        .services-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 30px;
+        }
+        
+        .service-card {
+            background-color: white;
+            border-radius: 15px;
+            overflow: hidden;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.05);
+            transition: transform 0.3s, box-shadow 0.3s;
+        }
+        
+        .service-card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 15px 40px rgba(0,0,0,0.1);
+        }
+        
+        .service-card img {
+            width: 100%;
+            height: 200px;
+            object-fit: cover;
+        }
+        
+        .service-content {
+            padding: 30px;
+        }
+        
+        .service-content h3 {
+            font-size: 24px;
+            margin-bottom: 15px;
+        }
+        
+        .service-content p {
+            margin-bottom: 20px;
+            color: var(--gray);
+        }
+        
+        .learn-more {
+            display: inline-flex;
+            align-items: center;
+            color: var(--primary);
+            font-weight: 600;
+            transition: color 0.3s;
+        }
+        
+        .learn-more i {
+            margin-left: 8px;
+            transition: transform 0.3s;
+        }
+        
+        .learn-more:hover {
+            color: var(--primary-dark);
+        }
+        
+        .learn-more:hover i {
+            transform: translateX(5px);
+        }
+        
+        /* Testimonials */
+        .testimonials {
+            padding: 100px 0;
+            background-color: var(--accent);
+        }
+        
+        .testimonials-container {
+            display: flex;
+            gap: 30px;
+            overflow-x: auto;
+            padding: 20px 0;
+            scroll-snap-type: x mandatory;
+        }
+        
+        .testimonial-card {
+            flex: 0 0 350px;
+            background-color: white;
+            border-radius: 15px;
+            padding: 30px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.05);
+            scroll-snap-align: start;
+        }
+        
+        .testimonial-header {
+            display: flex;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+        
+        .testimonial-avatar {
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            object-fit: cover;
+            margin-right: 15px;
+        }
+        
+        .testimonial-author h4 {
+            font-size: 18px;
+            margin-bottom: 5px;
+        }
+        
+        .testimonial-author span {
+            font-size: 14px;
+            color: var(--gray);
+        }
+        
+        .testimonial-content p {
+            font-style: italic;
+            margin-bottom: 20px;
+        }
+        
+        .testimonial-rating {
+            color: gold;
+        }
+        
+        /* App Feature */
+        .app-feature {
+            padding: 100px 0;
+            background-color: var(--light);
+        }
+        
+        .app-container {
+            display: flex;
+            align-items: center;
+            gap: 60px;
+        }
+        
+        .app-content {
+            flex: 1;
+        }
+        
+        .app-content h2 {
+            font-size: 42px;
+            margin-bottom: 20px;
+        }
+        
+        .app-content p {
+            margin-bottom: 30px;
+            color: var(--gray);
+        }
+        
+        .app-buttons {
+            display: flex;
+            gap: 15px;
+        }
+        
+        .app-button {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            background-color: var(--dark);
+            color: white;
+            padding: 12px 20px;
+            border-radius: 10px;
+            transition: transform 0.3s;
+        }
+        
+        .app-button:hover {
+            transform: translateY(-5px);
+        }
+        
+        .app-button i {
+            font-size: 24px;
+        }
+        
+        .app-button .button-text {
+            text-align: left;
+        }
+        
+        .app-button span {
+            display: block;
+            font-size: 12px;
+        }
+        
+        .app-button strong {
+            font-size: 16px;
+            font-weight: 600;
+        }
+        
+        .app-image {
+            flex: 1;
+            position: relative;
+        }
+        
+        .app-image img {
+            width: 300px;
+            border-radius: 30px;
+            box-shadow: 0 20px 50px rgba(0,0,0,0.2);
+        }
+        
+        /* Newsletter */
+        .newsletter {
+            padding: 100px 0;
+            text-align: center;
+        }
+        
+        .newsletter-form {
+            max-width: 600px;
+            margin: 40px auto 0;
+            display: flex;
+            gap: 15px;
+        }
+        
+        .newsletter-input {
+            flex: 1;
+            padding: 15px 20px;
+            border: 1px solid #e1e1e1;
+            border-radius: 30px;
+            font-family: 'Inter', sans-serif;
+            font-size: 16px;
+        }
+        
+        .newsletter-input:focus {
+            outline: none;
+            border-color: var(--primary);
+        }
+        
+        .newsletter-button {
+            background-color: var(--primary);
+            color: white;
+            border: none;
+            border-radius: 30px;
+            padding: 0 30px;
+            font-family: 'Inter', sans-serif;
+            font-weight: 600;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+        
+        .newsletter-button:hover {
+            background-color: var(--primary-dark);
+        }
+        
+        /* Contact */
+        .contact {
+            padding: 100px 0;
+            background-color: var(--light);
+        }
+        
+        .contact-container {
+            display: flex;
+            gap: 60px;
+        }
+        
+        .contact-info {
+            flex: 1;
+        }
+        
+        .contact-info h2 {
+            font-size: 42px;
+            margin-bottom: 20px;
+        }
+        
+        .contact-info p {
+            margin-bottom: 30px;
+            color: var(--gray);
+        }
+        
+        .contact-details {
+            margin-bottom: 40px;
+        }
+        
+        .contact-item {
+            display: flex;
+            align-items: center;
+            margin-bottom: 15px;
+        }
+        
+        .contact-item i {
+            width: 40px;
+            height: 40px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background-color: var(--primary);
+            color: white;
+            border-radius: 50%;
+            margin-right: 15px;
+        }
+        
+        .social-links {
+            display: flex;
+            gap: 15px;
+        }
+        
+        .social-link {
+            width: 40px;
+            height: 40px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background-color: white;
+            color: var(--primary);
+            border-radius: 50%;
+            transition: all 0.3s;
+        }
+        
+        .social-link:hover {
+            background-color: var(--primary);
+            color: white;
+            transform: translateY(-5px);
+        }
+        
+        .contact-form {
+            flex: 1;
+        }
+        
+        .form-group {
+            margin-bottom: 20px;
+        }
+        
+        .form-control {
+            width: 100%;
+            padding: 15px;
+            border: 1px solid #e1e1e1;
+            border-radius: 10px;
+            font-family: 'Inter', sans-serif;
+            font-size: 16px;
+        }
+        
+        .form-control:focus {
+            outline: none;
+            border-color: var(--primary);
+        }
+        
+        textarea.form-control {
+            min-height: 150px;
+            resize: vertical;
+        }
+        
+        .submit-button {
+            background-color: var(--primary);
+            color: white;
+            border: none;
+            border-radius: 30px;
+            padding: 15px 30px;
+            font-family: 'Inter', sans-serif;
+            font-weight: 600;
+            cursor: pointer;
+            transition: background-color 0.3s;
+            display: inline-block;
+        }
+        
+        .submit-button:hover {
+            background-color: var(--primary-dark);
+        }
+        
+        /* Footer */
+        footer {
+            background-color: var(--dark);
+            color: white;
+            padding: 60px 0 30px;
+        }
+        
+        .footer-container {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 40px;
+            margin-bottom: 60px;
+        }
+        
+        .footer-col h3 {
+            font-size: 20px;
+            margin-bottom: 20px;
+            position: relative;
+            padding-bottom: 10px;
+        }
+        
+        .footer-col h3:after {
+            content: '';
+            position: absolute;
+            left: 0;
+            bottom: 0;
+            width: 40px;
+            height: 2px;
+            background-color: var(--primary);
+        }
+        
+        .footer-links li {
+            margin-bottom: 10px;
+            list-style: none;
+        }
+        
+        .footer-links a {
+            color: rgba(255,255,255,0.8);
+            transition: color 0.3s;
+        }
+        
+        .footer-links a:hover {
+            color: var(--primary);
+        }
+        
+        .copyright {
+            text-align: center;
+            padding-top: 30px;
+            border-top: 1px solid rgba(255,255,255,0.1);
+            color: rgba(255,255,255,0.6);
+        }
+        
+        /* Animations */
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
+        .animate {
+            opacity: 0;
+            transform: translateY(20px);
+            transition: opacity 0.6s, transform 0.6s;
+        }
+        
+        .animate.show {
+            opacity: 1;
+            transform: translateY(0);
+        }
+        
+        /* Meditation Timer */
+        .meditation-timer {
+            max-width: 500px;
+            margin: 0 auto;
+            padding: 40px;
+            background-color: white;
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+            text-align: center;
+        }
+        
+        .timer-display {
+            font-size: 72px;
+            font-weight: 700;
+            margin: 30px 0;
+            color: var(--primary);
+        }
+        
+        .timer-controls {
+            display: flex;
+            justify-content: center;
+            gap: 20px;
+        }
+        
+        .timer-button {
+            background-color: var(--primary);
+            color: white;
+            border: none;
+            border-radius: 50%;
+            width: 60px;
+            height: 60px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 20px;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+        
+        .timer-button:hover {
+            background-color: var(--primary-dark);
+            transform: scale(1.1);
+        }
+        
+        .timer-presets {
+            display: flex;
+            justify-content: center;
+            gap: 10px;
+            margin-top: 30px;
+        }
+        
+        .preset-button {
+            background-color: var(--accent);
+            color: var(--primary-dark);
+            border: none;
+            border-radius: 20px;
+            padding: 8px 15px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+        
+        .preset-button:hover, .preset-button.active {
+            background-color: var(--primary);
+            color: white;
+        }
+        
+        /* Mobile Menu */
+        .mobile-menu-toggle {
+            display: none;
+            background: none;
+            border: none;
+            font-size: 24px;
+            color: var(--dark);
+            cursor: pointer;
+        }
+        
+        /* Media Queries */
+        @media (max-width: 992px) {
+            .hero-content {
+                width: 100%;
+                padding: 60px 0;
+                text-align: center;
+            }
+            
+            .hero h1 {
+                font-size: 42px;
+            }
+            
+            .hero-image {
+                opacity: 0.2;
+                width: 100%;
+            }
+            
+            .hero:before {
+                background: linear-gradient(0deg, rgba(241,240,251,0.8) 0%, rgba(241,240,251,0.9) 100%);
+            }
+            
+            .app-container, .contact-container {
+                flex-direction: column;
+            }
+            
+            .app-image {
+                margin-top: 60px;
+                text-align: center;
+            }
+            
+            .testimonial-card {
+                flex: 0 0 80%;
+            }
+        }
+        
+        @media (max-width: 768px) {
+            .mobile-menu-toggle {
+                display: block;
+            }
+            
+            .nav-links {
+                position: fixed;
+                top: 80px;
+                left: 0;
+                width: 100%;
+                background-color: white;
+                flex-direction: column;
+                gap: 0;
+                height: 0;
+                overflow: hidden;
+                transition: height 0.3s;
+                z-index: 90;
+                box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+            }
+            
+            .nav-links.open {
+                height: auto;
+                padding: 20px 0;
+            }
+            
+            .nav-links a {
+                display: block;
+                padding: 15px 20px;
+                border-bottom: 1px solid rgba(0,0,0,0.05);
+            }
+            
+            .cta-button {
+                display: inline-block;
+                margin: 20px;
+            }
+            
+            .newsletter-form {
+                flex-direction: column;
+            }
+            
+            .app-buttons {
+                flex-direction: column;
+                align-items: center;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Header & Navigation -->
+    <header>
+        <div class="container">
+            <nav class="navbar">
+                <a href="#" class="logo">SereneMinds</a>
+                <button class="mobile-menu-toggle" id="menuToggle">
+                    <i class="fas fa-bars"></i>
+                </button>
+                <div class="nav-links" id="navLinks">
+                    <a href="#">Home</a>
+                    <a href="#">Services</a>
+                    <a href="#">About</a>
+                    <a href="#">App</a>
+                    <a href="#">Contact</a>
+                    <a href="#" class="cta-button">Book Session</a>
+                </div>
+            </nav>
+        </div>
+    </header>
+
+    <!-- Hero Section -->
+    <section class="hero">
+        <div class="container">
+            <div class="hero-content animate">
+                <h1>Find Your Inner Peace</h1>
+                <p>We provide professional therapy services, meditation guidance, and wellness programs to help you live a balanced and fulfilled life.</p>
+                <a href="#" class="cta-button">Start Your Journey</a>
+            </div>
+        </div>
+        <div class="hero-image"></div>
+    </section>
+
+    <!-- Features/Services Section -->
+    <section class="features">
+        <div class="container">
+            <div class="section-title animate">
+                <h2>Our Services</h2>
+                <p>Discover our comprehensive range of mental health and wellness services designed to support your journey to better mental health.</p>
+            </div>
+            <div class="services-grid">
+                <!-- Service 1 -->
+                <div class="service-card animate">
+                    <img src="https://images.unsplash.com/photo-1517093702855-55347134c71a?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2970&q=80" alt="Therapy Sessions">
+                    <div class="service-content">
+                        <h3>Therapy Sessions</h3>
+                        <p>One-on-one sessions with licensed therapists specialized in various mental health issues.</p>
+                        <a href="#" class="learn-more">Learn More <i class="fas fa-arrow-right"></i></a>
+                    </div>
+                </div>
+                
+                <!-- Service 2 -->
+                <div class="service-card animate">
+                    <img src="https://images.unsplash.com/photo-1591228127791-8e2eaef098d3?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2970&q=80" alt="Meditation Classes">
+                    <div class="service-content">
+                        <h3>Meditation Classes</h3>
+                        <p>Group and private meditation sessions to help reduce stress and increase mindfulness.</p>
+                        <a href="#" class="learn-more">Learn More <i class="fas fa-arrow-right"></i></a>
+                    </div>
+                </div>
+                
+                <!-- Service 3 -->
+                <div class="service-card animate">
+                    <img src="https://images.unsplash.com/photo-1582719471384-894fbb16e074?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2970&q=80" alt="Wellness Programs">
+                    <div class="service-content">
+                        <h3>Wellness Programs</h3>
+                        <p>Comprehensive programs combining therapy, meditation, and lifestyle coaching.</p>
+                        <a href="#" class="learn-more">Learn More <i class="fas fa-arrow-right"></i></a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Testimonials Section -->
+    <section class="testimonials">
+        <div class="container">
+            <div class="section-title animate">
+                <h2>Client Testimonials</h2>
+                <p>Hear from our clients about how our services have made a positive impact on their mental wellbeing.</p>
+            </div>
+            <div class="testimonials-container">
+                <!-- Testimonial 1 -->
+                <div class="testimonial-card animate">
+                    <div class="testimonial-header">
+                        <img src="https://randomuser.me/api/portraits/women/43.jpg" alt="Sarah Johnson" class="testimonial-avatar">
+                        <div class="testimonial-author">
+                            <h4>Sarah Johnson</h4>
+                            <span>Therapy Client</span>
+                        </div>
+                    </div>
+                    <div class="testimonial-content">
+                        <p>"The therapy sessions have been transformative for me. My therapist is compassionate, insightful, and has given me practical tools to manage my anxiety."</p>
+                        <div class="testimonial-rating">
+                            <i class="fas fa-star"></i>
+                            <i class="fas fa-star"></i>
+                            <i class="fas fa-star"></i>
+                            <i class="fas fa-star"></i>
+                            <i class="fas fa-star"></i>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Testimonial 2 -->
+                <div class="testimonial-card animate">
+                    <div class="testimonial-header">
+                        <img src="https://randomuser.me/api/portraits/men/32.jpg" alt="Michael Roberts" class="testimonial-avatar">
+                        <div class="testimonial-author">
+                            <h4>Michael Roberts</h4>
+                            <span>Meditation App User</span>
+                        </div>
+                    </div>
+                    <div class="testimonial-content">
+                        <p>"The meditation app has become an essential part of my daily routine. The guided meditations are excellent and the sleep stories help me relax at night."</p>
+                        <div class="testimonial-rating">
+                            <i class="fas fa-star"></i>
+                            <i class="fas fa-star"></i>
+                            <i class="fas fa-star"></i>
+                            <i class="fas fa-star"></i>
+                            <i class="fas fa-star"></i>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Testimonial 3 -->
+                <div class="testimonial-card animate">
+                    <div class="testimonial-header">
+                        <img src="https://randomuser.me/api/portraits/women/65.jpg" alt="Emma Thompson" class="testimonial-avatar">
+                        <div class="testimonial-author">
+                            <h4>Emma Thompson</h4>
+                            <span>Wellness Program Participant</span>
+                        </div>
+                    </div>
+                    <div class="testimonial-content">
+                        <p>"The 8-week wellness program was exactly what I needed. The holistic approach to mental health has given me a new perspective on self-care and mindfulness."</p>
+                        <div class="testimonial-rating">
+                            <i class="fas fa-star"></i>
+                            <i class="fas fa-star"></i>
+                            <i class="fas fa-star"></i>
+                            <i class="fas fa-star"></i>
+                            <i class="fas fa-star-half-alt"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- App Feature Section -->
+    <section class="app-feature">
+        <div class="container">
+            <div class="app-container">
+                <div class="app-content animate">
+                    <h2>Meditation at Your Fingertips</h2>
+                    <p>Download our meditation app and get access to hundreds of guided meditations, sleep stories, breathing exercises, and mindfulness practices anytime, anywhere.</p>
+                    <div class="app-buttons">
+                        <a href="#" class="app-button">
+                            <i class="fab fa-apple"></i>
+                            <div class="button-text">
+                                <span>Download on the</span>
+                                <strong>App Store</strong>
+                            </div>
+                        </a>
+                        <a href="#" class="app-button">
+                            <i class="fab fa-google-play"></i>
+                            <div class="button-text">
+                                <span>Get it on</span>
+                                <strong>Google Play</strong>
+                            </div>
+                        </a>
+                    </div>
+                </div>
+                <div class="app-image animate">
+                    <img src="https://placehold.co/300x600/E5DEFF/7E69AB?text=SereneMinds+App" alt="Meditation App">
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Meditation Timer Tool -->
+    <section class="features">
+        <div class="container">
+            <div class="section-title animate">
+                <h2>Mindfulness Timer</h2>
+                <p>Use our simple meditation timer to practice mindfulness anywhere. Set your duration and enjoy the present moment.</p>
+            </div>
+            <div class="meditation-timer animate">
+                <h3>Meditation Timer</h3>
+                <div class="timer-display" id="timer">10:00</div>
+                <div class="timer-controls">
+                    <button class="timer-button" id="startTimer"><i class="fas fa-play"></i></button>
+                    <button class="timer-button" id="pauseTimer"><i class="fas fa-pause"></i></button>
+                    <button class="timer-button" id="resetTimer"><i class="fas fa-undo"></i></button>
+                </div>
+                <div class="timer-presets">
+                    <button class="preset-button active" data-time="600">10 min</button>
+                    <button class="preset-button" data-time="900">15 min</button>
+                    <button class="preset-button" data-time="1200">20 min</button>
+                    <button class="preset-button" data-time="1800">30 min</button>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Newsletter Section -->
+    <section class="newsletter">
+        <div class="container">
+            <div class="section-title animate">
+                <h2>Subscribe to Our Newsletter</h2>
+                <p>Stay updated with the latest mental health resources, tips, and special offers.</p>
+            </div>
+            <form class="newsletter-form animate">
+                <input type="email" placeholder="Your email address" class="newsletter-input" required>
+                <button type="submit" class="newsletter-button">Subscribe</button>
+            </form>
+        </div>
+    </section>
+
+    <!-- Contact Section -->
+    <section class="contact">
+        <div class="container">
+            <div class="contact-container">
+                <div class="contact-info animate">
+                    <h2>Get in Touch</h2>
+                    <p>Have questions or ready to start your mental wellness journey? Contact us today.</p>
+                    <div class="contact-details">
+                        <div class="contact-item">
+                            <i class="fas fa-map-marker-alt"></i>
+                            <span>123 Serenity Lane, Mindful City, MC 56789</span>
+                        </div>
+                        <div class="contact-item">
+                            <i class="fas fa-phone"></i>
+                            <span>+1 (555) 123-4567</span>
+                        </div>
+                        <div class="contact-item">
+                            <i class="fas fa-envelope"></i>
+                            <span>hello@sereneminds.com</span>
+                        </div>
+                    </div>
+                    <div class="social-links">
+                        <a href="#" class="social-link"><i class="fab fa-facebook-f"></i></a>
+                        <a href="#" class="social-link"><i class="fab fa-twitter"></i></a>
+                        <a href="#" class="social-link"><i class="fab fa-instagram"></i></a>
+                        <a href="#" class="social-link"><i class="fab fa-linkedin-in"></i></a>
+                    </div>
+                </div>
+                <div class="contact-form animate">
+                    <form>
+                        <div class="form-group">
+                            <input type="text" placeholder="Your Name" class="form-control" required>
+                        </div>
+                        <div class="form-group">
+                            <input type="email" placeholder="Your Email" class="form-control" required>
+                        </div>
+                        <div class="form-group">
+                            <select class="form-control">
+                                <option value="" disabled selected>Select Service</option>
+                                <option value="therapy">Therapy</option>
+                                <option value="meditation">Meditation Classes</option>
+                                <option value="wellness">Wellness Programs</option>
+                                <option value="other">Other</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <textarea placeholder="Your Message" class="form-control" required></textarea>
+                        </div>
+                        <button type="submit" class="submit-button">Send Message</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer>
+        <div class="container">
+            <div class="footer-container">
+                <div class="footer-col">
+                    <h3>SereneMinds</h3>
+                    <p>Professional mental health services dedicated to helping you achieve balance and inner peace.</p>
+                </div>
+                <div class="footer-col">
+                    <h3>Quick Links</h3>
+                    <ul class="footer-links">
+                        <li><a href="#">Home</a></li>
+                        <li><a href="#">About Us</a></li>
+                        <li><a href="#">Services</a></li>
+                        <li><a href="#">Testimonials</a></li>
+                        <li><a href="#">Contact</a></li>
+                    </ul>
+                </div>
+                <div class="footer-col">
+                    <h3>Services</h3>
+                    <ul class="footer-links">
+                        <li><a href="#">Individual Therapy</a></li>
+                        <li><a href="#">Couples Therapy</a></li>
+                        <li><a href="#">Meditation Classes</a></li>
+                        <li><a href="#">Wellness Programs</a></li>
+                        <li><a href="#">Corporate Wellness</a></li>
+                    </ul>
+                </div>
+                <div class="footer-col">
+                    <h3>Opening Hours</h3>
+                    <ul class="footer-links">
+                        <li>Monday-Friday: 9am - 8pm</li>
+                        <li>Saturday: 10am - 4pm</li>
+                        <li>Sunday: Closed</li>
+                    </ul>
+                </div>
+            </div>
+            <div class="copyright">
+                <p>&copy; 2023 SereneMinds. All rights reserved.</p>
+            </div>
+        </div>
+    </footer>
+
+    <!-- JavaScript -->
+    <script>
+        // Mobile Menu Toggle
+        document.getElementById('menuToggle').addEventListener('click', function() {
+            document.getElementById('navLinks').classList.toggle('open');
+        });
+        
+        // Scroll Animation
+        document.addEventListener('DOMContentLoaded', function() {
+            var animateElements = document.querySelectorAll('.animate');
+            
+            function checkInView() {
+                animateElements.forEach(function(element) {
+                    var elementTop = element.getBoundingClientRect().top;
+                    var elementVisible = 150;
+                    
+                    if (elementTop < window.innerHeight - elementVisible) {
+                        element.classList.add('show');
+                    }
+                });
+            }
+            
+            window.addEventListener('scroll', checkInView);
+            checkInView();
+        });
+        
+        // Meditation Timer
+        document.addEventListener('DOMContentLoaded', function() {
+            var timer = document.getElementById('timer');
+            var startButton = document.getElementById('startTimer');
+            var pauseButton = document.getElementById('pauseTimer');
+            var resetButton = document.getElementById('resetTimer');
+            var presetButtons = document.querySelectorAll('.preset-button');
+            
+            var timeLeft = 600; // 10 minutes in seconds
+            var timerInterval;
+            var isRunning = false;
+            
+            function updateDisplay() {
+                var minutes = Math.floor(timeLeft / 60);
+                var seconds = timeLeft % 60;
+                timer.textContent = minutes.toString().padStart(2, '0') + ':' + seconds.toString().padStart(2, '0');
+            }
+            
+            function startTimer() {
+                if (!isRunning) {
+                    isRunning = true;
+                    timerInterval = setInterval(function() {
+                        timeLeft--;
+                        updateDisplay();
+                        
+                        if (timeLeft <= 0) {
+                            clearInterval(timerInterval);
+                            isRunning = false;
+                            // Add sound or notification here
+                        }
+                    }, 1000);
+                }
+            }
+            
+            function pauseTimer() {
+                clearInterval(timerInterval);
+                isRunning = false;
+            }
+            
+            function resetTimer() {
+                pauseTimer();
+                timeLeft = parseInt(document.querySelector('.preset-button.active').dataset.time);
+                updateDisplay();
+            }
+            
+            startButton.addEventListener('click', startTimer);
+            pauseButton.addEventListener('click', pauseTimer);
+            resetButton.addEventListener('click', resetTimer);
+            
+            presetButtons.forEach(function(button) {
+                button.addEventListener('click', function() {
+                    presetButtons.forEach(function(btn) {
+                        btn.classList.remove('active');
+                    });
+                    this.classList.add('active');
+                    pauseTimer();
+                    timeLeft = parseInt(this.dataset.time);
+                    updateDisplay();
+                });
+            });
+            
+            updateDisplay();
+        });
+    </script>
+</body>
+</html>

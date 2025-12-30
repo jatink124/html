@@ -1,0 +1,347 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Nifty Master Journal | MySQL Edition</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <style>
+        /* [STYLING KEPT EXACTLY SAME AS YOUR UPLOADED FILE] */
+        :root { --bg-color: #0f172a; --card-bg: #1e293b; --text-main: #e2e8f0; --text-muted: #94a3b8; --accent: #3b82f6; --accent-hover: #2563eb; --success: #10b981; --warning: #f59e0b; --danger: #ef4444; --purple: #8b5cf6; --cyan: #06b6d4; --border: #334155; --info-bg: #1e3a8a; --feed-bg: #151e2e; }
+        body { font-family: 'Segoe UI', system-ui, sans-serif; background-color: var(--bg-color); color: var(--text-main); margin: 0; padding: 20px; display: flex; gap: 20px; height: 100vh; box-sizing: border-box; }
+        .container { display: flex; width: 100%; gap: 20px; height: 100%; }
+        .input-panel { flex: 1; background: var(--card-bg); padding: 25px; border-radius: 12px; border: 1px solid var(--border); display: flex; flex-direction: column; overflow-y: auto; max-width: 400px; }
+        .journal-feed { flex: 2; background: var(--feed-bg); border-radius: 12px; border: 1px solid var(--border); display: flex; flex-direction: column; overflow: hidden; }
+        .right-tabs-header { display: flex; background: rgba(15, 23, 42, 0.5); border-bottom: 1px solid var(--border); padding: 0 10px; }
+        .rt-tab { padding: 15px 15px; cursor: pointer; color: var(--text-muted); font-weight: 600; border-bottom: 3px solid transparent; transition: 0.2s; display: flex; align-items: center; gap: 8px; font-size: 0.9rem; }
+        .rt-tab:hover { color: var(--text-main); background: rgba(255,255,255,0.02); }
+        .rt-tab.active { color: var(--accent); border-bottom-color: var(--accent); }
+        .rt-tab.active-purple { color: var(--purple); border-bottom-color: var(--purple); }
+        .right-content-area { flex: 1; overflow-y: auto; padding: 25px; position: relative; }
+        .tab-content { display: none; animation: fadeIn 0.3s ease; }
+        .tab-content.show { display: block; }
+        h2 { margin-top: 0; color: var(--accent); font-size: 1.2rem; text-transform: uppercase; letter-spacing: 1px;}
+        label { display: block; margin-bottom: 5px; color: var(--text-muted); font-size: 0.9rem; margin-top: 10px; }
+        input, select, textarea { width: 100%; padding: 10px; margin-bottom: 10px; background: #0f172a; border: 1px solid var(--border); color: white; border-radius: 6px; font-family: inherit; box-sizing: border-box; }
+        textarea { resize: vertical; min-height: 80px; }
+        .mode-tabs { display: flex; background: #0f172a; padding: 5px; border-radius: 8px; margin-bottom: 20px; border: 1px solid var(--border); }
+        .mode-tab { flex: 1; text-align: center; padding: 10px; cursor: pointer; border-radius: 6px; font-weight: 600; color: var(--text-muted); transition: 0.2s; }
+        .mode-tab.active { background: var(--accent); color: white; }
+        .mode-tab.active-eod { background: var(--purple); color: white; }
+        .chip-container { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 10px; }
+        .chip { background: #0f172a; border: 1px solid var(--border); padding: 6px 12px; border-radius: 20px; font-size: 0.85rem; cursor: pointer; color: var(--text-muted); transition: 0.2s; user-select: none; }
+        .chip.selected { background: rgba(239, 68, 68, 0.2); border-color: var(--danger); color: var(--danger); font-weight: 600; }
+        .btn-group { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-top: auto; }
+        button { background: var(--accent); color: white; border: none; padding: 12px; border-radius: 6px; cursor: pointer; font-weight: 600; transition: 0.2s; width: 100%; }
+        .btn-primary { grid-column: span 2; margin-bottom: 10px; }
+        .btn-eod { background: var(--purple); grid-column: span 2; margin-bottom: 10px; }
+        .btn-cancel { background: var(--border); color: var(--text-muted); grid-column: span 2; display: none; margin-bottom: 20px; }
+        .btn-export { background: var(--success); }
+        .btn-sql { background: var(--cyan); color: #0f172a; }
+        .btn-import { background: var(--warning); color: #0f172a; }
+        .btn-clear { background: var(--danger); grid-column: span 2; }
+        .drop-zone { border: 2px dashed var(--border); border-radius: 6px; padding: 20px; text-align: center; cursor: pointer; transition: 0.2s; margin-bottom: 10px; }
+        .drop-zone:hover { border-color: var(--accent); background: #1e3a8a33; }
+        #previewContainer { display: flex; flex-wrap: wrap; gap: 10px; margin-bottom: 15px; }
+        .preview-item { position: relative; width: 70px; height: 70px; border: 1px solid var(--border); border-radius: 6px; overflow: hidden; }
+        .preview-item img { width: 100%; height: 100%; object-fit: cover; }
+        .remove-btn { position: absolute; top: 2px; right: 2px; background: rgba(239, 68, 68, 0.9); color: white; border: none; border-radius: 50%; width: 20px; height: 20px; cursor: pointer; font-size: 0.8rem; }
+        .entry-card { background: var(--card-bg); border: 1px solid var(--border); border-radius: 8px; padding: 15px; position: relative; margin-bottom: 15px; }
+        .entry-card.eod-card { border-left: 4px solid var(--purple); background: #1a1625; }
+        .entry-header { display: flex; justify-content: space-between; margin-bottom: 10px; border-bottom: 1px solid var(--border); padding-bottom: 8px; }
+        .crud-actions i { margin-left: 10px; cursor: pointer; color: var(--text-muted); }
+        .timestamp { color: var(--accent); font-weight: bold; font-size: 0.9rem; }
+        .tag { padding: 2px 8px; border-radius: 4px; font-size: 0.8rem; background: #334155; }
+        .asset-badge { background: #3b82f6; color: white; font-weight: bold; margin-right: 5px; }
+        .tag-neg { background: rgba(239, 68, 68, 0.2); color: var(--danger); border: 1px solid var(--danger); margin-right: 5px; margin-bottom: 5px; display: inline-block; }
+        .tag-plan { background: rgba(139, 92, 246, 0.2); color: var(--purple); }
+        .entry-gallery { display: flex; gap: 8px; margin-top: 10px; flex-wrap: wrap; }
+        .entry-img { height: 100px; border-radius: 4px; border: 1px solid var(--border); cursor: zoom-in; object-fit: cover; }
+        .modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.9); z-index: 1000; align-items: center; justify-content: center; }
+        .modal-content { background: var(--card-bg); padding: 20px; border-radius: 12px; width: 400px; border: 1px solid var(--border); max-height: 80vh; display: flex; flex-direction: column; }
+        .tag-list { overflow-y: auto; flex-grow: 1; margin-bottom: 15px; border: 1px solid var(--border); border-radius: 6px; background: #0f172a; }
+        .tag-item { display: flex; justify-content: space-between; padding: 10px; border-bottom: 1px solid var(--border); }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); }}
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <div class="input-panel">
+        <div class="mode-tabs">
+            <div class="mode-tab active" id="tabLive" onclick="switchMode('live')">⚡ Live Log</div>
+            <div class="mode-tab" id="tabEOD" onclick="switchMode('eod')">📝 EOD Review</div>
+        </div>
+
+        <label>Select Asset</label>
+        <select id="assetType" onchange="toggleAssetInput()">
+            <option value="NIFTY">NIFTY</option>
+            <option value="BTC">BTC</option>
+            <option value="STOCK">Individual Stock</option>
+        </select>
+        <div id="stockNameContainer" style="display:none;">
+            <input type="text" id="stockName" placeholder="Enter Stock Symbol (e.g., RELIANCE)">
+        </div>
+
+        <div id="formLive">
+            <h2>Micro Observation</h2>
+            <label>Focus Area</label>
+            <div class="select-wrapper">
+                <select id="focusArea"></select>
+                <button class="btn-icon" onclick="openTagManager()"><i class="fas fa-cog"></i></button>
+            </div>
+            <label>Notes</label>
+            <textarea id="liveNotes" placeholder="Minute detail..."></textarea>
+        </div>
+
+        <div id="formEOD" style="display: none;">
+            <h2 style="color: var(--purple);">Daily Review & Plan</h2>
+            <label style="color: var(--danger);">🛑 Today's Mistakes</label>
+            <div class="chip-container" id="mistakeContainer">
+                <div class="chip" onclick="toggleChip(this)">FOMO / Early</div>
+                <div class="chip" onclick="toggleChip(this)">Overtrading</div>
+                <div class="chip" onclick="toggleChip(this)">Sizing Issue</div>
+                <div class="chip" onclick="toggleChip(this)">No Plan</div>
+            </div>
+            <textarea id="negativesNotes" placeholder="Explain mistakes..."></textarea>
+            <label style="color: var(--success);">🚀 Tomorrow's Plan</label>
+            <select id="planBias">
+                <option value="Neutral">Neutral</option>
+                <option value="Bullish">Bullish 📈</option>
+                <option value="Bearish">Bearish 📉</option>
+            </select>
+            <label>Key Level</label>
+            <input type="text" id="keyLevel" placeholder="e.g. 26000">
+            <textarea id="planNotes" placeholder="Plan..."></textarea>
+        </div>
+
+        <label>Screenshots</label>
+        <div class="drop-zone" id="dropZone">
+            <p>Click or Drop Images Here</p>
+            <input type="file" id="fileInput" accept="image/*" multiple hidden>
+        </div>
+        <div id="previewContainer" style="display:none;"></div>
+
+        <button id="btnSubmit" class="btn-primary" onclick="addEntry()">Add Live Entry</button>
+        <button id="btnCancel" class="btn-cancel" onclick="cancelEdit()">Cancel Edit</button>
+        
+        <div class="btn-group">
+            <button class="btn-export" onclick="downloadData()">JSON</button>
+            <button class="btn-sql" onclick="downloadSql()">Export SQL</button>
+            <button class="btn-import" onclick="document.getElementById('importFile').click()">Import</button>
+            <button class="btn-clear" onclick="clearData()">Clear All</button>
+        </div>
+        <input type="file" id="importFile" accept=".json" style="display: none;" onchange="importData(this)">
+    </div>
+
+    <div class="journal-feed">
+        <div class="right-tabs-header">
+            <div class="rt-tab active" id="rt-live" onclick="switchRightTab('live')"><i class="fas fa-bolt"></i> Live Log</div>
+            <div class="rt-tab" id="rt-eod" onclick="switchRightTab('eod')"><i class="fas fa-book-open"></i> EOD Reviews</div>
+        </div>
+        <div class="right-content-area">
+            <div id="view-live" class="tab-content show"><div id="liveList"></div></div>
+            <div id="view-eod" class="tab-content"><div id="eodList"></div></div>
+        </div>
+    </div>
+</div>
+
+<div class="modal" id="imgModal" onclick="this.style.display='none'"><img id="modalImg" style="max-width:90%; max-height:90%;"></div>
+
+<div class="modal" id="tagModal">
+    <div class="modal-content">
+        <h3>Manage Focus Areas</h3>
+        <div class="tag-list" id="tagListDisplay"></div>
+        <div style="display:flex; gap:10px;">
+            <input type="text" id="newTagInput" placeholder="New Area..."><button onclick="addNewTag()">Add</button>
+        </div>
+        <button onclick="document.getElementById('tagModal').style.display='none'" style="margin-top:10px; background:var(--danger)">Close</button>
+    </div>
+</div>
+
+<script>
+    let entries = [];
+    let currentImages = []; 
+    let currentMode = 'live'; 
+    let editingId = null; 
+    let focusAreas = JSON.parse(localStorage.getItem('journalFocusAreas')) || ["Price Action", "Volume", "Support/Resistance"];
+
+    // 1. FETCH DATA FROM MYSQL ON START
+    async function loadFromDB() {
+        const res = await fetch('api.php?action=read');
+        entries = await res.json();
+        // Database returns strings, convert back to arrays
+        entries.forEach(e => {
+            e.mistakes = JSON.parse(e.mistakes || "[]");
+            e.images = JSON.parse(e.images || "[]");
+        });
+        renderEntries();
+    }
+
+    // 2. SAVE DATA TO MYSQL
+    async function addEntry() {
+        const typeSelect = document.getElementById('assetType').value;
+        const assetName = (typeSelect === 'STOCK') ? document.getElementById('stockName').value : typeSelect;
+
+        let entryData = {
+            id: editingId || Date.now(),
+            type: currentMode,
+            asset: assetName,
+            timestamp: editingId ? entries.find(e=>e.id==editingId).timestamp_str : (currentMode === 'live' ? new Date().toLocaleTimeString() : new Date().toLocaleDateString() + " (EOD)"),
+            area: document.getElementById('focusArea').value,
+            notes: document.getElementById('liveNotes').value,
+            mistakes: Array.from(document.querySelectorAll('.chip.selected')).map(c => c.innerText),
+            negNotes: document.getElementById('negativesNotes').value,
+            bias: document.getElementById('planBias').value,
+            level: document.getElementById('keyLevel').value,
+            planNotes: document.getElementById('planNotes').value,
+            images: currentImages
+        };
+
+        await fetch('api.php?action=save', {
+            method: 'POST',
+            headers: {'Content-Type': 'application/json'},
+            body: JSON.stringify(entryData)
+        });
+
+        editingId ? cancelEdit() : resetForms();
+        loadFromDB();
+    }
+
+    // 3. DELETE FROM MYSQL
+    async function deleteEntry(id) {
+        if(confirm("Delete this entry?")) {
+            await fetch(`api.php?action=delete&id=${id}`);
+            loadFromDB();
+        }
+    }
+
+    // --- UI LOGIC (RETAINED FROM YOUR CODE) ---
+    function toggleAssetInput() {
+        const type = document.getElementById('assetType').value;
+        document.getElementById('stockNameContainer').style.display = (type === 'STOCK') ? 'block' : 'none';
+    }
+
+    function switchMode(mode) {
+        currentMode = mode;
+        document.getElementById('formLive').style.display = mode === 'live' ? 'block' : 'none';
+        document.getElementById('formEOD').style.display = mode === 'eod' ? 'block' : 'none';
+        document.getElementById('tabLive').className = mode === 'live' ? 'mode-tab active' : 'mode-tab';
+        document.getElementById('tabEOD').className = mode === 'eod' ? 'mode-tab active-eod' : 'mode-tab';
+        document.getElementById('btnSubmit').innerText = mode === 'live' ? (editingId ? "Update Entry" : "Add Live Entry") : (editingId ? "Update Entry" : "Save Daily Review");
+    }
+
+    function renderEntries() {
+        const liveList = document.getElementById('liveList');
+        const eodList = document.getElementById('eodList');
+        
+        const liveEntries = entries.filter(e => e.entry_type === 'live');
+        const eodEntries = entries.filter(e => e.entry_type === 'eod');
+
+        liveList.innerHTML = liveEntries.map(e => `
+            <div class="entry-card">
+                <div class="entry-header">
+                    <span class="timestamp">${e.timestamp_str}</span>
+                    <div style="display:flex; align-items:center;">
+                        <span class="tag asset-badge">${e.asset}</span>
+                        <span class="tag">${e.focus_area}</span>
+                        <div class="crud-actions">
+                            <i class="fas fa-edit" onclick="editEntry(${e.id})"></i>
+                            <i class="fas fa-trash" onclick="deleteEntry(${e.id})"></i>
+                        </div>
+                    </div>
+                </div>
+                <p>${e.notes}</p>
+                <div class="entry-gallery">${e.images.map(img => `<img src="${img}" class="entry-img" onclick="openModal('${img}')">`).join('')}</div>
+            </div>`).join('');
+
+        eodList.innerHTML = eodEntries.map(e => `
+            <div class="entry-card eod-card">
+                <div class="entry-header">
+                    <span class="timestamp">${e.timestamp_str}</span>
+                    <div style="display:flex; align-items:center;">
+                        <span class="tag asset-badge">${e.asset}</span>
+                        <span class="tag tag-plan">EOD REVIEW</span>
+                        <div class="crud-actions">
+                            <i class="fas fa-edit" onclick="editEntry(${e.id})"></i>
+                            <i class="fas fa-trash" onclick="deleteEntry(${e.id})"></i>
+                        </div>
+                    </div>
+                </div>
+                <p><b>Mistakes:</b> ${e.mistakes.join(', ') || 'None'}</p>
+                <p><b>Plan (${e.plan_bias}):</b> ${e.plan_notes}</p>
+                <div class="entry-gallery">${e.images.map(img => `<img src="${img}" class="entry-img" onclick="openModal('${img}')">`).join('')}</div>
+            </div>`).join('');
+    }
+
+    function editEntry(id) {
+        const entry = entries.find(e => e.id == id);
+        editingId = id;
+        document.getElementById('btnCancel').style.display = 'block';
+        switchMode(entry.entry_type);
+        
+        if(entry.entry_type === 'live') {
+            document.getElementById('liveNotes').value = entry.notes;
+            document.getElementById('focusArea').value = entry.focus_area;
+        } else {
+            document.getElementById('negativesNotes').value = entry.neg_notes;
+            document.getElementById('planNotes').value = entry.plan_notes;
+            document.getElementById('keyLevel').value = entry.key_level;
+            document.getElementById('planBias').value = entry.plan_bias;
+            document.querySelectorAll('.chip').forEach(c => {
+                if(entry.mistakes.includes(c.innerText)) c.classList.add('selected');
+            });
+        }
+        currentImages = entry.images;
+        renderPreviews();
+    }
+
+    function cancelEdit() { editingId = null; document.getElementById('btnCancel').style.display = 'none'; resetForms(); }
+    
+    function resetForms() {
+        document.querySelectorAll('input, textarea').forEach(i => i.value = '');
+        document.querySelectorAll('.chip').forEach(c => c.classList.remove('selected'));
+        currentImages = []; renderPreviews();
+    }
+
+    // Image Upload Logic
+    document.getElementById('dropZone').onclick = () => document.getElementById('fileInput').click();
+    document.getElementById('fileInput').onchange = (e) => {
+        Array.from(e.target.files).forEach(file => {
+            const reader = new FileReader();
+            reader.onload = (ev) => { currentImages.push(ev.target.result); renderPreviews(); };
+            reader.readAsDataURL(file);
+        });
+    };
+
+    function renderPreviews() {
+        const cont = document.getElementById('previewContainer');
+        cont.style.display = currentImages.length ? 'flex' : 'none';
+        cont.innerHTML = currentImages.map((img, i) => `<div class="preview-item"><img src="${img}"><button class="remove-btn" onclick="currentImages.splice(${i},1);renderPreviews()">&times;</button></div>`).join('');
+    }
+
+    function toggleChip(chip) { chip.classList.toggle('selected'); }
+    function switchRightTab(t) {
+        document.querySelectorAll('.rt-tab').forEach(el => el.classList.remove('active', 'active-purple'));
+        document.querySelectorAll('.tab-content').forEach(el => el.classList.remove('show'));
+        document.getElementById('rt-'+t).classList.add(t=='eod'?'active-purple':'active');
+        document.getElementById('view-'+t).classList.add('show');
+    }
+
+    function openTagManager() {
+        document.getElementById('tagListDisplay').innerHTML = focusAreas.map((a,i) => `<div class="tag-item"><span>${a}</span><i class="fas fa-trash" onclick="focusAreas.splice(${i},1);openTagManager()"></i></div>`).join('');
+        document.getElementById('tagModal').style.display = 'flex';
+    }
+    function addNewTag() { 
+        const v = document.getElementById('newTagInput').value; 
+        if(v) { focusAreas.push(v); localStorage.setItem('journalFocusAreas', JSON.stringify(focusAreas)); renderFocusOptions(); openTagManager(); }
+    }
+    function renderFocusOptions() { document.getElementById('focusArea').innerHTML = focusAreas.map(a=>`<option value="${a}">${a}</option>`).join(''); }
+    function openModal(s) { document.getElementById('modalImg').src = s; document.getElementById('imgModal').style.display = 'flex'; }
+
+    // Init
+    renderFocusOptions();
+    loadFromDB();
+</script>
+</body>
+</html>

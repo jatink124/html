@@ -1,0 +1,298 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Master App Manager</title>
+    <style>
+        :root {
+            --bg-dark: #1e1e1e;
+            --bg-panel: #252526;
+            --bg-active: #37373d;
+            --text-main: #ccccc7;
+            --accent: #007acc;
+            --border: #333;
+        }
+
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+            background-color: var(--bg-dark);
+            color: var(--text-main);
+            height: 100vh;
+            display: flex;
+            overflow: hidden;
+        }
+
+        /* --- LEFT SIDEBAR --- */
+        .sidebar {
+            width: 250px;
+            background-color: var(--bg-panel);
+            border-right: 1px solid var(--border);
+            display: flex;
+            flex-direction: column;
+            flex-shrink: 0;
+        }
+
+        .sidebar-header {
+            padding: 15px;
+            border-bottom: 1px solid var(--border);
+            font-weight: bold;
+            font-size: 1.1rem;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .upload-btn-wrapper {
+            position: relative;
+            overflow: hidden;
+            display: inline-block;
+            margin: 15px;
+        }
+
+        .btn {
+            border: 1px solid var(--accent);
+            color: white;
+            background-color: var(--accent);
+            padding: 8px 16px;
+            border-radius: 4px;
+            font-size: 14px;
+            cursor: pointer;
+            width: 100%;
+            text-align: center;
+            transition: background 0.2s;
+        }
+
+        .btn:hover { background-color: #005f9e; }
+
+        .upload-btn-wrapper input[type=file] {
+            font-size: 100px;
+            position: absolute;
+            left: 0;
+            top: 0;
+            opacity: 0;
+            cursor: pointer;
+        }
+
+        .app-list {
+            flex-grow: 1;
+            overflow-y: auto;
+            list-style: none;
+        }
+
+        .app-item {
+            padding: 10px 15px;
+            cursor: pointer;
+            border-bottom: 1px solid var(--border);
+            font-size: 0.9rem;
+            display: flex;
+            align-items: center;
+        }
+
+        .app-item:hover { background-color: var(--bg-active); }
+        .app-item.active { background-color: var(--bg-active); border-left: 3px solid var(--accent); }
+        
+        .empty-state {
+            padding: 20px;
+            text-align: center;
+            font-size: 0.8rem;
+            color: #666;
+        }
+
+        /* --- RIGHT MAIN AREA --- */
+        .main-area {
+            flex-grow: 1;
+            display: flex;
+            flex-direction: column;
+            background-color: #1e1e1e;
+        }
+
+        .toolbar {
+            height: 50px;
+            background-color: var(--bg-panel);
+            border-bottom: 1px solid var(--border);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 15px;
+            padding: 0 20px;
+        }
+
+        .tool-btn {
+            background: transparent;
+            border: 1px solid var(--border);
+            color: var(--text-main);
+            padding: 5px 10px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 0.8rem;
+        }
+        
+        .tool-btn:hover, .tool-btn.active { background-color: var(--bg-active); }
+
+        .preview-container {
+            flex-grow: 1;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            background-color: #111; /* Darker background behind iframe */
+            padding: 20px;
+            overflow: auto;
+            transition: padding 0.3s;
+        }
+
+        .preview-container.fullscreen {
+            padding: 0;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            z-index: 1000;
+        }
+
+        iframe {
+            background-color: white;
+            border: none;
+            transition: width 0.3s ease, height 0.3s ease;
+            box-shadow: 0 0 20px rgba(0,0,0,0.5);
+        }
+
+        /* Device Sizes */
+        .size-mobile { width: 375px; height: 667px; border-radius: 20px; border: 8px solid #333; }
+        .size-tablet { width: 768px; height: 1024px; border-radius: 12px; border: 8px solid #333; }
+        .size-desktop { width: 100%; height: 100%; border-radius: 0; border: none; }
+
+    </style>
+</head>
+<body>
+
+    <div class="sidebar">
+        <div class="sidebar-header">
+            <span>🚀 App Master</span>
+        </div>
+        
+        <div class="upload-btn-wrapper">
+            <button class="btn">Upload App Files (.html)</button>
+            <input type="file" id="fileInput" multiple accept=".html" />
+        </div>
+
+        <ul class="app-list" id="appList">
+            <div class="empty-state">No apps uploaded yet.</div>
+        </ul>
+    </div>
+
+    <div class="main-area">
+        <div class="toolbar">
+            <span style="margin-right: auto; font-size: 0.9rem;" id="currentAppName">Select an app</span>
+            
+            <button class="tool-btn" onclick="setFrameSize('mobile')" title="Mobile View">📱 Mobile</button>
+            <button class="tool-btn" onclick="setFrameSize('tablet')" title="Tablet View">💊 Tablet</button>
+            <button class="tool-btn active" onclick="setFrameSize('desktop')" title="Desktop View">💻 Desktop</button>
+            <div style="width: 1px; height: 20px; background: #444; margin: 0 10px;"></div>
+            <button class="tool-btn" onclick="toggleFullscreen()">⛶ Fullscreen</button>
+        </div>
+
+        <div class="preview-container" id="previewContainer">
+            <iframe id="appFrame" class="size-desktop" src="about:blank"></iframe>
+        </div>
+    </div>
+
+    <script>
+        const fileInput = document.getElementById('fileInput');
+        const appList = document.getElementById('appList');
+        const appFrame = document.getElementById('appFrame');
+        const currentAppName = document.getElementById('currentAppName');
+        const previewContainer = document.getElementById('previewContainer');
+        const btns = document.querySelectorAll('.tool-btn');
+
+        // Store file references
+        let apps = {};
+
+        // Handle File Upload
+        fileInput.addEventListener('change', (e) => {
+            const files = e.target.files;
+            
+            if (files.length > 0) {
+                // Clear empty state if it exists
+                if(document.querySelector('.empty-state')) {
+                    appList.innerHTML = '';
+                }
+
+                Array.from(files).forEach((file, index) => {
+                    // Only process HTML files
+                    if (file.type === 'text/html' || file.name.endsWith('.html')) {
+                        const appId = 'app-' + Date.now() + index;
+                        apps[appId] = file;
+                        createSidebarItem(file.name, appId);
+                    }
+                });
+            }
+        });
+
+        function createSidebarItem(name, id) {
+            const li = document.createElement('li');
+            li.className = 'app-item';
+            li.textContent = name;
+            li.dataset.id = id;
+            
+            li.onclick = () => loadApp(id, li);
+            
+            appList.appendChild(li);
+        }
+
+        function loadApp(id, element) {
+            // Update UI active state
+            document.querySelectorAll('.app-item').forEach(item => item.classList.remove('active'));
+            element.classList.add('active');
+
+            const file = apps[id];
+            currentAppName.textContent = file.name;
+
+            // Create a Blob URL for the file to display in iframe
+            const url = URL.createObjectURL(file);
+            appFrame.src = url;
+        }
+
+        // --- Toolbar Functions ---
+
+        function setFrameSize(size) {
+            // Reset classes
+            appFrame.classList.remove('size-mobile', 'size-tablet', 'size-desktop');
+            
+            // Add new class
+            appFrame.classList.add('size-' + size);
+
+            // Update button active state
+            btns.forEach(btn => btn.classList.remove('active'));
+            // Find the button that triggered this (roughly)
+            event.target.classList.add('active');
+        }
+
+        function toggleFullscreen() {
+            if (!document.fullscreenElement) {
+                previewContainer.requestFullscreen().catch(err => {
+                    alert(`Error attempting to enable full-screen mode: ${err.message} (${err.name})`);
+                });
+                previewContainer.classList.add('fullscreen');
+                // Force desktop mode in fullscreen usually looks best, or keep current
+                appFrame.classList.remove('size-mobile', 'size-tablet');
+                appFrame.classList.add('size-desktop');
+            } else {
+                document.exitFullscreen();
+                previewContainer.classList.remove('fullscreen');
+            }
+        }
+        
+        // Listen for fullscreen exit to reset styles
+        document.addEventListener('fullscreenchange', () => {
+            if (!document.fullscreenElement) {
+                previewContainer.classList.remove('fullscreen');
+            }
+        });
+
+    </script>
+</body>
+</html>

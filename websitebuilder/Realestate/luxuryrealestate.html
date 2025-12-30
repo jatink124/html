@@ -1,0 +1,1607 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Luxe Estate | Exclusive Luxury Properties</title>
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <style>
+        .property-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+            transition: all 0.3s ease;
+        }
+        .image-gallery {
+            position: relative;
+            overflow: hidden;
+        }
+        .gallery-nav {
+            position: absolute;
+            top: 50%;
+            transform: translateY(-50%);
+            background: rgba(255,255,255,0.7);
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            z-index: 10;
+            transition: all 0.2s ease;
+        }
+        .gallery-nav:hover {
+            background: rgba(255,255,255,0.9);
+        }
+        .prev-img { left: 10px; }
+        .next-img { right: 10px; }
+        .favorite-btn {
+            position: absolute;
+            top: 15px;
+            right: 15px;
+            background: rgba(255,255,255,0.7);
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            z-index: 5;
+            transition: all 0.2s ease;
+        }
+        .favorite-btn.active i {
+            color: #e53e3e;
+        }
+        .favorite-btn:hover {
+            background: white;
+        }
+        .price-range-slider .range-track {
+            height: 6px;
+            border-radius: 3px;
+            background: #e2e8f0;
+        }
+        .price-range-slider .range-track .range-progress {
+            height: 6px;
+            background: #4299e1;
+            border-radius: 3px;
+        }
+        .range-thumb {
+            width: 20px;
+            height: 20px;
+            border-radius: 50%;
+            background: white;
+            border: 2px solid #4299e1;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            cursor: pointer;
+        }
+        .virtual-tour-modal {
+            display: none;
+            position: fixed;
+            z-index: 50;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            overflow: auto;
+            background-color: rgba(0,0,0,0.8);
+        }
+        .virtual-tour-content {
+            margin: 5% auto;
+            padding: 20px;
+            width: 90%;
+            max-width: 1200px;
+            position: relative;
+        }
+        .close-modal {
+            position: absolute;
+            top: 15px;
+            right: 15px;
+            color: white;
+            font-size: 30px;
+            cursor: pointer;
+        }
+        .testimonial-slider {
+            overflow: hidden;
+            position: relative;
+        }
+        .testimonial-slide {
+            transition: transform 0.4s ease;
+        }
+        .compare-properties {
+            display: none;
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background: white;
+            z-index: 40;
+            box-shadow: 0 -5px 15px rgba(0,0,0,0.1);
+        }
+        .compare-property {
+            position: relative;
+        }
+        .remove-compare {
+            position: absolute;
+            top: 5px;
+            right: 5px;
+            cursor: pointer;
+            background: rgba(255,255,255,0.8);
+            width: 24px;
+            height: 24px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .map-container {
+            height: 500px;
+            width: 100%;
+            background-color: #f0f0f0;
+            position: relative;
+        }
+        .map-marker {
+            position: absolute;
+            transform: translate(-50%, -50%);
+            cursor: pointer;
+        }
+        .map-marker.villa { background-color: #805ad5; }
+        .map-marker.mansion { background-color: #dd6b20; }
+        .map-marker.penthouse { background-color: #3182ce; }
+        .map-popup {
+            position: absolute;
+            width: 250px;
+            background: white;
+            border-radius: 0.5rem;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            padding: 1rem;
+            z-index: 10;
+            display: none;
+        }
+        .map-popup:after {
+            content: '';
+            position: absolute;
+            bottom: -10px;
+            left: 50%;
+            transform: translateX(-50%);
+            border-width: 10px 10px 0;
+            border-style: solid;
+            border-color: white transparent transparent;
+        }
+        .custom-select {
+            appearance: none;
+            background-image: url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='currentColor' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3e%3cpolyline points='6 9 12 15 18 9'%3e%3c/polyline%3e%3c/svg%3e");
+            background-repeat: no-repeat;
+            background-position: right 1rem center;
+            background-size: 1em;
+        }
+        .exclusive-tag {
+            background: linear-gradient(45deg, #805ad5, #3182ce);
+        }
+        .tooltip {
+            position: relative;
+            display: inline-block;
+        }
+        .tooltip .tooltip-text {
+            visibility: hidden;
+            width: 120px;
+            background-color: rgba(0, 0, 0, 0.8);
+            color: #fff;
+            text-align: center;
+            border-radius: 6px;
+            padding: 5px;
+            position: absolute;
+            z-index: 1;
+            bottom: 125%;
+            left: 50%;
+            transform: translateX(-50%);
+            opacity: 0;
+            transition: opacity 0.2s;
+        }
+        .tooltip:hover .tooltip-text {
+            visibility: visible;
+            opacity: 1;
+        }
+        .lifestyle-card {
+            overflow: hidden;
+        }
+        .lifestyle-card img {
+            transition: transform 0.5s ease;
+        }
+        .lifestyle-card:hover img {
+            transform: scale(1.05);
+        }
+        .hero-section {
+            background-image: linear-gradient(rgba(0,0,0,0.5), rgba(0,0,0,0.5)), url('https://images.unsplash.com/photo-1600607687920-4e2a09cf159d?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=2000&q=80');
+            background-size: cover;
+            background-position: center;
+            background-attachment: fixed;
+        }
+        .agent-card:hover {
+            transform: translateY(-5px);
+            transition: all 0.3s ease;
+        }
+        /* Responsive adjustments */
+        @media (max-width: 768px) {
+            .virtual-tour-content {
+                margin: 15% auto;
+                width: 95%;
+            }
+        }
+    </style>
+</head>
+<body class="font-sans bg-gray-50">
+    <!-- Header Section -->
+    <header class="bg-white shadow-md sticky top-0 z-30">
+        <div class="container mx-auto px-4 py-4">
+            <div class="flex items-center justify-between">
+                <div class="flex items-center">
+                    <a href="#" class="text-2xl font-bold text-purple-600">LUXE<span class="text-gray-800">ESTATE</span></a>
+                    <nav class="hidden md:flex ml-10 space-x-8">
+                        <a href="#" class="font-medium text-gray-700 hover:text-purple-600 transition">Estates</a>
+                        <a href="#" class="font-medium text-gray-700 hover:text-purple-600 transition">Penthouses</a>
+                        <a href="#" class="font-medium text-gray-700 hover:text-purple-600 transition">Villas</a>
+                        <a href="#" class="font-medium text-gray-700 hover:text-purple-600 transition">Concierge</a>
+                        <a href="#" class="font-medium text-gray-700 hover:text-purple-600 transition">Investments</a>
+                    </nav>
+                </div>
+                <div class="flex items-center space-x-4">
+                    <div class="hidden md:flex items-center space-x-2">
+                        <span class="text-sm text-gray-600">VIP Access:</span>
+                        <a href="#" class="text-purple-600 hover:text-purple-800 text-sm font-medium">Login</a>
+                        <span class="text-gray-400">|</span>
+                        <a href="#" class="text-purple-600 hover:text-purple-800 text-sm font-medium">Register</a>
+                    </div>
+                    <a href="#contact" class="hidden md:inline-block bg-purple-600 text-white px-4 py-2 rounded-md hover:bg-purple-700 transition">Contact Specialist</a>
+                    <button class="md:hidden text-gray-700" id="mobile-menu-button">
+                        <i class="fas fa-bars text-xl"></i>
+                    </button>
+                </div>
+            </div>
+            <div id="mobile-menu" class="md:hidden hidden mt-4 pb-2">
+                <nav class="flex flex-col space-y-3">
+                    <a href="#" class="font-medium text-gray-700 hover:text-purple-600 py-2">Estates</a>
+                    <a href="#" class="font-medium text-gray-700 hover:text-purple-600 py-2">Penthouses</a>
+                    <a href="#" class="font-medium text-gray-700 hover:text-purple-600 py-2">Villas</a>
+                    <a href="#" class="font-medium text-gray-700 hover:text-purple-600 py-2">Concierge</a>
+                    <a href="#" class="font-medium text-gray-700 hover:text-purple-600 py-2">Investments</a>
+                    <div class="flex items-center space-x-2 py-2">
+                        <span class="text-sm text-gray-600">VIP Access:</span>
+                        <a href="#" class="text-purple-600 hover:text-purple-800 text-sm font-medium">Login</a>
+                        <span class="text-gray-400">|</span>
+                        <a href="#" class="text-purple-600 hover:text-purple-800 text-sm font-medium">Register</a>
+                    </div>
+                    <a href="#contact" class="bg-purple-600 text-white px-4 py-2 rounded-md hover:bg-purple-700 transition text-center">Contact Specialist</a>
+                </nav>
+            </div>
+        </div>
+    </header>
+
+    <!-- Hero Section with Search -->
+    <section class="hero-section h-[600px] md:h-[700px] relative">
+        <div class="absolute inset-0 bg-black opacity-40"></div>
+        <div class="container mx-auto px-4 h-full flex items-center justify-center relative z-10">
+            <div class="text-center max-w-4xl">
+                <div class="mb-4 flex items-center justify-center">
+                    <span class="inline-block px-3 py-1 bg-white text-purple-700 text-xs uppercase tracking-wider font-semibold rounded-full">Exclusive Listings</span>
+                </div>
+                <h1 class="text-4xl md:text-5xl lg:text-6xl font-bold text-white mb-6 leading-tight">Extraordinary Homes<br>For Extraordinary Lives</h1>
+                <p class="text-xl text-white mb-10 max-w-3xl mx-auto">Discover the most exclusive properties in the world's most prestigious locations, curated specifically for our discerning clientele.</p>
+                
+                <!-- Property Search Form -->
+                <div class="bg-white bg-opacity-95 backdrop-filter backdrop-blur-sm rounded-lg shadow-xl p-6 md:p-8 w-full max-w-4xl mx-auto">
+                    <div class="flex flex-wrap -mx-2">
+                        <div class="w-full md:w-1/3 px-2 mb-4 md:mb-0">
+                            <label class="block text-gray-700 text-sm font-medium mb-2">Location</label>
+                            <input type="text" placeholder="Beverly Hills, Monaco, Hamptons..." class="w-full px-4 py-3 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-purple-500">
+                        </div>
+                        <div class="w-full md:w-1/3 px-2 mb-4 md:mb-0">
+                            <label class="block text-gray-700 text-sm font-medium mb-2">Property Type</label>
+                            <select class="w-full px-4 py-3 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-purple-500 custom-select">
+                                <option value="">All Luxury Properties</option>
+                                <option value="mansion">Mansions & Estates</option>
+                                <option value="penthouse">Penthouses</option>
+                                <option value="villa">Luxury Villas</option>
+                                <option value="beachfront">Beachfront Properties</option>
+                                <option value="historic">Historic Properties</option>
+                            </select>
+                        </div>
+                        <div class="w-full md:w-1/3 px-2">
+                            <label class="block text-gray-700 text-sm font-medium mb-2">Price Range</label>
+                            <select class="w-full px-4 py-3 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-purple-500 custom-select">
+                                <option value="">Any Price</option>
+                                <option value="1000000-3000000">$1M - $3M</option>
+                                <option value="3000000-5000000">$3M - $5M</option>
+                                <option value="5000000-10000000">$5M - $10M</option>
+                                <option value="10000000-20000000">$10M - $20M</option>
+                                <option value="20000000+">$20M+</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="flex justify-center mt-6">
+                        <button class="bg-purple-600 text-white px-8 py-3 rounded-md hover:bg-purple-700 transition flex items-center font-medium">
+                            <i class="fas fa-search mr-2"></i> Find Exclusive Properties
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Exclusive Property Filter Section -->
+    <section class="bg-white py-12">
+        <div class="container mx-auto px-4">
+            <h2 class="text-3xl font-bold text-center mb-10">Discover Your Perfect Luxury Property</h2>
+            
+            <div class="bg-gray-50 rounded-lg p-6 shadow-md">
+                <div class="grid grid-cols-1 md:grid-cols-4 gap-6">
+                    <div>
+                        <label class="block text-gray-700 text-sm font-medium mb-2">Property Status</label>
+                        <div class="flex gap-4">
+                            <label class="inline-flex items-center">
+                                <input type="checkbox" class="form-checkbox h-5 w-5 text-purple-600" checked>
+                                <span class="ml-2 text-gray-700">For Sale</span>
+                            </label>
+                            <label class="inline-flex items-center">
+                                <input type="checkbox" class="form-checkbox h-5 w-5 text-purple-600">
+                                <span class="ml-2 text-gray-700">For Rent</span>
+                            </label>
+                        </div>
+                    </div>
+                    
+                    <div>
+                        <label class="block text-gray-700 text-sm font-medium mb-2">Bedrooms</label>
+                        <select class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-purple-500 custom-select">
+                            <option value="">Any</option>
+                            <option value="3">3+</option>
+                            <option value="4">4+</option>
+                            <option value="5">5+</option>
+                            <option value="6">6+</option>
+                            <option value="7">7+</option>
+                        </select>
+                    </div>
+                    
+                    <div>
+                        <label class="block text-gray-700 text-sm font-medium mb-2">Bathrooms</label>
+                        <select class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-purple-500 custom-select">
+                            <option value="">Any</option>
+                            <option value="3">3+</option>
+                            <option value="4">4+</option>
+                            <option value="5">5+</option>
+                            <option value="6">6+</option>
+                        </select>
+                    </div>
+                    
+                    <div>
+                        <label class="block text-gray-700 text-sm font-medium mb-2">Square Footage</label>
+                        <select class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-purple-500 custom-select">
+                            <option value="">Any</option>
+                            <option value="3000">3,000+ sq ft</option>
+                            <option value="5000">5,000+ sq ft</option>
+                            <option value="7500">7,500+ sq ft</option>
+                            <option value="10000">10,000+ sq ft</option>
+                            <option value="15000">15,000+ sq ft</option>
+                        </select>
+                    </div>
+                </div>
+                
+                <div class="mt-6">
+                    <label class="block text-gray-700 text-sm font-medium mb-2">Price Range: $1,000,000 - $50,000,000+</label>
+                    <div class="price-range-slider relative mt-4 mx-4">
+                        <div class="range-track">
+                            <div class="range-progress" style="left: 10%; right: 20%"></div>
+                        </div>
+                        <div class="range-thumb absolute top-0 mt-[-7px]" style="left: 10%"></div>
+                        <div class="range-thumb absolute top-0 mt-[-7px]" style="left: 80%"></div>
+                    </div>
+                </div>
+                
+                <div class="mt-8">
+                    <h3 class="text-gray-700 text-sm font-medium mb-3">Luxury Amenities</h3>
+                    <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
+                        <label class="inline-flex items-center">
+                            <input type="checkbox" class="form-checkbox h-5 w-5 text-purple-600">
+                            <span class="ml-2 text-gray-700">Private Pool</span>
+                        </label>
+                        <label class="inline-flex items-center">
+                            <input type="checkbox" class="form-checkbox h-5 w-5 text-purple-600">
+                            <span class="ml-2 text-gray-700">Wine Cellar</span>
+                        </label>
+                        <label class="inline-flex items-center">
+                            <input type="checkbox" class="form-checkbox h-5 w-5 text-purple-600">
+                            <span class="ml-2 text-gray-700">Home Theater</span>
+                        </label>
+                        <label class="inline-flex items-center">
+                            <input type="checkbox" class="form-checkbox h-5 w-5 text-purple-600">
+                            <span class="ml-2 text-gray-700">Ocean View</span>
+                        </label>
+                        <label class="inline-flex items-center">
+                            <input type="checkbox" class="form-checkbox h-5 w-5 text-purple-600">
+                            <span class="ml-2 text-gray-700">Private Dock</span>
+                        </label>
+                        <label class="inline-flex items-center">
+                            <input type="checkbox" class="form-checkbox h-5 w-5 text-purple-600">
+                            <span class="ml-2 text-gray-700">Smart Home</span>
+                        </label>
+                        <label class="inline-flex items-center">
+                            <input type="checkbox" class="form-checkbox h-5 w-5 text-purple-600">
+                            <span class="ml-2 text-gray-700">Tennis Court</span>
+                        </label>
+                        <label class="inline-flex items-center">
+                            <input type="checkbox" class="form-checkbox h-5 w-5 text-purple-600">
+                            <span class="ml-2 text-gray-700">Helipad</span>
+                        </label>
+                    </div>
+                </div>
+                
+                <div class="flex flex-wrap items-center justify-between mt-8">
+                    <button class="bg-white border border-gray-300 text-gray-700 px-4 py-2 rounded-md hover:bg-gray-50 transition">
+                        Reset Filters
+                    </button>
+                    <button class="bg-purple-600 text-white px-6 py-2 rounded-md hover:bg-purple-700 transition">
+                        Apply Filters
+                    </button>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Featured Luxury Properties Section -->
+    <section class="py-16 bg-gray-50">
+        <div class="container mx-auto px-4">
+            <div class="flex justify-between items-center mb-10">
+                <h2 class="text-3xl font-bold">Featured Luxury Properties</h2>
+                <div class="flex space-x-2">
+                    <button class="bg-white border border-gray-300 text-gray-700 w-10 h-10 flex items-center justify-center rounded-full hover:bg-gray-50 transition">
+                        <i class="fas fa-chevron-left"></i>
+                    </button>
+                    <button class="bg-white border border-gray-300 text-gray-700 w-10 h-10 flex items-center justify-center rounded-full hover:bg-gray-50 transition">
+                        <i class="fas fa-chevron-right"></i>
+                    </button>
+                </div>
+            </div>
+            
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+                <!-- Luxury Property Card 1 -->
+                <div class="bg-white rounded-lg overflow-hidden shadow-md transition-transform duration-300 property-card">
+                    <div class="relative image-gallery">
+                        <div class="favorite-btn" onclick="toggleFavorite(this)">
+                            <i class="far fa-heart text-gray-600"></i>
+                        </div>
+                        <img src="https://images.unsplash.com/photo-1613977257592-4871e5fcd7c4?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=800&q=80" alt="Luxury Estate" class="w-full h-64 object-cover">
+                        <div class="absolute top-4 left-4">
+                            <span class="exclusive-tag text-white py-1 px-3 text-xs font-bold uppercase tracking-wider rounded-full">Exclusive</span>
+                        </div>
+                        <div class="gallery-nav prev-img">
+                            <i class="fas fa-chevron-left"></i>
+                        </div>
+                        <div class="gallery-nav next-img">
+                            <i class="fas fa-chevron-right"></i>
+                        </div>
+                    </div>
+                    <div class="p-6">
+                        <h3 class="text-xl font-semibold mb-2">Opulent Coastal Estate</h3>
+                        <p class="text-gray-500 mb-4">Malibu, California</p>
+                        <div class="flex justify-between mb-4">
+                            <span class="text-2xl font-bold text-purple-600">$18,500,000</span>
+                            <button class="text-purple-600 hover:underline" onclick="addToCompare(1)">Compare</button>
+                        </div>
+                        <div class="flex justify-between text-gray-600 mb-6">
+                            <span><i class="fas fa-bed mr-2"></i>6 Beds</span>
+                            <span><i class="fas fa-bath mr-2"></i>8 Baths</span>
+                            <span><i class="fas fa-ruler-combined mr-2"></i>12,500 Sq Ft</span>
+                        </div>
+                        <div class="flex space-x-3">
+                            <button class="flex-1 bg-purple-600 text-white py-2 px-4 rounded-md hover:bg-purple-700 transition">View Details</button>
+                            <button class="bg-white border border-purple-600 text-purple-600 py-2 px-4 rounded-md hover:bg-purple-50 transition" onclick="openVirtualTour()">
+                                <i class="fas fa-vr-cardboard mr-2"></i>Virtual Tour
+                            </button>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Luxury Property Card 2 -->
+                <div class="bg-white rounded-lg overflow-hidden shadow-md transition-transform duration-300 property-card">
+                    <div class="relative image-gallery">
+                        <div class="favorite-btn" onclick="toggleFavorite(this)">
+                            <i class="far fa-heart text-gray-600"></i>
+                        </div>
+                        <img src="https://images.unsplash.com/photo-1512917774080-9991f1c4c750?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=800&q=80" alt="Luxury Estate" class="w-full h-64 object-cover">
+                        <div class="absolute top-4 left-4">
+                            <span class="exclusive-tag text-white py-1 px-3 text-xs font-bold uppercase tracking-wider rounded-full">Exclusive</span>
+                        </div>
+                        <div class="gallery-nav prev-img">
+                            <i class="fas fa-chevron-left"></i>
+                        </div>
+                        <div class="gallery-nav next-img">
+                            <i class="fas fa-chevron-right"></i>
+                        </div>
+                    </div>
+                    <div class="p-6">
+                        <h3 class="text-xl font-semibold mb-2">Modern Glass Mansion</h3>
+                        <p class="text-gray-500 mb-4">Beverly Hills, California</p>
+                        <div class="flex justify-between mb-4">
+                            <span class="text-2xl font-bold text-purple-600">$32,750,000</span>
+                            <button class="text-purple-600 hover:underline" onclick="addToCompare(2)">Compare</button>
+                        </div>
+                        <div class="flex justify-between text-gray-600 mb-6">
+                            <span><i class="fas fa-bed mr-2"></i>8 Beds</span>
+                            <span><i class="fas fa-bath mr-2"></i>10 Baths</span>
+                            <span><i class="fas fa-ruler-combined mr-2"></i>18,000 Sq Ft</span>
+                        </div>
+                        <div class="flex space-x-3">
+                            <button class="flex-1 bg-purple-600 text-white py-2 px-4 rounded-md hover:bg-purple-700 transition">View Details</button>
+                            <button class="bg-white border border-purple-600 text-purple-600 py-2 px-4 rounded-md hover:bg-purple-50 transition" onclick="openVirtualTour()">
+                                <i class="fas fa-vr-cardboard mr-2"></i>Virtual Tour
+                            </button>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Luxury Property Card 3 -->
+                <div class="bg-white rounded-lg overflow-hidden shadow-md transition-transform duration-300 property-card">
+                    <div class="relative image-gallery">
+                        <div class="favorite-btn" onclick="toggleFavorite(this)">
+                            <i class="far fa-heart text-gray-600"></i>
+                        </div>
+                        <img src="https://images.unsplash.com/photo-1600596542815-ffad4c1539a9?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=800&q=80" alt="Luxury Estate" class="w-full h-64 object-cover">
+                        <div class="absolute top-4 left-4">
+                            <span class="exclusive-tag text-white py-1 px-3 text-xs font-bold uppercase tracking-wider rounded-full">Exclusive</span>
+                        </div>
+                        <div class="gallery-nav prev-img">
+                            <i class="fas fa-chevron-left"></i>
+                        </div>
+                        <div class="gallery-nav next-img">
+                            <i class="fas fa-chevron-right"></i>
+                        </div>
+                    </div>
+                    <div class="p-6">
+                        <h3 class="text-xl font-semibold mb-2">Mediterranean Villa</h3>
+                        <p class="text-gray-500 mb-4">Coral Gables, Florida</p>
+                        <div class="flex justify-between mb-4">
+                            <span class="text-2xl font-bold text-purple-600">$15,900,000</span>
+                            <button class="text-purple-600 hover:underline" onclick="addToCompare(3)">Compare</button>
+                        </div>
+                        <div class="flex justify-between text-gray-600 mb-6">
+                            <span><i class="fas fa-bed mr-2"></i>5 Beds</span>
+                            <span><i class="fas fa-bath mr-2"></i>7 Baths</span>
+                            <span><i class="fas fa-ruler-combined mr-2"></i>9,800 Sq Ft</span>
+                        </div>
+                        <div class="flex space-x-3">
+                            <button class="flex-1 bg-purple-600 text-white py-2 px-4 rounded-md hover:bg-purple-700 transition">View Details</button>
+                            <button class="bg-white border border-purple-600 text-purple-600 py-2 px-4 rounded-md hover:bg-purple-50 transition" onclick="openVirtualTour()">
+                                <i class="fas fa-vr-cardboard mr-2"></i>Virtual Tour
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="text-center mt-12">
+                <a href="#" class="inline-block border-2 border-purple-600 text-purple-600 px-6 py-3 rounded-md hover:bg-purple-50 transition font-medium">
+                    View All Exclusive Properties
+                </a>
+            </div>
+        </div>
+    </section>
+
+    <!-- Property Showcase Widget -->
+    <section class="py-16 bg-white">
+        <div class="container mx-auto px-4">
+            <div class="text-center mb-12">
+                <h2 class="text-3xl font-bold mb-4">Property of the Month</h2>
+                <p class="text-gray-600 max-w-3xl mx-auto">An exceptional masterpiece of architectural brilliance, offering unparalleled luxury and breathtaking views of the Pacific Ocean.</p>
+            </div>
+            
+            <div class="bg-gray-50 rounded-lg overflow-hidden shadow-xl">
+                <div class="grid grid-cols-1 lg:grid-cols-2">
+                    <div class="relative">
+                        <img src="https://images.unsplash.com/photo-1600607687939-ce8a6c25118c?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1200&q=80" alt="Luxury Estate" class="w-full h-full object-cover">
+                        <div class="absolute bottom-4 right-4 flex space-x-2">
+                            <span class="bg-white rounded-full w-10 h-10 flex items-center justify-center cursor-pointer">
+                                <i class="fas fa-images text-gray-700"></i>
+                            </span>
+                            <span class="bg-white rounded-full w-10 h-10 flex items-center justify-center cursor-pointer" onclick="openVirtualTour()">
+                                <i class="fas fa-vr-cardboard text-gray-700"></i>
+                            </span>
+                        </div>
+                    </div>
+                    <div class="p-8 md:p-12">
+                        <div class="flex items-center mb-4">
+                            <span class="exclusive-tag text-white py-1 px-3 text-xs font-bold uppercase tracking-wider rounded-full mr-3">Exclusive</span>
+                            <span class="text-gray-500 text-sm">Listed 2 weeks ago</span>
+                        </div>
+                        <h3 class="text-2xl font-bold mb-2">Crystal Bay Cliffside Estate</h3>
+                        <p class="text-gray-600 mb-6">Laguna Beach, California</p>
+                        <div class="mb-8">
+                            <span class="text-3xl font-bold text-purple-600">$42,500,000</span>
+                        </div>
+                        
+                        <div class="grid grid-cols-2 md:grid-cols-4 gap-4 mb-8">
+                            <div class="text-center">
+                                <span class="block text-gray-800 font-bold text-xl">7</span>
+                                <span class="text-gray-600 text-sm">Bedrooms</span>
+                            </div>
+                            <div class="text-center">
+                                <span class="block text-gray-800 font-bold text-xl">9</span>
+                                <span class="text-gray-600 text-sm">Bathrooms</span>
+                            </div>
+                            <div class="text-center">
+                                <span class="block text-gray-800 font-bold text-xl">21,500</span>
+                                <span class="text-gray-600 text-sm">Sq Ft</span>
+                            </div>
+                            <div class="text-center">
+                                <span class="block text-gray-800 font-bold text-xl">3.2</span>
+                                <span class="text-gray-600 text-sm">Acres</span>
+                            </div>
+                        </div>
+                        
+                        <p class="text-gray-600 mb-8">This architectural masterpiece offers breathtaking panoramic ocean views from every room. Featuring a private beach access, infinity pool, wine cellar, home theater, and private spa.</p>
+                        
+                        <div class="flex flex-wrap gap-3 mb-8">
+                            <span class="px-3 py-1 bg-purple-100 text-purple-700 rounded-full text-sm">Infinity Pool</span>
+                            <span class="px-3 py-1 bg-purple-100 text-purple-700 rounded-full text-sm">Smart Home</span>
+                            <span class="px-3 py-1 bg-purple-100 text-purple-700 rounded-full text-sm">Wine Cellar</span>
+                            <span class="px-3 py-1 bg-purple-100 text-purple-700 rounded-full text-sm">Ocean View</span>
+                            <span class="px-3 py-1 bg-purple-100 text-purple-700 rounded-full text-sm">Private Beach</span>
+                        </div>
+                        
+                        <div class="flex items-center space-x-8 mb-8">
+                            <div class="flex items-center">
+                                <img src="https://randomuser.me/api/portraits/women/68.jpg" alt="Agent" class="w-12 h-12 rounded-full border-2 border-purple-400">
+                                <div class="ml-3">
+                                    <p class="font-medium">Victoria Lambert</p>
+                                    <p class="text-sm text-gray-500">Luxury Estate Specialist</p>
+                                </div>
+                            </div>
+                            <a href="tel:+11234567890" class="text-purple-600 hover:underline flex items-center">
+                                <i class="fas fa-phone-alt mr-2"></i>
+                                <span>Contact Agent</span>
+                            </a>
+                        </div>
+                        
+                        <div class="flex flex-wrap gap-4">
+                            <button class="flex-1 bg-purple-600 text-white py-3 px-6 rounded-md hover:bg-purple-700 transition font-medium">Schedule Private Viewing</button>
+                            <button class="bg-white border-2 border-purple-600 text-purple-600 py-3 px-6 rounded-md hover:bg-purple-50 transition font-medium" onclick="addToCompare(4)">Add to Compare</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Map View Section -->
+    <section class="py-16 bg-gray-50">
+        <div class="container mx-auto px-4">
+            <h2 class="text-3xl font-bold text-center mb-12">Discover Luxury Estates by Location</h2>
+            
+            <div class="map-container rounded-lg overflow-hidden border border-gray-200">
+                <!-- This would connect to a real map API in production -->
+                <div class="w-full h-full bg-gray-100 flex items-center justify-center">
+                    <!-- Simulated map markers -->
+                    <div class="map-marker villa w-6 h-6 rounded-full flex items-center justify-center text-white" style="top: 30%; left: 40%;" onmouseover="showMapPopup(1)" onmouseout="hideMapPopup(1)">
+                        <i class="fas fa-home"></i>
+                        <div id="map-popup-1" class="map-popup">
+                            <div class="flex items-start">
+                                <img src="https://images.unsplash.com/photo-1613977257592-4871e5fcd7c4?ixlib=rb-4.0.3&auto=format&fit=crop&w=100&q=80" alt="Property" class="w-16 h-16 object-cover rounded mr-3">
+                                <div>
+                                    <h4 class="text-sm font-semibold">Opulent Coastal Estate</h4>
+                                    <p class="text-xs text-gray-500">Malibu, CA</p>
+                                    <p class="text-sm font-bold text-purple-600">$18,500,000</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="map-marker mansion w-6 h-6 rounded-full flex items-center justify-center text-white" style="top: 45%; left: 60%;" onmouseover="showMapPopup(2)" onmouseout="hideMapPopup(2)">
+                        <i class="fas fa-building"></i>
+                        <div id="map-popup-2" class="map-popup">
+                            <div class="flex items-start">
+                                <img src="https://images.unsplash.com/photo-1512917774080-9991f1c4c750?ixlib=rb-4.0.3&auto=format&fit=crop&w=100&q=80" alt="Property" class="w-16 h-16 object-cover rounded mr-3">
+                                <div>
+                                    <h4 class="text-sm font-semibold">Modern Glass Mansion</h4>
+                                    <p class="text-xs text-gray-500">Beverly Hills, CA</p>
+                                    <p class="text-sm font-bold text-purple-600">$32,750,000</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="map-marker penthouse w-6 h-6 rounded-full flex items-center justify-center text-white" style="top: 60%; left: 30%;" onmouseover="showMapPopup(3)" onmouseout="hideMapPopup(3)">
+                        <i class="fas fa-city"></i>
+                        <div id="map-popup-3" class="map-popup">
+                            <div class="flex items-start">
+                                <img src="https://images.unsplash.com/photo-1600596542815-ffad4c1539a9?ixlib=rb-4.0.3&auto=format&fit=crop&w=100&q=80" alt="Property" class="w-16 h-16 object-cover rounded mr-3">
+                                <div>
+                                    <h4 class="text-sm font-semibold">Mediterranean Villa</h4>
+                                    <p class="text-xs text-gray-500">Coral Gables, FL</p>
+                                    <p class="text-sm font-bold text-purple-600">$15,900,000</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <p class="text-gray-500">Interactive map would be integrated here</p>
+                </div>
+                
+                <div class="bg-white border-t border-gray-200 p-4 flex flex-wrap items-center justify-between">
+                    <div class="flex space-x-6">
+                        <label class="inline-flex items-center">
+                            <input type="checkbox" class="form-checkbox h-5 w-5 text-purple-600" checked>
+                            <span class="ml-2 text-gray-700 flex items-center">
+                                <span class="inline-block w-3 h-3 bg-purple-600 rounded-full mr-2"></span>Villas
+                            </span>
+                        </label>
+                        <label class="inline-flex items-center">
+                            <input type="checkbox" class="form-checkbox h-5 w-5 text-purple-600" checked>
+                            <span class="ml-2 text-gray-700 flex items-center">
+                                <span class="inline-block w-3 h-3 bg-orange-500 rounded-full mr-2"></span>Mansions
+                            </span>
+                        </label>
+                        <label class="inline-flex items-center">
+                            <input type="checkbox" class="form-checkbox h-5 w-5 text-purple-600" checked>
+                            <span class="ml-2 text-gray-700 flex items-center">
+                                <span class="inline-block w-3 h-3 bg-blue-600 rounded-full mr-2"></span>Penthouses
+                            </span>
+                        </label>
+                    </div>
+                    <div class="mt-4 md:mt-0">
+                        <select class="px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-purple-500 custom-select">
+                            <option>All Price Ranges</option>
+                            <option>$1M - $5M</option>
+                            <option>$5M - $10M</option>
+                            <option>$10M - $20M</option>
+                            <option>$20M+</option>
+                        </select>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Lifestyle & Locations Section -->
+    <section class="py-16 bg-white">
+        <div class="container mx-auto px-4">
+            <div class="text-center mb-12">
+                <h2 class="text-3xl font-bold mb-4">Exclusive Lifestyle Destinations</h2>
+                <p class="text-gray-600 max-w-3xl mx-auto">Discover extraordinary properties in the world's most prestigious locations, each offering a unique luxury lifestyle.</p>
+            </div>
+            
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+                <!-- Location Card 1 -->
+                <div class="lifestyle-card rounded-lg overflow-hidden shadow-md relative group">
+                    <div class="absolute inset-0 bg-gradient-to-b from-transparent to-black opacity-70 z-10"></div>
+                    <img src="https://images.unsplash.com/photo-1506929562872-bb421503ef21?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=800&q=80" alt="Beachfront Living" class="w-full h-80 object-cover">
+                    <div class="absolute bottom-0 left-0 right-0 p-6 z-20">
+                        <h3 class="text-white text-xl font-bold mb-2">Beachfront Living</h3>
+                        <p class="text-white text-opacity-90 mb-4">Exclusive coastal estates with private beach access</p>
+                        <div class="flex justify-between items-center">
+                            <span class="text-white font-medium">12 Properties</span>
+                            <a href="#" class="text-white hover:text-purple-300 flex items-center">
+                                <span>Explore</span>
+                                <i class="fas fa-arrow-right ml-2"></i>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Location Card 2 -->
+                <div class="lifestyle-card rounded-lg overflow-hidden shadow-md relative group">
+                    <div class="absolute inset-0 bg-gradient-to-b from-transparent to-black opacity-70 z-10"></div>
+                    <img src="https://images.unsplash.com/photo-1518780664697-55e3ad937233?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=800&q=80" alt="City Penthouses" class="w-full h-80 object-cover">
+                    <div class="absolute bottom-0 left-0 right-0 p-6 z-20">
+                        <h3 class="text-white text-xl font-bold mb-2">Sky-High Living</h3>
+                        <p class="text-white text-opacity-90 mb-4">Luxurious penthouses with panoramic city views</p>
+                        <div class="flex justify-between items-center">
+                            <span class="text-white font-medium">8 Properties</span>
+                            <a href="#" class="text-white hover:text-purple-300 flex items-center">
+                                <span>Explore</span>
+                                <i class="fas fa-arrow-right ml-2"></i>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Location Card 3 -->
+                <div class="lifestyle-card rounded-lg overflow-hidden shadow-md relative group">
+                    <div class="absolute inset-0 bg-gradient-to-b from-transparent to-black opacity-70 z-10"></div>
+                    <img src="https://images.unsplash.com/photo-1586788224331-947f68671cf1?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=800&q=80" alt="Mountain Retreats" class="w-full h-80 object-cover">
+                    <div class="absolute bottom-0 left-0 right-0 p-6 z-20">
+                        <h3 class="text-white text-xl font-bold mb-2">Mountain Retreats</h3>
+                        <p class="text-white text-opacity-90 mb-4">Secluded luxury homes with breathtaking views</p>
+                        <div class="flex justify-between items-center">
+                            <span class="text-white font-medium">6 Properties</span>
+                            <a href="#" class="text-white hover:text-purple-300 flex items-center">
+                                <span>Explore</span>
+                                <i class="fas fa-arrow-right ml-2"></i>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="mt-12 text-center">
+                <a href="#" class="inline-block border-2 border-purple-600 text-purple-600 px-6 py-3 rounded-md hover:bg-purple-50 transition font-medium">
+                    View All Lifestyle Collections
+                </a>
+            </div>
+        </div>
+    </section>
+
+    <!-- Investment Calculator Section -->
+    <section class="py-16 bg-gray-50">
+        <div class="container mx-auto px-4">
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-12">
+                <div class="bg-white rounded-lg shadow-md p-8">
+                    <h2 class="text-2xl font-bold mb-6">Luxury Property Investment Calculator</h2>
+                    <div class="space-y-6">
+                        <div>
+                            <label class="block text-gray-700 text-sm font-medium mb-2">Property Purchase Price</label>
+                            <div class="flex">
+                                <span class="inline-flex items-center px-3 border border-r-0 border-gray-300 bg-gray-50 text-gray-500 rounded-l-md">
+                                    $
+                                </span>
+                                <input type="text" value="5000000" class="flex-1 px-4 py-2 border border-gray-300 rounded-r-md focus:outline-none focus:ring-2 focus:ring-purple-500" id="property-price">
+                            </div>
+                        </div>
+                        
+                        <div>
+                            <label class="block text-gray-700 text-sm font-medium mb-2">Down Payment</label>
+                            <div class="flex">
+                                <span class="inline-flex items-center px-3 border border-r-0 border-gray-300 bg-gray-50 text-gray-500 rounded-l-md">
+                                    $
+                                </span>
+                                <input type="text" value="1000000" class="flex-1 px-4 py-2 border border-gray-300 rounded-r-md focus:outline-none focus:ring-2 focus:ring-purple-500" id="down-payment">
+                            </div>
+                            <div class="flex items-center justify-between mt-2">
+                                <input type="range" min="0" max="100" value="20" class="w-2/3" id="down-payment-slider">
+                                <span class="text-gray-700" id="down-payment-percentage">20%</span>
+                            </div>
+                        </div>
+                        
+                        <div>
+                            <label class="block text-gray-700 text-sm font-medium mb-2">Loan Term</label>
+                            <select class="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-purple-500 custom-select" id="loan-term">
+                                <option value="30">30 Years</option>
+                                <option value="20">20 Years</option>
+                                <option value="15">15 Years</option>
+                                <option value="10">10 Years</option>
+                            </select>
+                        </div>
+                        
+                        <div>
+                            <label class="block text-gray-700 text-sm font-medium mb-2">Interest Rate (%)</label>
+                            <input type="text" value="3.75" class="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-purple-500" id="interest-rate">
+                        </div>
+                        
+                        <div>
+                            <label class="block text-gray-700 text-sm font-medium mb-2">Annual Property Appreciation (%)</label>
+                            <input type="text" value="3.5" class="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-purple-500" id="appreciation-rate">
+                        </div>
+                        
+                        <button onclick="calculateInvestment()" class="w-full bg-purple-600 text-white py-3 rounded-md hover:bg-purple-700 transition">
+                            Calculate Investment Potential
+                        </button>
+                    </div>
+                </div>
+                
+                <div class="bg-white rounded-lg shadow-md p-8">
+                    <h2 class="text-2xl font-bold mb-6">Investment Summary</h2>
+                    <div class="text-center mb-8">
+                        <p class="text-gray-600 mb-2">Estimated Monthly Payment</p>
+                        <p class="text-4xl font-bold text-purple-600" id="monthly-payment">$18,520</p>
+                    </div>
+                    
+                    <div class="space-y-4 mb-8">
+                        <div class="flex justify-between pb-2 border-b border-gray-200">
+                            <span class="text-gray-600">Principal & Interest</span>
+                            <span class="font-medium" id="principal-interest">$16,320</span>
+                        </div>
+                        <div class="flex justify-between pb-2 border-b border-gray-200">
+                            <span class="text-gray-600">Property Tax</span>
+                            <span class="font-medium" id="property-tax">$1,875</span>
+                        </div>
+                        <div class="flex justify-between pb-2 border-b border-gray-200">
+                            <span class="text-gray-600">Insurance</span>
+                            <span class="font-medium" id="insurance">$325</span>
+                        </div>
+                    </div>
+                    
+                    <div class="bg-purple-50 p-6 rounded-lg mb-8">
+                        <h3 class="font-semibold text-purple-800 mb-4 text-lg">10-Year Projection</h3>
+                        <div class="space-y-4">
+                            <div class="flex justify-between pb-2 border-b border-purple-100">
+                                <span class="text-purple-700">Estimated Property Value</span>
+                                <span class="font-bold text-purple-800" id="future-value">$7,050,000</span>
+                            </div>
+                            <div class="flex justify-between pb-2 border-b border-purple-100">
+                                <span class="text-purple-700">Total Equity</span>
+                                <span class="font-bold text-purple-800" id="total-equity">$3,975,000</span>
+                            </div>
+                            <div class="flex justify-between pb-2 border-b border-purple-100">
+                                <span class="text-purple-700">ROI</span>
+                                <span class="font-bold text-purple-800" id="roi">297.5%</span>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="flex justify-between items-center">
+                        <a href="#" class="text-purple-600 hover:underline text-sm flex items-center">
+                            <i class="fas fa-file-pdf mr-2"></i>Download Full Investment Report
+                        </a>
+                        <button class="bg-white border border-purple-600 text-purple-600 py-2 px-4 rounded-md hover:bg-purple-50 transition">
+                            <i class="fas fa-share-alt mr-2"></i>Share
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Luxury Agents Section -->
+    <section class="py-16 bg-white">
+        <div class="container mx-auto px-4">
+            <div class="text-center mb-12">
+                <h2 class="text-3xl font-bold mb-4">Meet Our Luxury Specialists</h2>
+                <p class="text-gray-600 max-w-3xl mx-auto">Our elite team of luxury real estate specialists provide discreet, white-glove service to our discerning clientele.</p>
+            </div>
+            
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
+                <!-- Agent 1 -->
+                <div class="bg-gray-50 rounded-lg overflow-hidden shadow-sm transition-all duration-300 agent-card">
+                    <div class="relative">
+                        <img src="https://randomuser.me/api/portraits/women/68.jpg" alt="Victoria Lambert" class="w-full h-64 object-cover object-top">
+                        <div class="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black to-transparent p-4">
+                            <div class="flex justify-end space-x-2">
+                                <a href="#" class="w-8 h-8 rounded-full bg-white bg-opacity-20 flex items-center justify-center text-white hover:bg-opacity-50 transition">
+                                    <i class="fab fa-linkedin-in"></i>
+                                </a>
+                                <a href="#" class="w-8 h-8 rounded-full bg-white bg-opacity-20 flex items-center justify-center text-white hover:bg-opacity-50 transition">
+                                    <i class="fab fa-instagram"></i>
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="p-6">
+                        <h3 class="text-lg font-bold mb-1">Victoria Lambert</h3>
+                        <p class="text-purple-600 text-sm mb-3">Luxury Estate Specialist</p>
+                        <p class="text-gray-600 text-sm mb-4">Over $1.2B in luxury property sales with expertise in waterfront estates.</p>
+                        <a href="#" class="text-purple-600 hover:underline text-sm flex items-center">
+                            <i class="fas fa-envelope mr-2"></i>Contact Victoria
+                        </a>
+                    </div>
+                </div>
+                
+                <!-- Agent 2 -->
+                <div class="bg-gray-50 rounded-lg overflow-hidden shadow-sm transition-all duration-300 agent-card">
+                    <div class="relative">
+                        <img src="https://randomuser.me/api/portraits/men/32.jpg" alt="Jonathan Chen" class="w-full h-64 object-cover object-top">
+                        <div class="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black to-transparent p-4">
+                            <div class="flex justify-end space-x-2">
+                                <a href="#" class="w-8 h-8 rounded-full bg-white bg-opacity-20 flex items-center justify-center text-white hover:bg-opacity-50 transition">
+                                    <i class="fab fa-linkedin-in"></i>
+                                </a>
+                                <a href="#" class="w-8 h-8 rounded-full bg-white bg-opacity-20 flex items-center justify-center text-white hover:bg-opacity-50 transition">
+                                    <i class="fab fa-instagram"></i>
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="p-6">
+                        <h3 class="text-lg font-bold mb-1">Jonathan Chen</h3>
+                        <p class="text-purple-600 text-sm mb-3">International Luxury Consultant</p>
+                        <p class="text-gray-600 text-sm mb-4">Specializing in ultra-luxury properties for international clients and investors.</p>
+                        <a href="#" class="text-purple-600 hover:underline text-sm flex items-center">
+                            <i class="fas fa-envelope mr-2"></i>Contact Jonathan
+                        </a>
+                    </div>
+                </div>
+                
+                <!-- Agent 3 -->
+                <div class="bg-gray-50 rounded-lg overflow-hidden shadow-sm transition-all duration-300 agent-card">
+                    <div class="relative">
+                        <img src="https://randomuser.me/api/portraits/women/25.jpg" alt="Sophia Rodriguez" class="w-full h-64 object-cover object-top">
+                        <div class="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black to-transparent p-4">
+                            <div class="flex justify-end space-x-2">
+                                <a href="#" class="w-8 h-8 rounded-full bg-white bg-opacity-20 flex items-center justify-center text-white hover:bg-opacity-50 transition">
+                                    <i class="fab fa-linkedin-in"></i>
+                                </a>
+                                <a href="#" class="w-8 h-8 rounded-full bg-white bg-opacity-20 flex items-center justify-center text-white hover:bg-opacity-50 transition">
+                                    <i class="fab fa-instagram"></i>
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="p-6">
+                        <h3 class="text-lg font-bold mb-1">Sophia Rodriguez</h3>
+                        <p class="text-purple-600 text-sm mb-3">Private Client Advisor</p>
+                        <p class="text-gray-600 text-sm mb-4">Discreet representation for celebrity and high-profile clients.</p>
+                        <a href="#" class="text-purple-600 hover:underline text-sm flex items-center">
+                            <i class="fas fa-envelope mr-2"></i>Contact Sophia
+                        </a>
+                    </div>
+                </div>
+                
+                <!-- Agent 4 -->
+                <div class="bg-gray-50 rounded-lg overflow-hidden shadow-sm transition-all duration-300 agent-card">
+                    <div class="relative">
+                        <img src="https://randomuser.me/api/portraits/men/75.jpg" alt="Marcus Johnson" class="w-full h-64 object-cover object-top">
+                        <div class="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black to-transparent p-4">
+                            <div class="flex justify-end space-x-2">
+                                <a href="#" class="w-8 h-8 rounded-full bg-white bg-opacity-20 flex items-center justify-center text-white hover:bg-opacity-50 transition">
+                                    <i class="fab fa-linkedin-in"></i>
+                                </a>
+                                <a href="#" class="w-8 h-8 rounded-full bg-white bg-opacity-20 flex items-center justify-center text-white hover:bg-opacity-50 transition">
+                                    <i class="fab fa-instagram"></i>
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="p-6">
+                        <h3 class="text-lg font-bold mb-1">Marcus Johnson</h3>
+                        <p class="text-purple-600 text-sm mb-3">Investment Property Specialist</p>
+                        <p class="text-gray-600 text-sm mb-4">Expert in luxury property investments and portfolio management.</p>
+                        <a href="#" class="text-purple-600 hover:underline text-sm flex items-center">
+                            <i class="fas fa-envelope mr-2"></i>Contact Marcus
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Virtual Tour Modal -->
+    <div id="virtual-tour-modal" class="virtual-tour-modal">
+        <div class="virtual-tour-content">
+            <span class="close-modal" onclick="closeVirtualTour()">&times;</span>
+            <div class="rounded-lg overflow-hidden bg-white">
+                <div style="padding-top:56.25%; position:relative; background-color: #000;">
+                    <div style="position:absolute; top:50%; left:50%; transform:translate(-50%, -50%); text-align:center; color:#fff;">
+                        <i class="fas fa-cube text-6xl mb-4"></i>
+                        <p>Interactive 3D Virtual Tour Experience</p>
+                        <p class="text-sm mt-2">Explore this property with our immersive 3D walkthrough</p>
+                    </div>
+                </div>
+                <div class="p-6">
+                    <h3 class="text-2xl font-bold mb-2">Virtual Property Experience</h3>
+                    <p class="text-gray-600 mb-4">Explore every detail of this exceptional property from the comfort of your home with our state-of-the-art 3D virtual tour.</p>
+                    <div class="flex flex-wrap gap-4">
+                        <button class="bg-purple-600 text-white px-4 py-2 rounded-md hover:bg-purple-700 transition">
+                            <i class="fas fa-vr-cardboard mr-2"></i>Enter VR Mode
+                        </button>
+                        <button class="bg-white border border-gray-300 text-gray-700 px-4 py-2 rounded-md hover:bg-gray-50 transition">
+                            <i class="fas fa-camera mr-2"></i>View 3D Photos
+                        </button>
+                        <button class="bg-white border border-gray-300 text-gray-700 px-4 py-2 rounded-md hover:bg-gray-50 transition">
+                            <i class="fas fa-expand-arrows-alt mr-2"></i>Fullscreen
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Property Comparison Tool -->
+    <div id="compare-properties" class="compare-properties">
+        <div class="container mx-auto px-4 py-4">
+            <div class="flex items-center justify-between mb-4">
+                <h3 class="font-bold">Compare Luxury Properties</h3>
+                <div class="flex space-x-4">
+                    <button class="text-purple-600 hover:underline text-sm">Clear All</button>
+                    <button class="bg-purple-600 text-white px-4 py-1 text-sm rounded-md hover:bg-purple-700 transition">Compare Details</button>
+                    <button onclick="hideCompareBar()" class="text-gray-500 hover:text-gray-700">
+                        <i class="fas fa-times"></i>
+                    </button>
+                </div>
+            </div>
+            <div class="grid grid-cols-4 gap-4" id="compare-list">
+                <!-- Compare items will be added dynamically -->
+            </div>
+        </div>
+    </div>
+
+    <!-- Testimonials Section -->
+    <section class="py-16 bg-gray-50">
+        <div class="container mx-auto px-4">
+            <h2 class="text-3xl font-bold text-center mb-12">Client Testimonials</h2>
+            
+            <div class="relative testimonial-slider">
+                <div class="overflow-hidden">
+                    <div class="flex testimonial-slide">
+                        <!-- Testimonial 1 -->
+                        <div class="w-full md:w-1/3 px-4 flex-shrink-0">
+                            <div class="bg-white p-8 rounded-lg shadow-sm h-full">
+                                <div class="flex items-center mb-6">
+                                    <img src="https://randomuser.me/api/portraits/men/42.jpg" alt="Client" class="w-12 h-12 rounded-full mr-4">
+                                    <div>
+                                        <h4 class="font-semibold">Robert Thompson</h4>
+                                        <div class="flex text-yellow-400 mt-1">
+                                            <i class="fas fa-star"></i>
+                                            <i class="fas fa-star"></i>
+                                            <i class="fas fa-star"></i>
+                                            <i class="fas fa-star"></i>
+                                            <i class="fas fa-star"></i>
+                                        </div>
+                                    </div>
+                                </div>
+                                <p class="text-gray-600 italic">"The level of service provided by LuxeEstate far exceeded my expectations. Their understanding of the luxury market helped me secure my dream property in a highly competitive situation. The virtual tour technology allowed me to view the property remotely, which was essential for my international schedule."</p>
+                            </div>
+                        </div>
+                        
+                        <!-- Testimonial 2 -->
+                        <div class="w-full md:w-1/3 px-4 flex-shrink-0">
+                            <div class="bg-white p-8 rounded-lg shadow-sm h-full">
+                                <div class="flex items-center mb-6">
+                                    <img src="https://randomuser.me/api/portraits/women/42.jpg" alt="Client" class="w-12 h-12 rounded-full mr-4">
+                                    <div>
+                                        <h4 class="font-semibold">Elizabeth Chen</h4>
+                                        <div class="flex text-yellow-400 mt-1">
+                                            <i class="fas fa-star"></i>
+                                            <i class="fas fa-star"></i>
+                                            <i class="fas fa-star"></i>
+                                            <i class="fas fa-star"></i>
+                                            <i class="fas fa-star-half-alt"></i>
+                                        </div>
+                                    </div>
+                                </div>
+                                <p class="text-gray-600 italic">"As someone who values privacy and discretion, I appreciated LuxeEstate's approach to handling the sale of my property. They managed to secure a buyer at full asking price without any public marketing. Their investment calculator also gave me valuable insights for my next property acquisition."</p>
+                            </div>
+                        </div>
+                        
+                        <!-- Testimonial 3 -->
+                        <div class="w-full md:w-1/3 px-4 flex-shrink-0">
+                            <div class="bg-white p-8 rounded-lg shadow-sm h-full">
+                                <div class="flex items-center mb-6">
+                                    <img src="https://randomuser.me/api/portraits/men/29.jpg" alt="Client" class="w-12 h-12 rounded-full mr-4">
+                                    <div>
+                                        <h4 class="font-semibold">James Harrington</h4>
+                                        <div class="flex text-yellow-400 mt-1">
+                                            <i class="fas fa-star"></i>
+                                            <i class="fas fa-star"></i>
+                                            <i class="fas fa-star"></i>
+                                            <i class="fas fa-star"></i>
+                                            <i class="fas fa-star"></i>
+                                        </div>
+                                    </div>
+                                </div>
+                                <p class="text-gray-600 italic">"The property comparison tool was invaluable in helping me evaluate multiple estates across different locations. Their team's knowledge of local markets and their ability to negotiate favorable terms made the entire process smooth and effortless. I wouldn't hesitate to recommend them to anyone in the market for a truly exceptional home."</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <button class="absolute left-0 top-1/2 transform -translate-y-1/2 w-10 h-10 bg-white rounded-full shadow-md flex items-center justify-center text-gray-600 hover:text-purple-600 focus:outline-none z-10 hidden md:flex" onclick="prevTestimonial()">
+                    <i class="fas fa-chevron-left"></i>
+                </button>
+                <button class="absolute right-0 top-1/2 transform -translate-y-1/2 w-10 h-10 bg-white rounded-full shadow-md flex items-center justify-center text-gray-600 hover:text-purple-600 focus:outline-none z-10 hidden md:flex" onclick="nextTestimonial()">
+                    <i class="fas fa-chevron-right"></i>
+                </button>
+            </div>
+            
+            <div class="flex justify-center mt-8">
+                <span class="w-3 h-3 rounded-full bg-purple-600 mx-1"></span>
+                <span class="w-3 h-3 rounded-full bg-gray-300 mx-1"></span>
+                <span class="w-3 h-3 rounded-full bg-gray-300 mx-1"></span>
+            </div>
+        </div>
+    </section>
+
+    <!-- Contact Form and VIP Registration Section -->
+    <section class="py-16 bg-white" id="contact">
+        <div class="container mx-auto px-4">
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-12">
+                <!-- Contact Form -->
+                <div class="bg-gray-50 rounded-lg shadow-md p-8">
+                    <h2 class="text-2xl font-bold mb-6">Contact a Luxury Specialist</h2>
+                    <form>
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
+                            <div>
+                                <label class="block text-gray-700 text-sm font-medium mb-2" for="name">Your Name</label>
+                                <input id="name" type="text" class="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-purple-500" placeholder="John Doe">
+                            </div>
+                            <div>
+                                <label class="block text-gray-700 text-sm font-medium mb-2" for="email">Your Email</label>
+                                <input id="email" type="email" class="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-purple-500" placeholder="john@example.com">
+                            </div>
+                            <div>
+                                <label class="block text-gray-700 text-sm font-medium mb-2" for="phone">Phone Number</label>
+                                <input id="phone" type="tel" class="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-purple-500" placeholder="(123) 456-7890">
+                            </div>
+                            <div>
+                                <label class="block text-gray-700 text-sm font-medium mb-2" for="preferred-contact">Preferred Contact Method</label>
+                                <select id="preferred-contact" class="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-purple-500 custom-select">
+                                    <option>Email</option>
+                                    <option>Phone</option>
+                                    <option>WhatsApp</option>
+                                    <option>Video Call</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="mb-6">
+                            <label class="block text-gray-700 text-sm font-medium mb-2" for="interest">I'm Interested In</label>
+                            <select id="interest" class="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-purple-500 custom-select">
+                                <option>Purchasing a Luxury Home</option>
+                                <option>Selling My Property</option>
+                                <option>Luxury Investment Opportunities</option>
+                                <option>Private Viewing Request</option>
+                                <option>Other Inquiries</option>
+                            </select>
+                        </div>
+                        <div class="mb-6">
+                            <label class="block text-gray-700 text-sm font-medium mb-2" for="message">Message</label>
+                            <textarea id="message" rows="4" class="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-purple-500" placeholder="Tell us about your specific requirements..."></textarea>
+                        </div>
+                        <div class="flex items-center mb-6">
+                            <input id="privacy" type="checkbox" class="h-4 w-4 text-purple-600 focus:ring-purple-500 border-gray-300 rounded">
+                            <label for="privacy" class="ml-2 block text-sm text-gray-700">
+                                I agree to the <a href="#" class="text-purple-600 hover:underline">privacy policy</a> and consent to being contacted by a luxury specialist.
+                            </label>
+                        </div>
+                        <button type="submit" class="w-full bg-purple-600 text-white py-3 rounded-md hover:bg-purple-700 transition">
+                            Submit Inquiry
+                        </button>
+                    </form>
+                </div>
+                
+                <!-- VIP Registration -->
+                <div>
+                    <div class="bg-purple-600 rounded-lg shadow-md p-8 text-white mb-8">
+                        <h2 class="text-2xl font-bold mb-4">Join Our VIP Network</h2>
+                        <p class="mb-6">Gain exclusive access to off-market luxury properties, private events, and personalized investment opportunities tailored to your preferences.</p>
+                        <form class="space-y-4">
+                            <input type="text" placeholder="Your Name" class="w-full px-4 py-3 rounded-md focus:outline-none text-gray-700">
+                            <input type="email" placeholder="Your Email Address" class="w-full px-4 py-3 rounded-md focus:outline-none text-gray-700">
+                            <div class="flex flex-col sm:flex-row gap-4">
+                                <select class="w-full px-4 py-3 rounded-md focus:outline-none text-gray-700 custom-select">
+                                    <option value="" selected disabled>Investment Range</option>
+                                    <option>$1M - $5M</option>
+                                    <option>$5M - $10M</option>
+                                    <option>$10M - $20M</option>
+                                    <option>$20M+</option>
+                                </select>
+                                <select class="w-full px-4 py-3 rounded-md focus:outline-none text-gray-700 custom-select">
+                                    <option value="" selected disabled>Property Type</option>
+                                    <option>Mansion</option>
+                                    <option>Waterfront</option>
+                                    <option>Penthouse</option>
+                                    <option>Historic</option>
+                                    <option>Land</option>
+                                </select>
+                            </div>
+                            <button type="submit" class="w-full bg-white text-purple-600 px-6 py-3 rounded-md hover:bg-gray-100 transition font-medium">
+                                Register for VIP Access
+                            </button>
+                        </form>
+                    </div>
+                    
+                    <div class="bg-gray-50 rounded-lg shadow-md p-8">
+                        <h3 class="text-xl font-bold mb-4">Our Luxury Services</h3>
+                        <div class="space-y-4">
+                            <div class="flex items-start">
+                                <div class="flex-shrink-0 mt-1">
+                                    <i class="fas fa-key text-purple-600 text-xl"></i>
+                                </div>
+                                <div class="ml-4">
+                                    <h4 class="font-medium">Private Acquisitions</h4>
+                                    <p class="text-gray-600 text-sm mt-1">Discreet acquisition of off-market properties through our exclusive network</p>
+                                </div>
+                            </div>
+                            <div class="flex items-start">
+                                <div class="flex-shrink-0 mt-1">
+                                    <i class="fas fa-chart-line text-purple-600 text-xl"></i>
+                                </div>
+                                <div class="ml-4">
+                                    <h4 class="font-medium">Investment Advisory</h4>
+                                    <p class="text-gray-600 text-sm mt-1">Strategic guidance for building a high-value real estate portfolio</p>
+                                </div>
+                            </div>
+                            <div class="flex items-start">
+                                <div class="flex-shrink-0 mt-1">
+                                    <i class="fas fa-concierge-bell text-purple-600 text-xl"></i>
+                                </div>
+                                <div class="ml-4">
+                                    <h4 class="font-medium">Luxury Concierge</h4>
+                                    <p class="text-gray-600 text-sm mt-1">Full-service support for relocation, property management, and lifestyle services</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="bg-gray-800 text-white pt-16 pb-8">
+        <div class="container mx-auto px-4">
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8 mb-12">
+                <div>
+                    <h3 class="text-xl font-bold mb-4">LUXE<span class="text-purple-400">ESTATE</span></h3>
+                    <p class="text-gray-300 mb-4">Providing exceptional luxury real estate services to discerning clients worldwide since 2005. We specialize in exclusive properties in the most sought-after locations globally.</p>
+                    <div class="flex space-x-4">
+                        <a href="#" class="text-gray-300 hover:text-white transition">
+                            <i class="fab fa-facebook-f"></i>
+                        </a>
+                        <a href="#" class="text-gray-300 hover:text-white transition">
+                            <i class="fab fa-twitter"></i>
+                        </a>
+                        <a href="#" class="text-gray-300 hover:text-white transition">
+                            <i class="fab fa-instagram"></i>
+                        </a>
+                        <a href="#" class="text-gray-300 hover:text-white transition">
+                            <i class="fab fa-linkedin-in"></i>
+                        </a>
+                    </div>
+                </div>
+                
+                <div>
+                    <h3 class="text-lg font-bold mb-4">Quick Links</h3>
+                    <ul class="space-y-2">
+                        <li><a href="#" class="text-gray-300 hover:text-white transition">Luxury Properties</a></li>
+                        <li><a href="#" class="text-gray-300 hover:text-white transition">Exclusive Listings</a></li>
+                        <li><a href="#" class="text-gray-300 hover:text-white transition">Meet Our Agents</a></li>
+                        <li><a href="#" class="text-gray-300 hover:text-white transition">Investment Opportunities</a></li>
+                        <li><a href="#" class="text-gray-300 hover:text-white transition">Contact Us</a></li>
+                    </ul>
+                </div>
+                
+                <div>
+                    <h3 class="text-lg font-bold mb-4">Locations</h3>
+                    <ul class="space-y-2">
+                        <li><a href="#" class="text-gray-300 hover:text-white transition">Beverly Hills</a></li>
+                        <li><a href="#" class="text-gray-300 hover:text-white transition">New York</a></li>
+                        <li><a href="#" class="text-gray-300 hover:text-white transition">Miami</a></li>
+                        <li><a href="#" class="text-gray-300 hover:text-white transition">London</a></li>
+                        <li><a href="#" class="text-gray-300 hover:text-white transition">Paris</a></li>
+                        <li><a href="#" class="text-gray-300 hover:text-white transition">Dubai</a></li>
+                    </ul>
+                </div>
+                
+                <div>
+                    <h3 class="text-lg font-bold mb-4">Contact Information</h3>
+                    <ul class="space-y-3">
+                        <li class="flex items-start">
+                            <i class="fas fa-map-marker-alt mt-1 mr-3 text-purple-400"></i>
+                            <span>9454 Wilshire Boulevard<br>Beverly Hills, CA 90212</span>
+                        </li>
+                        <li class="flex items-center">
+                            <i class="fas fa-phone-alt mr-3 text-purple-400"></i>
+                            <span>+1 (310) 555-8765</span>
+                        </li>
+                        <li class="flex items-center">
+                            <i class="fas fa-envelope mr-3 text-purple-400"></i>
+                            <span>inquiries@luxeestate.com</span>
+                        </li>
+                        <li class="flex items-center">
+                            <i class="fas fa-clock mr-3 text-purple-400"></i>
+                            <span>Mon-Fri: 9AM - 6PM</span>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+            
+            <div class="border-t border-gray-700 pt-8">
+                <div class="flex flex-col md:flex-row justify-between items-center">
+                    <p class="text-gray-400 text-sm mb-4 md:mb-0">&copy; 2023 LUXEESTATE Luxury Properties. All rights reserved.</p>
+                    <div class="flex space-x-6">
+                        <a href="#" class="text-gray-400 hover:text-white transition text-sm">Privacy Policy</a>
+                        <a href="#" class="text-gray-400 hover:text-white transition text-sm">Terms of Service</a>
+                        <a href="#" class="text-gray-400 hover:text-white transition text-sm">Disclaimer</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <!-- JavaScript -->
+    <script>
+        // Mobile menu toggle
+        document.getElementById('mobile-menu-button').addEventListener('click', function() {
+            const mobileMenu = document.getElementById('mobile-menu');
+            mobileMenu.classList.toggle('hidden');
+        });
+        
+        // Property favoriting
+        function toggleFavorite(el) {
+            el.classList.toggle('active');
+            const icon = el.querySelector('i');
+            if (icon.classList.contains('far')) {
+                icon.classList.remove('far');
+                icon.classList.add('fas');
+                icon.style.color = '#e53e3e';
+            } else {
+                icon.classList.remove('fas');
+                icon.classList.add('far');
+                icon.style.color = '#718096';
+            }
+        }
+        
+        // Virtual tour modal
+        function openVirtualTour() {
+            document.getElementById('virtual-tour-modal').style.display = 'block';
+        }
+        
+        function closeVirtualTour() {
+            document.getElementById('virtual-tour-modal').style.display = 'none';
+        }
+        
+        // Close modal when clicking outside
+        window.onclick = function(event) {
+            const modal = document.getElementById('virtual-tour-modal');
+            if (event.target == modal) {
+                closeVirtualTour();
+            }
+        }
+        
+        // Property comparison tool
+        function addToCompare(propertyId) {
+            const compareList = document.getElementById('compare-list');
+            const compareBar = document.getElementById('compare-properties');
+            
+            // Check if property is already added
+            if (document.getElementById('compare-item-' + propertyId)) {
+                return;
+            }
+            
+            // Simple property data mapping (this would come from your database)
+            const properties = {
+                1: {
+                    title: "Opulent Coastal Estate",
+                    price: "$18,500,000",
+                    image: "https://images.unsplash.com/photo-1613977257592-4871e5fcd7c4?ixlib=rb-4.0.3&auto=format&fit=crop&w=120&q=80"
+                },
+                2: {
+                    title: "Modern Glass Mansion",
+                    price: "$32,750,000",
+                    image: "https://images.unsplash.com/photo-1512917774080-9991f1c4c750?ixlib=rb-4.0.3&auto=format&fit=crop&w=120&q=80"
+                },
+                3: {
+                    title: "Mediterranean Villa",
+                    price: "$15,900,000",
+                    image: "https://images.unsplash.com/photo-1600596542815-ffad4c1539a9?ixlib=rb-4.0.3&auto=format&fit=crop&w=120&q=80"
+                },
+                4: {
+                    title: "Crystal Bay Cliffside Estate",
+                    price: "$42,500,000",
+                    image: "https://images.unsplash.com/photo-1600607687939-ce8a6c25118c?ixlib=rb-4.0.3&auto=format&fit=crop&w=120&q=80"
+                }
+            };
+            
+            const property = properties[propertyId];
+            
+            // Create comparison item
+            const item = document.createElement('div');
+            item.id = 'compare-item-' + propertyId;
+            item.className = 'compare-property bg-white rounded-lg shadow-sm overflow-hidden';
+            item.innerHTML = `
+                <div class="relative">
+                    <img src="${property.image}" alt="${property.title}" class="w-full h-24 object-cover">
+                    <button class="remove-compare" onclick="removeFromCompare(${propertyId})">
+                        <i class="fas fa-times"></i>
+                    </button>
+                </div>
+                <div class="p-3">
+                    <h4 class="font-medium text-sm">${property.title}</h4>
+                    <p class="text-purple-600 font-bold">${property.price}</p>
+                </div>
+            `;
+            
+            compareList.appendChild(item);
+            compareBar.style.display = 'block';
+        }
+        
+        function removeFromCompare(propertyId) {
+            const item = document.getElementById('compare-item-' + propertyId);
+            item.remove();
+            
+            // Hide bar if no items left
+            const compareList = document.getElementById('compare-list');
+            if (compareList.children.length === 0) {
+                hideCompareBar();
+            }
+        }
+        
+        function hideCompareBar() {
+            document.getElementById('compare-properties').style.display = 'none';
+        }
+        
+        // Map popup functions
+        function showMapPopup(id) {
+            document.getElementById('map-popup-' + id).style.display = 'block';
+        }
+        
+        function hideMapPopup(id) {
+            document.getElementById('map-popup-' + id).style.display = 'none';
+        }
+        
+        // Testimonial slider
+        let testimonialIndex = 0;
+        
+        function showTestimonial(index) {
+            const slides = document.querySelector('.testimonial-slide');
+            testimonialIndex = index;
+            slides.style.transform = `translateX(-${index * 33.33}%)`;
+        }
+        
+        function nextTestimonial() {
+            if (testimonialIndex < 2) {
+                showTestimonial(testimonialIndex + 1);
+            } else {
+                showTestimonial(0);
+            }
+        }
+        
+        function prevTestimonial() {
+            if (testimonialIndex > 0) {
+                showTestimonial(testimonialIndex - 1);
+            } else {
+                showTestimonial(2);
+            }
+        }
+        
+        // Investment Calculator
+        function calculateInvestment() {
+            const propertyPrice = parseFloat(document.getElementById('property-price').value.replace(/,/g, ''));
+            const downPayment = parseFloat(document.getElementById('down-payment').value.replace(/,/g, ''));
+            const loanTerm = parseInt(document.getElementById('loan-term').value);
+            const interestRate = parseFloat(document.getElementById('interest-rate').value);
+            const appreciationRate = parseFloat(document.getElementById('appreciation-rate').value);
+            
+            const loanAmount = propertyPrice - downPayment;
+            const monthlyInterest = interestRate / 100 / 12;
+            const payments = loanTerm * 12;
+            
+            const x = Math.pow(1 + monthlyInterest, payments);
+            const monthly = (loanAmount * x * monthlyInterest) / (x - 1);
+            
+            const monthlyPayment = monthly.toFixed(2);
+            const principalInterest = monthly.toFixed(2);
+            const propertyTax = (propertyPrice * 0.0075 / 12).toFixed(2);
+            const insurance = (propertyPrice * 0.0015 / 12).toFixed(2);
+            
+            // Future value calculation (10 year projection)
+            const futureValue = (propertyPrice * Math.pow(1 + (appreciationRate / 100), 10)).toFixed(0);
+            const remainingLoanBalance = loanAmount * (1 - Math.pow((1 + monthlyInterest), loanTerm * 12 * -0.5)) / (1 - Math.pow((1 + monthlyInterest), -1));
+            const totalEquity = (futureValue - remainingLoanBalance).toFixed(0);
+            const roi = ((totalEquity - downPayment) / downPayment * 100).toFixed(1);
+            
+            document.getElementById('monthly-payment').innerText = '$' + numberWithCommas(monthlyPayment);
+            document.getElementById('principal-interest').innerText = '$' + numberWithCommas(principalInterest);
+            document.getElementById('property-tax').innerText = '$' + numberWithCommas(propertyTax);
+            document.getElementById('insurance').innerText = '$' + numberWithCommas(insurance);
+            
+            document.getElementById('future-value').innerText = '$' + numberWithCommas(futureValue);
+            document.getElementById('total-equity').innerText = '$' + numberWithCommas(totalEquity);
+            document.getElementById('roi').innerText = roi + '%';
+        }
+        
+        // Helper function to format numbers with commas
+        function numberWithCommas(x) {
+            return x.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+        }
+        
+        // Down payment slider
+        const downPaymentSlider = document.getElementById('down-payment-slider');
+        const downPaymentInput = document.getElementById('down-payment');
+        const propertyPriceInput = document.getElementById('property-price');
+        const downPaymentPercentage = document.getElementById('down-payment-percentage');
+        
+        downPaymentSlider.addEventListener('input', function() {
+            const percentage = this.value;
+            const propertyPrice = parseFloat(propertyPriceInput.value.replace(/,/g, ''));
+            const downPayment = (propertyPrice * percentage / 100).toFixed(0);
+            
+            downPaymentInput.value = downPayment;
+            downPaymentPercentage.innerText = percentage + '%';
+        });
+        
+        downPaymentInput.addEventListener('input', function() {
+            const downPayment = parseFloat(this.value.replace(/,/g, ''));
+            const propertyPrice = parseFloat(propertyPriceInput.value.replace(/,/g, ''));
+            const percentage = (downPayment / propertyPrice * 100).toFixed(0);
+            
+            if (percentage >= 0 && percentage <= 100) {
+                downPaymentSlider.value = percentage;
+                downPaymentPercentage.innerText = percentage + '%';
+            }
+        });
+    </script>
+</body>
+</html>

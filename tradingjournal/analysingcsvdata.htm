@@ -1,0 +1,657 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Trading CSV Analyzer</title>
+
+  <!-- Tailwind CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+
+  <!-- React + ReactDOM -->
+  <script crossorigin src="https://unpkg.com/react@18/umd/react.development.js"></script>
+  <script crossorigin src="https://unpkg.com/react-dom@18/umd/react-dom.development.js"></script>
+
+  <!-- Babel for JSX -->
+  <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+
+  <!-- PapaParse for CSV -->
+  <script src="https://cdn.jsdelivr.net/npm/papaparse@5.4.1/papaparse.min.js"></script>
+</head>
+<body class="bg-slate-950 text-slate-100">
+  <div id="root" class="min-h-screen"></div>
+
+  <script type="text/babel">
+    const { useState, useMemo, useEffect, useRef } = React;
+
+    // ---------- Helpers ----------
+    const normalizeNumber = (v) => {
+      if (v == null) return null;
+      if (typeof v === "number") return v;
+      const s = String(v).replace(/,/g, "").trim();
+      if (!s) return null;
+      const n = parseFloat(s);
+      return Number.isNaN(n) ? null : n;
+    };
+
+    const parseDate = (s) => {
+      if (!s) return null;
+      const t = s.trim();
+      // Handle common formats: DD-MM-YYYY, YYYY-MM-DD, DD/MM/YYYY
+      const m1 = t.match(/^(\d{2})-(\d{2})-(\d{4})$/);
+      const m2 = t.match(/^(\d{4})-(\d{2})-(\d{2})$/);
+      const m3 = t.match(/^(\d{2})\/(\d{2})\/(\d{4})$/);
+      let d;
+      if (m1) d = new Date(+m1[3], +m1[2] - 1, +m1[1]);
+      else if (m2) d = new Date(+m2[1], +m2[2] - 1, +m2[3]);
+      else if (m3) d = new Date(+m3[3], +m3[2] - 1, +m3[1]);
+      else {
+        const tmp = new Date(t);
+        if (isNaN(tmp.getTime())) return null;
+        d = tmp;
+      }
+      return d;
+    };
+
+    const parseTimeToHour = (s) => {
+      if (!s) return null;
+      const t = s.trim();
+      const m = t.match(/^(\d{1,2}):(\d{2})/);
+      if (!m) return null;
+      const h = parseInt(m[1], 10);
+      if (Number.isNaN(h)) return null;
+      return h;
+    };
+
+    const groupBy = (arr, keyFn) => {
+      const map = new Map();
+      for (const item of arr) {
+        const key = keyFn(item);
+        if (key == null) continue;
+        if (!map.has(key)) map.set(key, []);
+        map.get(key).push(item);
+      }
+      return map;
+    };
+
+    const findHeader = (headers, keywords) => {
+      const lower = headers.map(h => h.toLowerCase());
+      for (const kw of keywords) {
+        const idx = lower.findIndex(h => h.includes(kw));
+        if (idx !== -1) return headers[idx];
+      }
+      return "";
+    };
+
+    // ---------- Components ----------
+
+    function StatCard({ label, value, sub }) {
+      return (
+        <div className="bg-slate-900/70 border border-slate-800 rounded-2xl px-4 py-3 flex flex-col gap-1">
+          <span className="text-[11px] uppercase tracking-wide text-slate-400">
+            {label}
+          </span>
+          <span className="text-xl font-semibold text-slate-50">
+            {value}
+          </span>
+          {sub && (
+            <span className="text-[11px] text-slate-500">
+              {sub}
+            </span>
+          )}
+        </div>
+      );
+    }
+
+    function ColumnMapping({ headers, mapping, setMapping }) {
+      const fields = [
+        { key: "date", label: "Date (required)" },
+        { key: "time", label: "Time (optional)" },
+        { key: "symbol", label: "Symbol / Instrument (required)" },
+        { key: "side", label: "Buy/Sell (optional)" },
+        { key: "qty", label: "Quantity (optional)" },
+        { key: "price", label: "Price (optional)" },
+        { key: "pnl", label: "P&L per trade (important)" },
+        { key: "product", label: "Product (MIS/NRML etc, optional)" },
+      ];
+
+      const handleChange = (fieldKey, value) => {
+        setMapping((prev) => ({ ...prev, [fieldKey]: value }));
+      };
+
+      return (
+        <div className="mt-3 bg-slate-900/70 border border-slate-800 rounded-2xl p-3">
+          <h3 className="text-xs font-semibold text-slate-200 mb-2">
+            Step 2: Map columns (check auto-detected values)
+          </h3>
+          <div className="space-y-2 max-h-64 overflow-y-auto">
+            {fields.map((f) => (
+              <div key={f.key} className="flex flex-col gap-1">
+                <label className="text-[11px] text-slate-400">
+                  {f.label}
+                </label>
+                <select
+                  value={mapping[f.key] || ""}
+                  onChange={(e) => handleChange(f.key, e.target.value)}
+                  className="text-[11px] px-2 py-1.5 rounded-lg bg-slate-950 border border-slate-800 focus:outline-none focus:ring-1 focus:ring-emerald-500/60"
+                >
+                  <option value="">-- Not used --</option>
+                  {headers.map((h) => (
+                    <option key={h} value={h}>
+                      {h}
+                    </option>
+                  ))}
+                </select>
+              </div>
+            ))}
+          </div>
+          <p className="mt-2 text-[10px] text-slate-500">
+            At minimum, set <span className="font-mono">Date</span>, <span className="font-mono">Symbol</span>, and <span className="font-mono">P&L</span> for meaningful analysis.
+          </p>
+        </div>
+      );
+    }
+
+    function SymbolTable({ symbolStats }) {
+      if (!symbolStats.length) return null;
+      return (
+        <div className="bg-slate-900/70 border border-slate-800 rounded-2xl p-4">
+          <div className="flex justify-between items-center mb-2">
+            <h3 className="text-sm font-semibold text-slate-100">Symbols: best & worst</h3>
+            <span className="text-[11px] text-slate-500">Sort by net P&L</span>
+          </div>
+          <div className="overflow-auto max-h-80">
+            <table className="min-w-full text-[11px]">
+              <thead>
+                <tr className="bg-slate-900/80">
+                  <th className="text-left px-2 py-1 text-slate-400">Symbol</th>
+                  <th className="text-right px-2 py-1 text-slate-400">Trades</th>
+                  <th className="text-right px-2 py-1 text-slate-400">Net P&L</th>
+                  <th className="text-right px-2 py-1 text-slate-400">Win%</th>
+                  <th className="text-right px-2 py-1 text-slate-400">Avg P&L</th>
+                </tr>
+              </thead>
+              <tbody className="divide-y divide-slate-800">
+                {symbolStats.map((s) => (
+                  <tr key={s.symbol} className="hover:bg-slate-800/60">
+                    <td className="px-2 py-1 text-emerald-300">{s.symbol}</td>
+                    <td className="px-2 py-1 text-right text-slate-200">{s.trades}</td>
+                    <td className={"px-2 py-1 text-right " + (s.netPnl >= 0 ? "text-emerald-300" : "text-rose-300")}>
+                      {s.netPnl.toFixed(2)}
+                    </td>
+                    <td className="px-2 py-1 text-right text-slate-200">
+                      {s.winRate.toFixed(1)}%
+                    </td>
+                    <td className="px-2 py-1 text-right text-slate-200">
+                      {s.avgPnl.toFixed(2)}
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+        </div>
+      );
+    }
+
+    function DayTable({ dayStats }) {
+      if (!dayStats.length) return null;
+      return (
+        <div className="bg-slate-900/70 border border-slate-800 rounded-2xl p-4">
+          <div className="flex justify-between items-center mb-2">
+            <h3 className="text-sm font-semibold text-slate-100">Day-wise performance</h3>
+            <span className="text-[11px] text-slate-500">Identify big red days / overtrading</span>
+          </div>
+          <div className="overflow-auto max-h-80">
+            <table className="min-w-full text-[11px]">
+              <thead>
+                <tr className="bg-slate-900/80">
+                  <th className="text-left px-2 py-1 text-slate-400">Date</th>
+                  <th className="text-right px-2 py-1 text-slate-400">Trades</th>
+                  <th className="text-right px-2 py-1 text-slate-400">Net P&L</th>
+                </tr>
+              </thead>
+              <tbody className="divide-y divide-slate-800">
+                {dayStats.map((d) => (
+                  <tr key={d.dateKey} className="hover:bg-slate-800/60">
+                    <td className="px-2 py-1 text-slate-200">{d.dateKey}</td>
+                    <td className="px-2 py-1 text-right text-slate-200">{d.trades}</td>
+                    <td className={"px-2 py-1 text-right " + (d.netPnl >= 0 ? "text-emerald-300" : "text-rose-300")}>
+                      {d.netPnl.toFixed(2)}
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+        </div>
+      );
+    }
+
+    function InsightsPanel({ stats, symbolStats, dayStats, timeBuckets }) {
+      if (!stats || stats.totalTrades === 0) {
+        return (
+          <div className="bg-slate-900/70 border border-slate-800 rounded-2xl p-4 text-[11px] text-slate-500">
+            Import your CSV and run analysis to see personalized insights about your mistakes and strategy.
+          </div>
+        );
+      }
+
+      const insights = [];
+
+      // Winrate & expectancy
+      if (stats.winRate < 45 && stats.expectancy < 0) {
+        insights.push("Your winrate is below 45% and expectancy per trade is negative. Focus on improving either your entry quality (filter trades more) or reward-to-risk (let winners run more, cut losers faster).");
+      } else if (stats.winRate >= 50 && stats.expectancy > 0) {
+        insights.push("You already have a positive edge. Main focus should be avoiding big red days and increasing position size slowly on your best setups.");
+      }
+
+      if (Math.abs(stats.avgLoss) > stats.avgWin) {
+        insights.push("Your average loss is bigger than your average win. Try to keep losses smaller than wins (e.g., risk 1 to make 2) by using strict stop losses and avoiding averaging into losers.");
+      }
+
+      // Big red days
+      const sortedDays = [...dayStats].sort((a, b) => a.netPnl - b.netPnl);
+      if (sortedDays.length > 0) {
+        const worst = sortedDays[0];
+        const typicalLoss = sortedDays.length > 3
+          ? sortedDays.slice(0, Math.min(5, sortedDays.length)).reduce((s, d) => s + d.netPnl, 0) / Math.min(5, sortedDays.length)
+          : worst.netPnl;
+        if (worst.netPnl < typicalLoss * 2) {
+          /* nothing special */
+        } else {
+          insights.push(`One or a few very big red days are damaging your overall results (e.g., ${worst.dateKey} has a large loss). Add a daily stop loss limit and stop trading after crossing it.`);
+        }
+      }
+
+      // Symbol focus
+      if (symbolStats.length >= 2) {
+        const best = symbolStats[0];
+        const worst = symbolStats[symbolStats.length - 1];
+        if (best.netPnl > 0 && worst.netPnl < 0) {
+          insights.push(`You are profitable in ${best.symbol} but losing in ${worst.symbol}. Consider focusing more on ${best.symbol}-type trades and reducing or pausing trades in ${worst.symbol}.`);
+        }
+      }
+
+      // Time-of-day
+      const bucketNames = {
+        morning: "09:15–10:30",
+        lateMorning: "10:30–12:00",
+        afternoon: "12:00–14:30",
+        close: "14:30–15:30",
+      };
+      const bucketEntries = Object.entries(timeBuckets).filter(([k, v]) => v.trades > 0);
+      if (bucketEntries.length > 1) {
+        bucketEntries.sort((a, b) => a[1].netPnl - b[1].netPnl);
+        const worst = bucketEntries[0];
+        const best = bucketEntries[bucketEntries.length - 1];
+        insights.push(`Time-of-day pattern: your best performance seems to be in ${bucketNames[best[0]]} and worst in ${bucketNames[worst[0]]}. You can avoid trading in your weak time window and focus on the strong one.`);
+      }
+
+      // Overtrading
+      const highTradeDays = dayStats.filter(d => d.trades >= 10);
+      if (highTradeDays.length > 0) {
+        const lossDays = highTradeDays.filter(d => d.netPnl < 0).length;
+        if (lossDays / highTradeDays.length > 0.5) {
+          insights.push("On days where you take many trades, you often end up losing. This suggests overtrading or revenge trading. Set a maximum number of trades per day and stop after reaching it.");
+        }
+      }
+
+      // Streaks
+      if (stats.maxLosingStreak >= 3) {
+        insights.push(`You have losing streaks of ${stats.maxLosingStreak} trades in a row. After 2 consecutive losses, reduce your position size or stop trading for that day.`);
+      }
+
+      if (insights.length === 0) {
+        insights.push("Your stats look relatively balanced. To improve further, focus on refining one best setup, trading only at your best time window, and enforcing strict daily stop loss and maximum-trade rules.");
+      }
+
+      return (
+        <div className="bg-slate-900/70 border border-slate-800 rounded-2xl p-4">
+          <h3 className="text-sm font-semibold text-slate-100 mb-2">
+            Mistakes & Strategy Suggestions
+          </h3>
+          <ul className="list-disc list-inside space-y-1.5 text-[11px] text-slate-200">
+            {insights.map((txt, idx) => (
+              <li key={idx}>{txt}</li>
+            ))}
+          </ul>
+        </div>
+      );
+    }
+
+    // ---------- Main App ----------
+
+    function App() {
+      const [rawRows, setRawRows] = useState([]);
+      const [headers, setHeaders] = useState([]);
+      const [mapping, setMapping] = useState({});
+      const [error, setError] = useState("");
+      const [trades, setTrades] = useState([]);
+      const [stats, setStats] = useState(null);
+      const [symbolStats, setSymbolStats] = useState([]);
+      const [dayStats, setDayStats] = useState([]);
+      const [timeBuckets, setTimeBuckets] = useState({
+        morning: { trades: 0, netPnl: 0 },
+        lateMorning: { trades: 0, netPnl: 0 },
+        afternoon: { trades: 0, netPnl: 0 },
+        close: { trades: 0, netPnl: 0 },
+      });
+
+      const handleFileChange = (e) => {
+        const file = e.target.files?.[0];
+        if (!file) return;
+        setError("");
+        setTrades([]);
+        setStats(null);
+        Papa.parse(file, {
+          header: true,
+          skipEmptyLines: true,
+          complete: (results) => {
+            if (results.errors && results.errors.length) {
+              console.error(results.errors);
+            }
+            const rows = results.data;
+            if (!rows.length) {
+              setError("CSV is empty or could not be read.");
+              return;
+            }
+            const hdrs = Object.keys(rows[0]);
+            setRawRows(rows);
+            setHeaders(hdrs);
+
+            // Auto detection
+            const dateCol = findHeader(hdrs, ["date", "trade date", "order date"]);
+            const timeCol = findHeader(hdrs, ["time"]);
+            const symCol = findHeader(hdrs, ["symbol", "trading symbol", "instrument"]);
+            const sideCol = findHeader(hdrs, ["buy", "sell", "transaction type", "side"]);
+            const qtyCol = findHeader(hdrs, ["qty", "quantity", "filled quantity"]);
+            const priceCol = findHeader(hdrs, ["price", "avg price", "average price"]);
+            const pnlCol = findHeader(hdrs, ["p&l", "pnl", "profit", "net"]);
+            const prodCol = findHeader(hdrs, ["product", "segment", "type"]);
+
+            setMapping({
+              date: dateCol,
+              time: timeCol,
+              symbol: symCol,
+              side: sideCol,
+              qty: qtyCol,
+              price: priceCol,
+              pnl: pnlCol,
+              product: prodCol,
+            });
+          },
+        });
+      };
+
+      const runAnalysis = () => {
+        if (!rawRows.length) {
+          setError("Please import a CSV first.");
+          return;
+        }
+        if (!mapping.date || !mapping.symbol || !mapping.pnl) {
+          setError("Please make sure Date, Symbol, and P&L columns are mapped.");
+          return;
+        }
+        setError("");
+
+        const normalizedTrades = [];
+        for (const r of rawRows) {
+          const dateVal = mapping.date ? r[mapping.date] : null;
+          const dateObj = parseDate(dateVal);
+          if (!dateObj) continue;
+          const dateKey = dateObj.toISOString().slice(0, 10); // YYYY-MM-DD
+
+          const timeVal = mapping.time ? r[mapping.time] : null;
+          const hour = parseTimeToHour(timeVal);
+
+          const symbol = mapping.symbol ? String(r[mapping.symbol] || "").trim() || "UNKNOWN" : "UNKNOWN";
+          const sideRaw = mapping.side ? String(r[mapping.side] || "").toLowerCase() : "";
+          let side = "";
+          if (sideRaw.includes("buy")) side = "BUY";
+          else if (sideRaw.includes("sell")) side = "SELL";
+          else side = "";
+
+          const qty = mapping.qty ? normalizeNumber(r[mapping.qty]) : null;
+          const price = mapping.price ? normalizeNumber(r[mapping.price]) : null;
+          const pnl = mapping.pnl ? normalizeNumber(r[mapping.pnl]) : null;
+          if (pnl == null) continue;
+
+          const product = mapping.product ? String(r[mapping.product] || "").trim() : "";
+
+          normalizedTrades.push({
+            dateObj,
+            dateKey,
+            hour,
+            symbol,
+            side,
+            qty,
+            price,
+            pnl,
+            product,
+          });
+        }
+
+        if (!normalizedTrades.length) {
+          setError("No valid trades found after parsing P&L. Check mapping.");
+          setTrades([]);
+          setStats(null);
+          return;
+        }
+
+        // Sort by date/time
+        normalizedTrades.sort((a, b) => a.dateObj - b.dateObj);
+
+        // Compute stats
+        let total = normalizedTrades.length;
+        let grossProf = 0, grossLoss = 0;
+        let wins = 0, losses = 0, breakeven = 0;
+        let maxWinningStreak = 0, maxLosingStreak = 0;
+        let currentWinStreak = 0, currentLossStreak = 0;
+
+        for (const t of normalizedTrades) {
+          if (t.pnl > 0) {
+            grossProf += t.pnl;
+            wins++;
+            currentWinStreak++;
+            currentLossStreak = 0;
+          } else if (t.pnl < 0) {
+            grossLoss += t.pnl;
+            losses++;
+            currentLossStreak++;
+            currentWinStreak = 0;
+          } else {
+            breakeven++;
+            currentWinStreak = 0;
+            currentLossStreak = 0;
+          }
+          if (currentWinStreak > maxWinningStreak) maxWinningStreak = currentWinStreak;
+          if (currentLossStreak > maxLosingStreak) maxLosingStreak = currentLossStreak;
+        }
+
+        const netProfit = grossProf + grossLoss;
+        const winRate = total ? (wins / total) * 100 : 0;
+        const avgWin = wins ? grossProf / wins : 0;
+        const avgLoss = losses ? grossLoss / losses : 0;
+        const expectancy = total ? (grossProf + grossLoss) / total : 0;
+
+        setTrades(normalizedTrades);
+        setStats({
+          totalTrades: total,
+          netProfit,
+          grossProf,
+          grossLoss,
+          wins,
+          losses,
+          breakeven,
+          winRate,
+          avgWin,
+          avgLoss,
+          expectancy,
+          maxWinningStreak,
+          maxLosingStreak,
+        });
+
+        // Symbol stats
+        const symbolMap = groupBy(normalizedTrades, t => t.symbol);
+        const symStats = [];
+        for (const [sym, arr] of symbolMap.entries()) {
+          const tr = arr.length;
+          const net = arr.reduce((s, t) => s + t.pnl, 0);
+          const w = arr.filter(t => t.pnl > 0).length;
+          const l = arr.filter(t => t.pnl < 0).length;
+          const winRateSym = tr ? (w / tr) * 100 : 0;
+          const avgPnl = tr ? net / tr : 0;
+          symStats.push({ symbol: sym, trades: tr, netPnl: net, winRate: winRateSym, avgPnl });
+        }
+        symStats.sort((a, b) => b.netPnl - a.netPnl);
+        setSymbolStats(symStats);
+
+        // Day stats
+        const dayMap = groupBy(normalizedTrades, t => t.dateKey);
+        const dStats = [];
+        for (const [day, arr] of dayMap.entries()) {
+          const tr = arr.length;
+          const net = arr.reduce((s, t) => s + t.pnl, 0);
+          dStats.push({ dateKey: day, trades: tr, netPnl: net });
+        }
+        dStats.sort((a, b) => (a.dateKey < b.dateKey ? -1 : 1));
+        setDayStats(dStats);
+
+        // Time buckets
+        const buckets = {
+          morning: { trades: 0, netPnl: 0 },      // 9-10:30
+          lateMorning: { trades: 0, netPnl: 0 },  // 10:30-12
+          afternoon: { trades: 0, netPnl: 0 },    // 12-14:30
+          close: { trades: 0, netPnl: 0 },        // 14:30 onwards
+        };
+        for (const t of normalizedTrades) {
+          if (t.hour == null) continue;
+          if (t.hour < 10 || (t.hour === 10 && t.minute <= 30)) {
+            buckets.morning.trades++;
+            buckets.morning.netPnl += t.pnl;
+          } else if (t.hour < 12) {
+            buckets.lateMorning.trades++;
+            buckets.lateMorning.netPnl += t.pnl;
+          } else if (t.hour < 14 || (t.hour === 14 && t.minute <= 30)) {
+            buckets.afternoon.trades++;
+            buckets.afternoon.netPnl += t.pnl;
+          } else {
+            buckets.close.trades++;
+            buckets.close.netPnl += t.pnl;
+          }
+        }
+        setTimeBuckets(buckets);
+      };
+
+      return (
+        <div className="min-h-screen flex bg-slate-950">
+          {/* Sidebar */}
+          <aside className="w-80 border-r border-slate-900 bg-slate-950/95 p-4 flex flex-col gap-4">
+            <div>
+              <h1 className="text-base font-semibold text-slate-50">
+                Trading CSV Analyzer
+              </h1>
+              <p className="text-[11px] text-slate-500 mt-1">
+                Import your broker CSV and see where you’re losing, what works, and how to build a profitable strategy.
+              </p>
+            </div>
+
+            {/* Step 1: Import */}
+            <div className="bg-slate-900/70 border border-slate-800 rounded-2xl p-3">
+              <h3 className="text-xs font-semibold text-slate-200 mb-1">
+                Step 1: Import CSV
+              </h3>
+              <input
+                type="file"
+                accept=".csv,text/csv"
+                onChange={handleFileChange}
+                className="text-[11px] file:text-[11px] file:px-2 file:py-1 file:rounded-lg file:bg-slate-800 file:border-0 file:text-slate-100 file:cursor-pointer text-slate-400"
+              />
+              <p className="mt-1 text-[10px] text-slate-500">
+                Use your broker’s trade history CSV (intraday / options / futures etc).
+              </p>
+              {rawRows.length > 0 && (
+                <p className="mt-1 text-[10px] text-emerald-400">
+                  Loaded {rawRows.length} raw rows.
+                </p>
+              )}
+            </div>
+
+            {headers.length > 0 && (
+              <ColumnMapping
+                headers={headers}
+                mapping={mapping}
+                setMapping={setMapping}
+              />
+            )}
+
+            <button
+              onClick={runAnalysis}
+              className="mt-2 text-xs px-3 py-2 rounded-xl bg-emerald-500 hover:bg-emerald-400 text-slate-950 font-semibold disabled:opacity-40 disabled:cursor-not-allowed"
+              disabled={!rawRows.length}
+            >
+              Run Analysis
+            </button>
+
+            {error && (
+              <p className="text-[11px] text-rose-400 bg-rose-950/40 border border-rose-900 rounded-lg px-2 py-1">
+                {error}
+              </p>
+            )}
+
+            <div className="mt-auto pt-4 border-t border-slate-900 text-[10px] text-slate-600">
+              <p>
+                Idea: Use this app after every week/month to review mistakes and refine your rules.
+              </p>
+            </div>
+          </aside>
+
+          {/* Main */}
+          <main className="flex-1 p-4 md:p-6 flex flex-col gap-4">
+            {/* Stats */}
+            <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
+              <StatCard
+                label="Total trades"
+                value={stats ? stats.totalTrades : "--"}
+                sub={stats ? `Wins: ${stats.wins} • Losses: ${stats.losses}` : "Import CSV & run analysis"}
+              />
+              <StatCard
+                label="Net P&L"
+                value={stats ? stats.netProfit.toFixed(2) : "--"}
+                sub={stats ? `Gross +${stats.grossProf.toFixed(0)} / ${stats.grossLoss.toFixed(0)}` : ""}
+              />
+              <StatCard
+                label="Win rate"
+                value={stats ? stats.winRate.toFixed(1) + "%" : "--"}
+                sub={stats ? `Avg win ${stats.avgWin.toFixed(1)} / avg loss ${stats.avgLoss.toFixed(1)}` : ""}
+              />
+              <StatCard
+                label="Expectancy"
+                value={stats ? stats.expectancy.toFixed(1) : "--"}
+                sub={stats ? `Per trade, incl. all costs` : ""}
+              />
+            </div>
+
+            {/* Insights */}
+            <InsightsPanel
+              stats={stats}
+              symbolStats={symbolStats}
+              dayStats={dayStats}
+              timeBuckets={timeBuckets}
+            />
+
+            {/* Tables */}
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
+              <SymbolTable symbolStats={symbolStats} />
+              <DayTable dayStats={dayStats} />
+            </div>
+          </main>
+        </div>
+      );
+    }
+
+    const root = ReactDOM.createRoot(document.getElementById("root"));
+    root.render(<App />);
+  </script>
+</body>
+</html>

@@ -1,0 +1,1354 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>NutriLife - Personalized Nutrition & Diet Plans</title>
+  <meta name="description" content="NutriLife - Your personalized nutrition partner offering customized diet plans, meal subscriptions, and expert coaching">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Montserrat:wght@700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <style>
+    :root {
+      --primary: #22c55e;
+      --primary-dark: #16a34a;
+      --secondary: #f97316;
+      --dark: #111827;
+      --light: #f9fafb;
+      --gray: #6b7280;
+    }
+    body {
+      font-family: 'Inter', sans-serif;
+      scroll-behavior: smooth;
+    }
+    h1, h2, h3, h4, h5, h6 {
+      font-family: 'Montserrat', sans-serif;
+    }
+    .animate-fade-in {
+      animation: fadeIn 0.5s ease-out forwards;
+    }
+    .animate-slide-up {
+      animation: slideUp 0.7s ease-out forwards;
+    }
+    .animate-slide-right {
+      animation: slideRight 0.7s ease-out forwards;
+    }
+    .meal-card:hover {
+      transform: translateY(-10px);
+      box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+    }
+    .expert-card {
+      transition: all 0.3s ease;
+    }
+    .expert-card:hover {
+      transform: scale(1.03);
+    }
+    @keyframes fadeIn {
+      from { opacity: 0; }
+      to { opacity: 1; }
+    }
+    @keyframes slideUp {
+      from { opacity: 0; transform: translateY(20px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+    @keyframes slideRight {
+      from { opacity: 0; transform: translateX(-20px); }
+      to { opacity: 1; transform: translateX(0); }
+    }
+    .plan-card {
+      transition: all 0.3s ease;
+    }
+    .plan-card:hover {
+      transform: scale(1.05);
+      z-index: 10;
+    }
+    .btn-primary {
+      background-color: var(--primary);
+      color: white;
+      transition: all 0.3s ease;
+    }
+    .btn-primary:hover {
+      background-color: var(--primary-dark);
+    }
+    .btn-secondary {
+      background-color: var(--secondary);
+      color: white;
+      transition: all 0.3s ease;
+    }
+    .btn-secondary:hover {
+      opacity: 0.9;
+    }
+    .testimonial-card {
+      transition: all 0.3s ease;
+    }
+    .testimonial-card:hover {
+      transform: scale(1.03);
+    }
+    .faq-item {
+      overflow: hidden;
+      transition: all 0.3s ease;
+    }
+    .faq-answer {
+      max-height: 0;
+      overflow: hidden;
+      transition: max-height 0.3s ease;
+    }
+    .faq-item.active .faq-answer {
+      max-height: 500px;
+    }
+    .mobile-menu {
+      transition: transform 0.3s ease;
+      transform: translateX(-100%);
+    }
+    .mobile-menu.active {
+      transform: translateX(0);
+    }
+    .sticky-nav {
+      position: fixed;
+      top: 0;
+      width: 100%;
+      z-index: 50;
+      transition: all 0.3s ease;
+      background-color: rgba(255, 255, 255, 0.9);
+      backdrop-filter: blur(10px);
+    }
+    .feature-icon {
+      transition: all 0.3s ease;
+    }
+    .feature-box:hover .feature-icon {
+      transform: scale(1.1);
+      color: var(--primary);
+    }
+  </style>
+</head>
+<body>
+  <!-- Navigation - Feature 1: Modern responsive navigation -->
+  <nav id="navbar" class="py-4 px-6 flex justify-between items-center bg-white shadow-sm">
+    <div class="flex items-center">
+      <h1 class="text-xl font-bold text-green-600">NutriLife</h1>
+    </div>
+    <div class="hidden md:flex space-x-8">
+      <a href="#home" class="font-medium hover:text-green-600 transition">Home</a>
+      <a href="#plans" class="font-medium hover:text-green-600 transition">Diet Plans</a>
+      <a href="#meals" class="font-medium hover:text-green-600 transition">Meal Subscriptions</a>
+      <a href="#experts" class="font-medium hover:text-green-600 transition">Our Experts</a>
+      <a href="#how-it-works" class="font-medium hover:text-green-600 transition">How It Works</a>
+      <a href="#pricing" class="font-medium hover:text-green-600 transition">Pricing</a>
+      <a href="#testimonials" class="font-medium hover:text-green-600 transition">Success Stories</a>
+      <a href="#blog" class="font-medium hover:text-green-600 transition">Blog</a>
+    </div>
+    <div class="flex space-x-4">
+      <button class="px-4 py-2 rounded-lg border border-green-600 text-green-600 hover:bg-green-50 transition hidden md:block">Log In</button>
+      <button class="px-4 py-2 rounded-lg bg-green-600 text-white hover:bg-green-700 transition hidden md:block">Get Started</button>
+      <button id="menu-toggle" class="md:hidden text-gray-800 focus:outline-none">
+        <i class="fas fa-bars text-xl"></i>
+      </button>
+    </div>
+  </nav>
+
+  <!-- Mobile Menu -->
+  <div id="mobile-menu" class="mobile-menu fixed top-0 left-0 w-full h-screen bg-white z-50 flex flex-col p-6">
+    <div class="flex justify-between items-center mb-8">
+      <h1 class="text-xl font-bold text-green-600">NutriLife</h1>
+      <button id="close-menu" class="text-dark focus:outline-none">
+        <i class="fas fa-times text-xl"></i>
+      </button>
+    </div>
+    <div class="flex flex-col space-y-6">
+      <a href="#home" class="font-medium text-lg hover:text-green-600 transition">Home</a>
+      <a href="#plans" class="font-medium text-lg hover:text-green-600 transition">Diet Plans</a>
+      <a href="#meals" class="font-medium text-lg hover:text-green-600 transition">Meal Subscriptions</a>
+      <a href="#experts" class="font-medium text-lg hover:text-green-600 transition">Our Experts</a>
+      <a href="#how-it-works" class="font-medium text-lg hover:text-green-600 transition">How It Works</a>
+      <a href="#pricing" class="font-medium text-lg hover:text-green-600 transition">Pricing</a>
+      <a href="#testimonials" class="font-medium text-lg hover:text-green-600 transition">Success Stories</a>
+      <a href="#blog" class="font-medium text-lg hover:text-green-600 transition">Blog</a>
+      <div class="flex flex-col space-y-4 mt-4">
+        <button class="w-full px-4 py-2 rounded-lg border border-green-600 text-green-600 hover:bg-green-50 transition">Log In</button>
+        <button class="w-full px-4 py-2 rounded-lg bg-green-600 text-white hover:bg-green-700 transition">Get Started</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Hero Section - Feature 2: Engaging hero section with CTA -->
+  <section id="home" class="relative py-20 bg-gradient-to-r from-green-500 to-emerald-600 text-white">
+    <div class="container mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="flex flex-col md:flex-row items-center">
+        <div class="md:w-1/2 mb-12 md:mb-0">
+          <h1 class="text-4xl sm:text-5xl md:text-6xl font-bold mb-6 animate-fade-in">Your Personalized Nutrition Journey</h1>
+          <p class="text-xl mb-8 animate-slide-up opacity-0" style="animation-delay: 0.3s;">
+            Custom diet plans, healthy meal subscriptions, and expert nutrition coaching tailored to your unique needs and goals.
+          </p>
+          <div class="flex flex-col sm:flex-row space-y-4 sm:space-y-0 sm:space-x-4 animate-slide-up opacity-0" style="animation-delay: 0.6s;">
+            <a href="#assessment" class="px-8 py-3 rounded-full bg-white text-green-600 font-semibold hover:bg-gray-100 transition text-center">Take Free Assessment</a>
+            <a href="#how-it-works" class="px-8 py-3 rounded-full bg-transparent border-2 border-white font-semibold hover:bg-white hover:text-green-600 transition text-center">
+              Learn More
+            </a>
+          </div>
+        </div>
+        <div class="md:w-1/2 animate-fade-in" style="animation-delay: 0.5s;">
+          <img src="https://images.unsplash.com/photo-1498837167922-ddd27525d352?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2070&q=80" alt="Healthy Meal Preparation" class="rounded-xl shadow-2xl">
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Feature Section - Feature 3: Interactive feature highlights -->
+  <section id="features" class="py-20 bg-white">
+    <div class="container mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="text-center mb-16">
+        <h2 class="text-3xl sm:text-4xl font-bold text-gray-900 mb-4">Why Choose NutriLife?</h2>
+        <p class="text-gray-600 max-w-2xl mx-auto">Experience the difference with our science-backed approach to nutrition and health</p>
+        <div class="w-16 h-1 bg-green-600 mx-auto mt-4"></div>
+      </div>
+      
+      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+        <!-- Feature 1 -->
+        <div class="feature-box bg-white p-6 rounded-xl shadow-md hover:shadow-xl transition-all">
+          <div class="w-14 h-14 bg-green-100 rounded-full flex items-center justify-center mb-4">
+            <i class="fas fa-fingerprint text-green-600 text-2xl feature-icon"></i>
+          </div>
+          <h3 class="text-xl font-bold text-gray-900 mb-2">Personalized Approach</h3>
+          <p class="text-gray-600">Custom diet plans based on your body type, goals, preferences, and any dietary restrictions.</p>
+        </div>
+        
+        <!-- Feature 2 -->
+        <div class="feature-box bg-white p-6 rounded-xl shadow-md hover:shadow-xl transition-all">
+          <div class="w-14 h-14 bg-green-100 rounded-full flex items-center justify-center mb-4">
+            <i class="fas fa-utensils text-green-600 text-2xl feature-icon"></i>
+          </div>
+          <h3 class="text-xl font-bold text-gray-900 mb-2">Chef-Prepared Meals</h3>
+          <p class="text-gray-600">Delicious, nutritionally balanced meals prepared by professional chefs using fresh ingredients.</p>
+        </div>
+        
+        <!-- Feature 3 -->
+        <div class="feature-box bg-white p-6 rounded-xl shadow-md hover:shadow-xl transition-all">
+          <div class="w-14 h-14 bg-green-100 rounded-full flex items-center justify-center mb-4">
+            <i class="fas fa-user-md text-green-600 text-2xl feature-icon"></i>
+          </div>
+          <h3 class="text-xl font-bold text-gray-900 mb-2">Expert Coaching</h3>
+          <p class="text-gray-600">One-on-one guidance from certified nutritionists, dietitians, and fitness coaches.</p>
+        </div>
+        
+        <!-- Feature 4 -->
+        <div class="feature-box bg-white p-6 rounded-xl shadow-md hover:shadow-xl transition-all">
+          <div class="w-14 h-14 bg-green-100 rounded-full flex items-center justify-center mb-4">
+            <i class="fas fa-chart-line text-green-600 text-2xl feature-icon"></i>
+          </div>
+          <h3 class="text-xl font-bold text-gray-900 mb-2">Progress Tracking</h3>
+          <p class="text-gray-600">Advanced analytics to track your nutrition, weight, measurements, and overall progress.</p>
+        </div>
+        
+        <!-- Feature 5 -->
+        <div class="feature-box bg-white p-6 rounded-xl shadow-md hover:shadow-xl transition-all">
+          <div class="w-14 h-14 bg-green-100 rounded-full flex items-center justify-center mb-4">
+            <i class="fas fa-mobile-alt text-green-600 text-2xl feature-icon"></i>
+          </div>
+          <h3 class="text-xl font-bold text-gray-900 mb-2">Mobile App</h3>
+          <p class="text-gray-600">Manage your plan, track meals, and connect with coaches through our easy-to-use app.</p>
+        </div>
+        
+        <!-- Feature 6 -->
+        <div class="feature-box bg-white p-6 rounded-xl shadow-md hover:shadow-xl transition-all">
+          <div class="w-14 h-14 bg-green-100 rounded-full flex items-center justify-center mb-4">
+            <i class="fas fa-calendar-alt text-green-600 text-2xl feature-icon"></i>
+          </div>
+          <h3 class="text-xl font-bold text-gray-900 mb-2">Flexible Scheduling</h3>
+          <p class="text-gray-600">Choose delivery dates and times that fit your lifestyle, with easy rescheduling options.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Diet Plans Section - Feature 4: Personalized diet plans showcase -->
+  <section id="plans" class="py-20 bg-gray-50">
+    <div class="container mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="text-center mb-16">
+        <h2 class="text-3xl sm:text-4xl font-bold text-gray-900 mb-4">Personalized Diet Plans</h2>
+        <p class="text-gray-600 max-w-2xl mx-auto">Tailored nutrition plans designed to meet your specific health goals and dietary preferences</p>
+        <div class="w-16 h-1 bg-green-600 mx-auto mt-4"></div>
+      </div>
+      
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+        <!-- Plan 1 -->
+        <div class="meal-card bg-white rounded-xl shadow-lg overflow-hidden transition duration-300">
+          <img src="https://images.unsplash.com/photo-1490645935967-10de6ba17061?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2070&q=80" alt="Weight Loss Plan" class="w-full h-56 object-cover">
+          <div class="p-6">
+            <h3 class="text-xl font-bold text-gray-900 mb-2">Weight Loss Plan</h3>
+            <p class="text-gray-600 mb-4">Science-backed nutrition plan to help you lose weight in a healthy, sustainable way.</p>
+            <ul class="space-y-2 mb-6">
+              <li class="flex items-start">
+                <i class="fas fa-check text-green-500 mt-1 mr-2"></i>
+                <span>Calorie-controlled meal options</span>
+              </li>
+              <li class="flex items-start">
+                <i class="fas fa-check text-green-500 mt-1 mr-2"></i>
+                <span>High protein, low carb focus</span>
+              </li>
+              <li class="flex items-start">
+                <i class="fas fa-check text-green-500 mt-1 mr-2"></i>
+                <span>Weekly progress check-ins</span>
+              </li>
+            </ul>
+            <a href="#assessment" class="inline-block w-full text-center py-2 bg-green-600 text-white font-semibold rounded-lg hover:bg-green-700 transition">Start Assessment</a>
+          </div>
+        </div>
+        
+        <!-- Plan 2 -->
+        <div class="meal-card bg-white rounded-xl shadow-lg overflow-hidden transition duration-300">
+          <img src="https://images.unsplash.com/photo-1532884968933-d0bb6dba6bf7?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2070&q=80" alt="Muscle Building Plan" class="w-full h-56 object-cover">
+          <div class="p-6">
+            <h3 class="text-xl font-bold text-gray-900 mb-2">Muscle Building Plan</h3>
+            <p class="text-gray-600 mb-4">Protein-rich meal plans designed to support muscle growth and recovery.</p>
+            <ul class="space-y-2 mb-6">
+              <li class="flex items-start">
+                <i class="fas fa-check text-green-500 mt-1 mr-2"></i>
+                <span>High protein meal options</span>
+              </li>
+              <li class="flex items-start">
+                <i class="fas fa-check text-green-500 mt-1 mr-2"></i>
+                <span>Strategic carb timing</span>
+              </li>
+              <li class="flex items-start">
+                <i class="fas fa-check text-green-500 mt-1 mr-2"></i>
+                <span>Workout nutrition guidance</span>
+              </li>
+            </ul>
+            <a href="#assessment" class="inline-block w-full text-center py-2 bg-green-600 text-white font-semibold rounded-lg hover:bg-green-700 transition">Start Assessment</a>
+          </div>
+        </div>
+        
+        <!-- Plan 3 -->
+        <div class="meal-card bg-white rounded-xl shadow-lg overflow-hidden transition duration-300">
+          <img src="https://images.unsplash.com/photo-1512621776951-a57141f2eefd?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2070&q=80" alt="Wellness Plan" class="w-full h-56 object-cover">
+          <div class="p-6">
+            <h3 class="text-xl font-bold text-gray-900 mb-2">Wellness & Balance Plan</h3>
+            <p class="text-gray-600 mb-4">Nutrient-dense meal plans focused on overall health, energy, and wellbeing.</p>
+            <ul class="space-y-2 mb-6">
+              <li class="flex items-start">
+                <i class="fas fa-check text-green-500 mt-1 mr-2"></i>
+                <span>Balanced macronutrients</span>
+              </li>
+              <li class="flex items-start">
+                <i class="fas fa-check text-green-500 mt-1 mr-2"></i>
+                <span>Anti-inflammatory focus</span>
+              </li>
+              <li class="flex items-start">
+                <i class="fas fa-check text-green-500 mt-1 mr-2"></i>
+                <span>Superfood inclusions</span>
+              </li>
+            </ul>
+            <a href="#assessment" class="inline-block w-full text-center py-2 bg-green-600 text-white font-semibold rounded-lg hover:bg-green-700 transition">Start Assessment</a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Meal Subscription Section - Feature 5: Meal subscription showcase -->
+  <section id="meals" class="py-20 bg-white">
+    <div class="container mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="text-center mb-16">
+        <h2 class="text-3xl sm:text-4xl font-bold text-gray-900 mb-4">Fresh Meal Delivery</h2>
+        <p class="text-gray-600 max-w-2xl mx-auto">Chef-prepared, nutritionally balanced meals delivered right to your door</p>
+        <div class="w-16 h-1 bg-green-600 mx-auto mt-4"></div>
+      </div>
+      
+      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
+        <!-- Meal 1 -->
+        <div class="meal-card bg-white rounded-xl shadow-md overflow-hidden">
+          <img src="https://images.unsplash.com/photo-1546793665-c74683f339c1?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1974&q=80" alt="Grilled Salmon Bowl" class="w-full h-64 object-cover">
+          <div class="p-4">
+            <div class="flex justify-between items-center mb-2">
+              <span class="bg-green-100 text-green-800 text-xs font-semibold px-2.5 py-0.5 rounded">High Protein</span>
+              <span class="text-gray-600 text-sm">480 cal</span>
+            </div>
+            <h3 class="text-lg font-bold text-gray-900">Grilled Salmon Quinoa Bowl</h3>
+            <p class="text-gray-600 text-sm my-2">Wild-caught salmon with quinoa, roasted vegetables, and lemon-dill sauce.</p>
+            <div class="flex justify-between items-center mt-4">
+              <span class="font-bold text-green-600">$12.99</span>
+              <button class="text-white bg-green-600 hover:bg-green-700 rounded-full px-3 py-1 text-sm">Add to Cart</button>
+            </div>
+          </div>
+        </div>
+        
+        <!-- Meal 2 -->
+        <div class="meal-card bg-white rounded-xl shadow-md overflow-hidden">
+          <img src="https://images.unsplash.com/photo-1512621776951-a57141f2eefd?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2070&q=80" alt="Mediterranean Salad" class="w-full h-64 object-cover">
+          <div class="p-4">
+            <div class="flex justify-between items-center mb-2">
+              <span class="bg-green-100 text-green-800 text-xs font-semibold px-2.5 py-0.5 rounded">Vegetarian</span>
+              <span class="text-gray-600 text-sm">320 cal</span>
+            </div>
+            <h3 class="text-lg font-bold text-gray-900">Mediterranean Chickpea Salad</h3>
+            <p class="text-gray-600 text-sm my-2">Fresh vegetables, chickpeas, feta cheese, olives with herb vinaigrette.</p>
+            <div class="flex justify-between items-center mt-4">
+              <span class="font-bold text-green-600">$9.99</span>
+              <button class="text-white bg-green-600 hover:bg-green-700 rounded-full px-3 py-1 text-sm">Add to Cart</button>
+            </div>
+          </div>
+        </div>
+        
+        <!-- Meal 3 -->
+        <div class="meal-card bg-white rounded-xl shadow-md overflow-hidden">
+          <img src="https://images.unsplash.com/photo-1580253742169-ecd0b572660f?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2046&q=80" alt="Grilled Chicken" class="w-full h-64 object-cover">
+          <div class="p-4">
+            <div class="flex justify-between items-center mb-2">
+              <span class="bg-green-100 text-green-800 text-xs font-semibold px-2.5 py-0.5 rounded">Keto-Friendly</span>
+              <span class="text-gray-600 text-sm">420 cal</span>
+            </div>
+            <h3 class="text-lg font-bold text-gray-900">Herb Grilled Chicken</h3>
+            <p class="text-gray-600 text-sm my-2">Free-range chicken with roasted vegetables and avocado lime sauce.</p>
+            <div class="flex justify-between items-center mt-4">
+              <span class="font-bold text-green-600">$11.99</span>
+              <button class="text-white bg-green-600 hover:bg-green-700 rounded-full px-3 py-1 text-sm">Add to Cart</button>
+            </div>
+          </div>
+        </div>
+        
+        <!-- Meal 4 -->
+        <div class="meal-card bg-white rounded-xl shadow-md overflow-hidden">
+          <img src="https://images.unsplash.com/photo-1540914124281-342587941389?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2074&q=80" alt="Protein Smoothie Bowl" class="w-full h-64 object-cover">
+          <div class="p-4">
+            <div class="flex justify-between items-center mb-2">
+              <span class="bg-green-100 text-green-800 text-xs font-semibold px-2.5 py-0.5 rounded">Plant-Based</span>
+              <span class="text-gray-600 text-sm">350 cal</span>
+            </div>
+            <h3 class="text-lg font-bold text-gray-900">Berry Protein Smoothie Bowl</h3>
+            <p class="text-gray-600 text-sm my-2">Plant protein, mixed berries, banana, almond milk, topped with granola.</p>
+            <div class="flex justify-between items-center mt-4">
+              <span class="font-bold text-green-600">$8.99</span>
+              <button class="text-white bg-green-600 hover:bg-green-700 rounded-full px-3 py-1 text-sm">Add to Cart</button>
+            </div>
+          </div>
+        </div>
+      </div>
+      
+      <div class="text-center mt-12">
+        <a href="#meal-menu" class="inline-block px-8 py-3 rounded-lg border border-green-600 text-green-600 hover:bg-green-50 transition">View Full Menu</a>
+      </div>
+    </div>
+  </section>
+
+  <!-- Experts Section - Feature 6: Nutrition experts showcase -->
+  <section id="experts" class="py-20 bg-gray-50">
+    <div class="container mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="text-center mb-16">
+        <h2 class="text-3xl sm:text-4xl font-bold text-gray-900 mb-4">Meet Our Nutrition Experts</h2>
+        <p class="text-gray-600 max-w-2xl mx-auto">Certified professionals ready to guide you on your nutrition journey</p>
+        <div class="w-16 h-1 bg-green-600 mx-auto mt-4"></div>
+      </div>
+      
+      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
+        <!-- Expert 1 -->
+        <div class="expert-card bg-white rounded-xl shadow-md overflow-hidden">
+          <img src="https://images.unsplash.com/photo-1559839734-2b71ea197ec2?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2070&q=80" alt="Dr. Sarah Johnson" class="w-full h-64 object-cover">
+          <div class="p-6">
+            <h3 class="text-xl font-bold text-gray-900 mb-1">Dr. Sarah Johnson</h3>
+            <p class="text-green-600 mb-3">Registered Dietitian, PhD</p>
+            <p class="text-gray-600 mb-4">Specializing in weight management and metabolic health with 15+ years experience.</p>
+            <div class="flex justify-between items-center">
+              <div class="flex text-yellow-400">
+                <i class="fas fa-star"></i>
+                <i class="fas fa-star"></i>
+                <i class="fas fa-star"></i>
+                <i class="fas fa-star"></i>
+                <i class="fas fa-star-half-alt"></i>
+                <span class="text-gray-600 ml-2">4.8</span>
+              </div>
+              <a href="#booking" class="text-green-600 hover:text-green-800">Book Session</a>
+            </div>
+          </div>
+        </div>
+        
+        <!-- Expert 2 -->
+        <div class="expert-card bg-white rounded-xl shadow-md overflow-hidden">
+          <img src="https://images.unsplash.com/photo-1594824476967-48c8b964273f?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2070&q=80" alt="Michael Chen" class="w-full h-64 object-cover">
+          <div class="p-6">
+            <h3 class="text-xl font-bold text-gray-900 mb-1">Michael Chen</h3>
+            <p class="text-green-600 mb-3">Sports Nutritionist</p>
+            <p class="text-gray-600 mb-4">Expert in performance nutrition for athletes and active individuals.</p>
+            <div class="flex justify-between items-center">
+              <div class="flex text-yellow-400">
+                <i class="fas fa-star"></i>
+                <i class="fas fa-star"></i>
+                <i class="fas fa-star"></i>
+                <i class="fas fa-star"></i>
+                <i class="fas fa-star"></i>
+                <span class="text-gray-600 ml-2">5.0</span>
+              </div>
+              <a href="#booking" class="text-green-600 hover:text-green-800">Book Session</a>
+            </div>
+          </div>
+        </div>
+        
+        <!-- Expert 3 -->
+        <div class="expert-card bg-white rounded-xl shadow-md overflow-hidden">
+          <img src="https://images.unsplash.com/photo-1571019613454-1cb2f99b2d8b?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2070&q=80" alt="Amanda Rodriguez" class="w-full h-64 object-cover">
+          <div class="p-6">
+            <h3 class="text-xl font-bold text-gray-900 mb-1">Amanda Rodriguez</h3>
+            <p class="text-green-600 mb-3">Holistic Nutritionist</p>
+            <p class="text-gray-600 mb-4">Focusing on whole-food nutrition and sustainable lifestyle changes.</p>
+            <div class="flex justify-between items-center">
+              <div class="flex text-yellow-400">
+                <i class="fas fa-star"></i>
+                <i class="fas fa-star"></i>
+                <i class="fas fa-star"></i>
+                <i class="fas fa-star"></i>
+                <i class="fas fa-star"></i>
+                <span class="text-gray-600 ml-2">4.9</span>
+              </div>
+              <a href="#booking" class="text-green-600 hover:text-green-800">Book Session</a>
+            </div>
+          </div>
+        </div>
+        
+        <!-- Expert 4 -->
+        <div class="expert-card bg-white rounded-xl shadow-md overflow-hidden">
+          <img src="https://images.unsplash.com/photo-1622253692010-333f2da6031d?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2070&q=80" alt="Dr. James Wilson" class="w-full h-64 object-cover">
+          <div class="p-6">
+            <h3 class="text-xl font-bold text-gray-900 mb-1">Dr. James Wilson</h3>
+            <p class="text-green-600 mb-3">Clinical Dietitian</p>
+            <p class="text-gray-600 mb-4">Specializes in medical nutrition therapy for chronic health conditions.</p>
+            <div class="flex justify-between items-center">
+              <div class="flex text-yellow-400">
+                <i class="fas fa-star"></i>
+                <i class="fas fa-star"></i>
+                <i class="fas fa-star"></i>
+                <i class="fas fa-star"></i>
+                <i class="fas fa-star-half-alt"></i>
+                <span class="text-gray-600 ml-2">4.7</span>
+              </div>
+              <a href="#booking" class="text-green-600 hover:text-green-800">Book Session</a>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- How It Works Section - Feature 7: Process visualization -->
+  <section id="how-it-works" class="py-20 bg-white">
+    <div class="container mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="text-center mb-16">
+        <h2 class="text-3xl sm:text-4xl font-bold text-gray-900 mb-4">How It Works</h2>
+        <p class="text-gray-600 max-w-2xl mx-auto">Achieving your nutrition goals has never been easier. Follow these simple steps:</p>
+        <div class="w-16 h-1 bg-green-600 mx-auto mt-4"></div>
+      </div>
+      
+      <div class="flex flex-col md:flex-row gap-8 items-center justify-center">
+        <!-- Step 1 -->
+        <div class="md:w-1/4 text-center">
+          <div class="bg-green-100 w-20 h-20 rounded-full flex items-center justify-center mx-auto mb-4">
+            <i class="fas fa-clipboard-list text-green-600 text-2xl"></i>
+          </div>
+          <h3 class="text-xl font-bold text-gray-900 mb-2">Take Assessment</h3>
+          <p class="text-gray-600">Complete our detailed nutrition and lifestyle questionnaire.</p>
+        </div>
+        
+        <div class="hidden md:block">
+          <i class="fas fa-arrow-right text-green-300 text-3xl"></i>
+        </div>
+        
+        <!-- Step 2 -->
+        <div class="md:w-1/4 text-center">
+          <div class="bg-green-100 w-20 h-20 rounded-full flex items-center justify-center mx-auto mb-4">
+            <i class="fas fa-clipboard-check text-green-600 text-2xl"></i>
+          </div>
+          <h3 class="text-xl font-bold text-gray-900 mb-2">Get Personalized Plan</h3>
+          <p class="text-gray-600">Receive your custom nutrition plan and meal recommendations.</p>
+        </div>
+        
+        <div class="hidden md:block">
+          <i class="fas fa-arrow-right text-green-300 text-3xl"></i>
+        </div>
+        
+        <!-- Step 3 -->
+        <div class="md:w-1/4 text-center">
+          <div class="bg-green-100 w-20 h-20 rounded-full flex items-center justify-center mx-auto mb-4">
+            <i class="fas fa-utensils text-green-600 text-2xl"></i>
+          </div>
+          <h3 class="text-xl font-bold text-gray-900 mb-2">Select Your Meals</h3>
+          <p class="text-gray-600">Choose from chef-prepared meals that fit your plan.</p>
+        </div>
+        
+        <div class="hidden md:block">
+          <i class="fas fa-arrow-right text-green-300 text-3xl"></i>
+        </div>
+        
+        <!-- Step 4 -->
+        <div class="md:w-1/4 text-center">
+          <div class="bg-green-100 w-20 h-20 rounded-full flex items-center justify-center mx-auto mb-4">
+            <i class="fas fa-chart-line text-green-600 text-2xl"></i>
+          </div>
+          <h3 class="text-xl font-bold text-gray-900 mb-2">Track & Adjust</h3>
+          <p class="text-gray-600">Monitor progress and receive ongoing support from your coach.</p>
+        </div>
+      </div>
+      
+      <div class="mt-16 text-center">
+        <a href="#assessment" class="px-8 py-3 rounded-full bg-green-600 text-white font-semibold hover:bg-green-700 transition">Start Your Assessment Now</a>
+      </div>
+    </div>
+  </section>
+
+  <!-- Assessment Section - Feature 8: Interactive assessment tool -->
+  <section id="assessment" class="py-20 bg-gray-50">
+    <div class="container mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="text-center mb-16">
+        <h2 class="text-3xl sm:text-4xl font-bold text-gray-900 mb-4">Free Nutrition Assessment</h2>
+        <p class="text-gray-600 max-w-2xl mx-auto">Answer a few questions to receive personalized recommendations</p>
+        <div class="w-16 h-1 bg-green-600 mx-auto mt-4"></div>
+      </div>
+      
+      <div class="bg-white rounded-xl shadow-lg p-8 max-w-3xl mx-auto">
+        <div class="flex flex-col md:flex-row">
+          <div class="md:w-1/2 md:pr-8 mb-8 md:mb-0">
+            <h3 class="text-xl font-bold text-gray-900 mb-6">Tell Us About Yourself</h3>
+            
+            <form id="assessment-form">
+              <div class="mb-4">
+                <label class="block text-sm font-medium text-gray-700 mb-1">What are your primary goals?</label>
+                <div class="space-y-2">
+                  <div class="flex items-center">
+                    <input type="checkbox" id="goal-weight" name="goals[]" value="weight" class="mr-2">
+                    <label for="goal-weight">Weight Loss</label>
+                  </div>
+                  <div class="flex items-center">
+                    <input type="checkbox" id="goal-muscle" name="goals[]" value="muscle" class="mr-2">
+                    <label for="goal-muscle">Build Muscle</label>
+                  </div>
+                  <div class="flex items-center">
+                    <input type="checkbox" id="goal-energy" name="goals[]" value="energy" class="mr-2">
+                    <label for="goal-energy">Increase Energy</label>
+                  </div>
+                  <div class="flex items-center">
+                    <input type="checkbox" id="goal-health" name="goals[]" value="health" class="mr-2">
+                    <label for="goal-health">Overall Health</label>
+                  </div>
+                </div>
+              </div>
+              
+              <div class="mb-4">
+                <label class="block text-sm font-medium text-gray-700 mb-1">Any dietary restrictions?</label>
+                <div class="space-y-2">
+                  <div class="flex items-center">
+                    <input type="checkbox" id="diet-vegan" name="diet[]" value="vegan" class="mr-2">
+                    <label for="diet-vegan">Vegan</label>
+                  </div>
+                  <div class="flex items-center">
+                    <input type="checkbox" id="diet-vegetarian" name="diet[]" value="vegetarian" class="mr-2">
+                    <label for="diet-vegetarian">Vegetarian</label>
+                  </div>
+                  <div class="flex items-center">
+                    <input type="checkbox" id="diet-gluten" name="diet[]" value="gluten" class="mr-2">
+                    <label for="diet-gluten">Gluten-Free</label>
+                  </div>
+                  <div class="flex items-center">
+                    <input type="checkbox" id="diet-dairy" name="diet[]" value="dairy" class="mr-2">
+                    <label for="diet-dairy">Dairy-Free</label>
+                  </div>
+                </div>
+              </div>
+              
+              <div class="mb-4">
+                <label class="block text-sm font-medium text-gray-700 mb-1">Activity Level</label>
+                <select name="activity" class="w-full px-4 py-2 border border-gray-300 rounded-md focus:ring-green-500 focus:border-green-500">
+                  <option value="">Select your activity level</option>
+                  <option value="sedentary">Sedentary (little to no exercise)</option>
+                  <option value="light">Lightly active (1-3 days/week)</option>
+                  <option value="moderate">Moderately active (3-5 days/week)</option>
+                  <option value="very">Very active (6-7 days/week)</option>
+                  <option value="extreme">Extremely active (physical job/training)</option>
+                </select>
+              </div>
+              
+              <button type="submit" class="w-full py-3 bg-green-600 text-white font-semibold rounded-lg hover:bg-green-700 transition">Get My Recommendations</button>
+            </form>
+          </div>
+          
+          <div class="md:w-1/2 bg-green-50 p-6 rounded-lg">
+            <h3 class="text-xl font-bold text-gray-900 mb-4">Why Complete the Assessment?</h3>
+            <ul class="space-y-3">
+              <li class="flex items-start">
+                <i class="fas fa-check-circle text-green-600 mt-1 mr-2"></i>
+                <span>Receive a personalized nutrition plan</span>
+              </li>
+              <li class="flex items-start">
+                <i class="fas fa-check-circle text-green-600 mt-1 mr-2"></i>
+                <span>Get meal recommendations based on your preferences</span>
+              </li>
+              <li class="flex items-start">
+                <i class="fas fa-check-circle text-green-600 mt-1 mr-2"></i>
+                <span>Learn your optimal calorie and macronutrient targets</span>
+              </li>
+              <li class="flex items-start">
+                <i class="fas fa-check-circle text-green-600 mt-1 mr-2"></i>
+                <span>Identify potential nutritional deficiencies</span>
+              </li>
+              <li class="flex items-start">
+                <i class="fas fa-check-circle text-green-600 mt-1 mr-2"></i>
+                <span>Receive a free 15-minute consultation with a dietitian</span>
+              </li>
+            </ul>
+            
+            <div class="mt-6 p-4 bg-white rounded-lg border border-green-200">
+              <p class="text-sm text-gray-600 italic">"The assessment helped me understand exactly what my body needed. The personalized plan made all the difference in reaching my goals."</p>
+              <div class="flex items-center mt-3">
+                <img src="https://randomuser.me/api/portraits/women/44.jpg" alt="Testimonial" class="w-10 h-10 rounded-full mr-3">
+                <div>
+                  <p class="font-semibold text-sm">Jessica R.</p>
+                  <div class="flex text-yellow-400 text-xs">
+                    <i class="fas fa-star"></i>
+                    <i class="fas fa-star"></i>
+                    <i class="fas fa-star"></i>
+                    <i class="fas fa-star"></i>
+                    <i class="fas fa-star"></i>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Pricing Section - Feature 9: Transparent pricing plans -->
+  <section id="pricing" class="py-20 bg-white">
+    <div class="container mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="text-center mb-16">
+        <h2 class="text-3xl sm:text-4xl font-bold text-gray-900 mb-4">Pricing Plans</h2>
+        <p class="text-gray-600 max-w-2xl mx-auto">Choose the plan that fits your nutrition goals and budget</p>
+        <div class="w-16 h-1 bg-green-600 mx-auto mt-4"></div>
+      </div>
+      
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+        <!-- Basic Plan -->
+        <div class="plan-card bg-white rounded-xl shadow-lg overflow-hidden">
+          <div class="p-6 bg-green-50 text-center">
+            <h3 class="text-2xl font-bold text-gray-900">Essential</h3>
+            <div class="mt-4 text-4xl font-bold text-green-600">$49<span class="text-lg text-gray-600">/month</span></div>
+          </div>
+          <div class="p-6">
+            <ul class="space-y-3">
+              <li class="flex items-start">
+                <i class="fas fa-check text-green-500 mt-1 mr-2"></i>
+                <span>Personalized nutrition plan</span>
+              </li>
+              <li class="flex items-start">
+                <i class="fas fa-check text-green-500 mt-1 mr-2"></i>
+                <span>Weekly meal plans</span>
+              </li>
+              <li class="flex items-start">
+                <i class="fas fa-check text-green-500 mt-1 mr-2"></i>
+                <span>Shopping list generator</span>
+              </li>
+              <li class="flex items-start">
+                <i class="fas fa-check text-green-500 mt-1 mr-2"></i>
+                <span>Basic progress tracking</span>
+              </li>
+              <li class="flex items-start text-gray-400">
+                <i class="fas fa-times mt-1 mr-2"></i>
+                <span>1-on-1 coaching</span>
+              </li>
+              <li class="flex items-start text-gray-400">
+                <i class="fas fa-times mt-1 mr-2"></i>
+                <span>Meal delivery</span>
+              </li>
+              <li class="flex items-start text-gray-400">
+                <i class="fas fa-times mt-1 mr-2"></i>
+                <span>Advanced analytics</span>
+              </li>
+            </ul>
+            <a href="#signup" class="mt-8 inline-block w-full text-center py-3 px-6 bg-green-600 text-white font-semibold rounded-lg hover:bg-green-700 transition">Get Started</a>
+          </div>
+        </div>
+        
+        <!-- Premium Plan -->
+        <div class="plan-card bg-white rounded-xl shadow-xl overflow-hidden border-2 border-green-600 transform scale-105 z-10">
+          <div class="absolute top-0 right-0 bg-green-600 text-white px-4 py-1 rounded-bl-lg text-sm font-semibold">MOST POPULAR</div>
+          <div class="p-6 bg-green-100 text-center">
+            <h3 class="text-2xl font-bold text-gray-900">Premium</h3>
+            <div class="mt-4 text-4xl font-bold text-green-600">$99<span class="text-lg text-gray-600">/month</span></div>
+          </div>
+          <div class="p-6">
+            <ul class="space-y-3">
+              <li class="flex items-start">
+                <i class="fas fa-check text-green-500 mt-1 mr-2"></i>
+                <span>Personalized nutrition plan</span>
+              </li>
+              <li class="flex items-start">
+                <i class="fas fa-check text-green-500 mt-1 mr-2"></i>
+                <span>Weekly meal plans</span>
+              </li>
+              <li class="flex items-start">
+                <i class="fas fa-check text-green-500 mt-1 mr-2"></i>
+                <span>Shopping list generator</span>
+              </li>
+              <li class="flex items-start">
+                <i class="fas fa-check text-green-500 mt-1 mr-2"></i>
+                <span>Advanced progress tracking</span>
+              </li>
+              <li class="flex items-start">
+                <i class="fas fa-check text-green-500 mt-1 mr-2"></i>
+                <span>2 coaching sessions/month</span>
+              </li>
+              <li class="flex items-start">
+                <i class="fas fa-check text-green-500 mt-1 mr-2"></i>
+                <span>50% off meal delivery</span>
+              </li>
+              <li class="flex items-start text-gray-400">
+                <i class="fas fa-times mt-1 mr-2"></i>
+                <span>Advanced analytics</span>
+              </li>
+            </ul>
+            <a href="#signup" class="mt-8 inline-block w-full text-center py-3 px-6 bg-green-600 text-white font-semibold rounded-lg hover:bg-green-700 transition">Get Started</a>
+          </div>
+        </div>
+        
+        <!-- Ultimate Plan -->
+        <div class="plan-card bg-white rounded-xl shadow-lg overflow-hidden">
+          <div class="p-6 bg-green-50 text-center">
+            <h3 class="text-2xl font-bold text-gray-900">Ultimate</h3>
+            <div class="mt-4 text-4xl font-bold text-green-600">$149<span class="text-lg text-gray-600">/month</span></div>
+          </div>
+          <div class="p-6">
+            <ul class="space-y-3">
+              <li class="flex items-start">
+                <i class="fas fa-check text-green-500 mt-1 mr-2"></i>
+                <span>Personalized nutrition plan</span>
+              </li>
+              <li class="flex items-start">
+                <i class="fas fa-check text-green-500 mt-1 mr-2"></i>
+                <span>Weekly meal plans</span>
+              </li>
+              <li class="flex items-start">
+                <i class="fas fa-check text-green-500 mt-1 mr-2"></i>
+                <span>Shopping list generator</span>
+              </li>
+              <li class="flex items-start">
+                <i class="fas fa-check text-green-500 mt-1 mr-2"></i>
+                <span>Advanced progress tracking</span>
+              </li>
+              <li class="flex items-start">
+                <i class="fas fa-check text-green-500 mt-1 mr-2"></i>
+                <span>Weekly coaching sessions</span>
+              </li>
+              <li class="flex items-start">
+                <i class="fas fa-check text-green-500 mt-1 mr-2"></i>
+                <span>Free meal delivery (10 meals/week)</span>
+              </li>
+              <li class="flex items-start">
+                <i class="fas fa-check text-green-500 mt-1 mr-2"></i>
+                <span>Advanced analytics & reports</span>
+              </li>
+            </ul>
+            <a href="#signup" class="mt-8 inline-block w-full text-center py-3 px-6 bg-green-600 text-white font-semibold rounded-lg hover:bg-green-700 transition">Get Started</a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Testimonials Section - Feature 10: Social proof with success stories -->
+  <section id="testimonials" class="py-20 bg-gray-50">
+    <div class="container mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="text-center mb-16">
+        <h2 class="text-3xl sm:text-4xl font-bold text-gray-900 mb-4">Success Stories</h2>
+        <p class="text-gray-600 max-w-2xl mx-auto">Hear from people who transformed their health with our nutrition programs</p>
+        <div class="w-16 h-1 bg-green-600 mx-auto mt-4"></div>
+      </div>
+      
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+        <!-- Testimonial 1 -->
+        <div class="testimonial-card bg-white rounded-xl shadow-md p-6">
+          <div class="flex flex-col items-center mb-6">
+            <div class="relative mb-4">
+              <img src="https://randomuser.me/api/portraits/men/32.jpg" alt="Client" class="w-20 h-20 rounded-full object-cover">
+              <div class="absolute -bottom-2 -right-2 bg-green-600 text-white text-xs font-bold px-2 py-1 rounded-full">-34 lbs</div>
+            </div>
+            <h4 class="font-semibold text-lg">Mark Johnson</h4>
+            <div class="flex text-yellow-400 my-1">
+              <i class="fas fa-star"></i>
+              <i class="fas fa-star"></i>
+              <i class="fas fa-star"></i>
+              <i class="fas fa-star"></i>
+              <i class="fas fa-star"></i>
+            </div>
+            <p class="text-sm text-gray-500">Weight Loss Program, 6 months</p>
+          </div>
+          <p class="text-gray-600 italic text-center">"NutriLife changed my relationship with food. The personalized plan never felt like a diet—it was a lifestyle change I could actually maintain. The regular coaching kept me accountable and the results speak for themselves!"</p>
+        </div>
+        
+        <!-- Testimonial 2 -->
+        <div class="testimonial-card bg-white rounded-xl shadow-md p-6">
+          <div class="flex flex-col items-center mb-6">
+            <div class="relative mb-4">
+              <img src="https://randomuser.me/api/portraits/women/45.jpg" alt="Client" class="w-20 h-20 rounded-full object-cover">
+              <div class="absolute -bottom-2 -right-2 bg-green-600 text-white text-xs font-bold px-2 py-1 rounded-full">+20% energy</div>
+            </div>
+            <h4 class="font-semibold text-lg">Sarah Williams</h4>
+            <div class="flex text-yellow-400 my-1">
+              <i class="fas fa-star"></i>
+              <i class="fas fa-star"></i>
+              <i class="fas fa-star"></i>
+              <i class="fas fa-star"></i>
+              <i class="fas fa-star-half-alt"></i>
+            </div>
+            <p class="text-sm text-gray-500">Wellness Plan, 3 months</p>
+          </div>
+          <p class="text-gray-600 italic text-center">"After struggling with fatigue for years, the nutrition plan from NutriLife completely transformed my energy levels. The meal delivery made healthy eating so convenient, and I love that everything is tailored to my specific needs."</p>
+        </div>
+        
+        <!-- Testimonial 3 -->
+        <div class="testimonial-card bg-white rounded-xl shadow-md p-6">
+          <div class="flex flex-col items-center mb-6">
+            <div class="relative mb-4">
+              <img src="https://randomuser.me/api/portraits/men/65.jpg" alt="Client" class="w-20 h-20 rounded-full object-cover">
+              <div class="absolute -bottom-2 -right-2 bg-green-600 text-white text-xs font-bold px-2 py-1 rounded-full">+8 lbs muscle</div>
+            </div>
+            <h4 class="font-semibold text-lg">David Chen</h4>
+            <div class="flex text-yellow-400 my-1">
+              <i class="fas fa-star"></i>
+              <i class="fas fa-star"></i>
+              <i class="fas fa-star"></i>
+              <i class="fas fa-star"></i>
+              <i class="fas fa-star"></i>
+            </div>
+            <p class="text-sm text-gray-500">Muscle Building Plan, 4 months</p>
+          </div>
+          <p class="text-gray-600 italic text-center">"As an athlete, proper nutrition is crucial. My coach crafted a plan that perfectly complemented my training regimen. The high-protein meals are delicious, and the timing strategies helped maximize my muscle gains while keeping body fat low."</p>
+        </div>
+      </div>
+      
+      <div class="flex flex-col md:flex-row items-center justify-center gap-8 mt-16 bg-white p-8 rounded-xl shadow-md">
+        <div class="md:w-1/3">
+          <img src="https://images.unsplash.com/photo-1486218119243-13883505764c?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2072&q=80" alt="Before and After" class="rounded-lg shadow-md">
+        </div>
+        <div class="md:w-2/3">
+          <h3 class="text-2xl font-bold text-gray-900 mb-4">Emma's Transformation Journey</h3>
+          <p class="text-gray-600 mb-6">"After struggling with my weight for over a decade and trying countless diets, I finally found NutriLife. The difference was the personalized approach and constant support. My nutritionist understood my lifestyle and created a plan I could actually follow. The meal delivery made healthy eating effortless, even with my busy schedule."</p>
+          <div class="flex items-center">
+            <div class="font-semibold">Results:</div>
+            <div class="ml-4 flex space-x-4">
+              <span class="bg-green-100 text-green-800 text-sm font-semibold px-3 py-1 rounded-full">Lost 47 pounds</span>
+              <span class="bg-green-100 text-green-800 text-sm font-semibold px-3 py-1 rounded-full">Reduced cholesterol by 18%</span>
+              <span class="bg-green-100 text-green-800 text-sm font-semibold px-3 py-1 rounded-full">Increased energy levels</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- App Section - Feature 11: Mobile app promotion -->
+  <section id="app" class="py-20 bg-gradient-to-r from-green-500 to-emerald-600 text-white">
+    <div class="container mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="flex flex-col md:flex-row items-center">
+        <div class="md:w-1/2 mb-12 md:mb-0">
+          <h2 class="text-3xl sm:text-4xl font-bold mb-6">Get Our Mobile App</h2>
+          <p class="text-xl mb-8">Track your nutrition, access meal plans, and connect with your coach on the go.</p>
+          <ul class="space-y-4 mb-8">
+            <li class="flex items-start">
+              <i class="fas fa-check-circle mt-1 mr-3 text-green-300"></i>
+              <span>Track meals and nutrition with easy food logging</span>
+            </li>
+            <li class="flex items-start">
+              <i class="fas fa-check-circle mt-1 mr-3 text-green-300"></i>
+              <span>Access your personalized meal plans anytime</span>
+            </li>
+            <li class="flex items-start">
+              <i class="fas fa-check-circle mt-1 mr-3 text-green-300"></i>
+              <span>Message your nutrition coach directly</span>
+            </li>
+            <li class="flex items-start">
+              <i class="fas fa-check-circle mt-1 mr-3 text-green-300"></i>
+              <span>Set reminders for meals and water intake</span>
+            </li>
+            <li class="flex items-start">
+              <i class="fas fa-check-circle mt-1 mr-3 text-green-300"></i>
+              <span>View progress reports and achievements</span>
+            </li>
+          </ul>
+          <div class="flex flex-col sm:flex-row space-y-4 sm:space-y-0 sm:space-x-4">
+            <a href="#" class="flex items-center justify-center bg-black text-white px-6 py-3 rounded-lg hover:bg-gray-900 transition">
+              <i class="fab fa-apple text-2xl mr-3"></i>
+              <div>
+                <div class="text-xs">Download on the</div>
+                <div class="text-lg font-semibold">App Store</div>
+              </div>
+            </a>
+            <a href="#" class="flex items-center justify-center bg-black text-white px-6 py-3 rounded-lg hover:bg-gray-900 transition">
+              <i class="fab fa-google-play text-2xl mr-3"></i>
+              <div>
+                <div class="text-xs">Get it on</div>
+                <div class="text-lg font-semibold">Google Play</div>
+              </div>
+            </a>
+          </div>
+        </div>
+        <div class="md:w-1/2 flex justify-center">
+          <img src="https://images.unsplash.com/photo-1512941937669-90a1b58e7e9c?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1470&q=80" alt="Mobile App" class="w-2/3 rounded-3xl shadow-2xl">
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Blog Section - Feature 12: Nutrition blog/resources -->
+  <section id="blog" class="py-20 bg-white">
+    <div class="container mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="text-center mb-16">
+        <h2 class="text-3xl sm:text-4xl font-bold text-gray-900 mb-4">Nutrition Resources</h2>
+        <p class="text-gray-600 max-w-2xl mx-auto">Expert articles, recipes, and tips to enhance your nutrition knowledge</p>
+        <div class="w-16 h-1 bg-green-600 mx-auto mt-4"></div>
+      </div>
+      
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+        <!-- Blog 1 -->
+        <div class="bg-white rounded-xl shadow-md overflow-hidden">
+          <img src="https://images.unsplash.com/photo-1505576399279-565b52d4ac71?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2070&q=80" alt="Superfoods Blog" class="w-full h-56 object-cover">
+          <div class="p-6">
+            <div class="flex items-center text-sm text-gray-500 mb-2">
+              <i class="fas fa-calendar-alt mr-2"></i>
+              <span>June 15, 2023</span>
+              <span class="mx-2">•</span>
+              <span>5 min read</span>
+            </div>
+            <h3 class="text-xl font-bold text-gray-900 mb-2">10 Superfoods You Should Include in Your Diet</h3>
+            <p class="text-gray-600 mb-4">Discover nutrient-dense foods that provide exceptional benefits for your health and wellbeing.</p>
+            <a href="#blog-article" class="text-green-600 hover:text-green-800 font-medium inline-flex items-center">
+              Read More
+              <i class="fas fa-arrow-right ml-2 text-sm"></i>
+            </a>
+          </div>
+        </div>
+        
+        <!-- Blog 2 -->
+        <div class="bg-white rounded-xl shadow-md overflow-hidden">
+          <img src="https://images.unsplash.com/photo-1495214783159-3503fd1b572d?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2070&q=80" alt="Meal Prep Blog" class="w-full h-56 object-cover">
+          <div class="p-6">
+            <div class="flex items-center text-sm text-gray-500 mb-2">
+              <i class="fas fa-calendar-alt mr-2"></i>
+              <span>May 28, 2023</span>
+              <span class="mx-2">•</span>
+              <span>8 min read</span>
+            </div>
+            <h3 class="text-xl font-bold text-gray-900 mb-2">The Ultimate Guide to Meal Prepping</h3>
+            <p class="text-gray-600 mb-4">Learn how to plan, prepare, and portion your meals for a week of healthy eating success.</p>
+            <a href="#blog-article" class="text-green-600 hover:text-green-800 font-medium inline-flex items-center">
+              Read More
+              <i class="fas fa-arrow-right ml-2 text-sm"></i>
+            </a>
+          </div>
+        </div>
+        
+        <!-- Blog 3 -->
+        <div class="bg-white rounded-xl shadow-md overflow-hidden">
+          <img src="https://images.unsplash.com/photo-1579126038374-6064e9370f0f?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2070&q=80" alt="Protein Blog" class="w-full h-56 object-cover">
+          <div class="p-6">
+            <div class="flex items-center text-sm text-gray-500 mb-2">
+              <i class="fas fa-calendar-alt mr-2"></i>
+              <span>May 10, 2023</span>
+              <span class="mx-2">•</span>
+              <span>6 min read</span>
+            </div>
+            <h3 class="text-xl font-bold text-gray-900 mb-2">Protein Myths Debunked: How Much Do You Really Need?</h3>
+            <p class="text-gray-600 mb-4">Separating fact from fiction about protein requirements for different fitness goals and lifestyles.</p>
+            <a href="#blog-article" class="text-green-600 hover:text-green-800 font-medium inline-flex items-center">
+              Read More
+              <i class="fas fa-arrow-right ml-2 text-sm"></i>
+            </a>
+          </div>
+        </div>
+      </div>
+      
+      <div class="text-center mt-12">
+        <a href="#blog-all" class="inline-block px-8 py-3 rounded-lg border border-green-600 text-green-600 hover:bg-green-50 transition">View All Articles</a>
+      </div>
+    </div>
+  </section>
+
+  <!-- FAQ Section - Feature 13: Interactive FAQ section -->
+  <section id="faq" class="py-20 bg-gray-50">
+    <div class="container mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="text-center mb-16">
+        <h2 class="text-3xl sm:text-4xl font-bold text-gray-900 mb-4">Frequently Asked Questions</h2>
+        <p class="text-gray-600 max-w-2xl mx-auto">Find answers to common questions about our nutrition services</p>
+        <div class="w-16 h-1 bg-green-600 mx-auto mt-4"></div>
+      </div>
+      
+      <div class="max-w-3xl mx-auto">
+        <!-- FAQ Item 1 -->
+        <div class="faq-item mb-4 border border-gray-200 rounded-lg overflow-hidden">
+          <div class="faq-question p-4 bg-white cursor-pointer flex justify-between items-center">
+            <h3 class="text-lg font-semibold">How does the personalized nutrition plan work?</h3>
+            <i class="fas fa-chevron-down text-gray-500 transition-transform"></i>
+          </div>
+          <div class="faq-answer bg-gray-50 px-4 pb-4">
+            <p class="text-gray-700">Our nutrition plans are created based on your individual assessment results, including your goals, current health status, dietary preferences, and lifestyle factors. Our registered dietitians analyze this information to create a customized plan that includes meal recommendations, portion guidance, and nutrient timing strategies specifically for you.</p>
+          </div>
+        </div>
+        
+        <!-- FAQ Item 2 -->
+        <div class="faq-item mb-4 border border-gray-200 rounded-lg overflow-hidden">
+          <div class="faq-question p-4 bg-white cursor-pointer flex justify-between items-center">
+            <h3 class="text-lg font-semibold">How often are meals delivered?</h3>
+            <i class="fas fa-chevron-down text-gray-500 transition-transform"></i>
+          </div>
+          <div class="faq-answer bg-gray-50 px-4 pb-4">
+            <p class="text-gray-700">Meal deliveries are typically made twice weekly (Monday and Thursday) to ensure maximum freshness. You can choose your preferred delivery schedule during signup. Our meals are delivered in eco-friendly, insulated packaging to maintain freshness even if you're not home at delivery time.</p>
+          </div>
+        </div>
+        
+        <!-- FAQ Item 3 -->
+        <div class="faq-item mb-4 border border-gray-200 rounded-lg overflow-hidden">
+          <div class="faq-question p-4 bg-white cursor-pointer flex justify-between items-center">
+            <h3 class="text-lg font-semibold">Can I customize my meal plan for allergies or preferences?</h3>
+            <i class="fas fa-chevron-down text-gray-500 transition-transform"></i>
+          </div>
+          <div class="faq-answer bg-gray-50 px-4 pb-4">
+            <p class="text-gray-700">Absolutely! During your assessment, you'll have the opportunity to indicate any food allergies, intolerances, dislikes, or preferences. Our system automatically filters out unsuitable options, and your nutritionist will further customize your plan. We can accommodate most dietary restrictions including gluten-free, dairy-free, nut-free, vegetarian, vegan, and many others.</p>
+          </div>
+        </div>
+        
+        <!-- FAQ Item 4 -->
+        <div class="faq-item mb-4 border border-gray-200 rounded-lg overflow-hidden">
+          <div class="faq-question p-4 bg-white cursor-pointer flex justify-between items-center">
+            <h3 class="text-lg font-semibold">How often do I meet with my nutrition coach?</h3>
+            <i class="fas fa-chevron-down text-gray-500 transition-transform"></i>
+          </div>
+          <div class="faq-answer bg-gray-50 px-4 pb-4">
+            <p class="text-gray-700">Coaching session frequency depends on your selected plan. The Essential plan doesn't include 1-on-1 coaching, the Premium plan includes two 30-minute sessions per month, and the Ultimate plan includes weekly sessions. All plans include unlimited messaging with our nutrition support team for quick questions between sessions.</p>
+          </div>
+        </div>
+        
+        <!-- FAQ Item 5 -->
+        <div class="faq-item mb-4 border border-gray-200 rounded-lg overflow-hidden">
+          <div class="faq-question p-4 bg-white cursor-pointer flex justify-between items-center">
+            <h3 class="text-lg font-semibold">Can I cancel or pause my subscription?</h3>
+            <i class="fas fa-chevron-down text-gray-500 transition-transform"></i>
+          </div>
+          <div class="faq-answer bg-gray-50 px-4 pb-4">
+            <p class="text-gray-700">Yes, you can pause or cancel your subscription at any time through your account dashboard or by contacting our customer support team. For meal deliveries, we request at least 48 hours notice before your scheduled delivery date to process any changes.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Newsletter Section - Feature 14: Newsletter signup -->
+  <section id="newsletter" class="py-12 bg-green-600 text-white">
+    <div class="container mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="max-w-3xl mx-auto text-center">
+        <h3 class="text-2xl font-bold mb-4">Subscribe to Our Newsletter</h3>
+        <p class="mb-6">Get nutrition tips, healthy recipes, and exclusive offers delivered to your inbox</p>
+        <form class="flex flex-col sm:flex-row gap-4 justify-center">
+          <input type="email" placeholder="Your email address" class="px-4 py-3 rounded-lg focus:outline-none focus:ring-2 focus:ring-green-300 text-gray-800 flex-grow max-w-md">
+          <button type="submit" class="px-6 py-3 bg-white text-green-600 font-semibold rounded-lg hover:bg-gray-100 transition">Subscribe</button>
+        </form>
+        <p class="mt-4 text-sm opacity-80">We respect your privacy. Unsubscribe at any time.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- Footer -->
+  <footer class="bg-gray-900 text-white pt-16 pb-8">
+    <div class="container mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
+        <div>
+          <h3 class="text-xl font-bold mb-4">NutriLife</h3>
+          <p class="text-gray-400 mb-4">Personalized nutrition solutions for a healthier, happier life.</p>
+          <div class="flex space-x-4">
+            <a href="#" class="text-gray-400 hover:text-white transition">
+              <i class="fab fa-facebook-f"></i>
+            </a>
+            <a href="#" class="text-gray-400 hover:text-white transition">
+              <i class="fab fa-twitter"></i>
+            </a>
+            <a href="#" class="text-gray-400 hover:text-white transition">
+              <i class="fab fa-instagram"></i>
+            </a>
+            <a href="#" class="text-gray-400 hover:text-white transition">
+              <i class="fab fa-linkedin-in"></i>
+            </a>
+          </div>
+        </div>
+        
+        <div>
+          <h4 class="text-lg font-semibold mb-4">Quick Links</h4>
+          <ul class="space-y-2">
+            <li><a href="#home" class="text-gray-400 hover:text-white transition">Home</a></li>
+            <li><a href="#plans" class="text-gray-400 hover:text-white transition">Diet Plans</a></li>
+            <li><a href="#meals" class="text-gray-400 hover:text-white transition">Meal Subscriptions</a></li>
+            <li><a href="#experts" class="text-gray-400 hover:text-white transition">Our Experts</a></li>
+            <li><a href="#pricing" class="text-gray-400 hover:text-white transition">Pricing</a></li>
+            <li><a href="#blog" class="text-gray-400 hover:text-white transition">Blog</a></li>
+            <li><a href="#faq" class="text-gray-400 hover:text-white transition">FAQ</a></li>
+          </ul>
+        </div>
+        
+        <div>
+          <h4 class="text-lg font-semibold mb-4">Our Services</h4>
+          <ul class="space-y-2">
+            <li><a href="#plans" class="text-gray-400 hover:text-white transition">Personalized Diet Plans</a></li>
+            <li><a href="#meals" class="text-gray-400 hover:text-white transition">Meal Delivery</a></li>
+            <li><a href="#experts" class="text-gray-400 hover:text-white transition">Nutrition Coaching</a></li>
+            <li><a href="#app" class="text-gray-400 hover:text-white transition">Mobile App</a></li>
+            <li><a href="#corporate" class="text-gray-400 hover:text-white transition">Corporate Wellness</a></li>
+            <li><a href="#recipes" class="text-gray-400 hover:text-white transition">Recipe Database</a></li>
+          </ul>
+        </div>
+        
+        <div>
+          <h4 class="text-lg font-semibold mb-4">Contact Us</h4>
+          <ul class="space-y-2">
+            <li class="flex items-start">
+              <i class="fas fa-map-marker-alt mt-1 mr-3 text-green-500"></i>
+              <span>123 Nutrition Street, Healthyville, CA 90210</span>
+            </li>
+            <li class="flex items-start">
+              <i class="fas fa-phone-alt mt-1 mr-3 text-green-500"></i>
+              <span>(800) 123-4567</span>
+            </li>
+            <li class="flex items-start">
+              <i class="fas fa-envelope mt-1 mr-3 text-green-500"></i>
+              <span>support@nutrilife.com</span>
+            </li>
+            <li class="flex items-start">
+              <i class="fas fa-clock mt-1 mr-3 text-green-500"></i>
+              <span>Mon-Fri: 8AM-8PM, Sat: 9AM-5PM</span>
+            </li>
+          </ul>
+        </div>
+      </div>
+      
+      <div class="border-t border-gray-800 mt-12 pt-8 text-center text-gray-400 text-sm">
+        <p>&copy; 2023 NutriLife. All rights reserved.</p>
+      </div>
+    </div>
+  </footer>
+
+  <!-- Scroll to Top Button -->
+  <a href="#" id="scroll-to-top" class="fixed bottom-6 right-6 bg-green-600 text-white w-12 h-12 rounded-full flex items-center justify-center shadow-lg opacity-0 invisible transition-all duration-300">
+    <i class="fas fa-chevron-up"></i>
+  </a>
+
+  <!-- Simple JavaScript -->
+  <script>
+    // Mobile Menu Toggle
+    const menuToggle = document.getElementById('menu-toggle');
+    const closeMenu = document.getElementById('close-menu');
+    const mobileMenu = document.getElementById('mobile-menu');
+    
+    menuToggle.addEventListener('click', () => {
+      mobileMenu.classList.add('active');
+    });
+    
+    closeMenu.addEventListener('click', () => {
+      mobileMenu.classList.remove('active');
+    });
+    
+    // Smooth scrolling for anchor links
+    document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+      anchor.addEventListener('click', function (e) {
+        e.preventDefault();
+        
+        if (mobileMenu.classList.contains('active')) {
+          mobileMenu.classList.remove('active');
+        }
+        
+        const target = document.querySelector(this.getAttribute('href'));
+        if (target) {
+          window.scrollTo({
+            top: target.offsetTop - 80,
+            behavior: 'smooth'
+          });
+        }
+      });
+    });
+    
+    // FAQ Accordion
+    const faqQuestions = document.querySelectorAll('.faq-question');
+    
+    faqQuestions.forEach(question => {
+      question.addEventListener('click', () => {
+        const faqItem = question.parentElement;
+        const isActive = faqItem.classList.contains('active');
+        
+        // Close all FAQ items
+        document.querySelectorAll('.faq-item').forEach(item => {
+          item.classList.remove('active');
+          const arrow = item.querySelector('i');
+          arrow.style.transform = 'rotate(0deg)';
+        });
+        
+        // If the clicked item wasn't active, open it
+        if (!isActive) {
+          faqItem.classList.add('active');
+          const arrow = question.querySelector('i');
+          arrow.style.transform = 'rotate(180deg)';
+        }
+      });
+    });
+    
+    // Scroll to top button
+    const scrollToTopBtn = document.getElementById('scroll-to-top');
+    
+    window.addEventListener('scroll', () => {
+      if (window.pageYOffset > 300) {
+        scrollToTopBtn.style.opacity = '1';
+        scrollToTopBtn.style.visibility = 'visible';
+      } else {
+        scrollToTopBtn.style.opacity = '0';
+        scrollToTopBtn.style.visibility = 'hidden';
+      }
+    });
+    
+    scrollToTopBtn.addEventListener('click', (e) => {
+      e.preventDefault();
+      window.scrollTo({
+        top: 0,
+        behavior: 'smooth'
+      });
+    });
+    
+    // Form submission (would connect to backend in actual implementation)
+    const assessmentForm = document.getElementById('assessment-form');
+    
+    if (assessmentForm) {
+      assessmentForm.addEventListener('submit', (e) => {
+        e.preventDefault();
+        alert('Thank you for completing the assessment! Your personalized nutrition recommendations will be ready shortly.');
+        assessmentForm.reset();
+      });
+    }
+    
+    // Sticky navbar
+    const navbar = document.getElementById('navbar');
+    let scrollPosition = window.pageYOffset;
+    
+    window.addEventListener('scroll', () => {
+      if (window.pageYOffset > 100) {
+        navbar.classList.add('sticky-nav');
+      } else {
+        navbar.classList.remove('sticky-nav');
+      }
+      
+      // Hide on scroll down, show on scroll up
+      let currentScrollPosition = window.pageYOffset;
+      if (scrollPosition > currentScrollPosition) {
+        navbar.style.top = "0";
+      } else {
+        navbar.style.top = "-80px";
+      }
+      scrollPosition = currentScrollPosition;
+    });
+  </script>
+  
+  <!-- DO NOT REMOVE: This script is essential for interactive features -->
+  <script src="https://cdn.gpteng.co/gptengineer.js" type="module"></script>
+</body>
+</html>

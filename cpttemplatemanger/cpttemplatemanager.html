@@ -1,0 +1,1343 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Template Manager • Editable Imported HTML</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <!-- Tailwind via CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+
+  <style>
+    /* ---------- Design Tokens via CSS Variables ---------- */
+    :root {
+      --primary: #2dd4bf;
+      --accent: #38bdf8;
+      --accent-soft: rgba(45, 212, 191, 0.1);
+      --radius: 20px;
+      --section-gap: 1.75rem;
+    }
+
+    /* Theme variants */
+    .theme-teal {
+      --primary: #2dd4bf;
+      --accent: #38bdf8;
+      --accent-soft: rgba(45, 212, 191, 0.1);
+    }
+
+    .theme-indigo {
+      --primary: #6366f1;
+      --accent: #a855f7;
+      --accent-soft: rgba(99, 102, 241, 0.12);
+    }
+
+    .theme-warm {
+      --primary: #fb923c;
+      --accent: #f97373;
+      --accent-soft: rgba(251, 146, 60, 0.13);
+    }
+
+    /* Spacing variants */
+    .spacing-compact {
+      --section-gap: 1rem;
+    }
+    .spacing-comfortable {
+      --section-gap: 1.75rem;
+    }
+    .spacing-spacious {
+      --section-gap: 2.5rem;
+    }
+
+    /* Layout variants */
+    .layout-full .preview-inner {
+      max-width: 100%;
+    }
+    .layout-boxed .preview-inner {
+      max-width: 950px;
+      margin-inline: auto;
+    }
+    .layout-split .preview-inner {
+      max-width: 1050px;
+      margin-inline: auto;
+    }
+
+    /* Elements that use the variables */
+    .hero-highlight {
+      color: var(--primary);
+    }
+    .primary-button {
+      background-color: var(--primary);
+      color: #020617;
+      border-radius: var(--radius);
+    }
+    .primary-button:hover {
+      filter: brightness(1.05);
+    }
+    .secondary-button {
+      border-radius: var(--radius);
+    }
+    .badge-pill,
+    .feature-chip,
+    .template-card,
+    .stat-card,
+    .editable-block {
+      border-radius: var(--radius);
+    }
+
+    .badge-pill {
+      background-color: var(--accent-soft);
+      border: 1px solid rgba(148, 163, 184, 0.55);
+    }
+
+    .hero-section {
+      margin-top: var(--section-gap);
+      margin-bottom: var(--section-gap);
+    }
+
+    .section-gap {
+      margin-top: var(--section-gap);
+    }
+
+    .template-card.active {
+      border-color: var(--primary);
+      box-shadow: 0 0 0 1px rgba(45, 212, 191, 0.4);
+      background: radial-gradient(circle at 0 0, rgba(45, 212, 191, 0.2), transparent),
+                  rgba(15, 23, 42, 0.9);
+    }
+
+    .template-card:not(.active):hover {
+      background-color: rgba(15, 23, 42, 0.85);
+    }
+
+    .theme-chip.active-chip,
+    .density-chip.active-chip,
+    .layout-chip.active-chip {
+      border-color: var(--primary);
+      background-color: var(--accent-soft);
+    }
+
+    /* Smooth transitions */
+    .preview-root,
+    .preview-root * {
+      transition: all 0.18s ease-out;
+    }
+
+    textarea::-webkit-scrollbar {
+      width: 6px;
+    }
+    textarea::-webkit-scrollbar-thumb {
+      background-color: rgba(148, 163, 184, 0.8);
+      border-radius: 999px;
+    }
+  </style>
+</head>
+<body class="bg-slate-950 text-slate-100 min-h-screen">
+  <div class="min-h-screen flex flex-col">
+    <!-- ---------- Top Bar ---------- -->
+    <header class="border-b border-slate-800 px-6 py-4 flex items-center gap-4">
+      <h1 class="text-lg font-semibold tracking-tight">
+        Template Manager • Editable Imported HTML
+      </h1>
+
+      <!-- Search (UI only) -->
+      <div class="flex-1 max-w-xl">
+        <div class="relative">
+          <input
+            type="text"
+            placeholder="Search templates (UI only in this demo)..."
+            class="w-full bg-slate-900/80 border border-slate-700 rounded-xl px-10 py-2.5 text-sm placeholder:text-slate-500 focus:outline-none focus:ring-2 focus:ring-teal-500/70 focus:border-teal-500/70"
+          />
+          <span class="absolute left-3 top-1/2 -translate-y-1/2 text-slate-500 text-xs">
+            🔍
+          </span>
+        </div>
+      </div>
+
+      <!-- Quick filters (visual only) -->
+      <div class="flex items-center gap-2 text-xs">
+        <button class="px-3 py-1.5 rounded-full border border-slate-700 bg-slate-900/80 hover:bg-slate-800">
+          All
+        </button>
+        <button class="px-3 py-1.5 rounded-full border border-teal-500/60 bg-teal-500/10">
+          React + Tailwind
+        </button>
+        <button class="px-3 py-1.5 rounded-full border border-slate-700 bg-slate-900/80 hover:bg-slate-800">
+          HTML + Tailwind
+        </button>
+      </div>
+
+      <!-- Actions (visual only) -->
+      <div class="flex items-center gap-2">
+        <button
+          class="px-3 py-1.5 text-xs rounded-lg border border-slate-700 bg-slate-900/80 hover:bg-slate-800"
+        >
+          Import File
+        </button>
+        <button
+          class="px-3 py-1.5 text-xs rounded-lg bg-teal-500 text-slate-900 font-medium hover:bg-teal-400"
+        >
+          + New Template
+        </button>
+      </div>
+    </header>
+
+    <!-- ---------- Main Workspace ---------- -->
+    <main class="flex-1 grid grid-cols-[minmax(260px,320px)_minmax(400px,1.2fr)_minmax(280px,360px)] max-[1024px]:grid-cols-1">
+      <!-- ---------- Left: Template Library ---------- -->
+      <section class="border-r border-slate-800 overflow-y-auto max-[1024px]:border-r-0 max-[1024px]:border-b">
+        <div class="px-4 py-3 flex items-center justify-between">
+          <h2 class="text-xs font-semibold uppercase tracking-[0.18em] text-slate-500">
+            Library
+          </h2>
+          <span class="text-[10px] text-slate-500">
+            Click a template to load & edit
+          </span>
+        </div>
+
+        <div class="px-3 pb-4 space-y-2" id="templateList">
+          <!-- Filled by JS -->
+        </div>
+      </section>
+
+      <!-- ---------- Center: Preview ---------- -->
+      <section class="border-r border-slate-800 overflow-hidden flex flex-col">
+        <div class="px-5 py-3 flex items-center justify-between border-b border-slate-800/80">
+          <div>
+            <h2 class="text-xs font-semibold uppercase tracking-[0.18em] text-slate-500">
+              Preview
+            </h2>
+            <p class="text-sm text-slate-200 mt-0.5" id="previewTitle"></p>
+            <p class="text-[11px] text-slate-400" id="previewStack"></p>
+          </div>
+          <div class="flex items-center gap-2">
+            <button class="px-2.5 py-1.5 text-[11px] rounded-lg border border-slate-700 bg-slate-900/80 hover:bg-slate-800">
+              Desktop
+            </button>
+            <button class="px-2.5 py-1.5 text-[11px] rounded-lg border border-slate-800 bg-slate-900/60 hover:bg-slate-800/80">
+              Tablet
+            </button>
+            <button class="px-2.5 py-1.5 text-[11px] rounded-lg border border-slate-800 bg-slate-900/60 hover:bg-slate-800/80">
+              Mobile
+            </button>
+          </div>
+        </div>
+
+        <!-- Preview frame -->
+        <div class="flex-1 bg-slate-950 px-5 py-4">
+          <div
+            id="previewRoot"
+            class="preview-root theme-teal layout-full spacing-comfortable h-full w-full rounded-2xl border border-slate-800 bg-gradient-to-b from-slate-900 via-slate-950 to-slate-950 overflow-hidden shadow-[0_0_0_1px_rgba(15,23,42,1)]"
+          >
+            <!-- Browser chrome -->
+            <div class="flex items-center justify-between px-4 py-2 border-b border-slate-800 bg-slate-950/80">
+              <div class="flex items-center gap-1.5">
+                <span class="w-2.5 h-2.5 rounded-full bg-rose-500/80"></span>
+                <span class="w-2.5 h-2.5 rounded-full bg-amber-400/80"></span>
+                <span class="w-2.5 h-2.5 rounded-full bg-emerald-400/80"></span>
+              </div>
+              <div class="flex-1 mx-3">
+                <div class="h-6 rounded-lg bg-slate-900/80 border border-slate-700/80 text-[10px] flex items-center px-2 text-slate-500">
+                  <span id="previewUrl">https://saas-template.dev</span>
+                </div>
+              </div>
+              <span class="text-[10px] text-slate-500">100%</span>
+            </div>
+
+            <!-- Inner preview content -->
+            <div class="preview-inner p-6 md:p-8 lg:p-10 space-y-6 text-slate-50">
+              <!-- Structured preview (for built-in templates) -->
+              <div id="structuredPreview">
+                <!-- Navbar preview -->
+                <div class="flex items-center justify-between">
+                  <div class="flex items-center gap-2">
+                    <div class="w-7 h-7 rounded-xl bg-gradient-to-br from-teal-400 via-sky-400 to-emerald-400"></div>
+                    <span class="text-xs font-medium" id="brandName">NovaSaaS</span>
+                  </div>
+                  <div class="hidden md:flex items-center gap-4 text-[11px] text-slate-300">
+                    <span>Features</span>
+                    <span>Pricing</span>
+                    <span>Docs</span>
+                    <span>Changelog</span>
+                    <button class="px-3 py-1.5 rounded-full bg-slate-100 text-slate-900 text-[11px] font-medium">
+                      Get Started
+                    </button>
+                  </div>
+                </div>
+
+                <!-- Hero preview -->
+                <div class="hero-section grid md:grid-cols-[minmax(0,1.1fr)_minmax(0,1fr)] gap-6 md:gap-10 items-center">
+                  <div class="space-y-4">
+                    <div class="inline-flex items-center gap-2 px-2.5 py-1 badge-pill">
+                      <span class="text-[10px] px-1.5 py-0.5 rounded-full bg-slate-800/90 border border-slate-600">
+                        New
+                      </span>
+                      <span class="text-[10px] text-slate-300" id="heroBadgeText">
+                        AI-ready template for modern SaaS teams
+                      </span>
+                    </div>
+
+                    <h1 class="text-xl md:text-2xl lg:text-3xl font-semibold leading-tight" id="heroTitle">
+                      Ship beautiful SaaS websites
+                      <span class="hero-highlight">in hours, not weeks.</span>
+                    </h1>
+
+                    <p class="text-xs md:text-sm text-slate-300 max-w-md" id="heroSubtitle">
+                      A production-ready React + Tailwind template with clean sections,
+                      dark mode, responsive layouts, and reusable components.
+                    </p>
+
+                    <div class="flex flex-wrap items-center gap-3 pt-1">
+                      <button class="px-4 py-2 text-xs font-semibold shadow-lg shadow-teal-500/30 primary-button">
+                        Use this Template
+                      </button>
+                      <button class="px-4 py-2 rounded-xl border border-slate-600 bg-slate-900/80 text-xs secondary-button">
+                        View Code
+                      </button>
+                      <div class="flex items-center gap-1.5 text-[10px] text-slate-400">
+                        <span class="w-1.5 h-1.5 rounded-full bg-emerald-400"></span>
+                        <span id="heroFootnote">Built for React · Tailwind</span>
+                      </div>
+                    </div>
+
+                    <div class="flex flex-wrap gap-2 pt-1.5">
+                      <span class="px-2 py-1 rounded-full bg-slate-900/80 border border-slate-700 text-[10px] feature-chip">
+                        ✅ Responsive
+                      </span>
+                      <span class="px-2 py-1 rounded-full bg-slate-900/80 border border-slate-700 text-[10px] feature-chip">
+                        🌙 Dark mode
+                      </span>
+                      <span class="px-2 py-1 rounded-full bg-slate-900/80 border border-slate-700 text-[10px] feature-chip">
+                        ⚡ Optimized
+                      </span>
+                    </div>
+                  </div>
+
+                  <!-- Fake stats / UI preview -->
+                  <div class="space-y-3">
+                    <div class="rounded-2xl border border-slate-800 bg-slate-950/80 p-3 stat-card editable-block">
+                      <div class="flex items-center justify-between mb-2">
+                        <p class="text-[11px] text-slate-300" id="statTitle">Conversion overview</p>
+                        <span class="text-[10px] text-emerald-400" id="statDelta">+18.2%</span>
+                      </div>
+                      <div class="h-20 rounded-lg bg-gradient-to-br from-teal-500/20 via-sky-500/10 to-slate-900 border border-slate-800"></div>
+                      <div class="flex justify-between mt-2 text-[10px] text-slate-400">
+                        <span>Visitors</span>
+                        <span>Signups</span>
+                        <span>Trials</span>
+                        <span>Customers</span>
+                      </div>
+                    </div>
+
+                    <div class="grid grid-cols-3 gap-3 text-[10px]">
+                      <div class="rounded-xl border border-slate-800 bg-slate-950/90 p-2 stat-card editable-block">
+                        <p class="text-slate-400 mb-1">Sections</p>
+                        <p class="text-sm font-semibold" id="statSections">12</p>
+                      </div>
+                      <div class="rounded-xl border border-slate-800 bg-slate-950/90 p-2 stat-card editable-block">
+                        <p class="text-slate-400 mb-1">Components</p>
+                        <p class="text-sm font-semibold" id="statComponents">38</p>
+                      </div>
+                      <div class="rounded-xl border border-slate-800 bg-slate-950/90 p-2 stat-card editable-block">
+                        <p class="text-slate-400 mb-1">Layout</p>
+                        <p class="text-sm font-semibold" id="statLayout">Full / Boxed</p>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+                <!-- Extra blocks -->
+                <div class="grid md:grid-cols-3 gap-3 section-gap">
+                  <div class="h-16 rounded-xl border border-slate-800 bg-slate-950/90 stat-card"></div>
+                  <div class="h-16 rounded-xl border border-slate-800 bg-slate-950/90 stat-card"></div>
+                  <div class="h-16 rounded-xl border border-slate-800 bg-slate-950/90 stat-card"></div>
+                </div>
+              </div>
+
+              <!-- Custom HTML preview (for imported templates) -->
+              <div id="customHtmlPreview" class="hidden">
+                <div class="mb-3 text-[11px] text-slate-400 flex items-center justify-between">
+                  <span>Custom HTML · Tailwind snippet</span>
+                  <span class="px-2 py-0.5 rounded-full border border-slate-700 bg-slate-900/80 text-[10px]">
+                    Click any part to edit that element
+                  </span>
+                </div>
+                <div
+                  id="customHtmlContainer"
+                  class="rounded-2xl border border-slate-800 bg-slate-950/90 p-4 md:p-6 text-sm overflow-auto"
+                  style="max-height: 420px;"
+                >
+                  <!-- Filled with user HTML -->
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ---------- Right: Customizer + Import + Editors ---------- -->
+      <section class="overflow-y-auto">
+        <div class="px-4 py-3 border-b border-slate-800 flex items-center justify-between">
+          <div>
+            <h2 class="text-xs font-semibold uppercase tracking-[0.18em] text-slate-500">
+              Customizer & Editors
+            </h2>
+            <p class="text-[11px] text-slate-300">
+              Edit content, theme & imported HTML
+            </p>
+          </div>
+          <button
+            id="resetBtn"
+            class="px-3 py-1.5 text-[11px] rounded-lg border border-slate-700 bg-slate-900/80 hover:bg-slate-800"
+          >
+            Reset All
+          </button>
+        </div>
+
+        <div class="px-4 py-4 space-y-5 text-[11px]">
+          <!-- Content Editor (for structured templates) -->
+          <div class="space-y-2">
+            <p class="font-medium text-slate-300 flex items-center justify-between">
+              Content editor
+              <span class="text-[10px] text-slate-500">
+                Works for built-in templates (SaaS / Docs / Shop)
+              </span>
+            </p>
+
+            <div class="space-y-2">
+              <label class="flex flex-col gap-1">
+                <span class="text-slate-400">Template name</span>
+                <input
+                  id="editNameInput"
+                  type="text"
+                  class="bg-slate-950 border border-slate-700 rounded-lg px-2 py-1.5 text-[11px]"
+                  placeholder="Template name"
+                />
+              </label>
+
+              <label class="flex flex-col gap-1">
+                <span class="text-slate-400">Brand name (logo text)</span>
+                <input
+                  id="editBrandInput"
+                  type="text"
+                  class="bg-slate-950 border border-slate-700 rounded-lg px-2 py-1.5 text-[11px]"
+                  placeholder="Brand (e.g. NovaSaaS)"
+                />
+              </label>
+
+              <label class="flex flex-col gap-1">
+                <span class="text-slate-400">Hero title</span>
+                <input
+                  id="editHeroTitleInput"
+                  type="text"
+                  class="bg-slate-950 border border-slate-700 rounded-lg px-2 py-1.5 text-[11px]"
+                  placeholder="Main heading text"
+                />
+              </label>
+
+              <label class="flex flex-col gap-1">
+                <span class="text-slate-400">Hero highlight (colored part)</span>
+                <input
+                  id="editHeroHighlightInput"
+                  type="text"
+                  class="bg-slate-950 border border-slate-700 rounded-lg px-2 py-1.5 text-[11px]"
+                  placeholder="Highlighted phrase"
+                />
+              </label>
+
+              <label class="flex flex-col gap-1">
+                <span class="text-slate-400">Hero subtitle</span>
+                <textarea
+                  id="editSubtitleInput"
+                  rows="2"
+                  class="bg-slate-950 border border-slate-700 rounded-lg px-2 py-1.5 text-[11px] resize-none"
+                  placeholder="Short description..."
+                ></textarea>
+              </label>
+
+              <label class="flex flex-col gap-1">
+                <span class="text-slate-400">Footnote (small line under buttons)</span>
+                <input
+                  id="editFootnoteInput"
+                  type="text"
+                  class="bg-slate-950 border border-slate-700 rounded-lg px-2 py-1.5 text-[11px]"
+                  placeholder="e.g. Built for React · Tailwind"
+                />
+              </label>
+            </div>
+          </div>
+
+          <!-- Color theme -->
+          <div class="space-y-2">
+            <p class="font-medium text-slate-300 flex items-center justify-between">
+              Color theme
+              <span class="text-[10px] text-slate-500">
+                Affects hero highlight & primary button
+              </span>
+            </p>
+            <div class="flex flex-wrap gap-2">
+              <button
+                class="theme-chip active-chip flex items-center gap-1.5 px-2.5 py-1.5 rounded-xl border border-slate-700 bg-slate-900/80"
+                data-theme="teal"
+              >
+                <span class="w-3 h-3 rounded-full bg-teal-400"></span>
+                <span class="w-3 h-3 rounded-full bg-sky-400"></span>
+                <span class="w-3 h-3 rounded-full bg-emerald-400"></span>
+                <span class="ml-1">Teal / Sky</span>
+              </button>
+              <button
+                class="theme-chip flex items-center gap-1.5 px-2.5 py-1.5 rounded-xl border border-slate-700 bg-slate-900/80"
+                data-theme="indigo"
+              >
+                <span class="w-3 h-3 rounded-full bg-indigo-400"></span>
+                <span class="w-3 h-3 rounded-full bg-violet-400"></span>
+                <span class="w-3 h-3 rounded-full bg-fuchsia-400"></span>
+                <span class="ml-1">Indigo / Violet</span>
+              </button>
+              <button
+                class="theme-chip flex items-center gap-1.5 px-2.5 py-1.5 rounded-xl border border-slate-700 bg-slate-900/80"
+                data-theme="warm"
+              >
+                <span class="w-3 h-3 rounded-full bg-amber-400"></span>
+                <span class="w-3 h-3 rounded-full bg-orange-400"></span>
+                <span class="w-3 h-3 rounded-full bg-rose-400"></span>
+                <span class="ml-1">Warm Gradient</span>
+              </button>
+            </div>
+          </div>
+
+          <!-- Layout -->
+          <div class="space-y-2">
+            <p class="font-medium text-slate-300 flex items-center justify-between">
+              Layout
+              <span class="text-[10px] text-slate-500">
+                Changes preview width / centering
+              </span>
+            </p>
+            <div class="grid grid-cols-3 gap-2">
+              <button
+                class="layout-chip active-chip px-2 py-2 rounded-xl border border-slate-700 bg-slate-900/80"
+                data-layout="full"
+              >
+                Full width
+              </button>
+              <button
+                class="layout-chip px-2 py-2 rounded-xl border border-slate-700 bg-slate-900/80"
+                data-layout="boxed"
+              >
+                Boxed
+              </button>
+              <button
+                class="layout-chip px-2 py-2 rounded-xl border border-slate-700 bg-slate-900/80"
+                data-layout="split"
+              >
+                Split
+              </button>
+            </div>
+          </div>
+
+          <!-- Corner radius -->
+          <div class="space-y-2">
+            <p class="font-medium text-slate-300 flex items-center justify-between">
+              Corner radius
+              <span class="text-[10px] text-slate-500">
+                Buttons & card roundness
+              </span>
+            </p>
+            <div class="flex items-center gap-3">
+              <input
+                id="radiusSlider"
+                type="range"
+                min="4"
+                max="32"
+                value="20"
+                class="w-full accent-teal-500"
+              />
+              <span id="radiusValue" class="text-slate-300 w-8 text-right">20px</span>
+            </div>
+          </div>
+
+          <!-- Spacing & density -->
+          <div class="space-y-2">
+            <p class="font-medium text-slate-300 flex items-center justify-between">
+              Spacing
+              <span class="text-[10px] text-slate-500">
+                Vertical breathing room
+              </span>
+            </p>
+            <div class="grid grid-cols-3 gap-2">
+              <button
+                class="density-chip px-2 py-1.5 rounded-xl border border-slate-700 bg-slate-900/90"
+                data-spacing="compact"
+              >
+                Compact
+              </button>
+              <button
+                class="density-chip active-chip px-2 py-1.5 rounded-xl border border-slate-700 bg-slate-900/90"
+                data-spacing="comfortable"
+              >
+                Comfortable
+              </button>
+              <button
+                class="density-chip px-2 py-1.5 rounded-xl border border-slate-700 bg-slate-900/90"
+                data-spacing="spacious"
+              >
+                Spacious
+              </button>
+            </div>
+          </div>
+
+          <!-- Import HTML panel -->
+          <div class="space-y-2 border-t border-slate-800 pt-3">
+            <p class="font-medium text-slate-300 flex items-center justify-between">
+              Import HTML + Tailwind
+              <span class="text-[10px] text-slate-500">
+                Make your own templates editable
+              </span>
+            </p>
+
+            <label class="flex flex-col gap-1 mb-1.5">
+              <span class="text-slate-400">Template name for library</span>
+              <input
+                id="importNameInput"
+                type="text"
+                class="bg-slate-950 border border-slate-700 rounded-lg px-2 py-1.5 text-[11px]"
+                placeholder="e.g. Custom Landing v1"
+              />
+            </label>
+
+            <label class="flex flex-col gap-1">
+              <span class="text-slate-400">HTML + Tailwind snippet</span>
+              <textarea
+                id="importHtmlInput"
+                rows="6"
+                class="bg-slate-950 border border-slate-700 rounded-lg px-2 py-1.5 text-[11px] resize-y"
+                placeholder="Paste your HTML + Tailwind code here..."
+              ></textarea>
+            </label>
+
+            <div class="flex gap-2 mt-2">
+              <button
+                id="previewHtmlBtn"
+                class="flex-1 px-3 py-2 rounded-xl border border-slate-700 bg-slate-900/80 hover:bg-slate-800"
+              >
+                Preview HTML (no save)
+              </button>
+              <button
+                id="saveHtmlBtn"
+                class="flex-1 px-3 py-2 rounded-xl bg-teal-500 text-slate-950 font-semibold hover:bg-teal-400"
+              >
+                Save as Template
+              </button>
+            </div>
+
+            <p class="text-[10px] text-slate-500 mt-1">
+              ✳ Tailwind classes work because this page already includes Tailwind.
+            </p>
+          </div>
+
+          <!-- HTML Element Editor (for imported HTML templates) -->
+          <div class="space-y-2 border-t border-slate-800 pt-3">
+            <p class="font-medium text-slate-300 flex items-center justify-between">
+              HTML Element Editor
+              <span id="elementEditorHint" class="text-[10px] text-slate-500">
+                Enabled for imported HTML templates. Click on the middle preview.
+              </span>
+            </p>
+
+            <div class="space-y-1.5">
+              <div class="flex items-center justify-between">
+                <span class="text-slate-400">Selected tag</span>
+                <span id="elementTag" class="text-slate-200 font-mono">-</span>
+              </div>
+              <div class="flex flex-col gap-0.5">
+                <span class="text-slate-400">Selected classes</span>
+                <span id="elementClasses" class="text-[10px] text-slate-300 break-all">-</span>
+              </div>
+
+              <label class="flex flex-col gap-1 mt-1.5">
+                <span class="text-slate-400">Inner HTML of selected element</span>
+                <textarea
+                  id="elementHtmlEditor"
+                  rows="4"
+                  class="bg-slate-950 border border-slate-700 rounded-lg px-2 py-1.5 text-[11px] resize-y"
+                  placeholder="Click any part of the HTML preview to load its content here..."
+                  disabled
+                ></textarea>
+              </label>
+
+              <div class="flex gap-2 mt-1.5">
+                <button
+                  id="updateElementBtn"
+                  class="flex-1 px-3 py-2 rounded-xl border border-slate-700 bg-slate-900/80 hover:bg-slate-800 disabled:opacity-40 disabled:cursor-not-allowed"
+                  disabled
+                >
+                  Update Element
+                </button>
+                <button
+                  id="deleteElementBtn"
+                  class="flex-1 px-3 py-2 rounded-xl border border-rose-500/70 bg-rose-500/10 hover:bg-rose-500/20 text-rose-200 disabled:opacity-40 disabled:cursor-not-allowed"
+                  disabled
+                >
+                  Delete Element
+                </button>
+                <button
+                  id="clearElementSelectionBtn"
+                  class="px-2.5 py-2 rounded-xl border border-slate-700 bg-slate-900/80 hover:bg-slate-800 text-[10px] disabled:opacity-40 disabled:cursor-not-allowed"
+                  disabled
+                >
+                  Clear
+                </button>
+              </div>
+            </div>
+          </div>
+
+          <!-- Actions -->
+          <div class="pt-2 border-t border-slate-800 mt-1 flex flex-col gap-2">
+            <div class="flex gap-2">
+              <button
+                id="copyHtmlBtn"
+                class="flex-1 px-3 py-2 rounded-xl border border-slate-700 bg-slate-900/80 hover:bg-slate-800"
+              >
+                Copy Preview HTML
+              </button>
+              <button
+                id="duplicateBtn"
+                class="flex-1 px-3 py-2 rounded-xl border border-slate-700 bg-slate-900/80 hover:bg-slate-800"
+              >
+                Duplicate Template
+              </button>
+            </div>
+            <p id="actionMessage" class="text-[10px] text-slate-400 min-h-[14px]"></p>
+          </div>
+
+          <!-- Debug state -->
+          <div class="mt-3 text-[10px] text-slate-500 border-t border-slate-800 pt-2">
+            <p><strong>State (debug / understanding only):</strong></p>
+            <p id="debugState"></p>
+          </div>
+        </div>
+      </section>
+    </main>
+  </div>
+
+  <!-- ---------- JavaScript Logic ---------- -->
+  <script>
+    // Basic state
+    const state = {
+      activeTemplateId: "saas",
+      theme: "teal",
+      layout: "full",
+      radius: 20,
+      spacing: "comfortable",
+      scratchHtml: "", // for unsaved preview
+    };
+
+    const templates = [
+      {
+        id: "saas",
+        name: "Modern SaaS Landing",
+        stack: "React · Tailwind · Dark",
+        tag: "Featured",
+        type: "structured",
+        brand: "NovaSaaS",
+        url: "https://saas-template.dev",
+        heroTitle: "Ship beautiful SaaS websites",
+        heroHighlight: "in hours, not weeks.",
+        heroSubtitle:
+          "A production-ready React + Tailwind template with clean sections, dark mode, responsive layouts, and reusable components.",
+        badgeText: "AI-ready template for modern SaaS teams",
+        footnote: "Built for React · Tailwind",
+        statTitle: "Conversion overview",
+        statDelta: "+18.2%",
+        sections: 12,
+        components: 38,
+        layoutDesc: "Full / Boxed",
+        thumbnailLabel: "SaaS",
+        techLabel: "React · Tailwind · Dark",
+      },
+      {
+        id: "docs",
+        name: "Documentation Portal",
+        stack: "Next.js · Tailwind",
+        tag: "Pro",
+        type: "structured",
+        brand: "DocFlow",
+        url: "https://docs-template.dev",
+        heroTitle: "Ship clear product docs",
+        heroHighlight: "without fighting layouts.",
+        heroSubtitle:
+          "A clean documentation template with navigation, content layout, search-ready structure and typography tuned for readability.",
+        badgeText: "Perfect for API & product docs",
+        footnote: "Built for Next.js · MDX",
+        statTitle: "Docs engagement",
+        statDelta: "+9.7%",
+        sections: 18,
+        components: 24,
+        layoutDesc: "Sidebar · Content",
+        thumbnailLabel: "Docs",
+        techLabel: "Next.js · Tailwind",
+      },
+      {
+        id: "shop",
+        name: "Minimal eCommerce",
+        stack: "HTML · Tailwind",
+        tag: "Free",
+        type: "structured",
+        brand: "LoftStore",
+        url: "https://shop-template.dev",
+        heroTitle: "Launch your store",
+        heroHighlight: "with a clean, modern look.",
+        heroSubtitle:
+          "A lightweight storefront template with product grid, highlights, and checkout CTAs ready to integrate with any backend.",
+        badgeText: "Optimized for small catalogs",
+        footnote: "HTML · Tailwind · Easy to adapt",
+        statTitle: "Cart completion rate",
+        statDelta: "+12.1%",
+        sections: 9,
+        components: 20,
+        layoutDesc: "Centered · Grid",
+        thumbnailLabel: "Shop",
+        techLabel: "HTML · Tailwind",
+      },
+    ];
+
+    // DOM elements
+    const templateListEl = document.getElementById("templateList");
+    const previewRootEl = document.getElementById("previewRoot");
+    const structuredPreviewEl = document.getElementById("structuredPreview");
+    const customHtmlPreviewEl = document.getElementById("customHtmlPreview");
+    const customHtmlContainerEl = document.getElementById("customHtmlContainer");
+
+    const radiusSliderEl = document.getElementById("radiusSlider");
+    const radiusValueEl = document.getElementById("radiusValue");
+    const resetBtnEl = document.getElementById("resetBtn");
+    const debugStateEl = document.getElementById("debugState");
+    const actionMessageEl = document.getElementById("actionMessage");
+
+    // Preview text elements
+    const previewTitleEl = document.getElementById("previewTitle");
+    const previewStackEl = document.getElementById("previewStack");
+    const previewUrlEl = document.getElementById("previewUrl");
+    const brandNameEl = document.getElementById("brandName");
+    const heroBadgeTextEl = document.getElementById("heroBadgeText");
+    const heroTitleEl = document.getElementById("heroTitle");
+    const heroSubtitleEl = document.getElementById("heroSubtitle");
+    const heroFootnoteEl = document.getElementById("heroFootnote");
+    const statTitleEl = document.getElementById("statTitle");
+    const statDeltaEl = document.getElementById("statDelta");
+    const statSectionsEl = document.getElementById("statSections");
+    const statComponentsEl = document.getElementById("statComponents");
+    const statLayoutEl = document.getElementById("statLayout");
+
+    // Content editor fields
+    const editNameInputEl = document.getElementById("editNameInput");
+    const editBrandInputEl = document.getElementById("editBrandInput");
+    const editHeroTitleInputEl = document.getElementById("editHeroTitleInput");
+    const editHeroHighlightInputEl = document.getElementById("editHeroHighlightInput");
+    const editSubtitleInputEl = document.getElementById("editSubtitleInput");
+    const editFootnoteInputEl = document.getElementById("editFootnoteInput");
+
+    // Import elements
+    const importNameInputEl = document.getElementById("importNameInput");
+    const importHtmlInputEl = document.getElementById("importHtmlInput");
+    const previewHtmlBtnEl = document.getElementById("previewHtmlBtn");
+    const saveHtmlBtnEl = document.getElementById("saveHtmlBtn");
+
+    // Action buttons
+    const copyHtmlBtnEl = document.getElementById("copyHtmlBtn");
+    const duplicateBtnEl = document.getElementById("duplicateBtn");
+
+    // HTML Element Editor elements
+    const elementEditorHintEl = document.getElementById("elementEditorHint");
+    const elementTagEl = document.getElementById("elementTag");
+    const elementClassesEl = document.getElementById("elementClasses");
+    const elementHtmlEditorEl = document.getElementById("elementHtmlEditor");
+    const updateElementBtnEl = document.getElementById("updateElementBtn");
+    const deleteElementBtnEl = document.getElementById("deleteElementBtn");
+    const clearElementSelectionBtnEl = document.getElementById("clearElementSelectionBtn");
+
+    let selectedHtmlElement = null;
+    const highlightClasses = [
+      "ring-2",
+      "ring-teal-400",
+      "ring-offset-2",
+      "ring-offset-slate-950",
+      "cursor-pointer",
+    ];
+    let htmlClickHandlerAttached = false;
+
+    // Utils
+    function setActionMessage(msg) {
+      actionMessageEl.textContent = msg || "";
+    }
+
+    function sanitizeHtml(html) {
+      // Simple script tag removal for demo safety
+      return html.replace(/<script[\s\S]*?>[\s\S]*?<\/script>/gi, "");
+    }
+
+    function getActiveTemplate() {
+      if (state.activeTemplateId === "__scratch") {
+        return {
+          id: "__scratch",
+          name: "Unsaved HTML Preview",
+          stack: "HTML · Tailwind (preview only)",
+          tag: "Preview",
+          type: "html",
+          url: "https://preview.local",
+          customHtml: state.scratchHtml,
+          thumbnailLabel: "HTML",
+          techLabel: "HTML · Tailwind",
+        };
+      }
+      return templates.find((t) => t.id === state.activeTemplateId);
+    }
+
+    // Render template list
+    function renderTemplateList() {
+      templateListEl.innerHTML = "";
+      templates.forEach((tpl) => {
+        const button = document.createElement("button");
+        button.className =
+          "template-card w-full flex items-center gap-3 px-2.5 py-2 rounded-xl border border-slate-800 bg-slate-900/60 text-left";
+        button.dataset.id = tpl.id;
+        button.innerHTML = `
+          <div class="w-14 h-10 rounded-lg bg-slate-800/60 flex items-center justify-center text-[10px] font-semibold text-slate-100">
+            ${tpl.thumbnailLabel || "HTML"}
+          </div>
+          <div class="flex-1 min-w-0">
+            <p class="text-xs font-medium truncate">${tpl.name}</p>
+            <p class="text-[10px] text-slate-500">
+              ${tpl.techLabel || tpl.stack || "HTML · Tailwind"}
+            </p>
+          </div>
+          <span class="text-[10px] px-1.5 py-0.5 rounded-full bg-slate-800 text-slate-300 border border-slate-600/80">
+            ${tpl.tag || "Custom"}
+          </span>
+        `;
+        button.addEventListener("click", () => {
+          setActiveTemplate(tpl.id);
+        });
+        templateListEl.appendChild(button);
+      });
+      updateActiveTemplateCard();
+    }
+
+    function updateActiveTemplateCard() {
+      const cards = templateListEl.querySelectorAll(".template-card");
+      cards.forEach((card) => {
+        const id = card.dataset.id;
+        if (id === state.activeTemplateId) {
+          card.classList.add("active");
+        } else {
+          card.classList.remove("active");
+        }
+      });
+    }
+
+    // Theme / layout / spacing / radius
+    function setTheme(theme) {
+      state.theme = theme;
+      previewRootEl.classList.remove("theme-teal", "theme-indigo", "theme-warm");
+      previewRootEl.classList.add(`theme-${theme}`);
+
+      document.querySelectorAll(".theme-chip").forEach((btn) => {
+        btn.classList.remove("active-chip");
+        if (btn.dataset.theme === theme) btn.classList.add("active-chip");
+      });
+      updateDebugState();
+    }
+
+    function setLayout(layout) {
+      state.layout = layout;
+      previewRootEl.classList.remove("layout-full", "layout-boxed", "layout-split");
+      previewRootEl.classList.add(`layout-${layout}`);
+
+      document.querySelectorAll(".layout-chip").forEach((btn) => {
+        btn.classList.remove("active-chip");
+        if (btn.dataset.layout === layout) btn.classList.add("active-chip");
+      });
+      updateDebugState();
+    }
+
+    function setSpacing(spacing) {
+      state.spacing = spacing;
+      previewRootEl.classList.remove("spacing-compact", "spacing-comfortable", "spacing-spacious");
+      previewRootEl.classList.add(`spacing-${spacing}`);
+
+      document.querySelectorAll(".density-chip").forEach((btn) => {
+        btn.classList.remove("active-chip");
+        if (btn.dataset.spacing === spacing) btn.classList.add("active-chip");
+      });
+      updateDebugState();
+    }
+
+    function setRadius(value) {
+      state.radius = Number(value);
+      document.documentElement.style.setProperty("--radius", `${value}px`);
+      radiusValueEl.textContent = `${value}px`;
+      updateDebugState();
+    }
+
+    // HTML element editor state
+    function setElementEditorEnabledForTemplate(isHtmlTemplate) {
+      elementHtmlEditorEl.disabled = !isHtmlTemplate;
+      if (!isHtmlTemplate) {
+        elementEditorHintEl.textContent =
+          "Element editing works only for imported HTML templates.";
+      } else {
+        elementEditorHintEl.textContent =
+          "Click any part of the HTML preview (middle) to select and edit it here.";
+      }
+
+      if (!isHtmlTemplate) {
+        clearElementSelection(true);
+      }
+    }
+
+    function clearElementSelection(skipTemplateCheck = false) {
+      if (selectedHtmlElement) {
+        highlightClasses.forEach((cls) => selectedHtmlElement.classList.remove(cls));
+        selectedHtmlElement = null;
+      }
+      elementTagEl.textContent = "-";
+      elementClassesEl.textContent = "-";
+      elementHtmlEditorEl.value = "";
+
+      updateElementBtnEl.disabled = true;
+      deleteElementBtnEl.disabled = true;
+      clearElementSelectionBtnEl.disabled = true;
+
+      if (!skipTemplateCheck) {
+        const tpl = getActiveTemplate();
+        const isHtmlTemplate = tpl && tpl.type === "html";
+        elementHtmlEditorEl.disabled = !isHtmlTemplate;
+      }
+    }
+
+    function selectHtmlElement(el) {
+      const tpl = getActiveTemplate();
+      if (!tpl || tpl.type !== "html") return;
+
+      if (selectedHtmlElement === el) return;
+
+      if (selectedHtmlElement) {
+        highlightClasses.forEach((cls) => selectedHtmlElement.classList.remove(cls));
+      }
+      selectedHtmlElement = el;
+      highlightClasses.forEach((cls) => selectedHtmlElement.classList.add(cls));
+
+      elementTagEl.textContent = el.tagName.toLowerCase();
+      elementClassesEl.textContent = el.className || "(no classes)";
+      elementHtmlEditorEl.value = el.innerHTML.trim();
+
+      elementHtmlEditorEl.disabled = false;
+      updateElementBtnEl.disabled = false;
+      deleteElementBtnEl.disabled = false;
+      clearElementSelectionBtnEl.disabled = false;
+    }
+
+    function enableHtmlElementEditing() {
+      if (htmlClickHandlerAttached) return;
+      customHtmlContainerEl.addEventListener("click", (e) => {
+        e.preventDefault();
+        e.stopPropagation();
+        const tpl = getActiveTemplate();
+        if (!tpl || tpl.type !== "html") return;
+
+        let el = e.target;
+        if (!customHtmlContainerEl.contains(el)) return;
+        selectHtmlElement(el);
+        setActionMessage("Element selected. You can edit its inner HTML on the right.");
+      });
+      htmlClickHandlerAttached = true;
+    }
+
+    function syncCurrentHtmlTemplateFromDom() {
+      const tpl = getActiveTemplate();
+      if (!tpl || tpl.type !== "html") return;
+      const html = customHtmlContainerEl.innerHTML.trim();
+      if (tpl.id === "__scratch") {
+        state.scratchHtml = html;
+      } else {
+        tpl.customHtml = html;
+      }
+      updateDebugState();
+    }
+
+    // Preview content
+    function updatePreviewContent() {
+      const tpl = getActiveTemplate();
+      if (!tpl) return;
+
+      previewTitleEl.textContent = tpl.name || "Untitled template";
+      previewStackEl.textContent = tpl.stack || "HTML · Tailwind";
+      previewUrlEl.textContent = tpl.url || "https://template.dev";
+
+      if (tpl.type === "html") {
+        structuredPreviewEl.classList.add("hidden");
+        customHtmlPreviewEl.classList.remove("hidden");
+        const html = sanitizeHtml(tpl.customHtml || "<p class='text-slate-400 text-sm'>No HTML provided.</p>");
+        customHtmlContainerEl.innerHTML = html;
+        enableHtmlElementEditing();
+        clearElementSelection(true);
+        setElementEditorEnabledForTemplate(true);
+      } else {
+        customHtmlPreviewEl.classList.add("hidden");
+        structuredPreviewEl.classList.remove("hidden");
+        clearElementSelection(true);
+        setElementEditorEnabledForTemplate(false);
+
+        brandNameEl.textContent = tpl.brand || "Brand";
+        heroBadgeTextEl.textContent = tpl.badgeText || "";
+        heroTitleEl.innerHTML = `${tpl.heroTitle || "Hero title"} <span class="hero-highlight">${tpl.heroHighlight || ""}</span>`;
+        heroSubtitleEl.textContent = tpl.heroSubtitle || "";
+        heroFootnoteEl.textContent = tpl.footnote || "";
+        statTitleEl.textContent = tpl.statTitle || "";
+        statDeltaEl.textContent = tpl.statDelta || "";
+        statSectionsEl.textContent = tpl.sections ?? "";
+        statComponentsEl.textContent = tpl.components ?? "";
+        statLayoutEl.textContent = tpl.layoutDesc || "";
+      }
+    }
+
+    // Active template change
+    function setActiveTemplate(id) {
+      state.activeTemplateId = id;
+      updatePreviewContent();
+      updateActiveTemplateCard();
+      syncContentEditorFields();
+      updateDebugState();
+      setActionMessage("");
+    }
+
+    // Content editor sync
+    function syncContentEditorFields() {
+      const tpl = getActiveTemplate();
+      if (!tpl || tpl.type === "html") {
+        editNameInputEl.value = tpl ? (tpl.name || "") : "";
+        editBrandInputEl.value = "";
+        editHeroTitleInputEl.value = "";
+        editHeroHighlightInputEl.value = "";
+        editSubtitleInputEl.value = "";
+        editFootnoteInputEl.value = "";
+        return;
+      }
+
+      editNameInputEl.value = tpl.name || "";
+      editBrandInputEl.value = tpl.brand || "";
+      editHeroTitleInputEl.value = tpl.heroTitle || "";
+      editHeroHighlightInputEl.value = tpl.heroHighlight || "";
+      editSubtitleInputEl.value = tpl.heroSubtitle || "";
+      editFootnoteInputEl.value = tpl.footnote || "";
+    }
+
+    function attachContentEditorListeners() {
+      function updateTemplateFromEditor() {
+        const tpl = getActiveTemplate();
+        if (!tpl || tpl.type === "html") return;
+
+        tpl.name = editNameInputEl.value;
+        tpl.brand = editBrandInputEl.value;
+        tpl.heroTitle = editHeroTitleInputEl.value;
+        tpl.heroHighlight = editHeroHighlightInputEl.value;
+        tpl.heroSubtitle = editSubtitleInputEl.value;
+        tpl.footnote = editFootnoteInputEl.value;
+
+        updatePreviewContent();
+        renderTemplateList();
+        updateActiveTemplateCard();
+        updateDebugState();
+      }
+
+      [
+        editNameInputEl,
+        editBrandInputEl,
+        editHeroTitleInputEl,
+        editHeroHighlightInputEl,
+        editSubtitleInputEl,
+        editFootnoteInputEl,
+      ].forEach((input) => {
+        input.addEventListener("input", updateTemplateFromEditor);
+      });
+    }
+
+    // Import & preview HTML
+    function handlePreviewHtml() {
+      const html = importHtmlInputEl.value.trim();
+      if (!html) {
+        setActionMessage("Nothing to preview. Paste some HTML first.");
+        return;
+      }
+      state.scratchHtml = html;
+      state.activeTemplateId = "__scratch";
+      updatePreviewContent();
+      updateActiveTemplateCard();
+      syncContentEditorFields();
+      updateDebugState();
+      setActionMessage("Showing preview for unsaved HTML snippet. You can click and edit elements.");
+    }
+
+    function handleSaveHtml() {
+      const name = importNameInputEl.value.trim();
+      const html = importHtmlInputEl.value.trim();
+
+      if (!name || !html) {
+        setActionMessage("Template name and HTML snippet are required to save.");
+        return;
+      }
+
+      const id = "custom-" + Date.now();
+      const newTpl = {
+        id,
+        name,
+        stack: "HTML · Tailwind (imported)",
+        tag: "Custom",
+        type: "html",
+        url: "https://custom-template.dev",
+        customHtml: sanitizeHtml(html),
+        thumbnailLabel: "HTML",
+        techLabel: "HTML · Tailwind",
+      };
+
+      templates.push(newTpl);
+      renderTemplateList();
+      setActiveTemplate(id);
+      setActionMessage("Custom HTML saved as a new template. You can now click elements in the preview to edit them.");
+    }
+
+    // Copy / duplicate / reset
+    async function handleCopyPreviewHtml() {
+      const tpl = getActiveTemplate();
+      if (!tpl) return;
+
+      let htmlToCopy = "";
+      if (tpl.type === "html") {
+        htmlToCopy = (tpl.customHtml || "").trim();
+      } else {
+        htmlToCopy = structuredPreviewEl.innerHTML.trim();
+      }
+
+      try {
+        await navigator.clipboard.writeText(htmlToCopy);
+        setActionMessage("Preview HTML copied to clipboard.");
+      } catch (err) {
+        console.error(err);
+        setActionMessage("Clipboard copy might be blocked in this browser.");
+      }
+    }
+
+    function handleDuplicateTemplate() {
+      const tpl = getActiveTemplate();
+      if (!tpl || tpl.id === "__scratch") {
+        setActionMessage("Cannot duplicate preview-only HTML. Save it first.");
+        return;
+      }
+
+      const newId = tpl.id + "-copy-" + Date.now();
+      const clone = JSON.parse(JSON.stringify(tpl));
+      clone.id = newId;
+      clone.name = (tpl.name || "Template") + " (Copy)";
+      if (!clone.tag) clone.tag = "Copy";
+
+      templates.push(clone);
+      renderTemplateList();
+      setActiveTemplate(newId);
+      setActionMessage("Template duplicated. You can safely experiment on the copy.");
+    }
+
+    function handleReset() {
+      state.activeTemplateId = "saas";
+      state.theme = "teal";
+      state.layout = "full";
+      state.radius = 20;
+      state.spacing = "comfortable";
+      state.scratchHtml = "";
+
+      radiusSliderEl.value = 20;
+      setRadius(20);
+      setTheme("teal");
+      setLayout("full");
+      setSpacing("comfortable");
+      setActiveTemplate("saas");
+
+      importNameInputEl.value = "";
+      importHtmlInputEl.value = "";
+      clearElementSelection(true);
+      setActionMessage("Reset to default SaaS template and cleared import fields.");
+    }
+
+    // HTML Element Editor actions
+    function handleUpdateElement() {
+      if (!selectedHtmlElement) return;
+      const newInnerHtml = sanitizeHtml(elementHtmlEditorEl.value);
+      selectedHtmlElement.innerHTML = newInnerHtml;
+      syncCurrentHtmlTemplateFromDom();
+      setActionMessage("Element updated inside the imported HTML template.");
+    }
+
+    function handleDeleteElement() {
+      if (!selectedHtmlElement) return;
+      const toRemove = selectedHtmlElement;
+      clearElementSelection(true);
+      toRemove.remove();
+      syncCurrentHtmlTemplateFromDom();
+      setActionMessage("Element deleted from the imported HTML template.");
+    }
+
+    function handleClearElementSelection() {
+      clearElementSelection();
+      setActionMessage("Selection cleared.");
+    }
+
+    // Debug
+    function updateDebugState() {
+      debugStateEl.textContent = JSON.stringify(state);
+    }
+
+    // Attach listeners
+    function attachCustomizerListeners() {
+      document.querySelectorAll(".theme-chip").forEach((btn) => {
+        btn.addEventListener("click", () => setTheme(btn.dataset.theme));
+      });
+
+      document.querySelectorAll(".layout-chip").forEach((btn) => {
+        btn.addEventListener("click", () => setLayout(btn.dataset.layout));
+      });
+
+      document.querySelectorAll(".density-chip").forEach((btn) => {
+        btn.addEventListener("click", () => setSpacing(btn.dataset.spacing));
+      });
+
+      radiusSliderEl.addEventListener("input", (e) => {
+        setRadius(e.target.value);
+      });
+
+      resetBtnEl.addEventListener("click", handleReset);
+      previewHtmlBtnEl.addEventListener("click", handlePreviewHtml);
+      saveHtmlBtnEl.addEventListener("click", handleSaveHtml);
+      copyHtmlBtnEl.addEventListener("click", handleCopyPreviewHtml);
+      duplicateBtnEl.addEventListener("click", handleDuplicateTemplate);
+
+      updateElementBtnEl.addEventListener("click", handleUpdateElement);
+      deleteElementBtnEl.addEventListener("click", handleDeleteElement);
+      clearElementSelectionBtnEl.addEventListener("click", handleClearElementSelection);
+    }
+
+    // Init
+    function init() {
+      renderTemplateList();
+      updatePreviewContent();
+      setTheme(state.theme);
+      setLayout(state.layout);
+      setSpacing(state.spacing);
+      setRadius(state.radius);
+      attachCustomizerListeners();
+      attachContentEditorListeners();
+      syncContentEditorFields();
+      updateDebugState();
+    }
+
+    init();
+  </script>
+</body>
+</html>

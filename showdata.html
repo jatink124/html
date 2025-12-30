@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Embedded Sheet Data</title>
+    <!-- Load Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Configure Tailwind for Inter font and custom colors -->
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['Inter', 'sans-serif'],
+                    },
+                    colors: {
+                        'primary-blue': '#1D4ED8',
+                        'soft-gray': '#F9FAFB',
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        /* Apply Inter font globally and ensure clean padding */
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #f3f4f6;
+            padding: 1rem;
+        }
+        /* Custom styling for the iframe container */
+        #dataContainer {
+            min-height: 400px;
+            /* Ensures iframe has visible area */
+        }
+        #dataContainer iframe {
+            width: 100%;
+            height: 100%;
+            border: none;
+            /* Match parent container for rounded bottom corners */
+            border-radius: 0 0 0.5rem 0.5rem; 
+        }
+    </style>
+</head>
+<body class="min-h-screen flex flex-col items-center">
+
+    <div class="w-full max-w-4xl bg-white shadow-xl rounded-xl p-6 md:p-10 mt-8">
+        
+        <!-- Action Area (Button only) -->
+        <div class="mb-6 border-b pb-4">
+            <button
+                onclick="displayData()"
+                id="loadButton"
+                class="w-full px-6 py-3 bg-primary-blue text-white font-semibold rounded-lg shadow-md hover:bg-blue-700 transition duration-150 active:scale-95 disabled:opacity-50"
+                disabled
+            >
+                Refresh Embedded Sheet
+            </button>
+        </div>
+
+        <!-- Status Message Area (Error/Loading) -->
+        <div id="statusMessage" class="mb-4 hidden p-4 rounded-lg text-center" role="alert"></div>
+
+        <!-- Data Display Area (will contain the iframe) -->
+        <div id="dataContainer" class="overflow-hidden shadow-xl rounded-b-xl border border-gray-200">
+            <p class="text-center text-gray-500 py-20">Sheet content will appear here after loading.</p>
+        </div>
+    </div>
+
+    <script>
+        // Get DOM elements
+        const dataContainer = document.getElementById('dataContainer');
+        const statusMessage = document.getElementById('statusMessage');
+        const loadButton = document.getElementById('loadButton');
+        
+        // HARDCODED URL - This URL is what the app will always load/refresh.
+        // Using the URL from the iframe code you provided:
+        const HARDCODED_SRC_URL = "https://docs.google.com/spreadsheets/d/e/2PACX-1vTCCyf08VVKH6MYne2aztCx2WEe4-6cSShsLdg3ZhewsO8mIdJN74PDD89SCXjs1RQ0ncYcS7erJjZq/pubhtml?gid=319978613&single=true&widget=true&headers=false";
+
+        // --- Utility Functions ---
+
+        /**
+         * Shows a message in the status area.
+         * @param {string} message The text to display.
+         * @param {string} type The type of message ('info', 'error', 'success').
+         */
+        function showMessage(message, type = 'info') {
+            statusMessage.classList.remove('hidden', 'bg-red-100', 'text-red-700', 'bg-green-100', 'text-green-700', 'bg-blue-100', 'text-blue-700');
+
+            if (type === 'error') {
+                statusMessage.classList.add('bg-red-100', 'text-red-700');
+            } else if (type === 'success') {
+                statusMessage.classList.add('bg-green-100', 'text-green-700');
+            } else { // default: info
+                statusMessage.classList.add('bg-blue-100', 'text-blue-700');
+            }
+            statusMessage.innerHTML = message;
+            statusMessage.classList.remove('hidden');
+        }
+
+
+        /**
+         * Loads and displays the embedded sheet using the hardcoded URL.
+         */
+        function displayData() {
+            // Use the hardcoded URL, cleaning up HTML entities if they were present
+            const srcUrl = HARDCODED_SRC_URL.replace(/&amp;/g, '&');
+            dataContainer.innerHTML = '';
+            
+            // Basic check to ensure the hardcoded URL is valid
+            if (!srcUrl.includes('docs.google.com/spreadsheets') || !srcUrl.includes('pubhtml')) {
+                showMessage('Internal error: Invalid embedded sheet URL.', 'error');
+                return;
+            }
+
+            // Construct the iframe element
+            const iframe = document.createElement('iframe');
+            iframe.src = srcUrl;
+            iframe.loading = "lazy";
+            
+            // Event listeners for loading success/failure
+            iframe.onload = () => {
+                showMessage('Successfully loaded embedded Google Sheet.', 'success');
+                loadButton.textContent = 'Refresh Embedded Sheet';
+                loadButton.disabled = false;
+            };
+            iframe.onerror = () => {
+                showMessage('Error loading iframe. The published URL might be incorrect or unavailable.', 'error');
+                loadButton.textContent = 'Refresh Embedded Sheet';
+                loadButton.disabled = false;
+            };
+
+            // Set loading state
+            loadButton.textContent = 'Loading...';
+            loadButton.disabled = true;
+            showMessage('Attempting to load published sheet via iframe...', 'info');
+            
+            // Append the iframe to the container
+            dataContainer.appendChild(iframe);
+        }
+
+        // Initialize by loading the sheet automatically on page load
+        window.onload = function() {
+            displayData();
+        };
+
+    </script>
+
+</body>
+</html>

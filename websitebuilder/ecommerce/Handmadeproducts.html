@@ -1,0 +1,2025 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Artisan Treasures - Handmade Products Marketplace</title>
+  <meta name="description" content="Discover unique handcrafted items from talented artisans worldwide" />
+  <meta name="author" content="Artisan Treasures" />
+
+  <meta property="og:title" content="Artisan Treasures - Handmade Products Marketplace" />
+  <meta property="og:description" content="Discover unique handcrafted items from talented artisans worldwide" />
+  <meta property="og:type" content="website" />
+  <meta property="og:image" content="https://lovable.dev/opengraph-image-p98pqg.png" />
+
+  <meta name="twitter:card" content="summary_large_image" />
+  <meta name="twitter:site" content="@artisan_treasures" />
+  <meta name="twitter:image" content="https://lovable.dev/opengraph-image-p98pqg.png" />
+  
+  <!-- Font Awesome for icons -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" />
+  
+  <!-- Google Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;500;700&family=Poppins:wght@300;400;500;600&display=swap" rel="stylesheet">
+  
+  <style>
+    :root {
+      --primary-color: #6b4d57;
+      --secondary-color: #d4a373;
+      --accent-color: #e9c46a;
+      --text-color: #463f3a;
+      --background-color: #f8f9fa;
+      --light-color: #fefae0;
+      --dark-color: #283618;
+      --danger-color: #e76f51;
+      --success-color: #606c38;
+      --border-radius: 8px;
+      --box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+      --transition: all 0.3s ease;
+    }
+
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: 'Poppins', sans-serif;
+      color: var(--text-color);
+      background-color: var(--background-color);
+      line-height: 1.6;
+    }
+
+    h1, h2, h3, h4, h5 {
+      font-family: 'Playfair Display', serif;
+      margin-bottom: 1rem;
+      line-height: 1.2;
+    }
+
+    a {
+      text-decoration: none;
+      color: inherit;
+    }
+
+    img {
+      max-width: 100%;
+    }
+
+    .container {
+      width: 100%;
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 0 1rem;
+    }
+
+    .btn {
+      display: inline-block;
+      padding: 0.75rem 1.5rem;
+      background-color: var(--primary-color);
+      color: white;
+      border: none;
+      border-radius: var(--border-radius);
+      cursor: pointer;
+      font-weight: 500;
+      transition: var(--transition);
+    }
+
+    .btn:hover {
+      background-color: #5a3f47;
+      transform: translateY(-2px);
+    }
+
+    .btn-secondary {
+      background-color: var(--secondary-color);
+    }
+
+    .btn-secondary:hover {
+      background-color: #c4946a;
+    }
+
+    .btn-outline {
+      background-color: transparent;
+      border: 2px solid var(--primary-color);
+      color: var(--primary-color);
+    }
+
+    .btn-outline:hover {
+      background-color: var(--primary-color);
+      color: white;
+    }
+
+    /* Header Styles */
+    header {
+      background-color: white;
+      box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+      position: sticky;
+      top: 0;
+      z-index: 1000;
+    }
+
+    .header-container {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 1rem;
+    }
+
+    .logo {
+      font-family: 'Playfair Display', serif;
+      font-size: 1.5rem;
+      font-weight: 700;
+      color: var(--primary-color);
+    }
+
+    .search-bar {
+      flex-grow: 0.5;
+      max-width: 500px;
+      position: relative;
+      margin: 0 2rem;
+    }
+
+    .search-bar input {
+      width: 100%;
+      padding: 0.75rem 1rem;
+      border: 1px solid #ddd;
+      border-radius: var(--border-radius);
+      font-size: 1rem;
+      padding-right: 2.5rem;
+    }
+
+    .search-bar button {
+      position: absolute;
+      right: 10px;
+      top: 50%;
+      transform: translateY(-50%);
+      background: none;
+      border: none;
+      color: var(--primary-color);
+      cursor: pointer;
+    }
+
+    .header-icons {
+      display: flex;
+      gap: 1.25rem;
+    }
+
+    .header-icon {
+      position: relative;
+      color: var(--text-color);
+      transition: var(--transition);
+    }
+
+    .header-icon:hover {
+      color: var(--primary-color);
+    }
+
+    .header-icon .badge {
+      position: absolute;
+      top: -8px;
+      right: -8px;
+      background-color: var(--danger-color);
+      color: white;
+      font-size: 0.7rem;
+      width: 18px;
+      height: 18px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    nav {
+      background-color: white;
+      padding: 0.5rem 0;
+      border-top: 1px solid #eee;
+    }
+
+    .nav-container {
+      display: flex;
+      justify-content: center;
+    }
+
+    .nav-links {
+      display: flex;
+      list-style: none;
+      gap: 2rem;
+    }
+
+    .nav-links a {
+      font-weight: 500;
+      transition: var(--transition);
+      position: relative;
+    }
+
+    .nav-links a:hover {
+      color: var(--primary-color);
+    }
+
+    .nav-links a::after {
+      content: '';
+      position: absolute;
+      width: 0%;
+      height: 2px;
+      bottom: -4px;
+      left: 50%;
+      transform: translateX(-50%);
+      background-color: var(--primary-color);
+      transition: var(--transition);
+    }
+
+    .nav-links a:hover::after {
+      width: 100%;
+    }
+
+    /* Hero Section */
+    .hero {
+      background-image: linear-gradient(rgba(0, 0, 0, 0.4), rgba(0, 0, 0, 0.4)), url('https://images.unsplash.com/photo-1556740749-887f6717d7e4');
+      background-size: cover;
+      background-position: center;
+      height: 80vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: white;
+      text-align: center;
+    }
+
+    .hero-content {
+      max-width: 800px;
+    }
+
+    .hero h1 {
+      font-size: 3.5rem;
+      margin-bottom: 1.5rem;
+    }
+
+    .hero p {
+      font-size: 1.2rem;
+      margin-bottom: 2rem;
+    }
+
+    /* Categories Section */
+    .categories {
+      padding: 5rem 0;
+    }
+
+    .section-title {
+      text-align: center;
+      margin-bottom: 3rem;
+    }
+
+    .section-title h2 {
+      font-size: 2.5rem;
+      color: var(--primary-color);
+    }
+
+    .categories-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+      gap: 2rem;
+    }
+
+    .category-card {
+      position: relative;
+      overflow: hidden;
+      border-radius: var(--border-radius);
+      box-shadow: var(--box-shadow);
+      height: 300px;
+      transition: var(--transition);
+    }
+
+    .category-card:hover {
+      transform: translateY(-5px);
+    }
+
+    .category-card img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      transition: var(--transition);
+    }
+
+    .category-card:hover img {
+      transform: scale(1.05);
+    }
+
+    .category-overlay {
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      width: 100%;
+      padding: 1rem;
+      background: linear-gradient(to top, rgba(0, 0, 0, 0.7), transparent);
+      color: white;
+    }
+
+    /* Featured Products */
+    .featured-products {
+      padding: 5rem 0;
+      background-color: #f9f7f3;
+    }
+
+    .products-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+      gap: 2rem;
+    }
+
+    .product-card {
+      background-color: white;
+      border-radius: var(--border-radius);
+      box-shadow: var(--box-shadow);
+      overflow: hidden;
+      transition: var(--transition);
+    }
+
+    .product-card:hover {
+      transform: translateY(-5px);
+    }
+
+    .product-image {
+      height: 250px;
+      overflow: hidden;
+      position: relative;
+    }
+
+    .product-image img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      transition: var(--transition);
+    }
+
+    .product-card:hover .product-image img {
+      transform: scale(1.05);
+    }
+
+    .product-wishlist {
+      position: absolute;
+      top: 15px;
+      right: 15px;
+      background-color: white;
+      width: 35px;
+      height: 35px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      transition: var(--transition);
+      color: #888;
+    }
+
+    .product-wishlist:hover, .product-wishlist.active {
+      color: var(--danger-color);
+      transform: scale(1.1);
+    }
+
+    .product-tag {
+      position: absolute;
+      top: 15px;
+      left: 0;
+      padding: 0.25rem 1rem;
+      background-color: var(--accent-color);
+      color: var(--dark-color);
+      font-size: 0.8rem;
+      font-weight: 600;
+    }
+
+    .product-info {
+      padding: 1.25rem;
+    }
+
+    .product-category {
+      font-size: 0.85rem;
+      color: var(--secondary-color);
+      margin-bottom: 0.5rem;
+    }
+
+    .product-title {
+      font-size: 1.1rem;
+      margin-bottom: 0.75rem;
+    }
+
+    .product-price {
+      font-weight: 600;
+      color: var(--primary-color);
+      font-size: 1.2rem;
+      margin-top: 0.75rem;
+    }
+
+    .product-rating {
+      display: flex;
+      align-items: center;
+      margin-top: 0.5rem;
+      color: var(--accent-color);
+    }
+
+    .product-rating span {
+      margin-left: 0.5rem;
+      color: var(--text-color);
+      font-size: 0.85rem;
+    }
+
+    .product-footer {
+      padding: 1rem 1.25rem;
+      border-top: 1px solid #eee;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .artisan {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      font-size: 0.85rem;
+    }
+
+    .artisan-avatar {
+      width: 25px;
+      height: 25px;
+      border-radius: 50%;
+      overflow: hidden;
+    }
+
+    .artisan-avatar img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+
+    .add-to-cart {
+      background-color: var(--primary-color);
+      color: white;
+      width: 35px;
+      height: 35px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      transition: var(--transition);
+    }
+
+    .add-to-cart:hover {
+      background-color: var(--secondary-color);
+      transform: scale(1.1);
+    }
+
+    /* Artist Feature */
+    .artist-feature {
+      padding: 5rem 0;
+    }
+
+    .artist-content {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 3rem;
+      align-items: center;
+    }
+
+    .artist-image {
+      height: 500px;
+      border-radius: var(--border-radius);
+      overflow: hidden;
+      box-shadow: var(--box-shadow);
+    }
+
+    .artist-image img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+
+    .artist-info h2 {
+      color: var(--primary-color);
+      margin-bottom: 1.5rem;
+    }
+
+    .artist-quote {
+      font-style: italic;
+      color: var(--secondary-color);
+      font-size: 1.2rem;
+      margin: 1.5rem 0;
+      padding-left: 1rem;
+      border-left: 3px solid var(--secondary-color);
+    }
+
+    .artist-stats {
+      display: flex;
+      gap: 2rem;
+      margin: 2rem 0;
+    }
+
+    .stat {
+      text-align: center;
+    }
+
+    .stat-number {
+      font-size: 2rem;
+      font-weight: 600;
+      color: var(--primary-color);
+    }
+
+    .stat-label {
+      font-size: 0.85rem;
+      color: #777;
+    }
+
+    /* Testimonials */
+    .testimonials {
+      padding: 5rem 0;
+      background-color: #f9f7f3;
+    }
+
+    .testimonial-slider {
+      position: relative;
+      margin-top: 3rem;
+    }
+
+    .testimonial {
+      background-color: white;
+      padding: 2rem;
+      border-radius: var(--border-radius);
+      box-shadow: var(--box-shadow);
+      text-align: center;
+      max-width: 800px;
+      margin: 0 auto;
+    }
+
+    .testimonial-text {
+      font-size: 1.1rem;
+      margin-bottom: 1.5rem;
+      position: relative;
+    }
+
+    .testimonial-text::before, .testimonial-text::after {
+      content: '"';
+      font-size: 3rem;
+      color: var(--secondary-color);
+      opacity: 0.3;
+      position: absolute;
+      line-height: 1;
+    }
+
+    .testimonial-text::before {
+      top: -20px;
+      left: -10px;
+    }
+
+    .testimonial-text::after {
+      bottom: -40px;
+      right: -10px;
+    }
+
+    .testimonial-author {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin-top: 1.5rem;
+    }
+
+    .testimonial-avatar {
+      width: 60px;
+      height: 60px;
+      border-radius: 50%;
+      overflow: hidden;
+      margin-right: 1rem;
+    }
+
+    .testimonial-avatar img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+
+    .author-info h4 {
+      margin-bottom: 0.25rem;
+    }
+
+    .author-info p {
+      color: #777;
+      font-size: 0.9rem;
+    }
+
+    .slider-nav {
+      position: absolute;
+      top: 50%;
+      transform: translateY(-50%);
+      width: 40px;
+      height: 40px;
+      background-color: white;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      box-shadow: var(--box-shadow);
+      transition: var(--transition);
+    }
+
+    .slider-nav:hover {
+      background-color: var(--primary-color);
+      color: white;
+    }
+
+    .prev {
+      left: -20px;
+    }
+
+    .next {
+      right: -20px;
+    }
+
+    /* Newsletter */
+    .newsletter {
+      padding: 5rem 0;
+      background-color: var(--primary-color);
+      color: white;
+      text-align: center;
+    }
+
+    .newsletter h2 {
+      margin-bottom: 1rem;
+    }
+
+    .newsletter p {
+      max-width: 600px;
+      margin: 0 auto 2rem;
+      opacity: 0.9;
+    }
+
+    .newsletter-form {
+      display: flex;
+      max-width: 500px;
+      margin: 0 auto;
+    }
+
+    .newsletter-form input {
+      flex-grow: 1;
+      padding: 0.75rem 1rem;
+      border: none;
+      border-radius: var(--border-radius) 0 0 var(--border-radius);
+      font-size: 1rem;
+    }
+
+    .newsletter-form button {
+      padding: 0 1.5rem;
+      background-color: var(--accent-color);
+      color: var(--dark-color);
+      border: none;
+      border-radius: 0 var(--border-radius) var(--border-radius) 0;
+      font-weight: 500;
+      cursor: pointer;
+      transition: var(--transition);
+    }
+
+    .newsletter-form button:hover {
+      background-color: var(--secondary-color);
+    }
+
+    /* Footer */
+    footer {
+      background-color: #2d2a2e;
+      color: #bbb;
+      padding: 4rem 0 0;
+    }
+
+    .footer-container {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 3rem;
+      padding-bottom: 3rem;
+    }
+
+    .footer-col h3 {
+      color: white;
+      margin-bottom: 1.5rem;
+      font-size: 1.2rem;
+    }
+
+    .footer-links {
+      list-style: none;
+    }
+
+    .footer-links li {
+      margin-bottom: 0.75rem;
+    }
+
+    .footer-links a {
+      transition: var(--transition);
+    }
+
+    .footer-links a:hover {
+      color: var(--secondary-color);
+    }
+
+    .social-links {
+      display: flex;
+      gap: 1rem;
+      margin-top: 1rem;
+    }
+
+    .social-link {
+      width: 35px;
+      height: 35px;
+      background-color: #444;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: var(--transition);
+    }
+
+    .social-link:hover {
+      background-color: var(--secondary-color);
+      transform: translateY(-3px);
+    }
+
+    .footer-bottom {
+      text-align: center;
+      padding: 1.5rem 0;
+      border-top: 1px solid #444;
+      font-size: 0.9rem;
+    }
+
+    /* Quick View Modal */
+    .modal {
+      display: none;
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background-color: rgba(0, 0, 0, 0.5);
+      z-index: 1001;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .modal.active {
+      display: flex;
+    }
+
+    .modal-content {
+      background-color: white;
+      border-radius: var(--border-radius);
+      width: 90%;
+      max-width: 900px;
+      max-height: 90vh;
+      overflow: auto;
+      box-shadow: var(--box-shadow);
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+    }
+
+    .modal-left {
+      padding: 2rem;
+    }
+
+    .modal-image {
+      height: 400px;
+      border-radius: var(--border-radius);
+      overflow: hidden;
+    }
+
+    .modal-image img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+
+    .modal-thumbnails {
+      display: flex;
+      gap: 1rem;
+      margin-top: 1rem;
+    }
+
+    .modal-thumbnail {
+      width: 80px;
+      height: 80px;
+      border-radius: var(--border-radius);
+      overflow: hidden;
+      cursor: pointer;
+      opacity: 0.7;
+      transition: var(--transition);
+    }
+
+    .modal-thumbnail.active, .modal-thumbnail:hover {
+      opacity: 1;
+    }
+
+    .modal-thumbnail img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+
+    .modal-right {
+      padding: 2rem;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .modal-close {
+      position: absolute;
+      top: 1rem;
+      right: 1rem;
+      background: none;
+      border: none;
+      font-size: 1.5rem;
+      cursor: pointer;
+      color: #888;
+      transition: var(--transition);
+    }
+
+    .modal-close:hover {
+      color: var(--primary-color);
+    }
+
+    .modal-category {
+      color: var(--secondary-color);
+      margin-bottom: 0.5rem;
+    }
+
+    .modal-title {
+      font-size: 1.8rem;
+      margin-bottom: 1rem;
+    }
+
+    .modal-price {
+      font-size: 1.5rem;
+      color: var(--primary-color);
+      margin-bottom: 1rem;
+      font-weight: 600;
+    }
+
+    .modal-rating {
+      display: flex;
+      align-items: center;
+      margin-bottom: 1.5rem;
+      color: var(--accent-color);
+    }
+
+    .modal-rating span {
+      margin-left: 0.5rem;
+      color: #777;
+    }
+
+    .modal-description {
+      margin-bottom: 1.5rem;
+      line-height: 1.7;
+    }
+
+    .modal-meta {
+      display: flex;
+      flex-direction: column;
+      gap: 0.75rem;
+      margin-bottom: 1.5rem;
+    }
+
+    .meta-item {
+      display: flex;
+      gap: 0.5rem;
+    }
+
+    .meta-label {
+      font-weight: 600;
+      min-width: 100px;
+    }
+
+    .modal-colors {
+      display: flex;
+      gap: 0.75rem;
+      margin-bottom: 1.5rem;
+    }
+
+    .color-option {
+      width: 25px;
+      height: 25px;
+      border-radius: 50%;
+      cursor: pointer;
+      transition: var(--transition);
+      border: 2px solid transparent;
+    }
+
+    .color-option.active {
+      transform: scale(1.2);
+      border-color: var(--primary-color);
+    }
+
+    .color-brown {
+      background-color: #8b4513;
+    }
+
+    .color-black {
+      background-color: #333;
+    }
+
+    .color-gray {
+      background-color: #999;
+    }
+
+    .quantity-selector {
+      display: flex;
+      align-items: center;
+      margin-bottom: 2rem;
+    }
+
+    .quantity-btn {
+      width: 35px;
+      height: 35px;
+      border: 1px solid #ddd;
+      background-color: #f9f9f9;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      transition: var(--transition);
+    }
+
+    .quantity-btn:hover {
+      background-color: #eee;
+    }
+
+    .quantity-value {
+      width: 50px;
+      height: 35px;
+      border: 1px solid #ddd;
+      border-left: none;
+      border-right: none;
+      text-align: center;
+      font-size: 1rem;
+      font-weight: 500;
+    }
+
+    .modal-actions {
+      display: flex;
+      gap: 1rem;
+    }
+
+    .wishlist-btn {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      cursor: pointer;
+      transition: var(--transition);
+      color: #888;
+    }
+
+    .wishlist-btn:hover {
+      color: var(--danger-color);
+    }
+
+    .modal-vendor {
+      margin-top: auto;
+      border-top: 1px solid #eee;
+      padding-top: 1rem;
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+    }
+
+    .vendor-avatar {
+      width: 50px;
+      height: 50px;
+      border-radius: 50%;
+      overflow: hidden;
+    }
+
+    .vendor-avatar img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+
+    .vendor-info h4 {
+      margin-bottom: 0.25rem;
+    }
+
+    .vendor-info p {
+      color: #777;
+      font-size: 0.9rem;
+    }
+
+    /* Shopping Cart */
+    .cart-modal {
+      position: fixed;
+      top: 0;
+      right: -400px; /* Hidden by default */
+      width: 400px;
+      height: 100%;
+      background-color: white;
+      box-shadow: -5px 0 15px rgba(0, 0, 0, 0.1);
+      z-index: 1001;
+      transition: var(--transition);
+    }
+
+    .cart-modal.active {
+      right: 0;
+    }
+
+    .cart-overlay {
+      display: none;
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background-color: rgba(0, 0, 0, 0.5);
+      z-index: 1000;
+    }
+
+    .cart-overlay.active {
+      display: block;
+    }
+
+    .cart-header {
+      padding: 1.5rem;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      border-bottom: 1px solid #eee;
+    }
+
+    .cart-header h3 {
+      margin-bottom: 0;
+    }
+
+    .close-cart {
+      background: none;
+      border: none;
+      font-size: 1.25rem;
+      cursor: pointer;
+      transition: var(--transition);
+    }
+
+    .close-cart:hover {
+      color: var(--primary-color);
+    }
+
+    .cart-items {
+      padding: 1.5rem;
+      max-height: calc(100vh - 250px);
+      overflow-y: auto;
+    }
+
+    .cart-item {
+      display: flex;
+      gap: 1rem;
+      padding-bottom: 1rem;
+      margin-bottom: 1rem;
+      border-bottom: 1px solid #eee;
+    }
+
+    .cart-item-image {
+      width: 80px;
+      height: 80px;
+      border-radius: var(--border-radius);
+      overflow: hidden;
+    }
+
+    .cart-item-image img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+
+    .cart-item-details {
+      flex-grow: 1;
+    }
+
+    .cart-item-title {
+      margin-bottom: 0.25rem;
+      font-size: 1rem;
+    }
+
+    .cart-item-price {
+      color: var(--primary-color);
+      font-weight: 600;
+      font-size: 0.9rem;
+      margin-bottom: 0.5rem;
+    }
+
+    .cart-item-quantity {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      font-size: 0.85rem;
+    }
+
+    .cart-item-remove {
+      color: #999;
+      cursor: pointer;
+      transition: var(--transition);
+    }
+
+    .cart-item-remove:hover {
+      color: var(--danger-color);
+    }
+
+    .cart-footer {
+      position: absolute;
+      bottom: 0;
+      width: 100%;
+      padding: 1.5rem;
+      border-top: 1px solid #eee;
+      background-color: white;
+    }
+
+    .cart-total {
+      display: flex;
+      justify-content: space-between;
+      margin-bottom: 1.5rem;
+      font-size: 1.1rem;
+      font-weight: 600;
+    }
+
+    .cart-actions {
+      display: flex;
+      flex-direction: column;
+      gap: 0.75rem;
+    }
+
+    .view-cart, .checkout {
+      padding: 0.75rem;
+      text-align: center;
+      border-radius: var(--border-radius);
+      font-weight: 500;
+      transition: var(--transition);
+    }
+
+    .view-cart {
+      border: 1px solid var(--primary-color);
+      color: var(--primary-color);
+    }
+
+    .view-cart:hover {
+      background-color: var(--primary-color);
+      color: white;
+    }
+
+    .checkout {
+      background-color: var(--primary-color);
+      color: white;
+    }
+
+    .checkout:hover {
+      background-color: #5a3f47;
+    }
+
+    /* Mobile Navbar */
+    .mobile-nav-toggle {
+      display: none;
+      background: none;
+      border: none;
+      font-size: 1.5rem;
+      cursor: pointer;
+      transition: var(--transition);
+    }
+
+    /* Media Queries */
+    @media (max-width: 992px) {
+      .header-container {
+        padding: 1rem;
+      }
+      
+      .search-bar {
+        margin: 0 1rem;
+      }
+      
+      .artist-content {
+        grid-template-columns: 1fr;
+        gap: 2rem;
+      }
+      
+      .modal-content {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    @media (max-width: 768px) {
+      .mobile-nav-toggle {
+        display: block;
+      }
+      
+      .header-container {
+        flex-wrap: wrap;
+      }
+      
+      .search-bar {
+        order: 3;
+        margin: 1rem 0 0;
+        flex-grow: 1;
+        max-width: none;
+      }
+      
+      .nav-container {
+        display: none;
+      }
+      
+      .nav-container.active {
+        display: block;
+      }
+      
+      .nav-links {
+        flex-direction: column;
+        align-items: center;
+        gap: 1rem;
+        padding: 1rem 0;
+      }
+      
+      .hero h1 {
+        font-size: 2.5rem;
+      }
+      
+      .cart-modal {
+        width: 100%;
+        right: -100%;
+      }
+    }
+
+    @media (max-width: 576px) {
+      .header-icons {
+        gap: 0.75rem;
+      }
+      
+      .products-grid, .categories-grid {
+        grid-template-columns: 1fr;
+      }
+      
+      .newsletter-form {
+        flex-direction: column;
+      }
+      
+      .newsletter-form input, .newsletter-form button {
+        width: 100%;
+        border-radius: var(--border-radius);
+      }
+      
+      .newsletter-form button {
+        margin-top: 0.75rem;
+      }
+      
+      .modal-left, .modal-right {
+        padding: 1rem;
+      }
+      
+      .footer-container {
+        grid-template-columns: 1fr;
+      }
+    }
+  </style>
+</head>
+
+<body>
+  <!-- Header -->
+  <header>
+    <div class="container header-container">
+      <a href="#" class="logo">Artisan Treasures</a>
+
+      <div class="search-bar">
+        <input type="text" placeholder="Search for handcrafted items...">
+        <button><i class="fas fa-search"></i></button>
+      </div>
+
+      <div class="header-icons">
+        <a href="#" class="header-icon" id="user-icon">
+          <i class="fas fa-user"></i>
+        </a>
+        <a href="#" class="header-icon" id="wishlist-icon">
+          <i class="fas fa-heart"></i>
+          <span class="badge">3</span>
+        </a>
+        <a href="#" class="header-icon" id="cart-icon">
+          <i class="fas fa-shopping-bag"></i>
+          <span class="badge">2</span>
+        </a>
+        <button class="mobile-nav-toggle">
+          <i class="fas fa-bars"></i>
+        </button>
+      </div>
+    </div>
+
+    <nav>
+      <div class="container nav-container">
+        <ul class="nav-links">
+          <li><a href="#">Home</a></li>
+          <li><a href="#">Shop</a></li>
+          <li><a href="#">Categories</a></li>
+          <li><a href="#">Artisans</a></li>
+          <li><a href="#">About</a></li>
+          <li><a href="#">Blog</a></li>
+          <li><a href="#">Contact</a></li>
+        </ul>
+      </div>
+    </nav>
+  </header>
+
+  <!-- Hero Section -->
+  <section class="hero">
+    <div class="container hero-content">
+      <h1>Handcrafted with Love</h1>
+      <p>Discover unique artisan treasures created by talented craftspeople from around the world.</p>
+      <div>
+        <a href="#" class="btn">Shop Now</a>
+        <a href="#" class="btn btn-secondary" style="margin-left: 1rem;">Meet Our Artists</a>
+      </div>
+    </div>
+  </section>
+
+  <!-- Categories Section -->
+  <section class="categories">
+    <div class="container">
+      <div class="section-title">
+        <h2>Browse by Category</h2>
+        <p>Find handcrafted treasures by exploring our curated categories</p>
+      </div>
+
+      <div class="categories-grid">
+        <div class="category-card">
+          <img src="https://images.unsplash.com/photo-1603969280040-3bbb77278211" alt="Jewelry">
+          <div class="category-overlay">
+            <h3>Jewelry</h3>
+          </div>
+        </div>
+        <div class="category-card">
+          <img src="https://images.unsplash.com/photo-1551907234-fb773fb06a2f" alt="Ceramics">
+          <div class="category-overlay">
+            <h3>Ceramics</h3>
+          </div>
+        </div>
+        <div class="category-card">
+          <img src="https://images.unsplash.com/photo-1604137260933-98afa7380c90" alt="Textiles">
+          <div class="category-overlay">
+            <h3>Textiles</h3>
+          </div>
+        </div>
+        <div class="category-card">
+          <img src="https://images.unsplash.com/photo-1579762593175-20226054cad0" alt="Woodwork">
+          <div class="category-overlay">
+            <h3>Woodwork</h3>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Featured Products -->
+  <section class="featured-products">
+    <div class="container">
+      <div class="section-title">
+        <h2>Featured Products</h2>
+        <p>Our most popular handcrafted treasures loved by customers</p>
+      </div>
+
+      <div class="products-grid">
+        <!-- Product 1 -->
+        <div class="product-card">
+          <div class="product-image">
+            <img src="https://images.unsplash.com/photo-1631125915902-d8eda6675983" alt="Handcrafted Ceramic Mug">
+            <div class="product-wishlist" data-product-id="1"><i class="far fa-heart"></i></div>
+            <div class="product-tag">New</div>
+          </div>
+          <div class="product-info">
+            <div class="product-category">Ceramics</div>
+            <h3 class="product-title">Handcrafted Ceramic Mug</h3>
+            <div>Uniquely shaped ceramic mug with a natural glaze finish.</div>
+            <div class="product-price">$24.99</div>
+            <div class="product-rating">
+              <i class="fas fa-star"></i>
+              <i class="fas fa-star"></i>
+              <i class="fas fa-star"></i>
+              <i class="fas fa-star"></i>
+              <i class="far fa-star"></i>
+              <span>(24 reviews)</span>
+            </div>
+          </div>
+          <div class="product-footer">
+            <div class="artisan">
+              <div class="artisan-avatar">
+                <img src="https://images.unsplash.com/photo-1494790108377-be9c29b29330" alt="Maya Ceramics">
+              </div>
+              <span>Maya Ceramics</span>
+            </div>
+            <div class="add-to-cart" data-product-id="1"><i class="fas fa-plus"></i></div>
+          </div>
+        </div>
+
+        <!-- Product 2 -->
+        <div class="product-card">
+          <div class="product-image">
+            <img src="https://images.unsplash.com/photo-1601591229691-55a986dfa4bd" alt="Woven Wall Hanging">
+            <div class="product-wishlist" data-product-id="2"><i class="far fa-heart"></i></div>
+          </div>
+          <div class="product-info">
+            <div class="product-category">Textiles</div>
+            <h3 class="product-title">Woven Wall Hanging</h3>
+            <div>Handmade macrame wall hanging with natural cotton rope.</div>
+            <div class="product-price">$59.99</div>
+            <div class="product-rating">
+              <i class="fas fa-star"></i>
+              <i class="fas fa-star"></i>
+              <i class="fas fa-star"></i>
+              <i class="fas fa-star"></i>
+              <i class="fas fa-star-half-alt"></i>
+              <span>(37 reviews)</span>
+            </div>
+          </div>
+          <div class="product-footer">
+            <div class="artisan">
+              <div class="artisan-avatar">
+                <img src="https://images.unsplash.com/photo-1541647376583-8934aaf3448a" alt="Terra Textiles">
+              </div>
+              <span>Terra Textiles</span>
+            </div>
+            <div class="add-to-cart" data-product-id="2"><i class="fas fa-plus"></i></div>
+          </div>
+        </div>
+
+        <!-- Product 3 -->
+        <div class="product-card">
+          <div class="product-image">
+            <img src="https://images.unsplash.com/photo-1617713964059-fa51871c3e11" alt="Hand-carved Wooden Bowl">
+            <div class="product-wishlist" data-product-id="3"><i class="far fa-heart"></i></div>
+            <div class="product-tag">Best Seller</div>
+          </div>
+          <div class="product-info">
+            <div class="product-category">Woodwork</div>
+            <h3 class="product-title">Hand-carved Wooden Bowl</h3>
+            <div>Beautifully crafted wooden bowl made from reclaimed oak.</div>
+            <div class="product-price">$45.99</div>
+            <div class="product-rating">
+              <i class="fas fa-star"></i>
+              <i class="fas fa-star"></i>
+              <i class="fas fa-star"></i>
+              <i class="fas fa-star"></i>
+              <i class="fas fa-star"></i>
+              <span>(52 reviews)</span>
+            </div>
+          </div>
+          <div class="product-footer">
+            <div class="artisan">
+              <div class="artisan-avatar">
+                <img src="https://images.unsplash.com/photo-1552058544-f2b08422138a" alt="Woodland Crafts">
+              </div>
+              <span>Woodland Crafts</span>
+            </div>
+            <div class="add-to-cart" data-product-id="3"><i class="fas fa-plus"></i></div>
+          </div>
+        </div>
+
+        <!-- Product 4 -->
+        <div class="product-card">
+          <div class="product-image">
+            <img src="https://images.unsplash.com/photo-1513519245088-0e12902e5a38" alt="Silver Handmade Earrings">
+            <div class="product-wishlist" data-product-id="4"><i class="far fa-heart"></i></div>
+          </div>
+          <div class="product-info">
+            <div class="product-category">Jewelry</div>
+            <h3 class="product-title">Silver Handmade Earrings</h3>
+            <div>Elegant silver earrings with a minimalist design.</div>
+            <div class="product-price">$39.99</div>
+            <div class="product-rating">
+              <i class="fas fa-star"></i>
+              <i class="fas fa-star"></i>
+              <i class="fas fa-star"></i>
+              <i class="fas fa-star"></i>
+              <i class="far fa-star"></i>
+              <span>(19 reviews)</span>
+            </div>
+          </div>
+          <div class="product-footer">
+            <div class="artisan">
+              <div class="artisan-avatar">
+                <img src="https://images.unsplash.com/photo-1494790108377-be9c29b29330" alt="Silver & Soul">
+              </div>
+              <span>Silver & Soul</span>
+            </div>
+            <div class="add-to-cart" data-product-id="4"><i class="fas fa-plus"></i></div>
+          </div>
+        </div>
+      </div>
+
+      <div style="text-align: center; margin-top: 2rem;">
+        <a href="#" class="btn btn-outline">View All Products</a>
+      </div>
+    </div>
+  </section>
+
+  <!-- Artist Feature -->
+  <section class="artist-feature">
+    <div class="container">
+      <div class="artist-content">
+        <div class="artist-image">
+          <img src="https://images.unsplash.com/photo-1507209281643-9e0633e63041" alt="Featured Artist">
+        </div>
+        <div class="artist-info">
+          <h2>Meet Our Featured Artisan</h2>
+          <h3>Elena Rodriguez - Ceramic Artist</h3>
+          <p>Elena creates unique ceramic pieces inspired by nature and traditional techniques passed down through generations. Each piece is handcrafted with care in her small studio in Barcelona.</p>
+          
+          <div class="artist-quote">
+            "I believe that handmade objects carry the energy and passion of their creator, making each piece special and meaningful."
+          </div>
+          
+          <p>Elena has been perfecting her craft for over 15 years and has won multiple awards for her innovative designs and sustainable practices.</p>
+          
+          <div class="artist-stats">
+            <div class="stat">
+              <div class="stat-number">120+</div>
+              <div class="stat-label">Unique Designs</div>
+            </div>
+            <div class="stat">
+              <div class="stat-number">15</div>
+              <div class="stat-label">Years of Experience</div>
+            </div>
+            <div class="stat">
+              <div class="stat-number">1,200+</div>
+              <div class="stat-label">Happy Customers</div>
+            </div>
+          </div>
+          
+          <a href="#" class="btn">Shop Elena's Collection</a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Testimonials -->
+  <section class="testimonials">
+    <div class="container">
+      <div class="section-title">
+        <h2>What Our Customers Say</h2>
+        <p>Real stories from people who love our artisan products</p>
+      </div>
+      
+      <div class="testimonial-slider">
+        <div class="testimonial">
+          <div class="testimonial-text">
+            I received the handcrafted ceramic vase as a gift, and I'm completely in love with it. The craftsmanship is extraordinary, and it has become the centerpiece of my living room. You can truly feel the artisan's love for their craft in every detail.
+          </div>
+          <div class="testimonial-author">
+            <div class="testimonial-avatar">
+              <img src="https://images.unsplash.com/photo-1438761681033-6461ffad8d80" alt="Sarah Johnson">
+            </div>
+            <div class="author-info">
+              <h4>Sarah Johnson</h4>
+              <p>Happy Customer</p>
+            </div>
+          </div>
+        </div>
+        
+        <div class="slider-nav prev"><i class="fas fa-chevron-left"></i></div>
+        <div class="slider-nav next"><i class="fas fa-chevron-right"></i></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Newsletter -->
+  <section class="newsletter">
+    <div class="container">
+      <h2>Join Our Artisan Community</h2>
+      <p>Subscribe to receive updates on new arrivals, special promotions and artisan stories</p>
+      
+      <form class="newsletter-form">
+        <input type="email" placeholder="Your email address" required>
+        <button type="submit">Subscribe</button>
+      </form>
+    </div>
+  </section>
+
+  <!-- Footer -->
+  <footer>
+    <div class="container footer-container">
+      <div class="footer-col">
+        <h3>Artisan Treasures</h3>
+        <p>Connecting talented artisans with people who appreciate handcrafted quality and uniqueness.</p>
+        <div class="social-links">
+          <a href="#" class="social-link"><i class="fab fa-facebook-f"></i></a>
+          <a href="#" class="social-link"><i class="fab fa-instagram"></i></a>
+          <a href="#" class="social-link"><i class="fab fa-pinterest-p"></i></a>
+          <a href="#" class="social-link"><i class="fab fa-twitter"></i></a>
+        </div>
+      </div>
+      
+      <div class="footer-col">
+        <h3>Shop</h3>
+        <ul class="footer-links">
+          <li><a href="#">New Arrivals</a></li>
+          <li><a href="#">Best Sellers</a></li>
+          <li><a href="#">On Sale</a></li>
+          <li><a href="#">All Products</a></li>
+        </ul>
+      </div>
+      
+      <div class="footer-col">
+        <h3>About</h3>
+        <ul class="footer-links">
+          <li><a href="#">Our Story</a></li>
+          <li><a href="#">Artisans</a></li>
+          <li><a href="#">Sustainability</a></li>
+          <li><a href="#">Blog</a></li>
+        </ul>
+      </div>
+      
+      <div class="footer-col">
+        <h3>Customer Service</h3>
+        <ul class="footer-links">
+          <li><a href="#">Contact Us</a></li>
+          <li><a href="#">FAQs</a></li>
+          <li><a href="#">Shipping & Returns</a></li>
+          <li><a href="#">Terms & Conditions</a></li>
+        </ul>
+      </div>
+    </div>
+    
+    <div class="footer-bottom">
+      <div class="container">
+        <p>&copy; 2025 Artisan Treasures. All rights reserved.</p>
+      </div>
+    </div>
+  </footer>
+
+  <!-- Quick View Modal -->
+  <div class="modal" id="quick-view-modal">
+    <div class="modal-content">
+      <button class="modal-close"><i class="fas fa-times"></i></button>
+      
+      <div class="modal-left">
+        <div class="modal-image">
+          <img src="https://images.unsplash.com/photo-1617713964059-fa51871c3e11" alt="Hand-carved Wooden Bowl">
+        </div>
+        <div class="modal-thumbnails">
+          <div class="modal-thumbnail active">
+            <img src="https://images.unsplash.com/photo-1617713964059-fa51871c3e11" alt="Hand-carved Wooden Bowl - Image 1">
+          </div>
+          <div class="modal-thumbnail">
+            <img src="https://images.unsplash.com/photo-1635241161466-541f065683ba" alt="Hand-carved Wooden Bowl - Image 2">
+          </div>
+          <div class="modal-thumbnail">
+            <img src="https://images.unsplash.com/photo-1576020689073-67f6e5ba70a2" alt="Hand-carved Wooden Bowl - Image 3">
+          </div>
+        </div>
+      </div>
+      
+      <div class="modal-right">
+        <div class="modal-category">Woodwork</div>
+        <h2 class="modal-title">Hand-carved Wooden Bowl</h2>
+        <div class="modal-price">$45.99</div>
+        
+        <div class="modal-rating">
+          <i class="fas fa-star"></i>
+          <i class="fas fa-star"></i>
+          <i class="fas fa-star"></i>
+          <i class="fas fa-star"></i>
+          <i class="fas fa-star"></i>
+          <span>(52 reviews)</span>
+        </div>
+        
+        <div class="modal-description">
+          This beautifully crafted wooden bowl is made from reclaimed oak by our skilled artisans. Each piece is unique, with natural variations in grain and color that tell the story of the wood's history. Perfect for serving salads, displaying fruits, or as a decorative centerpiece.
+        </div>
+        
+        <div class="modal-meta">
+          <div class="meta-item">
+            <div class="meta-label">Material:</div>
+            <div>Reclaimed Oak</div>
+          </div>
+          <div class="meta-item">
+            <div class="meta-label">Dimensions:</div>
+            <div>8" x 8" x 3"</div>
+          </div>
+          <div class="meta-item">
+            <div class="meta-label">Care:</div>
+            <div>Hand wash only, oil occasionally</div>
+          </div>
+        </div>
+        
+        <div class="modal-colors">
+          <div class="color-option color-brown active" data-color="Brown"></div>
+          <div class="color-option color-black" data-color="Black"></div>
+          <div class="color-option color-gray" data-color="Gray"></div>
+        </div>
+        
+        <div class="quantity-selector">
+          <div class="quantity-btn decrease"><i class="fas fa-minus"></i></div>
+          <input type="text" class="quantity-value" value="1" readonly>
+          <div class="quantity-btn increase"><i class="fas fa-plus"></i></div>
+        </div>
+        
+        <div class="modal-actions">
+          <button class="btn" style="flex-grow: 1;">Add to Cart</button>
+          <div class="wishlist-btn">
+            <i class="far fa-heart"></i>
+            <span>Add to Wishlist</span>
+          </div>
+        </div>
+        
+        <div class="modal-vendor">
+          <div class="vendor-avatar">
+            <img src="https://images.unsplash.com/photo-1552058544-f2b08422138a" alt="Woodland Crafts">
+          </div>
+          <div class="vendor-info">
+            <h4>Woodland Crafts</h4>
+            <p>Artisan since 2010</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Shopping Cart -->
+  <div class="cart-overlay" id="cart-overlay"></div>
+  <div class="cart-modal" id="cart-modal">
+    <div class="cart-header">
+      <h3>Your Shopping Cart (2)</h3>
+      <button class="close-cart"><i class="fas fa-times"></i></button>
+    </div>
+    
+    <div class="cart-items">
+      <div class="cart-item">
+        <div class="cart-item-image">
+          <img src="https://images.unsplash.com/photo-1631125915902-d8eda6675983" alt="Handcrafted Ceramic Mug">
+        </div>
+        <div class="cart-item-details">
+          <h4 class="cart-item-title">Handcrafted Ceramic Mug</h4>
+          <div class="cart-item-price">$24.99</div>
+          <div class="cart-item-quantity">
+            Qty: 1
+            <i class="far fa-trash-alt cart-item-remove"></i>
+          </div>
+        </div>
+      </div>
+      
+      <div class="cart-item">
+        <div class="cart-item-image">
+          <img src="https://images.unsplash.com/photo-1617713964059-fa51871c3e11" alt="Hand-carved Wooden Bowl">
+        </div>
+        <div class="cart-item-details">
+          <h4 class="cart-item-title">Hand-carved Wooden Bowl</h4>
+          <div class="cart-item-price">$45.99</div>
+          <div class="cart-item-quantity">
+            Qty: 1
+            <i class="far fa-trash-alt cart-item-remove"></i>
+          </div>
+        </div>
+      </div>
+    </div>
+    
+    <div class="cart-footer">
+      <div class="cart-total">
+        <span>Total:</span>
+        <span>$70.98</span>
+      </div>
+      
+      <div class="cart-actions">
+        <a href="#" class="view-cart">View Cart</a>
+        <a href="#" class="checkout">Proceed to Checkout</a>
+      </div>
+    </div>
+  </div>
+
+  <!-- JavaScript -->
+  <script>
+    // DOM Elements
+    const cartIcon = document.getElementById('cart-icon');
+    const cartModal = document.getElementById('cart-modal');
+    const cartOverlay = document.getElementById('cart-overlay');
+    const closeCartBtn = document.querySelector('.close-cart');
+    
+    const quickViewModal = document.getElementById('quick-view-modal');
+    const modalCloseBtn = document.querySelector('.modal-close');
+    const productCards = document.querySelectorAll('.product-card');
+    
+    const wishlistBtns = document.querySelectorAll('.product-wishlist');
+    const colorOptions = document.querySelectorAll('.color-option');
+    const quantityDecrease = document.querySelector('.decrease');
+    const quantityIncrease = document.querySelector('.increase');
+    const quantityInput = document.querySelector('.quantity-value');
+    
+    const modalThumbnails = document.querySelectorAll('.modal-thumbnail');
+    const modalMainImage = document.querySelector('.modal-image img');
+    
+    const mobileNavToggle = document.querySelector('.mobile-nav-toggle');
+    const navContainer = document.querySelector('.nav-container');
+    
+    // Event Listeners
+    cartIcon.addEventListener('click', function(e) {
+      e.preventDefault();
+      cartModal.classList.add('active');
+      cartOverlay.classList.add('active');
+      document.body.style.overflow = 'hidden';
+    });
+    
+    closeCartBtn.addEventListener('click', function() {
+      cartModal.classList.remove('active');
+      cartOverlay.classList.remove('active');
+      document.body.style.overflow = '';
+    });
+    
+    cartOverlay.addEventListener('click', function() {
+      cartModal.classList.remove('active');
+      cartOverlay.classList.remove('active');
+      document.body.style.overflow = '';
+    });
+    
+    productCards.forEach(card => {
+      card.addEventListener('click', function() {
+        quickViewModal.classList.add('active');
+        document.body.style.overflow = 'hidden';
+      });
+    });
+    
+    modalCloseBtn.addEventListener('click', function() {
+      quickViewModal.classList.remove('active');
+      document.body.style.overflow = '';
+    });
+    
+    // Close modal when clicking outside
+    quickViewModal.addEventListener('click', function(e) {
+      if (e.target === quickViewModal) {
+        quickViewModal.classList.remove('active');
+        document.body.style.overflow = '';
+      }
+    });
+    
+    // Wishlist functionality
+    wishlistBtns.forEach(btn => {
+      btn.addEventListener('click', function(e) {
+        e.stopPropagation();
+        const heart = this.querySelector('i');
+        
+        if (heart.classList.contains('far')) {
+          heart.classList.remove('far');
+          heart.classList.add('fas');
+          this.classList.add('active');
+        } else {
+          heart.classList.remove('fas');
+          heart.classList.add('far');
+          this.classList.remove('active');
+        }
+      });
+    });
+    
+    // Color selection
+    colorOptions.forEach(option => {
+      option.addEventListener('click', function() {
+        colorOptions.forEach(opt => opt.classList.remove('active'));
+        this.classList.add('active');
+      });
+    });
+    
+    // Quantity selector
+    quantityDecrease.addEventListener('click', function() {
+      let value = parseInt(quantityInput.value);
+      if (value > 1) {
+        quantityInput.value = value - 1;
+      }
+    });
+    
+    quantityIncrease.addEventListener('click', function() {
+      let value = parseInt(quantityInput.value);
+      quantityInput.value = value + 1;
+    });
+    
+    // Modal thumbnails
+    modalThumbnails.forEach(thumbnail => {
+      thumbnail.addEventListener('click', function() {
+        modalThumbnails.forEach(thumb => thumb.classList.remove('active'));
+        this.classList.add('active');
+        
+        const imgSrc = this.querySelector('img').src;
+        modalMainImage.src = imgSrc;
+      });
+    });
+    
+    // Mobile navigation toggle
+    mobileNavToggle.addEventListener('click', function() {
+      navContainer.classList.toggle('active');
+    });
+    
+    // Add to cart functionality
+    const addToCartBtns = document.querySelectorAll('.add-to-cart');
+    addToCartBtns.forEach(btn => {
+      btn.addEventListener('click', function(e) {
+        e.stopPropagation();
+        
+        // Flash animation
+        this.style.backgroundColor = "#e9c46a";
+        setTimeout(() => {
+          this.style.backgroundColor = "";
+        }, 300);
+        
+        // Update cart count
+        const cartBadge = document.querySelector('#cart-icon .badge');
+        let count = parseInt(cartBadge.textContent);
+        cartBadge.textContent = count + 1;
+        
+        // Show mini notification
+        const notification = document.createElement('div');
+        notification.style.position = 'fixed';
+        notification.style.bottom = '20px';
+        notification.style.right = '20px';
+        notification.style.backgroundColor = 'var(--primary-color)';
+        notification.style.color = 'white';
+        notification.style.padding = '10px 20px';
+        notification.style.borderRadius = 'var(--border-radius)';
+        notification.style.boxShadow = 'var(--box-shadow)';
+        notification.style.zIndex = '1000';
+        notification.style.opacity = '0';
+        notification.style.transform = 'translateY(20px)';
+        notification.style.transition = 'all 0.3s ease';
+        notification.innerHTML = '<i class="fas fa-check-circle"></i> Item added to your cart!';
+        
+        document.body.appendChild(notification);
+        
+        setTimeout(() => {
+          notification.style.opacity = '1';
+          notification.style.transform = 'translateY(0)';
+        }, 10);
+        
+        setTimeout(() => {
+          notification.style.opacity = '0';
+          notification.style.transform = 'translateY(20px)';
+          
+          setTimeout(() => {
+            document.body.removeChild(notification);
+          }, 300);
+        }, 3000);
+      });
+    });
+    
+    // Newsletter subscription
+    const newsletterForm = document.querySelector('.newsletter-form');
+    newsletterForm.addEventListener('submit', function(e) {
+      e.preventDefault();
+      
+      const emailInput = this.querySelector('input');
+      const email = emailInput.value;
+      
+      if (email) {
+        // Show success message
+        emailInput.value = "";
+        
+        const successMsg = document.createElement('p');
+        successMsg.textContent = "Thank you for subscribing!";
+        successMsg.style.color = "var(--accent-color)";
+        successMsg.style.marginTop = "1rem";
+        
+        // Remove any existing message
+        const existingMsg = document.querySelector('.newsletter-form + p');
+        if (existingMsg) existingMsg.remove();
+        
+        newsletterForm.insertAdjacentElement('afterend', successMsg);
+      }
+    });
+    
+    // Testimonial Slider
+    const prevBtn = document.querySelector('.slider-nav.prev');
+    const nextBtn = document.querySelector('.slider-nav.next');
+    
+    // This is a placeholder for a more complex slider
+    // In a real implementation, there would be multiple testimonials to cycle through
+    let currentSlide = 0;
+    const totalSlides = 1; // Just one testimonial in this example
+    
+    prevBtn.addEventListener('click', function() {
+      currentSlide = (currentSlide - 1 + totalSlides) % totalSlides;
+      // Update visible testimonial
+    });
+    
+    nextBtn.addEventListener('click', function() {
+      currentSlide = (currentSlide + 1) % totalSlides;
+      // Update visible testimonial
+    });
+    
+    // Highlight current page in navigation
+    const navLinks = document.querySelectorAll('.nav-links a');
+    const currentPage = window.location.pathname;
+    
+    navLinks.forEach(link => {
+      const linkPath = new URL(link.href).pathname;
+      if (linkPath === currentPage || (currentPage === '/' && linkPath.includes('home'))) {
+        link.style.color = 'var(--primary-color)';
+        link.style.fontWeight = '600';
+        
+        // Add underline
+        const underline = document.createElement('div');
+        underline.style.position = 'absolute';
+        underline.style.bottom = '-4px';
+        underline.style.left = '0';
+        underline.style.width = '100%';
+        underline.style.height = '2px';
+        underline.style.backgroundColor = 'var(--primary-color)';
+        link.style.position = 'relative';
+        link.appendChild(underline);
+      }
+    });
+  </script>
+</body>
+</html>

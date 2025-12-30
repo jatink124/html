@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Trade Behavior Analyzer</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <script src="https://cdn.tailwindcss.com"></script>
+</head>
+
+<body class="bg-slate-100 text-slate-800">
+
+<div class="max-w-6xl mx-auto p-6">
+  <h1 class="text-2xl font-bold mb-2">Trading Behavior Analyzer</h1>
+  <p class="text-slate-600 mb-6">
+    Upload your CSV. This tool analyzes execution quality and behavior patterns.
+  </p>
+
+  <!-- Upload -->
+  <input type="file" id="csvFile" accept=".csv"
+    class="mb-6 block w-full border p-2 rounded bg-white" />
+
+  <!-- Summary -->
+  <div id="summary" class="grid grid-cols-1 md:grid-cols-4 gap-4 mb-6"></div>
+
+  <!-- Table -->
+  <div class="overflow-x-auto bg-white rounded shadow mb-6">
+    <table class="min-w-full text-sm" id="tradeTable"></table>
+  </div>
+
+  <!-- Insights -->
+  <div class="bg-white rounded shadow p-5">
+    <h2 class="text-lg font-semibold mb-3">Behavior Insights</h2>
+    <ul id="insights" class="list-disc ml-5 space-y-2 text-slate-700"></ul>
+  </div>
+</div>
+
+<script>
+document.getElementById("csvFile").addEventListener("change", function(e) {
+  const file = e.target.files[0];
+  if (!file) return;
+
+  const reader = new FileReader();
+  reader.onload = () => processCSV(reader.result);
+  reader.readAsText(file);
+});
+
+function processCSV(text) {
+  const rows = text.trim().split("\n").map(r => r.split(","));
+  const headers = rows.shift();
+
+  const data = rows.map(r => {
+    let obj = {};
+    headers.forEach((h, i) => obj[h.trim()] = r[i]?.trim());
+    return obj;
+  });
+
+  renderTable(headers, data);
+  analyzeData(data);
+}
+
+function renderTable(headers, data) {
+  let html = "<thead class='bg-slate-200'><tr>";
+  headers.forEach(h => html += `<th class="p-2">${h}</th>`);
+  html += "<th class='p-2'>Est P&L</th></tr></thead><tbody>";
+
+  data.forEach(d => {
+    const qty = parseInt(d["Qty"]) || 0;
+    const buy = parseFloat(d["Price"]) || 0;
+    const ltp = parseFloat(d["LTP"]) || 0;
+    const pnl = (ltp - buy) * qty;
+
+    html += "<tr class='border-t'>";
+    headers.forEach(h => html += `<td class="p-2">${d[h]}</td>`);
+    html += `<td class="p-2 font-medium ${pnl < 0 ? "text-red-600" : "text-green-600"}">${pnl.toFixed(2)}</td>`;
+    html += "</tr>";
+  });
+
+  html += "</tbody>";
+  document.getElementById("tradeTable").innerHTML = html;
+}
+
+function analyzeData(data) {
+  let totalPnL = 0;
+  let repeatMap = {};
+  let marketOrders = 0;
+  let losses = 0;
+
+  data.forEach(d => {
+    const qty = parseInt(d["Qty"]) || 0;
+    const buy = parseFloat(d["Price"]) || 0;
+    const ltp = parseFloat(d["LTP"]) || 0;
+    const pnl = (ltp - buy) * qty;
+
+    totalPnL += pnl;
+    if (pnl < 0) losses++;
+
+    const key = d["Name"];
+    repeatMap[key] = (repeatMap[key] || 0) + 1;
+
+    if (d["Order Type"]?.toLowerCase().includes("market")) {
+      marketOrders++;
+    }
+  });
+
+  // Summary cards
+  document.getElementById("summary").innerHTML = `
+    <div class="bg-white p-4 rounded shadow">
+      <div class="text-slate-500 text-sm">Total Trades</div>
+      <div class="text-xl font-bold">${data.length}</div>
+    </div>
+    <div class="bg-white p-4 rounded shadow">
+      <div class="text-slate-500 text-sm">Total P&L</div>
+      <div class="text-xl font-bold ${totalPnL < 0 ? "text-red-600" : "text-green-600"}">${totalPnL.toFixed(2)}</div>
+    </div>
+    <div class="bg-white p-4 rounded shadow">
+      <div class="text-slate-500 text-sm">Loss Trades</div>
+      <div class="text-xl font-bold">${losses}</div>
+    </div>
+    <div class="bg-white p-4 rounded shadow">
+      <div class="text-slate-500 text-sm">Market Orders</div>
+      <div class="text-xl font-bold">${marketOrders}</div>
+    </div>
+  `;
+
+  // Insights
+  const insights = [];
+  Object.keys(repeatMap).forEach(k => {
+    if (repeatMap[k] > 1) {
+      insights.push(`Repeated trades detected in "${k}" (${repeatMap[k]} times). Possible chasing or averaging.`);
+    }
+  });
+
+  if (marketOrders === data.length) {
+    insights.push("All trades used Market orders. Execution control is missing.");
+  }
+
+  if (losses === data.length) {
+    insights.push("All trades resulted in losses. Entry validation or timing may be weak.");
+  }
+
+  document.getElementById("insights").innerHTML =
+    insights.length
+      ? insights.map(i => `<li>${i}</li>`).join("")
+      : "<li>No major behavioral issues detected.</li>";
+}
+</script>
+
+</body>
+</html>

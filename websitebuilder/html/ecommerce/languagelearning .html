@@ -1,0 +1,1176 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>LinguaLearn - Modern Language Learning Platform</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
+    <style>
+        :root {
+            --primary: #5e17eb;
+            --secondary: #8b5cf6;
+            --accent: #22d3ee;
+            --light: #f8fafc;
+            --dark: #1e293b;
+        }
+        
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            color: var(--dark);
+            background-color: #f8fafc;
+        }
+        
+        .navbar {
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+        }
+        
+        .btn-primary {
+            background-color: var(--primary);
+            border-color: var(--primary);
+        }
+        
+        .btn-primary:hover {
+            background-color: var(--secondary);
+            border-color: var(--secondary);
+        }
+        
+        .hero {
+            background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%);
+            color: white;
+            padding: 100px 0;
+            border-radius: 0 0 25px 25px;
+        }
+        
+        .feature-card {
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+            transition: transform 0.3s ease;
+            height: 100%;
+        }
+        
+        .feature-card:hover {
+            transform: translateY(-5px);
+        }
+        
+        .language-card {
+            border-radius: 12px;
+            transition: all 0.3s ease;
+            cursor: pointer;
+        }
+        
+        .language-card:hover {
+            transform: scale(1.05);
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+        }
+        
+        .testimonial-card {
+            background-color: white;
+            border-radius: 12px;
+            padding: 20px;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+        }
+        
+        .avatar {
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            object-fit: cover;
+        }
+        
+        .progress {
+            height: 10px;
+            border-radius: 5px;
+        }
+        
+        .feature-icon {
+            background-color: rgba(94, 23, 235, 0.1);
+            color: var(--primary);
+            width: 60px;
+            height: 60px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 12px;
+            font-size: 24px;
+            margin-bottom: 15px;
+        }
+        
+        .subscription-card {
+            border-radius: 12px;
+            overflow: hidden;
+            transition: transform 0.3s ease;
+        }
+        
+        .subscription-card:hover {
+            transform: translateY(-10px);
+        }
+        
+        .popular-badge {
+            position: absolute;
+            top: 0;
+            right: 20px;
+            background-color: var(--accent);
+            color: white;
+            padding: 5px 15px;
+            border-radius: 0 0 10px 10px;
+            font-weight: bold;
+        }
+        
+        .app-screenshot {
+            border-radius: 12px;
+            box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1);
+        }
+        
+        .footer {
+            background-color: var(--dark);
+            color: white;
+            padding: 50px 0;
+        }
+        
+        /* Chat Feature */
+        .chat-popup {
+            position: fixed;
+            bottom: 30px;
+            right: 30px;
+            z-index: 1000;
+        }
+        
+        .chat-btn {
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            background-color: var(--primary);
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 24px;
+            cursor: pointer;
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+        }
+        
+        .chat-container {
+            display: none;
+            width: 350px;
+            background-color: white;
+            border-radius: 10px;
+            overflow: hidden;
+            position: absolute;
+            bottom: 80px;
+            right: 0;
+            box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1);
+        }
+        
+        .chat-header {
+            background-color: var(--primary);
+            color: white;
+            padding: 15px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .chat-body {
+            height: 300px;
+            padding: 15px;
+            overflow-y: auto;
+        }
+        
+        .chat-message {
+            margin-bottom: 15px;
+            display: flex;
+        }
+        
+        .user-message {
+            justify-content: flex-end;
+        }
+        
+        .message-content {
+            padding: 10px 15px;
+            border-radius: 20px;
+            max-width: 70%;
+        }
+        
+        .bot-message .message-content {
+            background-color: #f1f1f1;
+        }
+        
+        .user-message .message-content {
+            background-color: var(--primary);
+            color: white;
+        }
+        
+        .chat-input {
+            display: flex;
+            padding: 10px;
+            border-top: 1px solid #f1f1f1;
+        }
+        
+        .chat-input input {
+            flex: 1;
+            border: none;
+            padding: 10px;
+            border-radius: 20px;
+            background-color: #f1f1f1;
+            margin-right: 10px;
+        }
+        
+        .chat-input button {
+            background-color: var(--primary);
+            color: white;
+            border: none;
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        /* Language Switcher */
+        .language-switcher {
+            position: relative;
+        }
+        
+        .language-options {
+            display: none;
+            position: absolute;
+            top: 100%;
+            right: 0;
+            background-color: white;
+            border-radius: 5px;
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+            z-index: 1000;
+            min-width: 150px;
+        }
+        
+        .language-option {
+            padding: 10px 15px;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+        
+        .language-option:hover {
+            background-color: #f1f1f1;
+        }
+        
+        /* Immersive Feature */
+        .immersive-feature {
+            position: relative;
+            overflow: hidden;
+            border-radius: 12px;
+        }
+        
+        .immersive-overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0, 0, 0, 0.5);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+        
+        .immersive-feature:hover .immersive-overlay {
+            opacity: 1;
+        }
+        
+        /* Flashcard Feature */
+        .flashcard {
+            perspective: 1000px;
+            height: 200px;
+            cursor: pointer;
+        }
+        
+        .flashcard-inner {
+            position: relative;
+            width: 100%;
+            height: 100%;
+            transition: transform 0.6s;
+            transform-style: preserve-3d;
+        }
+        
+        .flashcard.flipped .flashcard-inner {
+            transform: rotateY(180deg);
+        }
+        
+        .flashcard-front, .flashcard-back {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            -webkit-backface-visibility: hidden;
+            backface-visibility: hidden;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 12px;
+            padding: 20px;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+        }
+        
+        .flashcard-front {
+            background-color: white;
+        }
+        
+        .flashcard-back {
+            background-color: var(--primary);
+            color: white;
+            transform: rotateY(180deg);
+        }
+    </style>
+</head>
+<body>
+    <!-- Navigation -->
+    <nav class="navbar navbar-expand-lg navbar-light bg-white sticky-top">
+        <div class="container">
+            <a class="navbar-brand fw-bold" href="#">
+                <span class="text-primary">Lingua</span>Learn
+            </a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav me-auto">
+                    <li class="nav-item">
+                        <a class="nav-link" href="#features">Features</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#languages">Languages</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#how-it-works">How It Works</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#pricing">Pricing</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#testimonials">Testimonials</a>
+                    </li>
+                </ul>
+                <div class="d-flex align-items-center gap-3">
+                    <div class="language-switcher">
+                        <button class="btn btn-outline-secondary btn-sm" onclick="toggleLanguageOptions()">
+                            <i class="fas fa-globe me-1"></i> EN
+                        </button>
+                        <div class="language-options" id="languageOptions">
+                            <div class="language-option">English</div>
+                            <div class="language-option">Español</div>
+                            <div class="language-option">Français</div>
+                            <div class="language-option">Deutsch</div>
+                            <div class="language-option">日本語</div>
+                        </div>
+                    </div>
+                    <a href="#" class="btn btn-outline-primary">Log In</a>
+                    <a href="#" class="btn btn-primary">Sign Up Free</a>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <section class="hero">
+        <div class="container">
+            <div class="row align-items-center">
+                <div class="col-lg-6">
+                    <h1 class="fw-bold mb-4">Learn Any Language in a Fun and Effective Way</h1>
+                    <p class="lead mb-4">Our AI-powered platform makes language learning engaging and efficient with personalized lessons, speech recognition, and interactive exercises.</p>
+                    <div class="d-flex gap-3">
+                        <a href="#" class="btn btn-light btn-lg">Try For Free</a>
+                        <a href="#" class="btn btn-outline-light btn-lg">
+                            <i class="fas fa-play me-2"></i> Watch Demo
+                        </a>
+                    </div>
+                    <div class="mt-4 d-flex align-items-center">
+                        <div class="d-flex">
+                            <img src="https://randomuser.me/api/portraits/women/45.jpg" class="avatar" style="margin-right: -15px; border: 2px solid white;">
+                            <img src="https://randomuser.me/api/portraits/men/32.jpg" class="avatar" style="margin-right: -15px; border: 2px solid white;">
+                            <img src="https://randomuser.me/api/portraits/women/68.jpg" class="avatar" style="margin-right: -15px; border: 2px solid white;">
+                            <img src="https://randomuser.me/api/portraits/men/75.jpg" class="avatar" style="border: 2px solid white;">
+                        </div>
+                        <div class="ms-3">
+                            <p class="mb-0"><strong>50M+</strong> language learners worldwide</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-lg-6 mt-5 mt-lg-0 text-center">
+                    <img src="https://placehold.co/600x400/5e17eb/ffffff?text=LinguaLearn+App" alt="LinguaLearn App" class="img-fluid app-screenshot">
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Features Section -->
+    <section class="py-5" id="features">
+        <div class="container">
+            <div class="text-center mb-5">
+                <h6 class="text-primary fw-bold text-uppercase">Why Choose Us</h6>
+                <h2 class="fw-bold">Powerful Features to Make Learning Easy</h2>
+                <p class="text-muted">Our platform includes everything you need to become fluent in your target language</p>
+            </div>
+
+            <div class="row g-4">
+                <!-- Feature 1: AI-Powered Learning -->
+                <div class="col-md-6 col-lg-4">
+                    <div class="feature-card p-4 bg-white">
+                        <div class="feature-icon">
+                            <i class="fas fa-brain"></i>
+                        </div>
+                        <h5 class="fw-bold">AI-Powered Learning</h5>
+                        <p class="text-muted">Personalized learning paths that adapt to your progress and learning style.</p>
+                    </div>
+                </div>
+
+                <!-- Feature 2: Speech Recognition -->
+                <div class="col-md-6 col-lg-4">
+                    <div class="feature-card p-4 bg-white">
+                        <div class="feature-icon">
+                            <i class="fas fa-microphone"></i>
+                        </div>
+                        <h5 class="fw-bold">Speech Recognition</h5>
+                        <p class="text-muted">Practice your pronunciation with real-time feedback on your speaking.</p>
+                    </div>
+                </div>
+
+                <!-- Feature 3: Interactive Exercises -->
+                <div class="col-md-6 col-lg-4">
+                    <div class="feature-card p-4 bg-white">
+                        <div class="feature-icon">
+                            <i class="fas fa-puzzle-piece"></i>
+                        </div>
+                        <h5 class="fw-bold">Interactive Exercises</h5>
+                        <p class="text-muted">Engaging activities that make learning fun and help information stick.</p>
+                    </div>
+                </div>
+
+                <!-- Feature 4: Live Conversation Practice -->
+                <div class="col-md-6 col-lg-4">
+                    <div class="feature-card p-4 bg-white">
+                        <div class="feature-icon">
+                            <i class="fas fa-comments"></i>
+                        </div>
+                        <h5 class="fw-bold">Live Conversation</h5>
+                        <p class="text-muted">Practice with native speakers or AI conversation partners in real-time.</p>
+                    </div>
+                </div>
+
+                <!-- Feature 5: Offline Learning -->
+                <div class="col-md-6 col-lg-4">
+                    <div class="feature-card p-4 bg-white">
+                        <div class="feature-icon">
+                            <i class="fas fa-wifi-slash"></i>
+                        </div>
+                        <h5 class="fw-bold">Offline Learning</h5>
+                        <p class="text-muted">Download lessons and continue learning even without internet connection.</p>
+                    </div>
+                </div>
+
+                <!-- Feature 6: Progress Tracking -->
+                <div class="col-md-6 col-lg-4">
+                    <div class="feature-card p-4 bg-white">
+                        <div class="feature-icon">
+                            <i class="fas fa-chart-line"></i>
+                        </div>
+                        <h5 class="fw-bold">Progress Tracking</h5>
+                        <p class="text-muted">Detailed insights on your learning journey with statistics and achievements.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Languages Section -->
+    <section class="py-5 bg-light" id="languages">
+        <div class="container">
+            <div class="text-center mb-5">
+                <h6 class="text-primary fw-bold text-uppercase">Wide Selection</h6>
+                <h2 class="fw-bold">Languages You Can Learn</h2>
+                <p class="text-muted">Choose from over 50 languages with comprehensive lessons</p>
+            </div>
+
+            <div class="row g-4">
+                <div class="col-6 col-md-4 col-lg-2">
+                    <div class="language-card text-center p-3 bg-white">
+                        <img src="https://placehold.co/80/5e17eb/ffffff?text=ES" alt="Spanish" class="img-fluid mb-3">
+                        <h6 class="fw-bold mb-0">Spanish</h6>
+                        <p class="small text-muted mb-0">35M+ Learners</p>
+                    </div>
+                </div>
+                <div class="col-6 col-md-4 col-lg-2">
+                    <div class="language-card text-center p-3 bg-white">
+                        <img src="https://placehold.co/80/5e17eb/ffffff?text=FR" alt="French" class="img-fluid mb-3">
+                        <h6 class="fw-bold mb-0">French</h6>
+                        <p class="small text-muted mb-0">28M+ Learners</p>
+                    </div>
+                </div>
+                <div class="col-6 col-md-4 col-lg-2">
+                    <div class="language-card text-center p-3 bg-white">
+                        <img src="https://placehold.co/80/5e17eb/ffffff?text=JP" alt="Japanese" class="img-fluid mb-3">
+                        <h6 class="fw-bold mb-0">Japanese</h6>
+                        <p class="small text-muted mb-0">22M+ Learners</p>
+                    </div>
+                </div>
+                <div class="col-6 col-md-4 col-lg-2">
+                    <div class="language-card text-center p-3 bg-white">
+                        <img src="https://placehold.co/80/5e17eb/ffffff?text=DE" alt="German" class="img-fluid mb-3">
+                        <h6 class="fw-bold mb-0">German</h6>
+                        <p class="small text-muted mb-0">19M+ Learners</p>
+                    </div>
+                </div>
+                <div class="col-6 col-md-4 col-lg-2">
+                    <div class="language-card text-center p-3 bg-white">
+                        <img src="https://placehold.co/80/5e17eb/ffffff?text=IT" alt="Italian" class="img-fluid mb-3">
+                        <h6 class="fw-bold mb-0">Italian</h6>
+                        <p class="small text-muted mb-0">15M+ Learners</p>
+                    </div>
+                </div>
+                <div class="col-6 col-md-4 col-lg-2">
+                    <div class="language-card text-center p-3 bg-white">
+                        <img src="https://placehold.co/80/5e17eb/ffffff?text=+45" alt="More Languages" class="img-fluid mb-3">
+                        <h6 class="fw-bold mb-0">45+ More</h6>
+                        <p class="small text-muted mb-0">Explore All</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- How It Works Section -->
+    <section class="py-5" id="how-it-works">
+        <div class="container">
+            <div class="text-center mb-5">
+                <h6 class="text-primary fw-bold text-uppercase">Learning Journey</h6>
+                <h2 class="fw-bold">How LinguaLearn Works</h2>
+                <p class="text-muted">Our proven 4-step method for language fluency</p>
+            </div>
+
+            <div class="row">
+                <div class="col-lg-3 col-md-6 mb-4 mb-lg-0">
+                    <div class="text-center">
+                        <div class="bg-primary rounded-circle text-white d-flex align-items-center justify-content-center mx-auto mb-4" style="width: 80px; height: 80px; font-size: 32px;">1</div>
+                        <h5 class="fw-bold">Assessment</h5>
+                        <p class="text-muted">Take a placement test to determine your current level.</p>
+                    </div>
+                </div>
+                <div class="col-lg-3 col-md-6 mb-4 mb-lg-0">
+                    <div class="text-center">
+                        <div class="bg-primary rounded-circle text-white d-flex align-items-center justify-content-center mx-auto mb-4" style="width: 80px; height: 80px; font-size: 32px;">2</div>
+                        <h5 class="fw-bold">Personalization</h5>
+                        <p class="text-muted">Get a customized learning plan tailored to your goals.</p>
+                    </div>
+                </div>
+                <div class="col-lg-3 col-md-6 mb-4 mb-lg-0">
+                    <div class="text-center">
+                        <div class="bg-primary rounded-circle text-white d-flex align-items-center justify-content-center mx-auto mb-4" style="width: 80px; height: 80px; font-size: 32px;">3</div>
+                        <h5 class="fw-bold">Daily Practice</h5>
+                        <p class="text-muted">Complete bite-sized lessons for just 15-20 minutes daily.</p>
+                    </div>
+                </div>
+                <div class="col-lg-3 col-md-6">
+                    <div class="text-center">
+                        <div class="bg-primary rounded-circle text-white d-flex align-items-center justify-content-center mx-auto mb-4" style="width: 80px; height: 80px; font-size: 32px;">4</div>
+                        <h5 class="fw-bold">Real Conversations</h5>
+                        <p class="text-muted">Practice with native speakers to achieve fluency.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Immersive Learning Section -->
+    <section class="py-5 bg-light">
+        <div class="container">
+            <div class="row align-items-center">
+                <div class="col-lg-6 mb-4 mb-lg-0">
+                    <h6 class="text-primary fw-bold text-uppercase">Feature Spotlight</h6>
+                    <h2 class="fw-bold mb-4">Immersive Learning with AR/VR</h2>
+                    <p class="mb-4">Experience language learning like never before with our augmented and virtual reality features. Practice real-life scenarios in a virtual environment.</p>
+                    
+                    <div class="d-flex mb-3">
+                        <div class="me-3 text-primary">
+                            <i class="fas fa-check-circle"></i>
+                        </div>
+                        <div>
+                            <h6 class="fw-bold mb-1">Virtual Travel Experiences</h6>
+                            <p class="text-muted mb-0">Visit foreign countries virtually and practice your language skills in realistic settings.</p>
+                        </div>
+                    </div>
+                    
+                    <div class="d-flex mb-3">
+                        <div class="me-3 text-primary">
+                            <i class="fas fa-check-circle"></i>
+                        </div>
+                        <div>
+                            <h6 class="fw-bold mb-1">AR Object Recognition</h6>
+                            <p class="text-muted mb-0">Point your camera at objects to learn vocabulary in context.</p>
+                        </div>
+                    </div>
+                    
+                    <div class="d-flex">
+                        <div class="me-3 text-primary">
+                            <i class="fas fa-check-circle"></i>
+                        </div>
+                        <div>
+                            <h6 class="fw-bold mb-1">Cultural Simulations</h6>
+                            <p class="text-muted mb-0">Learn culturally appropriate language use in different situations.</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-lg-6">
+                    <div class="immersive-feature">
+                        <img src="https://placehold.co/600x400/5e17eb/ffffff?text=VR+Language+Learning" class="img-fluid rounded-4">
+                        <div class="immersive-overlay">
+                            <a href="#" class="btn btn-primary btn-lg">
+                                <i class="fas fa-play me-2"></i> Watch Demo
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Flashcard Feature -->
+    <section class="py-5">
+        <div class="container">
+            <div class="text-center mb-5">
+                <h6 class="text-primary fw-bold text-uppercase">Interactive Learning</h6>
+                <h2 class="fw-bold">Smart Flashcards</h2>
+                <p class="text-muted">Memorize vocabulary efficiently with our spaced repetition system</p>
+            </div>
+
+            <div class="row g-4 justify-content-center">
+                <div class="col-md-4">
+                    <div class="flashcard" onclick="this.classList.toggle('flipped')">
+                        <div class="flashcard-inner">
+                            <div class="flashcard-front">
+                                <h3>Bonjour</h3>
+                            </div>
+                            <div class="flashcard-back">
+                                <h3>Hello</h3>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="flashcard" onclick="this.classList.toggle('flipped')">
+                        <div class="flashcard-inner">
+                            <div class="flashcard-front">
+                                <h3>Gracias</h3>
+                            </div>
+                            <div class="flashcard-back">
+                                <h3>Thank you</h3>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="flashcard" onclick="this.classList.toggle('flipped')">
+                        <div class="flashcard-inner">
+                            <div class="flashcard-front">
+                                <h3>こんにちは</h3>
+                            </div>
+                            <div class="flashcard-back">
+                                <h3>Hello</h3>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="text-center mt-4">
+                <a href="#" class="btn btn-primary">Create Your Own Flashcards</a>
+            </div>
+        </div>
+    </section>
+
+    <!-- Pricing Section -->
+    <section class="py-5 bg-light" id="pricing">
+        <div class="container">
+            <div class="text-center mb-5">
+                <h6 class="text-primary fw-bold text-uppercase">Affordable Plans</h6>
+                <h2 class="fw-bold">Choose Your Perfect Plan</h2>
+                <p class="text-muted">Flexible options to match your learning needs</p>
+            </div>
+
+            <div class="row g-4">
+                <div class="col-md-4">
+                    <div class="subscription-card bg-white h-100 position-relative">
+                        <div class="p-4">
+                            <h5 class="fw-bold">Free</h5>
+                            <h2 class="fw-bold my-3">$0<span class="text-muted fs-6">/month</span></h2>
+                            <p class="text-muted">Perfect for casual learners and beginners.</p>
+                            <hr>
+                            <ul class="list-unstyled mb-4">
+                                <li class="mb-2"><i class="fas fa-check text-primary me-2"></i> 1 language</li>
+                                <li class="mb-2"><i class="fas fa-check text-primary me-2"></i> Basic lessons</li>
+                                <li class="mb-2"><i class="fas fa-check text-primary me-2"></i> Limited practice exercises</li>
+                                <li class="mb-2"><i class="fas fa-check text-primary me-2"></i> Progress tracking</li>
+                                <li class="mb-2 text-muted"><i class="fas fa-times me-2"></i> No offline access</li>
+                                <li class="mb-2 text-muted"><i class="fas fa-times me-2"></i> No AI conversation partner</li>
+                            </ul>
+                            <a href="#" class="btn btn-outline-primary w-100">Start Free</a>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="col-md-4">
+                    <div class="subscription-card bg-white h-100 position-relative">
+                        <div class="popular-badge">Most Popular</div>
+                        <div class="p-4">
+                            <h5 class="fw-bold">Premium</h5>
+                            <h2 class="fw-bold my-3">$9.99<span class="text-muted fs-6">/month</span></h2>
+                            <p class="text-muted">Ideal for dedicated language learners.</p>
+                            <hr>
+                            <ul class="list-unstyled mb-4">
+                                <li class="mb-2"><i class="fas fa-check text-primary me-2"></i> All languages</li>
+                                <li class="mb-2"><i class="fas fa-check text-primary me-2"></i> Advanced lessons</li>
+                                <li class="mb-2"><i class="fas fa-check text-primary me-2"></i> Unlimited practice</li>
+                                <li class="mb-2"><i class="fas fa-check text-primary me-2"></i> Detailed progress insights</li>
+                                <li class="mb-2"><i class="fas fa-check text-primary me-2"></i> Offline access</li>
+                                <li class="mb-2"><i class="fas fa-check text-primary me-2"></i> AI conversation practice</li>
+                            </ul>
+                            <a href="#" class="btn btn-primary w-100">Get Premium</a>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="col-md-4">
+                    <div class="subscription-card bg-white h-100 position-relative">
+                        <div class="p-4">
+                            <h5 class="fw-bold">Family</h5>
+                            <h2 class="fw-bold my-3">$19.99<span class="text-muted fs-6">/month</span></h2>
+                            <p class="text-muted">Share the learning journey with your family.</p>
+                            <hr>
+                            <ul class="list-unstyled mb-4">
+                                <li class="mb-2"><i class="fas fa-check text-primary me-2"></i> Up to 6 family members</li>
+                                <li class="mb-2"><i class="fas fa-check text-primary me-2"></i> All Premium features</li>
+                                <li class="mb-2"><i class="fas fa-check text-primary me-2"></i> Shared progress dashboard</li>
+                                <li class="mb-2"><i class="fas fa-check text-primary me-2"></i> Family challenges & games</li>
+                                <li class="mb-2"><i class="fas fa-check text-primary me-2"></i> Priority support</li>
+                                <li class="mb-2"><i class="fas fa-check text-primary me-2"></i> Live tutor sessions (2/month)</li>
+                            </ul>
+                            <a href="#" class="btn btn-outline-primary w-100">Get Family Plan</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Testimonials Section -->
+    <section class="py-5" id="testimonials">
+        <div class="container">
+            <div class="text-center mb-5">
+                <h6 class="text-primary fw-bold text-uppercase">Success Stories</h6>
+                <h2 class="fw-bold">What Our Users Say</h2>
+                <p class="text-muted">Join millions who have transformed their lives through language learning</p>
+            </div>
+
+            <div class="row g-4">
+                <div class="col-md-4">
+                    <div class="testimonial-card">
+                        <div class="d-flex align-items-center mb-3">
+                            <img src="https://randomuser.me/api/portraits/women/33.jpg" alt="Sarah" class="avatar me-3">
+                            <div>
+                                <h6 class="fw-bold mb-0">Sarah Johnson</h6>
+                                <p class="small text-muted mb-0">Spanish Learner</p>
+                            </div>
+                        </div>
+                        <p class="mb-3">"After just 3 months with LinguaLearn, I was able to have full conversations with locals during my trip to Barcelona. The speech recognition feature helped my pronunciation immensely!"</p>
+                        <div class="d-flex text-warning">
+                            <i class="fas fa-star"></i>
+                            <i class="fas fa-star"></i>
+                            <i class="fas fa-star"></i>
+                            <i class="fas fa-star"></i>
+                            <i class="fas fa-star"></i>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="col-md-4">
+                    <div class="testimonial-card">
+                        <div class="d-flex align-items-center mb-3">
+                            <img src="https://randomuser.me/api/portraits/men/52.jpg" alt="Michael" class="avatar me-3">
+                            <div>
+                                <h6 class="fw-bold mb-0">Michael Chen</h6>
+                                <p class="small text-muted mb-0">French Learner</p>
+                            </div>
+                        </div>
+                        <p class="mb-3">"The interactive exercises and gamified approach kept me motivated. I was able to pass my B2 French exam after using LinguaLearn for just 6 months. The immersive VR features are amazing!"</p>
+                        <div class="d-flex text-warning">
+                            <i class="fas fa-star"></i>
+                            <i class="fas fa-star"></i>
+                            <i class="fas fa-star"></i>
+                            <i class="fas fa-star"></i>
+                            <i class="fas fa-star"></i>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="col-md-4">
+                    <div class="testimonial-card">
+                        <div class="d-flex align-items-center mb-3">
+                            <img src="https://randomuser.me/api/portraits/women/67.jpg" alt="Aisha" class="avatar me-3">
+                            <div>
+                                <h6 class="fw-bold mb-0">Aisha Patel</h6>
+                                <p class="small text-muted mb-0">Japanese Learner</p>
+                            </div>
+                        </div>
+                        <p class="mb-3">"Learning Japanese seemed intimidating until I found LinguaLearn. The way they break down complex scripts and provide cultural context has been invaluable. Now I'm watching anime without subtitles!"</p>
+                        <div class="d-flex text-warning">
+                            <i class="fas fa-star"></i>
+                            <i class="fas fa-star"></i>
+                            <i class="fas fa-star"></i>
+                            <i class="fas fa-star"></i>
+                            <i class="fas fa-star-half-alt"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- CTA Section -->
+    <section class="py-5 bg-primary text-white">
+        <div class="container">
+            <div class="row align-items-center">
+                <div class="col-lg-8 mb-4 mb-lg-0">
+                    <h2 class="fw-bold">Ready to Start Your Language Journey?</h2>
+                    <p class="lead mb-0">Join over 50 million learners worldwide and unlock your potential.</p>
+                </div>
+                <div class="col-lg-4 text-lg-end">
+                    <a href="#" class="btn btn-light btn-lg me-2">Sign Up Free</a>
+                    <a href="#" class="btn btn-outline-light btn-lg">Learn More</a>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- App Download Section -->
+    <section class="py-5">
+        <div class="container">
+            <div class="row align-items-center">
+                <div class="col-lg-6 mb-5 mb-lg-0">
+                    <img src="https://placehold.co/600x400/5e17eb/ffffff?text=Mobile+App" alt="LinguaLearn Mobile App" class="img-fluid rounded-4">
+                </div>
+                <div class="col-lg-6">
+                    <h6 class="text-primary fw-bold text-uppercase">Learn Anywhere</h6>
+                    <h2 class="fw-bold mb-4">Download Our Mobile App</h2>
+                    <p class="mb-4">Take your language learning on the go. Our mobile app syncs with your account so you can continue your progress anywhere, anytime.</p>
+                    
+                    <div class="d-flex flex-wrap gap-3">
+                        <a href="#" class="btn btn-dark px-4 py-3">
+                            <div class="d-flex align-items-center">
+                                <i class="fab fa-apple fs-3 me-3"></i>
+                                <div class="text-start">
+                                    <div class="small">Download on the</div>
+                                    <div class="fw-bold">App Store</div>
+                                </div>
+                            </div>
+                        </a>
+                        <a href="#" class="btn btn-dark px-4 py-3">
+                            <div class="d-flex align-items-center">
+                                <i class="fab fa-google-play fs-3 me-3"></i>
+                                <div class="text-start">
+                                    <div class="small">GET IT ON</div>
+                                    <div class="fw-bold">Google Play</div>
+                                </div>
+                            </div>
+                        </a>
+                    </div>
+                    
+                    <div class="mt-4">
+                        <p class="mb-2">App rating:</p>
+                        <div class="d-flex text-warning">
+                            <i class="fas fa-star"></i>
+                            <i class="fas fa-star"></i>
+                            <i class="fas fa-star"></i>
+                            <i class="fas fa-star"></i>
+                            <i class="fas fa-star-half-alt"></i>
+                            <span class="text-dark ms-2">4.8/5 (25k+ reviews)</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Progress Tracking Feature -->
+    <section class="py-5 bg-light">
+        <div class="container">
+            <div class="text-center mb-5">
+                <h6 class="text-primary fw-bold text-uppercase">Track Your Growth</h6>
+                <h2 class="fw-bold">Comprehensive Progress Dashboard</h2>
+                <p class="text-muted">Monitor your language learning journey with detailed analytics</p>
+            </div>
+
+            <div class="row g-4">
+                <div class="col-md-6">
+                    <div class="bg-white p-4 rounded-4 shadow-sm h-100">
+                        <h5 class="fw-bold mb-4">Your Weekly Activity</h5>
+                        <div class="row g-3">
+                            <div class="col-6">
+                                <p class="mb-1 small">Vocabulary</p>
+                                <div class="progress mb-3">
+                                    <div class="progress-bar bg-success" style="width: 85%"></div>
+                                </div>
+                                
+                                <p class="mb-1 small">Grammar</p>
+                                <div class="progress mb-3">
+                                    <div class="progress-bar bg-info" style="width: 70%"></div>
+                                </div>
+                                
+                                <p class="mb-1 small">Listening</p>
+                                <div class="progress mb-3">
+                                    <div class="progress-bar bg-warning" style="width: 60%"></div>
+                                </div>
+                                
+                                <p class="mb-1 small">Speaking</p>
+                                <div class="progress">
+                                    <div class="progress-bar bg-danger" style="width: 50%"></div>
+                                </div>
+                            </div>
+                            <div class="col-6">
+                                <div class="mb-4">
+                                    <h6 class="small text-muted">Daily Streak</h6>
+                                    <div class="d-flex align-items-end">
+                                        <h2 class="display-4 fw-bold mb-0 me-2">24</h2>
+                                        <p class="mb-1">days</p>
+                                    </div>
+                                </div>
+                                
+                                <div>
+                                    <h6 class="small text-muted">XP This Week</h6>
+                                    <div class="d-flex align-items-end">
+                                        <h2 class="display-4 fw-bold mb-0 me-2">840</h2>
+                                        <p class="mb-1">points</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="col-md-6">
+                    <div class="bg-white p-4 rounded-4 shadow-sm h-100">
+                        <h5 class="fw-bold mb-4">Achievements</h5>
+                        <div class="row g-3">
+                            <div class="col-4 text-center">
+                                <div class="bg-light rounded-circle p-3 mx-auto mb-2" style="width: 70px; height: 70px;">
+                                    <i class="fas fa-fire text-warning fs-3"></i>
+                                </div>
+                                <h6 class="fw-bold small">30-Day Streak</h6>
+                            </div>
+                            <div class="col-4 text-center">
+                                <div class="bg-light rounded-circle p-3 mx-auto mb-2" style="width: 70px; height: 70px;">
+                                    <i class="fas fa-graduation-cap text-primary fs-3"></i>
+                                </div>
+                                <h6 class="fw-bold small">Grammar Master</h6>
+                            </div>
+                            <div class="col-4 text-center">
+                                <div class="bg-light rounded-circle p-3 mx-auto mb-2" style="width: 70px; height: 70px;">
+                                    <i class="fas fa-rocket text-danger fs-3"></i>
+                                </div>
+                                <h6 class="fw-bold small">Speed Learner</h6>
+                            </div>
+                            
+                            <div class="col-12 mt-4">
+                                <h6 class="fw-bold">Upcoming achievements:</h6>
+                                <div class="d-flex align-items-center mb-3">
+                                    <div class="me-3 text-muted">
+                                        <i class="fas fa-microphone fs-4"></i>
+                                    </div>
+                                    <div class="flex-grow-1">
+                                        <div class="d-flex justify-content-between align-items-center mb-1">
+                                            <h6 class="mb-0 small">Perfect Pronunciation</h6>
+                                            <span class="small">75%</span>
+                                        </div>
+                                        <div class="progress" style="height: 6px;">
+                                            <div class="progress-bar bg-success" style="width: 75%"></div>
+                                        </div>
+                                    </div>
+                                </div>
+                                
+                                <div class="d-flex align-items-center">
+                                    <div class="me-3 text-muted">
+                                        <i class="fas fa-book fs-4"></i>
+                                    </div>
+                                    <div class="flex-grow-1">
+                                        <div class="d-flex justify-content-between align-items-center mb-1">
+                                            <h6 class="mb-0 small">Vocabulary Expert</h6>
+                                            <span class="small">60%</span>
+                                        </div>
+                                        <div class="progress" style="height: 6px;">
+                                            <div class="progress-bar bg-primary" style="width: 60%"></div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="footer py-5">
+        <div class="container">
+            <div class="row g-4">
+                <div class="col-lg-4">
+                    <a class="navbar-brand fw-bold text-white mb-3 d-inline-block" href="#">
+                        <span class="text-primary">Lingua</span>Learn
+                    </a>
+                    <p class="text-muted">The modern way to learn languages with AI-powered personalization and interactive lessons.</p>
+                    <div class="d-flex gap-3 mt-4">
+                        <a href="#" class="text-white"><i class="fab fa-facebook-f"></i></a>
+                        <a href="#" class="text-white"><i class="fab fa-twitter"></i></a>
+                        <a href="#" class="text-white"><i class="fab fa-instagram"></i></a>
+                        <a href="#" class="text-white"><i class="fab fa-linkedin-in"></i></a>
+                        <a href="#" class="text-white"><i class="fab fa-youtube"></i></a>
+                    </div>
+                </div>
+                
+                <div class="col-lg-2 col-md-3 col-6">
+                    <h5 class="text-white mb-3">Company</h5>
+                    <ul class="list-unstyled">
+                        <li class="mb-2"><a href="#" class="text-muted">About</a></li>
+                        <li class="mb-2"><a href="#" class="text-muted">Careers</a></li>
+                        <li class="mb-2"><a href="#" class="text-muted">Blog</a></li>
+                        <li class="mb-2"><a href="#" class="text-muted">Press</a></li>
+                    </ul>
+                </div>
+                
+                <div class="col-lg-2 col-md-3 col-6">
+                    <h5 class="text-white mb-3">Resources</h5>
+                    <ul class="list-unstyled">
+                        <li class="mb-2"><a href="#" class="text-muted">Help Center</a></li>
+                        <li class="mb-2"><a href="#" class="text-muted">Community</a></li>
+                        <li class="mb-2"><a href="#" class="text-muted">Learning Tips</a></li>
+                        <li class="mb-2"><a href="#" class="text-muted">Dictionary</a></li>
+                    </ul>
+                </div>
+                
+                <div class="col-lg-2 col-md-3 col-6">
+                    <h5 class="text-white mb-3">Products</h5>
+                    <ul class="list-unstyled">
+                        <li class="mb-2"><a href="#" class="text-muted">Premium</a></li>
+                        <li class="mb-2"><a href="#" class="text-muted">Family Plan</a></li>
+                        <li class="mb-2"><a href="#" class="text-muted">Teams</a></li>
+                        <li class="mb-2"><a href="#" class="text-muted">Education</a></li>
+                    </ul>
+                </div>
+                
+                <div class="col-lg-2 col-md-3 col-6">
+                    <h5 class="text-white mb-3">Legal</h5>
+                    <ul class="list-unstyled">
+                        <li class="mb-2"><a href="#" class="text-muted">Terms of Service</a></li>
+                        <li class="mb-2"><a href="#" class="text-muted">Privacy Policy</a></li>
+                        <li class="mb-2"><a href="#" class="text-muted">Cookie Policy</a></li>
+                        <li class="mb-2"><a href="#" class="text-muted">GDPR</a></li>
+                    </ul>
+                </div>
+            </div>
+            
+            <hr class="my-5 bg-secondary">
+            
+            <div class="row align-items-center">
+                <div class="col-md-6 text-center text-md-start">
+                    <p class="text-muted mb-md-0">© 2023 LinguaLearn. All rights reserved.</p>
+                </div>
+                <div class="col-md-6 text-center text-md-end">
+                    <div class="d-flex justify-content-center justify-content-md-end gap-3">
+                        <a href="#" class="btn btn-outline-light btn-sm">
+                            <i class="fas fa-globe me-1"></i> English
+                        </a>
+                        <a href="#" class="text-muted">Sitemap</a>
+                        <a href="#" class="text-muted">Accessibility</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Live Chat Feature -->
+    <div class="chat-popup">
+        <div class="chat-btn" onclick="toggleChat()">
+            <i class="fas fa-comments"></i>
+        </div>
+        <div class="chat-container" id="chatContainer">
+            <div class="chat-header">
+                <h6 class="mb-0">Language Assistant</h6>
+                <i class="fas fa-times" onclick="toggleChat()"></i>
+            </div>
+            <div class="chat-body" id="chatBody">
+                <div class="chat-message bot-message">
+                    <div class="message-content">
+                        <p class="mb-0">👋 Hello! How can I help with your language learning today?</p>
+                    </div>
+                </div>
+                <div class="chat-message user-message">
+                    <div class="message-content">
+                        <p class="mb-0">I'm interested in learning Spanish</p>
+                    </div>
+                </div>
+                <div class="chat-message bot-message">
+                    <div class="message-content">
+                        <p class="mb-0">Great choice! Spanish is spoken by over 460 million people worldwide. Would you like to start with a free lesson?</p>
+                    </div>
+                </div>
+            </div>
+            <div class="chat-input">
+                <input type="text" placeholder="Type your message...">
+                <button><i class="fas fa-paper-plane"></i></button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Scripts -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        function toggleLanguageOptions() {
+            const options = document.getElementById('languageOptions');
+            options.style.display = options.style.display === 'block' ? 'none' : 'block';
+        }
+        
+        function toggleChat() {
+            const chatContainer = document.getElementById('chatContainer');
+            chatContainer.style.display = chatContainer.style.display === 'block' ? 'none' : 'block';
+        }
+        
+        // Close language options when clicking outside
+        document.addEventListener('click', function(event) {
+            const languageSwitcher = document.querySelector('.language-switcher');
+            const languageOptions = document.getElementById('languageOptions');
+            
+            if (!languageSwitcher.contains(event.target) && languageOptions.style.display === 'block') {
+                languageOptions.style.display = 'none';
+            }
+        });
+        
+        // Add scrolling effect to navigation links
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                e.preventDefault();
+                
+                const targetId = this.getAttribute('href');
+                if (targetId === '#') return;
+                
+                const targetElement = document.querySelector(targetId);
+                if (targetElement) {
+                    window.scrollTo({
+                        top: targetElement.offsetTop - 80,
+                        behavior: 'smooth'
+                    });
+                }
+            });
+        });
+    </script>
+</body>
+</html>

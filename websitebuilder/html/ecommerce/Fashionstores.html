@@ -1,0 +1,1659 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Fashion Folio - Premium Fashion Store</title>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css">
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700&family=Montserrat:wght@300;400;500;600&display=swap">
+  <style>
+    body {
+      font-family: 'Montserrat', sans-serif;
+      scroll-behavior: smooth;
+    }
+    h1, h2, h3, h4, h5 {
+      font-family: 'Playfair Display', serif;
+    }
+    .hero-section {
+      background-image: linear-gradient(rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.3)), url('https://images.unsplash.com/photo-1581091226825-a6a2a5aee158?ixlib=rb-1.2.1&auto=format&fit=crop&w=1950&q=80');
+      background-size: cover;
+      background-position: center;
+    }
+    .product-card {
+      transition: transform 0.3s, box-shadow 0.3s;
+    }
+    .product-card:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
+    }
+    .cart-overlay {
+      transform: translateX(100%);
+      transition: transform 0.3s ease-in-out;
+    }
+    .cart-overlay.open {
+      transform: translateX(0);
+    }
+    .wishlist-icon {
+      opacity: 0;
+      transition: opacity 0.3s;
+    }
+    .product-card:hover .wishlist-icon {
+      opacity: 1;
+    }
+    .modal {
+      display: none;
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background-color: rgba(0, 0, 0, 0.5);
+      z-index: 100;
+      align-items: center;
+      justify-content: center;
+    }
+    .modal.open {
+      display: flex;
+    }
+    .loading-indicator {
+      display: none;
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background-color: rgba(255, 255, 255, 0.8);
+      z-index: 200;
+      align-items: center;
+      justify-content: center;
+    }
+    .loading-indicator.show {
+      display: flex;
+    }
+    .filter-badge {
+      transition: all 0.3s;
+    }
+    .filter-badge:hover {
+      background-color: #000;
+      color: #fff;
+    }
+    .newsletter-section {
+      background-image: linear-gradient(rgba(0, 0, 0, 0.7), rgba(0, 0, 0, 0.7)), url('https://images.unsplash.com/photo-1488590528505-98d2b5aba04b?ixlib=rb-1.2.1&auto=format&fit=crop&w=1950&q=80');
+      background-size: cover;
+      background-position: center;
+    }
+    .animate-fade-in {
+      animation: fadeIn 0.5s ease-in-out;
+    }
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(20px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+    .toast {
+      position: fixed;
+      bottom: 20px;
+      right: 20px;
+      padding: 10px 20px;
+      background-color: #333;
+      color: white;
+      border-radius: 4px;
+      opacity: 0;
+      visibility: hidden;
+      transition: opacity 0.3s, visibility 0.3s;
+      z-index: 1000;
+    }
+    .toast.show {
+      opacity: 1;
+      visibility: visible;
+    }
+    .color-swatch {
+      width: 20px;
+      height: 20px;
+      border-radius: 50%;
+      margin-right: 5px;
+      cursor: pointer;
+      transition: transform 0.2s;
+    }
+    .color-swatch:hover, .color-swatch.selected {
+      transform: scale(1.2);
+      border: 2px solid #333;
+    }
+  </style>
+</head>
+<body class="bg-gray-50">
+  <!-- Loading Indicator (Feature 1: Loading States) -->
+  <div class="loading-indicator" id="loadingIndicator">
+    <div class="animate-spin rounded-full h-16 w-16 border-t-2 border-b-2 border-black"></div>
+  </div>
+
+  <!-- Toast Notification (Feature 2: Notifications) -->
+  <div class="toast" id="toast">Item added to cart!</div>
+
+  <!-- Navigation Bar -->
+  <header class="bg-white shadow-sm sticky top-0 z-50">
+    <div class="container mx-auto px-4">
+      <div class="flex justify-between items-center py-4">
+        <a href="#" class="text-2xl font-bold text-gray-800 font-serif">FashionFolio</a>
+        
+        <!-- Mobile Menu Toggle -->
+        <button id="mobileMenuToggle" class="md:hidden focus:outline-none">
+          <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16" />
+          </svg>
+        </button>
+        
+        <!-- Desktop Navigation -->
+        <nav class="hidden md:flex space-x-8 text-sm">
+          <a href="#" class="text-black font-medium hover:text-gray-600 transition">Home</a>
+          <a href="#new-arrivals" class="text-gray-600 hover:text-black transition">New Arrivals</a>
+          <a href="#collections" class="text-gray-600 hover:text-black transition">Collections</a>
+          <a href="#trending" class="text-gray-600 hover:text-black transition">Trending</a>
+          <a href="#sale" class="text-gray-600 hover:text-black transition">Sale</a>
+        </nav>
+        
+        <!-- Icons -->
+        <div class="flex items-center space-x-4">
+          <button class="text-gray-600 hover:text-black transition" id="searchToggle">
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+            </svg>
+          </button>
+          <button class="text-gray-600 hover:text-black transition" id="wishlistToggle">
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z" />
+            </svg>
+          </button>
+          <button class="text-gray-600 hover:text-black transition relative" id="cartToggle">
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z" />
+            </svg>
+            <span class="absolute -top-2 -right-2 bg-black text-white text-xs rounded-full h-4 w-4 flex items-center justify-center" id="cartCount">0</span>
+          </button>
+        </div>
+      </div>
+      
+      <!-- Mobile Navigation -->
+      <nav id="mobileMenu" class="hidden pb-4 md:hidden">
+        <div class="flex flex-col space-y-3 text-sm">
+          <a href="#" class="text-black font-medium hover:text-gray-600 transition">Home</a>
+          <a href="#new-arrivals" class="text-gray-600 hover:text-black transition">New Arrivals</a>
+          <a href="#collections" class="text-gray-600 hover:text-black transition">Collections</a>
+          <a href="#trending" class="text-gray-600 hover:text-black transition">Trending</a>
+          <a href="#sale" class="text-gray-600 hover:text-black transition">Sale</a>
+        </div>
+      </nav>
+      
+      <!-- Search Overlay (Feature 3: Search) -->
+      <div id="searchOverlay" class="hidden py-4">
+        <div class="relative">
+          <input type="text" placeholder="Search for products..." class="w-full border border-gray-300 rounded-md px-4 py-2 focus:outline-none focus:ring-2 focus:ring-black focus:border-transparent" id="searchInput">
+          <button class="absolute right-2 top-2 text-gray-600 hover:text-black transition">
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+            </svg>
+          </button>
+        </div>
+        <div id="searchResults" class="mt-2 hidden">
+          <div class="bg-white rounded-md shadow-md p-4">
+            <h3 class="text-sm font-medium text-gray-900 mb-2">Search Results</h3>
+            <div id="resultsContainer" class="divide-y divide-gray-200">
+              <!-- Results will be populated here -->
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <!-- Hero Section -->
+  <section class="hero-section text-white py-32">
+    <div class="container mx-auto px-4 text-center">
+      <h1 class="text-4xl md:text-6xl font-bold mb-4 animate-fade-in">Summer Collection 2023</h1>
+      <p class="text-xl mb-8 max-w-2xl mx-auto animate-fade-in" style="animation-delay: 0.2s">Discover our curated collection of timeless pieces designed for the modern individual.</p>
+      <a href="#new-arrivals" class="inline-block bg-white text-black font-medium px-8 py-3 rounded-md hover:bg-black hover:text-white transition animate-fade-in" style="animation-delay: 0.4s">Shop Now</a>
+    </div>
+  </section>
+
+  <!-- Feature Highlights (Feature 4: Benefits Showcase) -->
+  <section class="py-12 bg-white">
+    <div class="container mx-auto px-4">
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+        <div class="text-center">
+          <div class="bg-gray-100 rounded-full h-16 w-16 flex items-center justify-center mx-auto mb-4">
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8 text-gray-800" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
+            </svg>
+          </div>
+          <h3 class="text-lg font-medium mb-2">Free Shipping</h3>
+          <p class="text-gray-600 text-sm">On all orders over $50</p>
+        </div>
+        <div class="text-center">
+          <div class="bg-gray-100 rounded-full h-16 w-16 flex items-center justify-center mx-auto mb-4">
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8 text-gray-800" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 10h18M7 15h1m4 0h1m-7 4h12a3 3 0 003-3V8a3 3 0 00-3-3H6a3 3 0 00-3 3v8a3 3 0 003 3z" />
+            </svg>
+          </div>
+          <h3 class="text-lg font-medium mb-2">Secure Payment</h3>
+          <p class="text-gray-600 text-sm">100% secure payment</p>
+        </div>
+        <div class="text-center">
+          <div class="bg-gray-100 rounded-full h-16 w-16 flex items-center justify-center mx-auto mb-4">
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8 text-gray-800" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z" />
+            </svg>
+          </div>
+          <h3 class="text-lg font-medium mb-2">30 Days Return</h3>
+          <p class="text-gray-600 text-sm">30 days money-back guarantee</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- New Arrivals (Feature 5: Product Filtering) -->
+  <section id="new-arrivals" class="py-16 bg-gray-50">
+    <div class="container mx-auto px-4">
+      <h2 class="text-3xl font-bold text-center mb-4">New Arrivals</h2>
+      <p class="text-gray-600 text-center max-w-2xl mx-auto mb-12">The latest additions to our collection, featuring this season's most coveted styles.</p>
+      
+      <!-- Filters -->
+      <div class="mb-8 flex flex-wrap justify-center gap-2">
+        <button class="filter-badge px-4 py-2 rounded-full border border-gray-300 text-sm font-medium hover:bg-black hover:text-white transition active" data-category="all">All</button>
+        <button class="filter-badge px-4 py-2 rounded-full border border-gray-300 text-sm font-medium hover:bg-black hover:text-white transition" data-category="women">Women</button>
+        <button class="filter-badge px-4 py-2 rounded-full border border-gray-300 text-sm font-medium hover:bg-black hover:text-white transition" data-category="men">Men</button>
+        <button class="filter-badge px-4 py-2 rounded-full border border-gray-300 text-sm font-medium hover:bg-black hover:text-white transition" data-category="accessories">Accessories</button>
+      </div>
+      
+      <!-- Product Grid -->
+      <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-8" id="productGrid">
+        <!-- Product 1 -->
+        <div class="product-card bg-white rounded-lg overflow-hidden shadow-sm hover:shadow-md" data-category="women">
+          <div class="relative">
+            <img src="https://images.unsplash.com/photo-1581044777550-4cfa60707c03?ixid=MnwxMjA3fDB8MHxzZWFyY2h8MTB8fGZhc2hpb258ZW58MHx8MHx8&ixlib=rb-1.2.1&auto=format&fit=crop&w=500&q=60" alt="Classic White Blouse" class="w-full h-64 object-cover">
+            <button class="wishlist-icon absolute top-2 right-2 bg-white p-1 rounded-full shadow-sm hover:shadow-md z-10" data-id="1">
+              <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-gray-600 hover:text-red-500 transition" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z" />
+              </svg>
+            </button>
+            <div class="absolute bottom-0 left-0 bg-black bg-opacity-70 text-white text-xs px-2 py-1">New</div>
+          </div>
+          <div class="p-4">
+            <h3 class="text-gray-800 font-medium mb-2">Classic White Blouse</h3>
+            <div class="flex justify-between items-center">
+              <p class="text-gray-800 font-bold">$49.99</p>
+              <div class="flex space-x-1">
+                <div class="color-swatch bg-white border border-gray-300" data-color="White"></div>
+                <div class="color-swatch bg-blue-200" data-color="Blue"></div>
+                <div class="color-swatch bg-black" data-color="Black"></div>
+              </div>
+            </div>
+            <button class="w-full bg-black text-white py-2 mt-4 hover:bg-gray-800 transition add-to-cart" data-id="1" data-name="Classic White Blouse" data-price="49.99" data-image="https://images.unsplash.com/photo-1581044777550-4cfa60707c03?ixid=MnwxMjA3fDB8MHxzZWFyY2h8MTB8fGZhc2hpb258ZW58MHx8MHx8&ixlib=rb-1.2.1&auto=format&fit=crop&w=500&q=60">
+              Add to Cart
+            </button>
+            <button class="w-full border border-black text-black py-2 mt-2 hover:bg-gray-100 transition quick-view" data-id="1">
+              Quick View
+            </button>
+          </div>
+        </div>
+        
+        <!-- Product 2 -->
+        <div class="product-card bg-white rounded-lg overflow-hidden shadow-sm hover:shadow-md" data-category="men">
+          <div class="relative">
+            <img src="https://images.unsplash.com/photo-1617127365659-c47fa864d8bc?ixid=MnwxMjA3fDB8MHxzZWFyY2h8MTJ8fGZhc2hpb258ZW58MHx8MHx8&ixlib=rb-1.2.1&auto=format&fit=crop&w=500&q=60" alt="Slim Fit Blazer" class="w-full h-64 object-cover">
+            <button class="wishlist-icon absolute top-2 right-2 bg-white p-1 rounded-full shadow-sm hover:shadow-md z-10" data-id="2">
+              <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-gray-600 hover:text-red-500 transition" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z" />
+              </svg>
+            </button>
+            <div class="absolute bottom-0 left-0 bg-black bg-opacity-70 text-white text-xs px-2 py-1">New</div>
+          </div>
+          <div class="p-4">
+            <h3 class="text-gray-800 font-medium mb-2">Slim Fit Blazer</h3>
+            <div class="flex justify-between items-center">
+              <p class="text-gray-800 font-bold">$89.99</p>
+              <div class="flex space-x-1">
+                <div class="color-swatch bg-gray-700" data-color="Charcoal"></div>
+                <div class="color-swatch bg-blue-900" data-color="Navy"></div>
+                <div class="color-swatch bg-black" data-color="Black"></div>
+              </div>
+            </div>
+            <button class="w-full bg-black text-white py-2 mt-4 hover:bg-gray-800 transition add-to-cart" data-id="2" data-name="Slim Fit Blazer" data-price="89.99" data-image="https://images.unsplash.com/photo-1617127365659-c47fa864d8bc?ixid=MnwxMjA3fDB8MHxzZWFyY2h8MTJ8fGZhc2hpb258ZW58MHx8MHx8&ixlib=rb-1.2.1&auto=format&fit=crop&w=500&q=60">
+              Add to Cart
+            </button>
+            <button class="w-full border border-black text-black py-2 mt-2 hover:bg-gray-100 transition quick-view" data-id="2">
+              Quick View
+            </button>
+          </div>
+        </div>
+        
+        <!-- Product 3 -->
+        <div class="product-card bg-white rounded-lg overflow-hidden shadow-sm hover:shadow-md" data-category="women">
+          <div class="relative">
+            <img src="https://images.unsplash.com/photo-1583846783214-7229a91b20ed?ixid=MnwxMjA3fDB8MHxzZWFyY2h8MTJ8fGZhc2hpb258ZW58MHx8MHx8&ixlib=rb-1.2.1&auto=format&fit=crop&w=500&q=60" alt="Floral Midi Dress" class="w-full h-64 object-cover">
+            <button class="wishlist-icon absolute top-2 right-2 bg-white p-1 rounded-full shadow-sm hover:shadow-md z-10" data-id="3">
+              <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-gray-600 hover:text-red-500 transition" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z" />
+              </svg>
+            </button>
+          </div>
+          <div class="p-4">
+            <h3 class="text-gray-800 font-medium mb-2">Floral Midi Dress</h3>
+            <div class="flex justify-between items-center">
+              <p class="text-gray-800 font-bold">$69.99</p>
+              <div class="flex space-x-1">
+                <div class="color-swatch bg-pink-200" data-color="Pink Floral"></div>
+                <div class="color-swatch bg-blue-200" data-color="Blue Floral"></div>
+              </div>
+            </div>
+            <button class="w-full bg-black text-white py-2 mt-4 hover:bg-gray-800 transition add-to-cart" data-id="3" data-name="Floral Midi Dress" data-price="69.99" data-image="https://images.unsplash.com/photo-1583846783214-7229a91b20ed?ixid=MnwxMjA3fDB8MHxzZWFyY2h8MTJ8fGZhc2hpb258ZW58MHx8MHx8&ixlib=rb-1.2.1&auto=format&fit=crop&w=500&q=60">
+              Add to Cart
+            </button>
+            <button class="w-full border border-black text-black py-2 mt-2 hover:bg-gray-100 transition quick-view" data-id="3">
+              Quick View
+            </button>
+          </div>
+        </div>
+        
+        <!-- Product 4 -->
+        <div class="product-card bg-white rounded-lg overflow-hidden shadow-sm hover:shadow-md" data-category="accessories">
+          <div class="relative">
+            <img src="https://images.unsplash.com/photo-1549298916-b41d501d3772?ixid=MnwxMjA3fDB8MHxzZWFyY2h8M3x8c2hvZXN8ZW58MHx8MHx8&ixlib=rb-1.2.1&auto=format&fit=crop&w=500&q=60" alt="Leather Sneakers" class="w-full h-64 object-cover">
+            <button class="wishlist-icon absolute top-2 right-2 bg-white p-1 rounded-full shadow-sm hover:shadow-md z-10" data-id="4">
+              <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-gray-600 hover:text-red-500 transition" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z" />
+              </svg>
+            </button>
+            <div class="absolute bottom-0 left-0 bg-black bg-opacity-70 text-white text-xs px-2 py-1">Sale</div>
+          </div>
+          <div class="p-4">
+            <h3 class="text-gray-800 font-medium mb-2">Leather Sneakers</h3>
+            <div class="flex justify-between items-center">
+              <div>
+                <p class="text-gray-800 font-bold">$79.99</p>
+                <p class="text-gray-500 text-sm line-through">$99.99</p>
+              </div>
+              <div class="flex space-x-1">
+                <div class="color-swatch bg-white border border-gray-300" data-color="White"></div>
+                <div class="color-swatch bg-black" data-color="Black"></div>
+              </div>
+            </div>
+            <button class="w-full bg-black text-white py-2 mt-4 hover:bg-gray-800 transition add-to-cart" data-id="4" data-name="Leather Sneakers" data-price="79.99" data-image="https://images.unsplash.com/photo-1549298916-b41d501d3772?ixid=MnwxMjA3fDB8MHxzZWFyY2h8M3x8c2hvZXN8ZW58MHx8MHx8&ixlib=rb-1.2.1&auto=format&fit=crop&w=500&q=60">
+              Add to Cart
+            </button>
+            <button class="w-full border border-black text-black py-2 mt-2 hover:bg-gray-100 transition quick-view" data-id="4">
+              Quick View
+            </button>
+          </div>
+        </div>
+        
+        <!-- Product 5 -->
+        <div class="product-card bg-white rounded-lg overflow-hidden shadow-sm hover:shadow-md" data-category="women">
+          <div class="relative">
+            <img src="https://images.unsplash.com/photo-1551232864-3f0890e580d9?ixid=MnwxMjA3fDB8MHxzZWFyY2h8MTJ8fGZhc2hpb258ZW58MHx8MHx8&ixlib=rb-1.2.1&auto=format&fit=crop&w=500&q=60" alt="Wide Leg Pants" class="w-full h-64 object-cover">
+            <button class="wishlist-icon absolute top-2 right-2 bg-white p-1 rounded-full shadow-sm hover:shadow-md z-10" data-id="5">
+              <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-gray-600 hover:text-red-500 transition" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z" />
+              </svg>
+            </button>
+          </div>
+          <div class="p-4">
+            <h3 class="text-gray-800 font-medium mb-2">Wide Leg Pants</h3>
+            <div class="flex justify-between items-center">
+              <p class="text-gray-800 font-bold">$59.99</p>
+              <div class="flex space-x-1">
+                <div class="color-swatch bg-yellow-100" data-color="Beige"></div>
+                <div class="color-swatch bg-gray-800" data-color="Charcoal"></div>
+                <div class="color-swatch bg-blue-900" data-color="Navy"></div>
+              </div>
+            </div>
+            <button class="w-full bg-black text-white py-2 mt-4 hover:bg-gray-800 transition add-to-cart" data-id="5" data-name="Wide Leg Pants" data-price="59.99" data-image="https://images.unsplash.com/photo-1551232864-3f0890e580d9?ixid=MnwxMjA3fDB8MHxzZWFyY2h8MTJ8fGZhc2hpb258ZW58MHx8MHx8&ixlib=rb-1.2.1&auto=format&fit=crop&w=500&q=60">
+              Add to Cart
+            </button>
+            <button class="w-full border border-black text-black py-2 mt-2 hover:bg-gray-100 transition quick-view" data-id="5">
+              Quick View
+            </button>
+          </div>
+        </div>
+        
+        <!-- Product 6 -->
+        <div class="product-card bg-white rounded-lg overflow-hidden shadow-sm hover:shadow-md" data-category="men">
+          <div class="relative">
+            <img src="https://images.unsplash.com/photo-1541346160174-a1d95f1f69cb?ixid=MnwxMjA3fDB8MHxzZWFyY2h8MTJ8fGZhc2hpb258ZW58MHx8MHx8&ixlib=rb-1.2.1&auto=format&fit=crop&w=500&q=60" alt="Linen Button-up Shirt" class="w-full h-64 object-cover">
+            <button class="wishlist-icon absolute top-2 right-2 bg-white p-1 rounded-full shadow-sm hover:shadow-md z-10" data-id="6">
+              <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-gray-600 hover:text-red-500 transition" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z" />
+              </svg>
+            </button>
+          </div>
+          <div class="p-4">
+            <h3 class="text-gray-800 font-medium mb-2">Linen Button-up Shirt</h3>
+            <div class="flex justify-between items-center">
+              <p class="text-gray-800 font-bold">$45.99</p>
+              <div class="flex space-x-1">
+                <div class="color-swatch bg-blue-100" data-color="Light Blue"></div>
+                <div class="color-swatch bg-green-100" data-color="Sage"></div>
+                <div class="color-swatch bg-yellow-100" data-color="Cream"></div>
+              </div>
+            </div>
+            <button class="w-full bg-black text-white py-2 mt-4 hover:bg-gray-800 transition add-to-cart" data-id="6" data-name="Linen Button-up Shirt" data-price="45.99" data-image="https://images.unsplash.com/photo-1541346160174-a1d95f1f69cb?ixid=MnwxMjA3fDB8MHxzZWFyY2h8MTJ8fGZhc2hpb258ZW58MHx8MHx8&ixlib=rb-1.2.1&auto=format&fit=crop&w=500&q=60">
+              Add to Cart
+            </button>
+            <button class="w-full border border-black text-black py-2 mt-2 hover:bg-gray-100 transition quick-view" data-id="6">
+              Quick View
+            </button>
+          </div>
+        </div>
+        
+        <!-- Product 7 -->
+        <div class="product-card bg-white rounded-lg overflow-hidden shadow-sm hover:shadow-md" data-category="accessories">
+          <div class="relative">
+            <img src="https://images.unsplash.com/photo-1549971374-3a21daa1b5e8?ixid=MnwxMjA3fDB8MHxzZWFyY2h8MTJ8fGZhc2hpb258ZW58MHx8MHx8&ixlib=rb-1.2.1&auto=format&fit=crop&w=500&q=60" alt="Leather Tote Bag" class="w-full h-64 object-cover">
+            <button class="wishlist-icon absolute top-2 right-2 bg-white p-1 rounded-full shadow-sm hover:shadow-md z-10" data-id="7">
+              <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-gray-600 hover:text-red-500 transition" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z" />
+              </svg>
+            </button>
+            <div class="absolute bottom-0 left-0 bg-black bg-opacity-70 text-white text-xs px-2 py-1">Bestseller</div>
+          </div>
+          <div class="p-4">
+            <h3 class="text-gray-800 font-medium mb-2">Leather Tote Bag</h3>
+            <div class="flex justify-between items-center">
+              <p class="text-gray-800 font-bold">$129.99</p>
+              <div class="flex space-x-1">
+                <div class="color-swatch bg-yellow-900" data-color="Tan"></div>
+                <div class="color-swatch bg-black" data-color="Black"></div>
+              </div>
+            </div>
+            <button class="w-full bg-black text-white py-2 mt-4 hover:bg-gray-800 transition add-to-cart" data-id="7" data-name="Leather Tote Bag" data-price="129.99" data-image="https://images.unsplash.com/photo-1549971374-3a21daa1b5e8?ixid=MnwxMjA3fDB8MHxzZWFyY2h8MTJ8fGZhc2hpb258ZW58MHx8MHx8&ixlib=rb-1.2.1&auto=format&fit=crop&w=500&q=60">
+              Add to Cart
+            </button>
+            <button class="w-full border border-black text-black py-2 mt-2 hover:bg-gray-100 transition quick-view" data-id="7">
+              Quick View
+            </button>
+          </div>
+        </div>
+        
+        <!-- Product 8 -->
+        <div class="product-card bg-white rounded-lg overflow-hidden shadow-sm hover:shadow-md" data-category="women">
+          <div class="relative">
+            <img src="https://images.unsplash.com/photo-1534957281345-4b8d9a0c1991?ixid=MnwxMjA3fDB8MHxzZWFyY2h8MTJ8fGZhc2hpb258ZW58MHx8MHx8&ixlib=rb-1.2.1&auto=format&fit=crop&w=500&q=60" alt="Silk Scarf" class="w-full h-64 object-cover">
+            <button class="wishlist-icon absolute top-2 right-2 bg-white p-1 rounded-full shadow-sm hover:shadow-md z-10" data-id="8">
+              <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-gray-600 hover:text-red-500 transition" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z" />
+              </svg>
+            </button>
+            <div class="absolute bottom-0 left-0 bg-black bg-opacity-70 text-white text-xs px-2 py-1">Sale</div>
+          </div>
+          <div class="p-4">
+            <h3 class="text-gray-800 font-medium mb-2">Silk Scarf</h3>
+            <div class="flex justify-between items-center">
+              <div>
+                <p class="text-gray-800 font-bold">$29.99</p>
+                <p class="text-gray-500 text-sm line-through">$45.99</p>
+              </div>
+              <div class="flex space-x-1">
+                <div class="color-swatch bg-blue-100" data-color="Blue Pattern"></div>
+                <div class="color-swatch bg-red-200" data-color="Pink Pattern"></div>
+              </div>
+            </div>
+            <button class="w-full bg-black text-white py-2 mt-4 hover:bg-gray-800 transition add-to-cart" data-id="8" data-name="Silk Scarf" data-price="29.99" data-image="https://images.unsplash.com/photo-1534957281345-4b8d9a0c1991?ixid=MnwxMjA3fDB8MHxzZWFyY2h8MTJ8fGZhc2hpb258ZW58MHx8MHx8&ixlib=rb-1.2.1&auto=format&fit=crop&w=500&q=60">
+              Add to Cart
+            </button>
+            <button class="w-full border border-black text-black py-2 mt-2 hover:bg-gray-100 transition quick-view" data-id="8">
+              Quick View
+            </button>
+          </div>
+        </div>
+      </div>
+      
+      <div class="text-center mt-12">
+        <a href="#" class="inline-block bg-black text-white px-8 py-3 rounded-md hover:bg-gray-800 transition">View All Products</a>
+      </div>
+    </div>
+  </section>
+
+  <!-- Collections Section (Feature 6: Featured Collections) -->
+  <section id="collections" class="py-16 bg-white">
+    <div class="container mx-auto px-4">
+      <h2 class="text-3xl font-bold text-center mb-4">Featured Collections</h2>
+      <p class="text-gray-600 text-center max-w-2xl mx-auto mb-12">Explore our carefully curated collections for every occasion and style preference.</p>
+      
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+        <!-- Collection 1 -->
+        <div class="relative group overflow-hidden rounded-lg">
+          <img src="https://images.unsplash.com/photo-1490481651871-ab68de25d43d?ixid=MnwxMjA3fDB8MHxzZWFyY2h8MTJ8fGZhc2hpb258ZW58MHx8MHx8&ixlib=rb-1.2.1&auto=format&fit=crop&w=500&q=60" alt="Summer Essentials" class="w-full h-96 object-cover transition-transform duration-500 group-hover:scale-110">
+          <div class="absolute inset-0 bg-black bg-opacity-40 flex items-center justify-center">
+            <div class="text-center">
+              <h3 class="text-white text-2xl font-bold mb-2">Summer Essentials</h3>
+              <a href="#" class="inline-block bg-white text-black px-6 py-2 rounded-md hover:bg-black hover:text-white transition">Shop Now</a>
+            </div>
+          </div>
+        </div>
+        
+        <!-- Collection 2 -->
+        <div class="relative group overflow-hidden rounded-lg">
+          <img src="https://images.unsplash.com/photo-1515886657613-9f3515b0c78f?ixid=MnwxMjA3fDB8MHxzZWFyY2h8MTJ8fGZhc2hpb258ZW58MHx8MHx8&ixlib=rb-1.2.1&auto=format&fit=crop&w=500&q=60" alt="Workwear Edit" class="w-full h-96 object-cover transition-transform duration-500 group-hover:scale-110">
+          <div class="absolute inset-0 bg-black bg-opacity-40 flex items-center justify-center">
+            <div class="text-center">
+              <h3 class="text-white text-2xl font-bold mb-2">Workwear Edit</h3>
+              <a href="#" class="inline-block bg-white text-black px-6 py-2 rounded-md hover:bg-black hover:text-white transition">Shop Now</a>
+            </div>
+          </div>
+        </div>
+        
+        <!-- Collection 3 -->
+        <div class="relative group overflow-hidden rounded-lg">
+          <img src="https://images.unsplash.com/photo-1492707892479-7bc8d5a4ee93?ixid=MnwxMjA3fDB8MHxzZWFyY2h8MTJ8fGZhc2hpb258ZW58MHx8MHx8&ixlib=rb-1.2.1&auto=format&fit=crop&w=500&q=60" alt="Accessories" class="w-full h-96 object-cover transition-transform duration-500 group-hover:scale-110">
+          <div class="absolute inset-0 bg-black bg-opacity-40 flex items-center justify-center">
+            <div class="text-center">
+              <h3 class="text-white text-2xl font-bold mb-2">Accessories</h3>
+              <a href="#" class="inline-block bg-white text-black px-6 py-2 rounded-md hover:bg-black hover:text-white transition">Shop Now</a>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Trending Section (Feature 7: Trending Items) -->
+  <section id="trending" class="py-16 bg-gray-50">
+    <div class="container mx-auto px-4">
+      <h2 class="text-3xl font-bold text-center mb-4">Trending Now</h2>
+      <p class="text-gray-600 text-center max-w-2xl mx-auto mb-12">Our most popular styles that everyone's talking about.</p>
+      
+      <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8">
+        <!-- Trending Product 1 -->
+        <div class="product-card bg-white rounded-lg overflow-hidden shadow-sm hover:shadow-md">
+          <div class="relative">
+            <img src="https://images.unsplash.com/photo-1475180098004-ca77a66827be?ixid=MnwxMjA3fDB8MHxzZWFyY2h8MTJ8fGZhc2hpb258ZW58MHx8MHx8&ixlib=rb-1.2.1&auto=format&fit=crop&w=500&q=60" alt="Oversized Sweater" class="w-full h-64 object-cover">
+            <button class="wishlist-icon absolute top-2 right-2 bg-white p-1 rounded-full shadow-sm hover:shadow-md z-10" data-id="10">
+              <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-gray-600 hover:text-red-500 transition" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z" />
+              </svg>
+            </button>
+            <div class="absolute bottom-0 left-0 bg-black bg-opacity-70 text-white text-xs px-2 py-1">Trending</div>
+          </div>
+          <div class="p-4">
+            <h3 class="text-gray-800 font-medium mb-2">Oversized Sweater</h3>
+            <p class="text-gray-800 font-bold">$64.99</p>
+            <button class="w-full bg-black text-white py-2 mt-4 hover:bg-gray-800 transition add-to-cart" data-id="10" data-name="Oversized Sweater" data-price="64.99" data-image="https://images.unsplash.com/photo-1475180098004-ca77a66827be?ixid=MnwxMjA3fDB8MHxzZWFyY2h8MTJ8fGZhc2hpb258ZW58MHx8MHx8&ixlib=rb-1.2.1&auto=format&fit=crop&w=500&q=60">
+              Add to Cart
+            </button>
+          </div>
+        </div>
+        
+        <!-- Trending Product 2 -->
+        <div class="product-card bg-white rounded-lg overflow-hidden shadow-sm hover:shadow-md">
+          <div class="relative">
+            <img src="https://images.unsplash.com/photo-1509631179647-0177331693ae?ixid=MnwxMjA3fDB8MHxzZWFyY2h8MTJ8fGZhc2hpb258ZW58MHx8MHx8&ixlib=rb-1.2.1&auto=format&fit=crop&w=500&q=60" alt="Denim Jacket" class="w-full h-64 object-cover">
+            <button class="wishlist-icon absolute top-2 right-2 bg-white p-1 rounded-full shadow-sm hover:shadow-md z-10" data-id="11">
+              <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-gray-600 hover:text-red-500 transition" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z" />
+              </svg>
+            </button>
+            <div class="absolute bottom-0 left-0 bg-black bg-opacity-70 text-white text-xs px-2 py-1">Trending</div>
+          </div>
+          <div class="p-4">
+            <h3 class="text-gray-800 font-medium mb-2">Denim Jacket</h3>
+            <p class="text-gray-800 font-bold">$79.99</p>
+            <button class="w-full bg-black text-white py-2 mt-4 hover:bg-gray-800 transition add-to-cart" data-id="11" data-name="Denim Jacket" data-price="79.99" data-image="https://images.unsplash.com/photo-1509631179647-0177331693ae?ixid=MnwxMjA3fDB8MHxzZWFyY2h8MTJ8fGZhc2hpb258ZW58MHx8MHx8&ixlib=rb-1.2.1&auto=format&fit=crop&w=500&q=60">
+              Add to Cart
+            </button>
+          </div>
+        </div>
+        
+        <!-- Trending Product 3 -->
+        <div class="product-card bg-white rounded-lg overflow-hidden shadow-sm hover:shadow-md">
+          <div class="relative">
+            <img src="https://images.unsplash.com/photo-1580991584164-a4e12c31ca43?ixid=MnwxMjA3fDB8MHxzZWFyY2h8MTJ8fGZhc2hpb258ZW58MHx8MHx8&ixlib=rb-1.2.1&auto=format&fit=crop&w=500&q=60" alt="Platform Boots" class="w-full h-64 object-cover">
+            <button class="wishlist-icon absolute top-2 right-2 bg-white p-1 rounded-full shadow-sm hover:shadow-md z-10" data-id="12">
+              <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-gray-600 hover:text-red-500 transition" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z" />
+              </svg>
+            </button>
+            <div class="absolute bottom-0 left-0 bg-black bg-opacity-70 text-white text-xs px-2 py-1">Trending</div>
+          </div>
+          <div class="p-4">
+            <h3 class="text-gray-800 font-medium mb-2">Platform Boots</h3>
+            <p class="text-gray-800 font-bold">$119.99</p>
+            <button class="w-full bg-black text-white py-2 mt-4 hover:bg-gray-800 transition add-to-cart" data-id="12" data-name="Platform Boots" data-price="119.99" data-image="https://images.unsplash.com/photo-1580991584164-a4e12c31ca43?ixid=MnwxMjA3fDB8MHxzZWFyY2h8MTJ8fGZhc2hpb258ZW58MHx8MHx8&ixlib=rb-1.2.1&auto=format&fit=crop&w=500&q=60">
+              Add to Cart
+            </button>
+          </div>
+        </div>
+        
+        <!-- Trending Product 4 -->
+        <div class="product-card bg-white rounded-lg overflow-hidden shadow-sm hover:shadow-md">
+          <div class="relative">
+            <img src="https://images.unsplash.com/photo-1513379733131-47fc74b45fc7?ixid=MnwxMjA3fDB8MHxzZWFyY2h8MTJ8fGZhc2hpb258ZW58MHx8MHx8&ixlib=rb-1.2.1&auto=format&fit=crop&w=500&q=60" alt="Gold Hoops" class="w-full h-64 object-cover">
+            <button class="wishlist-icon absolute top-2 right-2 bg-white p-1 rounded-full shadow-sm hover:shadow-md z-10" data-id="13">
+              <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-gray-600 hover:text-red-500 transition" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z" />
+              </svg>
+            </button>
+            <div class="absolute bottom-0 left-0 bg-black bg-opacity-70 text-white text-xs px-2 py-1">Trending</div>
+          </div>
+          <div class="p-4">
+            <h3 class="text-gray-800 font-medium mb-2">Gold Hoops</h3>
+            <p class="text-gray-800 font-bold">$34.99</p>
+            <button class="w-full bg-black text-white py-2 mt-4 hover:bg-gray-800 transition add-to-cart" data-id="13" data-name="Gold Hoops" data-price="34.99" data-image="https://images.unsplash.com/photo-1513379733131-47fc74b45fc7?ixid=MnwxMjA3fDB8MHxzZWFyY2h8MTJ8fGZhc2hpb258ZW58MHx8MHx8&ixlib=rb-1.2.1&auto=format&fit=crop&w=500&q=60">
+              Add to Cart
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Sale Section (Feature 8: Sale Section) -->
+  <section id="sale" class="py-16 bg-white">
+    <div class="container mx-auto px-4">
+      <h2 class="text-3xl font-bold text-center mb-4">Summer Sale</h2>
+      <p class="text-gray-600 text-center max-w-2xl mx-auto mb-6">Up to 50% off selected items</p>
+      <div class="text-center mb-12">
+        <div class="bg-gray-100 inline-block rounded-full px-4 py-2 text-sm font-medium">Limited Time Only</div>
+      </div>
+      
+      <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
+        <!-- Sale Product 1 -->
+        <div class="product-card bg-white rounded-lg overflow-hidden shadow-sm hover:shadow-md">
+          <div class="relative">
+            <img src="https://images.unsplash.com/photo-1506629082955-511b1aa562c8?ixid=MnwxMjA3fDB8MHxzZWFyY2h8MTJ8fGZhc2hpb258ZW58MHx8MHx8&ixlib=rb-1.2.1&auto=format&fit=crop&w=500&q=60" alt="Pleated Skirt" class="w-full h-64 object-cover">
+            <div class="absolute top-0 left-0 bg-red-500 text-white text-xs px-2 py-1 m-2">-30%</div>
+          </div>
+          <div class="p-4">
+            <h3 class="text-gray-800 font-medium mb-2">Pleated Skirt</h3>
+            <div class="flex items-center">
+              <p class="text-gray-800 font-bold mr-2">$41.99</p>
+              <p class="text-gray-500 text-sm line-through">$59.99</p>
+            </div>
+            <button class="w-full bg-black text-white py-2 mt-4 hover:bg-gray-800 transition add-to-cart" data-id="14" data-name="Pleated Skirt" data-price="41.99" data-image="https://images.unsplash.com/photo-1506629082955-511b1aa562c8?ixid=MnwxMjA3fDB8MHxzZWFyY2h8MTJ8fGZhc2hpb258ZW58MHx8MHx8&ixlib=rb-1.2.1&auto=format&fit=crop&w=500&q=60">
+              Add to Cart
+            </button>
+          </div>
+        </div>
+        
+        <!-- Sale Product 2 -->
+        <div class="product-card bg-white rounded-lg overflow-hidden shadow-sm hover:shadow-md">
+          <div class="relative">
+            <img src="https://images.unsplash.com/photo-1584030373081-49b8cd846472?ixid=MnwxMjA3fDB8MHxzZWFyY2h8MTJ8fGZhc2hpb258ZW58MHx8MHx8&ixlib=rb-1.2.1&auto=format&fit=crop&w=500&q=60" alt="Leather Crossbody Bag" class="w-full h-64 object-cover">
+            <div class="absolute top-0 left-0 bg-red-500 text-white text-xs px-2 py-1 m-2">-20%</div>
+          </div>
+          <div class="p-4">
+            <h3 class="text-gray-800 font-medium mb-2">Leather Crossbody Bag</h3>
+            <div class="flex items-center">
+              <p class="text-gray-800 font-bold mr-2">$79.99</p>
+              <p class="text-gray-500 text-sm line-through">$99.99</p>
+            </div>
+            <button class="w-full bg-black text-white py-2 mt-4 hover:bg-gray-800 transition add-to-cart" data-id="15" data-name="Leather Crossbody Bag" data-price="79.99" data-image="https://images.unsplash.com/photo-1584030373081-49b8cd846472?ixid=MnwxMjA3fDB8MHxzZWFyY2h8MTJ8fGZhc2hpb258ZW58MHx8MHx8&ixlib=rb-1.2.1&auto=format&fit=crop&w=500&q=60">
+              Add to Cart
+            </button>
+          </div>
+        </div>
+        
+        <!-- Sale Product 3 -->
+        <div class="product-card bg-white rounded-lg overflow-hidden shadow-sm hover:shadow-md">
+          <div class="relative">
+            <img src="https://images.unsplash.com/photo-1583846783214-7229a91b20ed?ixid=MnwxMjA3fDB8MHxzZWFyY2h8MTJ8fGZhc2hpb258ZW58MHx8MHx8&ixlib=rb-1.2.1&auto=format&fit=crop&w=500&q=60" alt="Linen Dress" class="w-full h-64 object-cover">
+            <div class="absolute top-0 left-0 bg-red-500 text-white text-xs px-2 py-1 m-2">-50%</div>
+          </div>
+          <div class="p-4">
+            <h3 class="text-gray-800 font-medium mb-2">Linen Dress</h3>
+            <div class="flex items-center">
+              <p class="text-gray-800 font-bold mr-2">$34.99</p>
+              <p class="text-gray-500 text-sm line-through">$69.99</p>
+            </div>
+            <button class="w-full bg-black text-white py-2 mt-4 hover:bg-gray-800 transition add-to-cart" data-id="16" data-name="Linen Dress" data-price="34.99" data-image="https://images.unsplash.com/photo-1583846783214-7229a91b20ed?ixid=MnwxMjA3fDB8MHxzZWFyY2h8MTJ8fGZhc2hpb258ZW58MHx8MHx8&ixlib=rb-1.2.1&auto=format&fit=crop&w=500&q=60">
+              Add to Cart
+            </button>
+          </div>
+        </div>
+      </div>
+      
+      <div class="text-center mt-12">
+        <a href="#" class="inline-block bg-black text-white px-8 py-3 rounded-md hover:bg-gray-800 transition">View All Sale Items</a>
+      </div>
+    </div>
+  </section>
+
+  <!-- Newsletter Section (Feature 9: Newsletter) -->
+  <section class="newsletter-section py-16 text-white">
+    <div class="container mx-auto px-4 text-center">
+      <h2 class="text-3xl font-bold mb-4">Join Our Newsletter</h2>
+      <p class="max-w-lg mx-auto mb-8">Sign up to receive updates on new arrivals, special offers, and exclusive content.</p>
+      
+      <form id="newsletterForm" class="max-w-md mx-auto">
+        <div class="flex flex-col sm:flex-row gap-4">
+          <input type="email" placeholder="Your email address" required class="flex-grow px-4 py-3 rounded-md text-black focus:outline-none focus:ring-2 focus:ring-white">
+          <button type="submit" class="bg-white text-black px-6 py-3 rounded-md hover:bg-black hover:text-white transition">Subscribe</button>
+        </div>
+        <p class="text-sm mt-4 text-gray-300">By subscribing, you agree to our Privacy Policy and consent to receive updates from our company.</p>
+      </form>
+    </div>
+  </section>
+
+  <!-- Instagram Feed (Feature 10: Social Media Integration) -->
+  <section class="py-16 bg-white">
+    <div class="container mx-auto px-4">
+      <h2 class="text-3xl font-bold text-center mb-4">Follow Us @FashionFolio</h2>
+      <p class="text-gray-600 text-center max-w-2xl mx-auto mb-12">Share your style with us on Instagram for a chance to be featured.</p>
+      
+      <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-4">
+        <a href="#" class="group relative overflow-hidden">
+          <img src="https://images.unsplash.com/photo-1515886657613-9f3515b0c78f?ixid=MnwxMjA3fDB8MHxzZWFyY2h8MTJ8fGZhc2hpb258ZW58MHx8MHx8&ixlib=rb-1.2.1&auto=format&fit=crop&w=500&q=60" alt="Instagram Post" class="w-full h-40 object-cover transition-transform duration-500 group-hover:scale-110">
+          <div class="absolute inset-0 bg-black bg-opacity-40 opacity-0 group-hover:opacity-100 flex items-center justify-center transition duration-300">
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z" />
+            </svg>
+          </div>
+        </a>
+        
+        <a href="#" class="group relative overflow-hidden">
+          <img src="https://images.unsplash.com/photo-1509631179647-0177331693ae?ixid=MnwxMjA3fDB8MHxzZWFyY2h8MTJ8fGZhc2hpb258ZW58MHx8MHx8&ixlib=rb-1.2.1&auto=format&fit=crop&w=500&q=60" alt="Instagram Post" class="w-full h-40 object-cover transition-transform duration-500 group-hover:scale-110">
+          <div class="absolute inset-0 bg-black bg-opacity-40 opacity-0 group-hover:opacity-100 flex items-center justify-center transition duration-300">
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z" />
+            </svg>
+          </div>
+        </a>
+        
+        <a href="#" class="group relative overflow-hidden">
+          <img src="https://images.unsplash.com/photo-1566206091558-7f218b696731?ixid=MnwxMjA3fDB8MHxzZWFyY2h8MTJ8fGZhc2hpb258ZW58MHx8MHx8&ixlib=rb-1.2.1&auto=format&fit=crop&w=500&q=60" alt="Instagram Post" class="w-full h-40 object-cover transition-transform duration-500 group-hover:scale-110">
+          <div class="absolute inset-0 bg-black bg-opacity-40 opacity-0 group-hover:opacity-100 flex items-center justify-center transition duration-300">
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z" />
+            </svg>
+          </div>
+        </a>
+        
+        <a href="#" class="group relative overflow-hidden">
+          <img src="https://images.unsplash.com/photo-1581044777550-4cfa60707c03?ixid=MnwxMjA3fDB8MHxzZWFyY2h8MTB8fGZhc2hpb258ZW58MHx8MHx8&ixlib=rb-1.2.1&auto=format&fit=crop&w=500&q=60" alt="Instagram Post" class="w-full h-40 object-cover transition-transform duration-500 group-hover:scale-110">
+          <div class="absolute inset-0 bg-black bg-opacity-40 opacity-0 group-hover:opacity-100 flex items-center justify-center transition duration-300">
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z" />
+            </svg>
+          </div>
+        </a>
+        
+        <a href="#" class="group relative overflow-hidden">
+          <img src="https://images.unsplash.com/photo-1616683693504-3ea7e9ad6fec?ixid=MnwxMjA3fDB8MHxzZWFyY2h8MTJ8fGZhc2hpb258ZW58MHx8MHx8&ixlib=rb-1.2.1&auto=format&fit=crop&w=500&q=60" alt="Instagram Post" class="w-full h-40 object-cover transition-transform duration-500 group-hover:scale-110">
+          <div class="absolute inset-0 bg-black bg-opacity-40 opacity-0 group-hover:opacity-100 flex items-center justify-center transition duration-300">
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z" />
+            </svg>
+          </div>
+        </a>
+        
+        <a href="#" class="group relative overflow-hidden">
+          <img src="https://images.unsplash.com/photo-1534957281345-4b8d9a0c1991?ixid=MnwxMjA3fDB8MHxzZWFyY2h8MTJ8fGZhc2hpb258ZW58MHx8MHx8&ixlib=rb-1.2.1&auto=format&fit=crop&w=500&q=60" alt="Instagram Post" class="w-full h-40 object-cover transition-transform duration-500 group-hover:scale-110">
+          <div class="absolute inset-0 bg-black bg-opacity-40 opacity-0 group-hover:opacity-100 flex items-center justify-center transition duration-300">
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z" />
+            </svg>
+          </div>
+        </a>
+      </div>
+    </div>
+  </section>
+
+  <!-- Footer Section -->
+  <footer class="bg-gray-900 text-white pt-16 pb-8">
+    <div class="container mx-auto px-4">
+      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8 mb-12">
+        <div>
+          <h3 class="text-xl font-bold mb-4">FashionFolio</h3>
+          <p class="text-gray-400 mb-4">Curated fashion for the modern individual, featuring premium quality and timeless design.</p>
+          <div class="flex space-x-4">
+            <a href="#" class="text-gray-400 hover:text-white transition">
+              <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor" class="bi bi-facebook" viewBox="0 0 16 16">
+                <path d="M16 8.049c0-4.446-3.582-8.05-8-8.05C3.58 0-.002 3.603-.002 8.05c0 4.017 2.926 7.347 6.75 7.951v-5.625h-2.03V8.05H6.75V6.275c0-2.017 1.195-3.131 3.022-3.131.876 0 1.791.157 1.791.157v1.98h-1.009c-.993 0-1.303.621-1.303 1.258v1.51h2.218l-.354 2.326H9.25V16c3.824-.604 6.75-3.934 6.75-7.951z"/>
+              </svg>
+            </a>
+            <a href="#" class="text-gray-400 hover:text-white transition">
+              <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor" class="bi bi-twitter" viewBox="0 0 16 16">
+                <path d="M5.026 15c6.038 0 9.341-5.003 9.341-9.334 0-.14 0-.282-.006-.422A6.685 6.685 0 0 0 16 3.542a6.658 6.658 0 0 1-1.889.518 3.301 3.301 0 0 0 1.447-1.817 6.533 6.533 0 0 1-2.087.793A3.286 3.286 0 0 0 7.875 6.03a9.325 9.325 0 0 1-6.767-3.429 3.289 3.289 0 0 0 1.018 4.382A3.323 3.323 0 0 1 .64 6.575v.045a3.288 3.288 0 0 0 2.632 3.218 3.203 3.203 0 0 1-.865.115 3.23 3.23 0 0 1-.614-.057 3.283 3.283 0 0 0 3.067 2.277A6.588 6.588 0 0 1 .78 13.58a6.32 6.32 0 0 1-.78-.045A9.344 9.344 0 0 0 5.026 15z"/>
+              </svg>
+            </a>
+            <a href="#" class="text-gray-400 hover:text-white transition">
+              <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor" class="bi bi-instagram" viewBox="0 0 16 16">
+                <path d="M8 0C5.829 0 5.556.01 4.703.048 3.85.088 3.269.222 2.76.42a3.917 3.917 0 0 0-1.417.923A3.927 3.927 0 0 0 .42 2.76C.222 3.268.087 3.85.048 4.7.01 5.555 0 5.827 0 8.001c0 2.172.01 2.444.048 3.297.04.852.174 1.433.372 1.942.205.526.478.972.923 1.417.444.445.89.719 1.416.923.51.198 1.09.333 1.942.372C5.555 15.99 5.827 16 8 16s2.444-.01 3.298-.048c.851-.04 1.434-.174 1.943-.372a3.916 3.916 0 0 0 1.416-.923c.445-.445.718-.891.923-1.417.197-.509.332-1.09.372-1.942C15.99 10.445 16 10.173 16 8s-.01-2.445-.048-3.299c-.04-.851-.175-1.433-.372-1.941a3.926 3.926 0 0 0-.923-1.417A3.911 3.911 0 0 0 13.24.42c-.51-.198-1.092-.333-1.943-.372C10.443.01 10.172 0 7.998 0h.003zm-.717 1.442h.718c2.136 0 2.389.007 3.232.046.78.035 1.204.166 1.486.275.373.145.64.319.92.599.28.28.453.546.598.92.11.281.24.705.275 1.485.039.843.047 1.096.047 3.231s-.008 2.389-.047 3.232c-.035.78-.166 1.203-.275 1.485a2.47 2.47 0 0 1-.599.919c-.28.28-.546.453-.92.598-.28.11-.704.24-1.485.276-.843.038-1.096.047-3.232.047s-2.39-.009-3.233-.047c-.78-.036-1.203-.166-1.485-.276a2.478 2.478 0 0 1-.92-.598 2.48 2.48 0 0 1-.6-.92c-.109-.281-.24-.705-.275-1.485-.038-.843-.046-1.096-.046-3.233 0-2.136.008-2.388.046-3.231.036-.78.166-1.204.276-1.486.145-.373.319-.64.599-.92.28-.28.546-.453.92-.598.282-.11.705-.24 1.485-.276.738-.034 1.024-.044 2.515-.045v.002zm4.988 1.328a.96.96 0 1 0 0 1.92.96.96 0 0 0 0-1.92zm-4.27 1.122a4.109 4.109 0 1 0 0 8.217 4.109 4.109 0 0 0 0-8.217zm0 1.441a2.667 2.667 0 1 1 0 5.334 2.667 2.667 0 0 1 0-5.334z"/>
+              </svg>
+            </a>
+            <a href="#" class="text-gray-400 hover:text-white transition">
+              <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor" class="bi bi-pinterest" viewBox="0 0 16 16">
+                <path d="M8 0a8 8 0 0 0-2.915 15.452c-.07-.633-.134-1.606.027-2.297.146-.625.938-3.977.938-3.977s-.239-.479-.239-1.187c0-1.113.645-1.943 1.448-1.943.682 0 1.012.512 1.012 1.127 0 .686-.437 1.712-.663 2.663-.188.796.4 1.446 1.185 1.446 1.422 0 2.515-1.5 2.515-3.664 0-1.915-1.377-3.254-3.342-3.254-2.276 0-3.612 1.707-3.612 3.471 0 .688.265 1.425.595 1.826a.24.24 0 0 1 .056.23c-.061.252-.196.796-.222.907-.035.146-.116.177-.268.107-1-.465-1.624-1.926-1.624-3.1 0-2.523 1.834-4.84 5.286-4.84 2.775 0 4.932 1.977 4.932 4.62 0 2.757-1.739 4.976-4.151 4.976-.811 0-1.573-.421-1.834-.919l-.498 1.902c-.181.695-.669 1.566-.995 2.097A8 8 0 1 0 8 0z"/>
+              </svg>
+            </a>
+          </div>
+        </div>
+        
+        <div>
+          <h3 class="text-lg font-bold mb-4">Shop</h3>
+          <ul class="space-y-2">
+            <li><a href="#" class="text-gray-400 hover:text-white transition">Women</a></li>
+            <li><a href="#" class="text-gray-400 hover:text-white transition">Men</a></li>
+            <li><a href="#" class="text-gray-400 hover:text-white transition">Accessories</a></li>
+            <li><a href="#" class="text-gray-400 hover:text-white transition">New Arrivals</a></li>
+            <li><a href="#" class="text-gray-400 hover:text-white transition">Sale</a></li>
+          </ul>
+        </div>
+        
+        <div>
+          <h3 class="text-lg font-bold mb-4">Company</h3>
+          <ul class="space-y-2">
+            <li><a href="#" class="text-gray-400 hover:text-white transition">About Us</a></li>
+            <li><a href="#" class="text-gray-400 hover:text-white transition">Careers</a></li>
+            <li><a href="#" class="text-gray-400 hover:text-white transition">Blog</a></li>
+            <li><a href="#" class="text-gray-400 hover:text-white transition">Sustainability</a></li>
+            <li><a href="#" class="text-gray-400 hover:text-white transition">Press</a></li>
+          </ul>
+        </div>
+        
+        <div>
+          <h3 class="text-lg font-bold mb-4">Customer Service</h3>
+          <ul class="space-y-2">
+            <li><a href="#" class="text-gray-400 hover:text-white transition">Contact Us</a></li>
+            <li><a href="#" class="text-gray-400 hover:text-white transition">Shipping & Returns</a></li>
+            <li><a href="#" class="text-gray-400 hover:text-white transition">FAQ</a></li>
+            <li><a href="#" class="text-gray-400 hover:text-white transition">Size Guide</a></li>
+            <li><a href="#" class="text-gray-400 hover:text-white transition">Track My Order</a></li>
+          </ul>
+        </div>
+      </div>
+      
+      <div class="border-t border-gray-800 pt-8">
+        <div class="flex flex-col md:flex-row md:justify-between items-center">
+          <p class="text-gray-400 text-sm mb-4 md:mb-0">&copy; 2023 FashionFolio. All rights reserved.</p>
+          <div class="flex space-x-4">
+            <a href="#" class="text-gray-400 hover:text-white transition text-sm">Privacy Policy</a>
+            <a href="#" class="text-gray-400 hover:text-white transition text-sm">Terms of Service</a>
+            <a href="#" class="text-gray-400 hover:text-white transition text-sm">Shipping Policy</a>
+            <a href="#" class="text-gray-400 hover:text-white transition text-sm">Refund Policy</a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </footer>
+
+  <!-- Cart Sidebar (Feature 11: Shopping Cart) -->
+  <div class="cart-overlay fixed top-0 right-0 h-full w-full md:w-96 bg-white shadow-lg z-50" id="cartSidebar">
+    <div class="p-4 h-full flex flex-col">
+      <div class="flex justify-between items-center border-b border-gray-200 pb-4">
+        <h2 class="text-2xl font-bold">Your Cart</h2>
+        <button id="closeCart" class="text-gray-500 hover:text-gray-700 transition">
+          <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+          </svg>
+        </button>
+      </div>
+      
+      <div class="flex-grow overflow-y-auto py-4" id="cartItems">
+        <!-- Cart items will be inserted here -->
+        <div class="text-center text-gray-500 py-12" id="emptyCartMessage">
+          <svg xmlns="http://www.w3.org/2000/svg" class="h-12 w-12 mx-auto text-gray-400 mb-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z" />
+          </svg>
+          <p>Your cart is empty</p>
+          <button id="continueShopping" class="mt-4 text-black underline hover:no-underline">Continue Shopping</button>
+        </div>
+      </div>
+      
+      <div class="border-t border-gray-200 pt-4" id="cartFooter" style="display: none;">
+        <div class="flex justify-between items-center mb-4">
+          <span class="text-gray-600">Subtotal</span>
+          <span class="text-xl font-bold" id="cartSubtotal">$0.00</span>
+        </div>
+        <p class="text-gray-500 text-sm mb-4">Shipping and taxes calculated at checkout</p>
+        <button class="w-full bg-black text-white py-3 rounded-md hover:bg-gray-800 transition">Checkout</button>
+        <button id="continueShopping2" class="w-full border border-black text-black py-3 rounded-md mt-2 hover:bg-gray-100 transition">Continue Shopping</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Quick View Modal (Feature 12: Quick View) -->
+  <div class="modal" id="quickViewModal">
+    <div class="bg-white rounded-lg max-w-4xl w-full max-h-[90vh] overflow-y-auto p-6 relative">
+      <button id="closeQuickView" class="absolute right-4 top-4 text-gray-500 hover:text-gray-700 transition z-10">
+        <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+        </svg>
+      </button>
+      
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+        <div class="relative">
+          <div class="absolute top-2 right-2 z-10">
+            <button class="bg-white p-2 rounded-full shadow-sm hover:shadow-md" id="quickViewWishlist">
+              <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-gray-600 hover:text-red-500 transition" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z" />
+              </svg>
+            </button>
+          </div>
+          <img id="quickViewImage" src="" alt="Product" class="w-full h-96 object-cover rounded-lg">
+        </div>
+        
+        <div>
+          <h3 id="quickViewTitle" class="text-2xl font-bold mb-2"></h3>
+          <p id="quickViewPrice" class="text-xl font-bold mb-4"></p>
+          
+          <div class="mb-6">
+            <h4 class="text-sm font-medium mb-2">Size</h4>
+            <div class="flex flex-wrap gap-2">
+              <button class="size-option border border-gray-300 px-4 py-2 rounded-md hover:border-black transition">XS</button>
+              <button class="size-option border border-gray-300 px-4 py-2 rounded-md hover:border-black transition">S</button>
+              <button class="size-option border border-gray-300 px-4 py-2 rounded-md hover:border-black transition">M</button>
+              <button class="size-option border border-gray-300 px-4 py-2 rounded-md hover:border-black transition">L</button>
+              <button class="size-option border border-gray-300 px-4 py-2 rounded-md hover:border-black transition">XL</button>
+            </div>
+          </div>
+          
+          <div class="mb-6">
+            <h4 class="text-sm font-medium mb-2">Color</h4>
+            <div class="flex gap-2" id="quickViewColors">
+              <!-- Colors will be added dynamically -->
+            </div>
+          </div>
+          
+          <div class="mb-6">
+            <h4 class="text-sm font-medium mb-2">Quantity</h4>
+            <div class="flex border border-gray-300 rounded-md w-32">
+              <button class="px-3 py-2 text-gray-600 hover:text-black" id="decrementQuantity">-</button>
+              <input type="number" value="1" min="1" class="w-full text-center focus:outline-none" id="productQuantity">
+              <button class="px-3 py-2 text-gray-600 hover:text-black" id="incrementQuantity">+</button>
+            </div>
+          </div>
+          
+          <button class="w-full bg-black text-white py-3 rounded-md hover:bg-gray-800 transition mb-4" id="quickViewAddToCart">
+            Add to Cart
+          </button>
+          
+          <div class="border-t border-gray-200 pt-6">
+            <div class="mb-4">
+              <button class="flex items-center justify-between w-full text-left" id="productDescriptionToggle">
+                <span class="font-medium">Product Description</span>
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
+                </svg>
+              </button>
+              <div class="mt-2 text-gray-600 text-sm" id="productDescriptionContent">
+                This premium product features high-quality materials and expert craftsmanship, ensuring both style and durability. The timeless design makes it versatile for various occasions, while the attention to detail sets it apart from ordinary fashion items. Made with sustainable practices, this piece is as eco-friendly as it is beautiful.
+              </div>
+            </div>
+            
+            <div class="mb-4">
+              <button class="flex items-center justify-between w-full text-left" id="shippingInfoToggle">
+                <span class="font-medium">Shipping Information</span>
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
+                </svg>
+              </button>
+              <div class="mt-2 text-gray-600 text-sm hidden" id="shippingInfoContent">
+                Orders typically ship within 1-2 business days. Standard delivery takes 3-5 business days. Express shipping options are available at checkout for faster delivery. International shipping is available to select countries. Free shipping on orders over $50.
+              </div>
+            </div>
+            
+            <div>
+              <button class="flex items-center justify-between w-full text-left" id="returnPolicyToggle">
+                <span class="font-medium">Return Policy</span>
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
+                </svg>
+              </button>
+              <div class="mt-2 text-gray-600 text-sm hidden" id="returnPolicyContent">
+                We offer a 30-day return policy on all items. Products must be returned in their original condition with tags attached. Refunds will be processed within 5-7 business days after we receive the returned item. Please note that shipping costs are non-refundable.
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Wishlist Modal (Feature: Shopping Utility) -->
+  <div class="modal" id="wishlistModal">
+    <div class="bg-white rounded-lg max-w-2xl w-full max-h-[90vh] overflow-y-auto p-6 relative">
+      <button id="closeWishlist" class="absolute right-4 top-4 text-gray-500 hover:text-gray-700 transition">
+        <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+        </svg>
+      </button>
+      
+      <h2 class="text-2xl font-bold mb-6">Your Wishlist</h2>
+      
+      <div id="wishlistItems" class="divide-y divide-gray-200">
+        <!-- Wishlist items will be added here -->
+        <div class="text-center text-gray-500 py-12" id="emptyWishlistMessage">
+          <svg xmlns="http://www.w3.org/2000/svg" class="h-12 w-12 mx-auto text-gray-400 mb-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z" />
+          </svg>
+          <p>Your wishlist is empty</p>
+          <button id="continueShoppingWishlist" class="mt-4 text-black underline hover:no-underline">Continue Shopping</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Back To Top Button -->
+  <button id="backToTop" class="fixed bottom-4 right-4 bg-black text-white p-2 rounded-full shadow-md opacity-0 invisible transition-all duration-300">
+    <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 10l7-7m0 0l7 7m-7-7v18" />
+    </svg>
+  </button>
+
+  <script>
+    // Wait for DOM to be fully loaded
+    document.addEventListener('DOMContentLoaded', function() {
+      // Show loading indicator for demo purposes
+      const loadingIndicator = document.getElementById('loadingIndicator');
+      loadingIndicator.classList.add('show');
+      
+      setTimeout(() => {
+        loadingIndicator.classList.remove('show');
+      }, 1000);
+      
+      // Mobile menu toggle
+      const mobileMenuToggle = document.getElementById('mobileMenuToggle');
+      const mobileMenu = document.getElementById('mobileMenu');
+      
+      mobileMenuToggle.addEventListener('click', function() {
+        mobileMenu.classList.toggle('hidden');
+      });
+      
+      // Search toggle
+      const searchToggle = document.getElementById('searchToggle');
+      const searchOverlay = document.getElementById('searchOverlay');
+      const searchInput = document.getElementById('searchInput');
+      const searchResults = document.getElementById('searchResults');
+      
+      searchToggle.addEventListener('click', function() {
+        searchOverlay.classList.toggle('hidden');
+        if (!searchOverlay.classList.contains('hidden')) {
+          searchInput.focus();
+        }
+      });
+      
+      // Search functionality
+      searchInput.addEventListener('input', function() {
+        if (searchInput.value.length > 2) {
+          searchResults.classList.remove('hidden');
+          
+          // Simulate search results (in a real app, this would call an API)
+          const resultsContainer = document.getElementById('resultsContainer');
+          resultsContainer.innerHTML = '';
+          
+          const products = [
+            { name: 'Classic White Blouse', price: '$49.99', image: 'https://images.unsplash.com/photo-1581044777550-4cfa60707c03?ixid=MnwxMjA3fDB8MHxzZWFyY2h8MTB8fGZhc2hpb258ZW58MHx8MHx8&ixlib=rb-1.2.1&auto=format&fit=crop&w=500&q=60' },
+            { name: 'Slim Fit Blazer', price: '$89.99', image: 'https://images.unsplash.com/photo-1617127365659-c47fa864d8bc?ixid=MnwxMjA3fDB8MHxzZWFyY2h8MTJ8fGZhc2hpb258ZW58MHx8MHx8&ixlib=rb-1.2.1&auto=format&fit=crop&w=500&q=60' },
+            { name: 'Leather Sneakers', price: '$79.99', image: 'https://images.unsplash.com/photo-1549298916-b41d501d3772?ixid=MnwxMjA3fDB8MHxzZWFyY2h8M3x8c2hvZXN8ZW58MHx8MHx8&ixlib=rb-1.2.1&auto=format&fit=crop&w=500&q=60' }
+          ];
+          
+          products.forEach(product => {
+            if (product.name.toLowerCase().includes(searchInput.value.toLowerCase())) {
+              const resultItem = document.createElement('div');
+              resultItem.className = 'flex items-center py-2';
+              resultItem.innerHTML = `
+                <img src="${product.image}" alt="${product.name}" class="w-12 h-12 object-cover rounded mr-3">
+                <div>
+                  <p class="text-sm font-medium">${product.name}</p>
+                  <p class="text-xs text-gray-600">${product.price}</p>
+                </div>
+              `;
+              resultsContainer.appendChild(resultItem);
+            }
+          });
+          
+          if (resultsContainer.children.length === 0) {
+            resultsContainer.innerHTML = '<p class="text-gray-500 text-sm">No results found.</p>';
+          }
+        } else {
+          searchResults.classList.add('hidden');
+        }
+      });
+      
+      // Product filtering
+      const filterBadges = document.querySelectorAll('.filter-badge');
+      const productItems = document.querySelectorAll('#productGrid .product-card');
+      
+      filterBadges.forEach(badge => {
+        badge.addEventListener('click', () => {
+          // Remove active class from all badges
+          filterBadges.forEach(b => b.classList.remove('bg-black', 'text-white', 'active'));
+          
+          // Add active class to clicked badge
+          badge.classList.add('bg-black', 'text-white', 'active');
+          
+          const category = badge.getAttribute('data-category');
+          
+          // Filter products
+          productItems.forEach(item => {
+            if (category === 'all' || item.getAttribute('data-category') === category) {
+              item.style.display = 'block';
+            } else {
+              item.style.display = 'none';
+            }
+          });
+        });
+      });
+      
+      // Shopping cart functionality
+      const cartToggle = document.getElementById('cartToggle');
+      const cartSidebar = document.getElementById('cartSidebar');
+      const closeCart = document.getElementById('closeCart');
+      const continueShopping = document.getElementById('continueShopping');
+      const continueShopping2 = document.getElementById('continueShopping2');
+      const addToCartButtons = document.querySelectorAll('.add-to-cart');
+      const cartItems = document.getElementById('cartItems');
+      const emptyCartMessage = document.getElementById('emptyCartMessage');
+      const cartFooter = document.getElementById('cartFooter');
+      const cartSubtotal = document.getElementById('cartSubtotal');
+      const cartCount = document.getElementById('cartCount');
+      
+      // Cart array to store items
+      let cart = [];
+      
+      // Open cart
+      cartToggle.addEventListener('click', () => {
+        cartSidebar.classList.add('open');
+        document.body.style.overflow = 'hidden'; // Prevent scrolling
+      });
+      
+      // Close cart
+      const closeCartFunction = () => {
+        cartSidebar.classList.remove('open');
+        document.body.style.overflow = ''; // Allow scrolling
+      };
+      
+      closeCart.addEventListener('click', closeCartFunction);
+      continueShopping.addEventListener('click', closeCartFunction);
+      continueShopping2.addEventListener('click', closeCartFunction);
+      
+      // Add to cart
+      addToCartButtons.forEach(button => {
+        button.addEventListener('click', () => {
+          const id = button.getAttribute('data-id');
+          const name = button.getAttribute('data-name');
+          const price = parseFloat(button.getAttribute('data-price'));
+          const image = button.getAttribute('data-image');
+          
+          // Check if item is already in cart
+          const existingItem = cart.find(item => item.id === id);
+          
+          if (existingItem) {
+            existingItem.quantity += 1;
+          } else {
+            cart.push({
+              id,
+              name,
+              price,
+              image,
+              quantity: 1
+            });
+          }
+          
+          // Show toast notification
+          const toast = document.getElementById('toast');
+          toast.innerText = `${name} added to cart!`;
+          toast.classList.add('show');
+          
+          setTimeout(() => {
+            toast.classList.remove('show');
+          }, 3000);
+          
+          updateCart();
+        });
+      });
+      
+      // Update cart
+      function updateCart() {
+        // Clear cart items
+        while (cartItems.firstChild) {
+          if (cartItems.firstChild !== emptyCartMessage) {
+            cartItems.removeChild(cartItems.firstChild);
+          }
+        }
+        
+        // Show/hide empty cart message
+        if (cart.length === 0) {
+          emptyCartMessage.style.display = 'block';
+          cartFooter.style.display = 'none';
+        } else {
+          emptyCartMessage.style.display = 'none';
+          cartFooter.style.display = 'block';
+          
+          // Add cart items
+          cart.forEach(item => {
+            const cartItem = document.createElement('div');
+            cartItem.className = 'flex items-center py-4 border-b border-gray-200';
+            cartItem.innerHTML = `
+              <img src="${item.image}" alt="${item.name}" class="w-16 h-16 object-cover rounded mr-4">
+              <div class="flex-grow">
+                <h3 class="text-sm font-medium">${item.name}</h3>
+                <p class="text-gray-600 text-xs">Qty: ${item.quantity}</p>
+                <div class="flex items-center mt-1">
+                  <button class="text-xs text-gray-500 hover:text-black transition cart-decrement" data-id="${item.id}">-</button>
+                  <span class="text-xs mx-2">${item.quantity}</span>
+                  <button class="text-xs text-gray-500 hover:text-black transition cart-increment" data-id="${item.id}">+</button>
+                </div>
+              </div>
+              <div class="flex flex-col items-end">
+                <p class="font-bold">$${(item.price * item.quantity).toFixed(2)}</p>
+                <button class="text-xs text-red-500 hover:text-red-700 transition mt-1 cart-remove" data-id="${item.id}">Remove</button>
+              </div>
+            `;
+            
+            cartItems.insertBefore(cartItem, emptyCartMessage);
+          });
+          
+          // Add event listeners to cart item buttons
+          document.querySelectorAll('.cart-increment').forEach(button => {
+            button.addEventListener('click', () => {
+              const id = button.getAttribute('data-id');
+              const item = cart.find(item => item.id === id);
+              
+              if (item) {
+                item.quantity += 1;
+                updateCart();
+              }
+            });
+          });
+          
+          document.querySelectorAll('.cart-decrement').forEach(button => {
+            button.addEventListener('click', () => {
+              const id = button.getAttribute('data-id');
+              const item = cart.find(item => item.id === id);
+              
+              if (item && item.quantity > 1) {
+                item.quantity -= 1;
+                updateCart();
+              }
+            });
+          });
+          
+          document.querySelectorAll('.cart-remove').forEach(button => {
+            button.addEventListener('click', () => {
+              const id = button.getAttribute('data-id');
+              cart = cart.filter(item => item.id !== id);
+              updateCart();
+            });
+          });
+        }
+        
+        // Update cart subtotal
+        const subtotal = cart.reduce((total, item) => total + (item.price * item.quantity), 0);
+        cartSubtotal.innerText = `$${subtotal.toFixed(2)}`;
+        
+        // Update cart count
+        const count = cart.reduce((total, item) => total + item.quantity, 0);
+        cartCount.innerText = count;
+      }
+      
+      // Quick view functionality
+      const quickViewButtons = document.querySelectorAll('.quick-view');
+      const quickViewModal = document.getElementById('quickViewModal');
+      const closeQuickView = document.getElementById('closeQuickView');
+      const quickViewImage = document.getElementById('quickViewImage');
+      const quickViewTitle = document.getElementById('quickViewTitle');
+      const quickViewPrice = document.getElementById('quickViewPrice');
+      const quickViewColors = document.getElementById('quickViewColors');
+      const quickViewAddToCart = document.getElementById('quickViewAddToCart');
+      
+      // Open quick view
+      quickViewButtons.forEach(button => {
+        button.addEventListener('click', () => {
+          const id = button.getAttribute('data-id');
+          const productCard = button.closest('.product-card');
+          const name = productCard.querySelector('h3').innerText;
+          const priceElement = productCard.querySelector('.font-bold');
+          const price = priceElement.innerText;
+          const image = productCard.querySelector('img').src;
+          
+          // Set quick view content
+          quickViewImage.src = image;
+          quickViewTitle.innerText = name;
+          quickViewPrice.innerText = price;
+          
+          // Add colors
+          quickViewColors.innerHTML = '';
+          
+          const colorSwatches = productCard.querySelectorAll('.color-swatch');
+          colorSwatches.forEach(swatch => {
+            const color = swatch.getAttribute('data-color');
+            const colorElement = document.createElement('div');
+            colorElement.className = 'color-swatch';
+            colorElement.style.backgroundColor = swatch.style.backgroundColor;
+            colorElement.setAttribute('data-color', color);
+            
+            colorElement.addEventListener('click', () => {
+              document.querySelectorAll('#quickViewColors .color-swatch').forEach(s => {
+                s.classList.remove('selected');
+              });
+              colorElement.classList.add('selected');
+            });
+            
+            quickViewColors.appendChild(colorElement);
+          });
+          
+          // Set add to cart button
+          quickViewAddToCart.setAttribute('data-id', id);
+          quickViewAddToCart.setAttribute('data-name', name);
+          quickViewAddToCart.setAttribute('data-price', price.replace('$', ''));
+          quickViewAddToCart.setAttribute('data-image', image);
+          
+          // Show modal
+          quickViewModal.classList.add('open');
+          document.body.style.overflow = 'hidden'; // Prevent scrolling
+        });
+      });
+      
+      // Close quick view
+      closeQuickView.addEventListener('click', () => {
+        quickViewModal.classList.remove('open');
+        document.body.style.overflow = ''; // Allow scrolling
+      });
+      
+      // Quantity increment/decrement
+      const decrementQuantity = document.getElementById('decrementQuantity');
+      const incrementQuantity = document.getElementById('incrementQuantity');
+      const productQuantity = document.getElementById('productQuantity');
+      
+      decrementQuantity.addEventListener('click', () => {
+        if (parseInt(productQuantity.value) > 1) {
+          productQuantity.value = parseInt(productQuantity.value) - 1;
+        }
+      });
+      
+      incrementQuantity.addEventListener('click', () => {
+        productQuantity.value = parseInt(productQuantity.value) + 1;
+      });
+      
+      // Quick view accordion
+      const productDescriptionToggle = document.getElementById('productDescriptionToggle');
+      const productDescriptionContent = document.getElementById('productDescriptionContent');
+      const shippingInfoToggle = document.getElementById('shippingInfoToggle');
+      const shippingInfoContent = document.getElementById('shippingInfoContent');
+      const returnPolicyToggle = document.getElementById('returnPolicyToggle');
+      const returnPolicyContent = document.getElementById('returnPolicyContent');
+      
+      productDescriptionToggle.addEventListener('click', () => {
+        productDescriptionContent.classList.toggle('hidden');
+      });
+      
+      shippingInfoToggle.addEventListener('click', () => {
+        shippingInfoContent.classList.toggle('hidden');
+      });
+      
+      returnPolicyToggle.addEventListener('click', () => {
+        returnPolicyContent.classList.toggle('hidden');
+      });
+      
+      // Size options
+      const sizeOptions = document.querySelectorAll('.size-option');
+      
+      sizeOptions.forEach(option => {
+        option.addEventListener('click', () => {
+          sizeOptions.forEach(opt => {
+            opt.classList.remove('border-black', 'bg-gray-100');
+          });
+          option.classList.add('border-black', 'bg-gray-100');
+        });
+      });
+      
+      // Add to cart from quick view
+      quickViewAddToCart.addEventListener('click', () => {
+        const id = quickViewAddToCart.getAttribute('data-id');
+        const name = quickViewAddToCart.getAttribute('data-name');
+        const price = parseFloat(quickViewAddToCart.getAttribute('data-price'));
+        const image = quickViewAddToCart.getAttribute('data-image');
+        const quantity = parseInt(productQuantity.value);
+        
+        // Check if item is already in cart
+        const existingItem = cart.find(item => item.id === id);
+        
+        if (existingItem) {
+          existingItem.quantity += quantity;
+        } else {
+          cart.push({
+            id,
+            name,
+            price,
+            image,
+            quantity
+          });
+        }
+        
+        // Show toast notification
+        const toast = document.getElementById('toast');
+        toast.innerText = `${name} added to cart!`;
+        toast.classList.add('show');
+        
+        setTimeout(() => {
+          toast.classList.remove('show');
+        }, 3000);
+        
+        // Close quick view
+        quickViewModal.classList.remove('open');
+        document.body.style.overflow = ''; // Allow scrolling
+        
+        // Open cart
+        cartSidebar.classList.add('open');
+        
+        updateCart();
+      });
+      
+      // Wishlist functionality
+      const wishlistToggle = document.getElementById('wishlistToggle');
+      const wishlistModal = document.getElementById('wishlistModal');
+      const closeWishlist = document.getElementById('closeWishlist');
+      const wishlistItems = document.getElementById('wishlistItems');
+      const emptyWishlistMessage = document.getElementById('emptyWishlistMessage');
+      const continueShoppingWishlist = document.getElementById('continueShoppingWishlist');
+      const wishlistButtons = document.querySelectorAll('.wishlist-icon');
+      
+      // Wishlist array to store items
+      let wishlist = [];
+      
+      // Open wishlist
+      wishlistToggle.addEventListener('click', () => {
+        wishlistModal.classList.add('open');
+        document.body.style.overflow = 'hidden'; // Prevent scrolling
+        updateWishlist();
+      });
+      
+      // Close wishlist
+      const closeWishlistFunction = () => {
+        wishlistModal.classList.remove('open');
+        document.body.style.overflow = ''; // Allow scrolling
+      };
+      
+      closeWishlist.addEventListener('click', closeWishlistFunction);
+      continueShoppingWishlist.addEventListener('click', closeWishlistFunction);
+      
+      // Add to wishlist
+      wishlistButtons.forEach(button => {
+        button.addEventListener('click', (e) => {
+          e.stopPropagation(); // Prevent triggering parent click events
+          
+          const id = button.getAttribute('data-id');
+          const productCard = button.closest('.product-card');
+          const name = productCard.querySelector('h3').innerText;
+          const priceElement = productCard.querySelector('.font-bold');
+          const price = priceElement.innerText;
+          const image = productCard.querySelector('img').src;
+          
+          // Check if item is already in wishlist
+          const existingItem = wishlist.find(item => item.id === id);
+          
+          if (existingItem) {
+            // Remove from wishlist
+            wishlist = wishlist.filter(item => item.id !== id);
+            
+            // Reset button
+            button.querySelector('svg').style.fill = 'none';
+            button.querySelector('svg').classList.remove('text-red-500');
+            button.querySelector('svg').classList.add('text-gray-600');
+          } else {
+            // Add to wishlist
+            wishlist.push({
+              id,
+              name,
+              price,
+              image
+            });
+            
+            // Update button
+            button.querySelector('svg').style.fill = 'currentColor';
+            button.querySelector('svg').classList.remove('text-gray-600');
+            button.querySelector('svg').classList.add('text-red-500');
+          }
+          
+          // Show toast notification
+          const toast = document.getElementById('toast');
+          toast.innerText = existingItem ? `${name} removed from wishlist!` : `${name} added to wishlist!`;
+          toast.classList.add('show');
+          
+          setTimeout(() => {
+            toast.classList.remove('show');
+          }, 3000);
+        });
+      });
+      
+      // Update wishlist
+      function updateWishlist() {
+        // Clear wishlist items
+        while (wishlistItems.firstChild) {
+          if (wishlistItems.firstChild !== emptyWishlistMessage) {
+            wishlistItems.removeChild(wishlistItems.firstChild);
+          }
+        }
+        
+        // Show/hide empty wishlist message
+        if (wishlist.length === 0) {
+          emptyWishlistMessage.style.display = 'block';
+        } else {
+          emptyWishlistMessage.style.display = 'none';
+          
+          // Add wishlist items
+          wishlist.forEach(item => {
+            const wishlistItem = document.createElement('div');
+            wishlistItem.className = 'flex items-center py-4';
+            wishlistItem.innerHTML = `
+              <img src="${item.image}" alt="${item.name}" class="w-16 h-16 object-cover rounded mr-4">
+              <div class="flex-grow">
+                <h3 class="text-sm font-medium">${item.name}</h3>
+                <p class="font-bold">${item.price}</p>
+              </div>
+              <div class="flex space-x-2">
+                <button class="p-2 bg-black text-white rounded-md hover:bg-gray-800 transition wishlist-add-to-cart" data-id="${item.id}" data-name="${item.name}" data-price="${item.price.replace('$', '')}" data-image="${item.image}">
+                  <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z" />
+                  </svg>
+                </button>
+                <button class="p-2 border border-gray-300 rounded-md hover:bg-gray-100 transition wishlist-remove" data-id="${item.id}">
+                  <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 text-gray-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+                  </svg>
+                </button>
+              </div>
+            `;
+            
+            wishlistItems.insertBefore(wishlistItem, emptyWishlistMessage);
+          });
+          
+          // Add event listeners to wishlist item buttons
+          document.querySelectorAll('.wishlist-add-to-cart').forEach(button => {
+            button.addEventListener('click', () => {
+              const id = button.getAttribute('data-id');
+              const name = button.getAttribute('data-name');
+              const price = parseFloat(button.getAttribute('data-price'));
+              const image = button.getAttribute('data-image');
+              
+              // Check if item is already in cart
+              const existingItem = cart.find(item => item.id === id);
+              
+              if (existingItem) {
+                existingItem.quantity += 1;
+              } else {
+                cart.push({
+                  id,
+                  name,
+                  price,
+                  image,
+                  quantity: 1
+                });
+              }
+              
+              // Show toast notification
+              const toast = document.getElementById('toast');
+              toast.innerText = `${name} added to cart!`;
+              toast.classList.add('show');
+              
+              setTimeout(() => {
+                toast.classList.remove('show');
+              }, 3000);
+              
+              updateCart();
+              
+              // Close wishlist and open cart
+              wishlistModal.classList.remove('open');
+              cartSidebar.classList.add('open');
+            });
+          });
+          
+          document.querySelectorAll('.wishlist-remove').forEach(button => {
+            button.addEventListener('click', () => {
+              const id = button.getAttribute('data-id');
+              wishlist = wishlist.filter(item => item.id !== id);
+              
+              // Reset button in product grid
+              const wishlistButton = document.querySelector(`.wishlist-icon[data-id="${id}"]`);
+              if (wishlistButton) {
+                wishlistButton.querySelector('svg').style.fill = 'none';
+                wishlistButton.querySelector('svg').classList.remove('text-red-500');
+                wishlistButton.querySelector('svg').classList.add('text-gray-600');
+              }
+              
+              updateWishlist();
+            });
+          });
+        }
+      }
+      
+      // Back to top button
+      const backToTopButton = document.getElementById('backToTop');
+      
+      window.addEventListener('scroll', () => {
+        if (window.pageYOffset > 300) {
+          backToTopButton.classList.remove('opacity-0', 'invisible');
+          backToTopButton.classList.add('opacity-100', 'visible');
+        } else {
+          backToTopButton.classList.remove('opacity-100', 'visible');
+          backToTopButton.classList.add('opacity-0', 'invisible');
+        }
+      });
+      
+      backToTopButton.addEventListener('click', () => {
+        window.scrollTo({
+          top: 0,
+          behavior: 'smooth'
+        });
+      });
+      
+      // Newsletter form
+      const newsletterForm = document.getElementById('newsletterForm');
+      
+      newsletterForm.addEventListener('submit', (e) => {
+        e.preventDefault();
+        
+        // Show toast notification
+        const toast = document.getElementById('toast');
+        toast.innerText = 'Thank you for subscribing to our newsletter!';
+        toast.classList.add('show');
+        
+        setTimeout(() => {
+          toast.classList.remove('show');
+        }, 3000);
+        
+        newsletterForm.reset();
+      });
+    });
+  </script>
+</body>
+</html>
