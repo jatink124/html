@@ -1,0 +1,267 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>LeadGen Pro - Local Business Scraper</title>
+    <style>
+        :root { --primary: #2563eb; --bg: #f8fafc; --text: #1e293b; --white: #ffffff; }
+        body { font-family: 'Segoe UI', system-ui, sans-serif; background-color: var(--bg); color: var(--text); padding: 20px; line-height: 1.5; }
+        
+        .container { max-width: 1100px; margin: 0 auto; background: var(--white); padding: 30px; border-radius: 12px; box-shadow: 0 4px 20px rgba(0,0,0,0.05); }
+        
+        header { border-bottom: 2px solid #e2e8f0; padding-bottom: 20px; margin-bottom: 30px; }
+        h1 { margin: 0; color: var(--primary); font-size: 24px; }
+        p { color: #64748b; margin-top: 5px; }
+
+        /* Dashboard Controls */
+        .controls { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 15px; background: #eff6ff; padding: 20px; border-radius: 8px; border: 1px solid #dbeafe; }
+        
+        label { font-size: 13px; font-weight: 600; color: #475569; display: block; margin-bottom: 5px; }
+        select { width: 100%; padding: 10px; border: 1px solid #cbd5e1; border-radius: 6px; font-size: 14px; outline: none; }
+        select:focus { border-color: var(--primary); box-shadow: 0 0 0 3px rgba(37,99,235,0.1); }
+
+        /* Buttons */
+        .btn-group { display: flex; align-items: flex-end; gap: 10px; }
+        button { flex: 1; padding: 10px 20px; border: none; border-radius: 6px; font-weight: 600; cursor: pointer; transition: all 0.2s; font-size: 14px; }
+        .btn-search { background-color: var(--primary); color: white; }
+        .btn-search:hover { background-color: #1d4ed8; }
+        .btn-download { background-color: #10b981; color: white; display: none; } /* Hidden initially */
+        .btn-download:hover { background-color: #059669; }
+
+        /* Results Table */
+        .table-wrapper { overflow-x: auto; margin-top: 25px; border-radius: 8px; border: 1px solid #e2e8f0; }
+        table { width: 100%; border-collapse: collapse; font-size: 14px; min-width: 800px; }
+        th { background-color: #f1f5f9; color: #475569; font-weight: 600; text-align: left; padding: 12px 16px; border-bottom: 1px solid #e2e8f0; }
+        td { padding: 12px 16px; border-bottom: 1px solid #f1f5f9; color: #334155; }
+        tr:last-child td { border-bottom: none; }
+        tr:hover { background-color: #f8fafc; }
+
+        /* Badges & Status */
+        .badge { padding: 4px 10px; border-radius: 20px; font-size: 11px; font-weight: 600; letter-spacing: 0.5px; }
+        .badge-no { background: #fee2e2; color: #991b1b; }
+        .badge-yes { background: #dcfce7; color: #166534; }
+        .badge-poor { background: #fef3c7; color: #92400e; }
+
+        .shortcoming { color: #db2777; font-weight: 500; font-size: 13px; }
+        .phone-blur { color: #94a3b8; font-style: italic; }
+
+        /* Loading Animation */
+        .loader { display: none; text-align: center; padding: 40px; color: #64748b; }
+        .spinner { width: 24px; height: 24px; border: 3px solid #e2e8f0; border-top-color: var(--primary); border-radius: 50%; animation: spin 1s linear infinite; display: inline-block; margin-right: 10px; vertical-align: middle; }
+        @keyframes spin { 100% { transform: rotate(360deg); } }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <header>
+        <h1>🕵️ Local Business Lead Scraper</h1>
+        <p>Mockup Tool: Simulates finding businesses in North India needing web services.</p>
+    </header>
+
+    <div class="controls">
+        <div>
+            <label>Target Region</label>
+            <select id="region">
+                <option value="Chandigarh">Chandigarh (Tricity)</option>
+                <option value="Delhi">Delhi / NCR</option>
+                <option value="Punjab">Punjab (Ludhiana/Amritsar)</option>
+                <option value="Himachal">Himachal Pradesh</option>
+                <option value="Haryana">Haryana</option>
+            </select>
+        </div>
+        <div>
+            <label>Business Category</label>
+            <select id="category">
+                <option value="Restaurant">Restaurants & Cafes</option>
+                <option value="Hotel">Hotels & Resorts</option>
+                <option value="Manufacturing">Manufacturing/Industrial</option>
+                <option value="Retail">Retail & Showrooms</option>
+                <option value="Real Estate">Real Estate Agencies</option>
+                <option value="Education">Coaching Centers</option>
+            </select>
+        </div>
+        <div class="btn-group">
+            <button class="btn-search" onclick="startScraping()">🔍 Find Leads</button>
+            <button class="btn-download" id="dlBtn" onclick="downloadCSV()">📥 Download CSV</button>
+        </div>
+    </div>
+
+    <div id="loader" class="loader">
+        <div class="spinner"></div> Searching directories, checking SSL certificates, and analyzing speeds...
+    </div>
+
+    <div class="table-wrapper">
+        <table id="resultsTable">
+            <thead>
+                <tr>
+                    <th width="20%">Business Name</th>
+                    <th width="15%">Phone</th>
+                    <th width="15%">Website Status</th>
+                    <th width="25%">Shortcoming (The Pitch)</th>
+                    <th width="25%">Potential Service</th>
+                </tr>
+            </thead>
+            <tbody id="tableBody">
+                <tr><td colspan="5" style="text-align:center; padding: 40px; color:#94a3b8;">Select a region and category to view 10+ leads.</td></tr>
+            </tbody>
+        </table>
+    </div>
+</div>
+
+<script>
+    // --- DATA GENERATION LOGIC ---
+    // Since we can't scrape live in a simple HTML file, we generate realistic mock data 
+    // based on local naming conventions for North India.
+
+    const locations = {
+        'Chandigarh': ['Sector 17', 'Sector 35-C', 'Industrial Area Ph-1', 'Mohali Phase 7', 'Zirakpur Highway', 'Sector 8', 'Elante Mall', 'Panchkula Sec 11', 'Manimajra', 'IT Park'],
+        'Delhi': ['Connaught Place', 'South Ex', 'Rohini Sec 7', 'Okhla Ind. Estate', 'Karol Bagh', 'Lajpat Nagar', 'Dwarka', 'Nehru Place', 'Mayur Vihar', 'Vasant Kunj'],
+        'Punjab': ['Feroze Gandhi Market', 'Model Town', 'GT Road', 'Focal Point', 'Civil Lines', 'Ranjit Avenue', 'Mall Road', 'Gill Road', 'Industrial Area B', 'Phagwara Road'],
+        'Himachal': ['Mall Road Shimla', 'Manali Highway', 'Dharamshala Main Sq', 'Solan Bypass', 'Kullu Valley', 'Dalhousie', 'Kasauli Road', 'Baddi Industrial Area', 'Palampur', 'Chail'],
+        'Haryana': ['Sector 14 Gurgaon', 'Cyber City', 'DLF Phase 3', 'Panipat Textile Mkt', 'Ambala Cantt', 'Karnal GT Road', 'Rohtak', 'Hisar', 'Sonipat', 'Faridabad NIT']
+    };
+
+    const businessPrefixes = {
+        'Restaurant': ['The Royal', 'Grand', 'Spicy', 'Urban', 'Desi', 'Golden', 'Punjabi', 'Chawla', 'Sethi', 'Classic', 'Tandoori', 'Green'],
+        'Hotel': ['Hotel', 'Resort', 'The', 'Grand', 'Royal', 'Comfort', 'Luxury', 'Hill View', 'City', 'Welcome', 'Holiday'],
+        'Manufacturing': ['Singh', 'National', 'Indian', 'Bharat', 'Apex', 'Standard', 'Precision', 'United', 'Global', 'Northern', 'Punjab'],
+        'Retail': ['Gupta', 'Fashion', 'Aggarwal', 'Modern', 'City', 'Style', 'Family', 'Kids', 'Home', 'Smart'],
+        'Real Estate': ['Prop', 'Dream', 'Estate', 'Fair', 'Housing', 'Prime', 'Capital', 'Landmark', 'Sky', 'City'],
+        'Education': ['Target', 'Success', 'Bright', 'Career', 'Global', 'Smart', 'Elite', 'Toppers', 'Knowledge', 'Future']
+    };
+
+    const businessSuffixes = {
+        'Restaurant': ['Dhaba', 'Bistro', 'Cafe', 'Restaurant', 'Kitchen', 'Grill', 'Rasoi', 'Eats', 'Sweets', 'Dine'],
+        'Hotel': ['Inn', 'Plaza', 'Palace', 'Residency', 'Stay', 'View', 'Heights', 'Lodge', 'Suites', 'Retreat'],
+        'Manufacturing': ['Industries', 'Works', 'Exports', 'Tools', 'Machines', 'Textiles', 'Engineering', 'Solutions', 'Polymers', 'Steels'],
+        'Retail': ['Store', 'Mart', 'Collection', 'Emporium', 'Hub', 'Outlet', 'Shoppe', 'Gallery', 'World', 'Traders'],
+        'Real Estate': ['Consultants', 'Developers', 'Properties', 'Realtors', 'Advisors', 'Associates', 'Homes', 'Estates', 'Group', 'Links'],
+        'Education': ['Academy', 'Institute', 'Classes', 'Hub', 'Tutorials', 'Centre', 'School', 'Point', 'Zone', 'Mentors']
+    };
+
+    const problems = [
+        { status: 'No', badge: 'badge-no', site: 'N/A', pitch: 'Relying on directories/No Brand Control', service: 'Build 5-Page Website' },
+        { status: 'No', badge: 'badge-no', site: 'N/A', pitch: 'Competitors have websites, they don\'t', service: 'Create Digital Presence' },
+        { status: 'No', badge: 'badge-no', site: 'N/A', pitch: 'Missing from Google Search results', service: 'Local SEO + Website' },
+        { status: 'Old', badge: 'badge-poor', site: 'http://old-site.com', pitch: 'Not Secure (No SSL) / Scares visitors', service: 'SSL Fix & Security' },
+        { status: 'Old', badge: 'badge-poor', site: 'wix.site/demo12', pitch: 'Unprofessional Free Domain', service: 'Custom Domain Migration' },
+        { status: 'Yes', badge: 'badge-yes', site: 'needs-fix.com', pitch: 'Not Mobile Friendly / Broken Layout', service: 'Responsive Redesign' },
+        { status: 'Yes', badge: 'badge-yes', site: 'slow-site.in', pitch: 'Takes 8+ seconds to load', service: 'Speed Optimization' },
+        { status: 'Yes', badge: 'badge-yes', site: 'broken-form.com', pitch: 'Contact Form not working', service: 'Lead Capture Repair' },
+    ];
+
+    let currentData = [];
+
+    function generatePhone() {
+        // Generates a fake realistic Indian mobile number
+        const start = ['98', '99', '88', '70', '62'];
+        const p1 = start[Math.floor(Math.random() * start.length)];
+        const p2 = Math.floor(1000 + Math.random() * 9000);
+        const p3 = Math.floor(1000 + Math.random() * 9000);
+        return `+91 ${p1}${p2} ${p3}`;
+    }
+
+    function startScraping() {
+        const region = document.getElementById('region').value;
+        const category = document.getElementById('category').value;
+        const loader = document.getElementById('loader');
+        const tbody = document.getElementById('tableBody');
+        const dlBtn = document.getElementById('dlBtn');
+
+        // Reset UI
+        tbody.innerHTML = '';
+        dlBtn.style.display = 'none';
+        loader.style.display = 'block';
+
+        // Simulate network delay (1.5 seconds)
+        setTimeout(() => {
+            loader.style.display = 'none';
+            generateLeads(region, category);
+            dlBtn.style.display = 'block';
+        }, 1500);
+    }
+
+    function generateLeads(region, category) {
+        currentData = []; // Clear old data
+        const tbody = document.getElementById('tableBody');
+        const areaList = locations[region] || locations['Chandigarh'];
+        const prefixes = businessPrefixes[category];
+        const suffixes = businessSuffixes[category];
+
+        // Generate exactly 10-12 results
+        for (let i = 0; i < 12; i++) {
+            // Randomly create a business name
+            const pre = prefixes[Math.floor(Math.random() * prefixes.length)];
+            const suf = suffixes[Math.floor(Math.random() * suffixes.length)];
+            const area = areaList[i % areaList.length]; // Cycle through areas
+            const name = `${pre} ${suf}`;
+            
+            // Randomly assign a problem scenario
+            // Weight it so "No Website" is more common (60% chance)
+            const isNoWebsite = Math.random() > 0.4; 
+            let scenario;
+            if (isNoWebsite) {
+                scenario = problems[Math.floor(Math.random() * 3)]; // Pick from first 3 "No website" issues
+            } else {
+                scenario = problems[3 + Math.floor(Math.random() * 5)]; // Pick from existing site issues
+            }
+
+            const rowData = {
+                name: name,
+                area: area,
+                phone: generatePhone(),
+                status: scenario.status,
+                badgeClass: scenario.badge,
+                siteUrl: scenario.site === 'N/A' ? '[Directory Listing]' : (name.toLowerCase().replace(/ /g,'') + '.com'),
+                pitch: scenario.pitch,
+                service: scenario.service
+            };
+
+            currentData.push(rowData);
+
+            // Add to HTML Table
+            const tr = `
+                <tr>
+                    <td>
+                        <strong>${rowData.name}</strong><br>
+                        <small style="color:#64748b">📍 ${rowData.area}, ${region}</small>
+                    </td>
+                    <td>${rowData.phone}</td>
+                    <td>
+                        <span class="badge ${rowData.badgeClass}">${rowData.status}</span><br>
+                        <small style="font-size:11px; color:#64748b">${rowData.siteUrl}</small>
+                    </td>
+                    <td><span class="shortcoming">⚠️ ${rowData.pitch}</span></td>
+                    <td><span style="color:#0f172a; font-weight:500">🛠️ ${rowData.service}</span></td>
+                </tr>
+            `;
+            tbody.innerHTML += tr;
+        }
+    }
+
+    function downloadCSV() {
+        const region = document.getElementById('region').value;
+        const category = document.getElementById('category').value;
+        
+        let csvContent = "data:text/csv;charset=utf-8,";
+        csvContent += "Region,Category,Business Name,Location,Phone,Website Status,URL,Shortcoming,Recommended Service\n";
+
+        currentData.forEach(row => {
+            const cleanName = row.name.replace(/,/g, ''); // Remove commas to prevent CSV breakage
+            const cleanPitch = row.pitch.replace(/,/g, '');
+            csvContent += `${region},${category},${cleanName},${row.area},${row.phone},${row.status},${row.siteUrl},${cleanPitch},${row.service}\n`;
+        });
+
+        const encodedUri = encodeURI(csvContent);
+        const link = document.createElement("a");
+        link.setAttribute("href", encodedUri);
+        link.setAttribute("download", `Leads_${region}_${category}.csv`);
+        document.body.appendChild(link);
+        link.click();
+    }
+</script>
+
+</body>
+</html>
