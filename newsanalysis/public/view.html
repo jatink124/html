@@ -1,0 +1,259 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>View Market Analysis</title>
+    <style>
+        body { font-family: 'Segoe UI', sans-serif; max-width: 1200px; margin: 2rem auto; background: #f0f2f5; padding: 20px; }
+        
+        .header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 30px; }
+        .btn-link { text-decoration: none; background: #007bff; color: white; padding: 10px 20px; border-radius: 5px; }
+
+        /* --- GRID CONTAINER --- */
+        #reports-container {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 20px;
+        }
+
+        /* --- SUMMARY CARD STYLING --- */
+        .report-card { 
+            background: white; border-radius: 12px; box-shadow: 0 4px 6px rgba(0,0,0,0.1); 
+            overflow: hidden; cursor: pointer; transition: transform 0.2s, box-shadow 0.2s;
+            display: flex; flex-direction: column; height: 100%;
+        }
+        .report-card:hover { transform: translateY(-5px); box-shadow: 0 10px 20px rgba(0,0,0,0.15); }
+        .card-header { background: #343a40; color: white; padding: 15px; }
+        .card-header h2 { margin: 0; font-size: 1.1rem; }
+        .card-date { font-size: 0.85rem; opacity: 0.8; margin-top: 5px; display: block; }
+        .card-body { padding: 15px; flex-grow: 1; }
+        .preview-text { color: #555; font-size: 0.9rem; display: -webkit-box; -webkit-line-clamp: 3; -webkit-box-orient: vertical; overflow: hidden; }
+        .read-more { color: #007bff; font-weight: bold; margin-top: 10px; display: inline-block; font-size: 0.9rem; }
+
+        /* --- FULL SCREEN MODAL STYLING --- */
+        .modal-overlay {
+            display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(0, 0, 0, 0.7); z-index: 1000;
+            justify-content: center; align-items: center; padding: 20px; box-sizing: border-box;
+            backdrop-filter: blur(5px);
+        }
+
+        .modal-content {
+            background: white; width: 100%; height: 90vh; border-radius: 10px;
+            position: relative; display: flex; flex-direction: column;
+            box-shadow: 0 15px 30px rgba(0,0,0,0.3);
+            transition: max-width 0.3s ease; /* Smooth transition when resizing */
+            animation: slideUp 0.3s ease-out;
+        }
+
+        /* --- WIDTH CLASSES --- */
+        .width-sm { max-width: 600px; }
+        .width-md { max-width: 900px; } /* Default */
+        .width-lg { max-width: 1200px; }
+        .width-full { max-width: 98%; height: 98vh; }
+
+        .modal-header {
+            padding: 15px 20px; border-bottom: 1px solid #eee; background: #f8f9fa;
+            border-radius: 10px 10px 0 0; display: flex; justify-content: space-between; align-items: center;
+        }
+
+        .modal-controls { display: flex; gap: 10px; align-items: center; }
+        
+        /* Size Buttons */
+        .size-btn { 
+            background: #e9ecef; border: 1px solid #ced4da; cursor: pointer; 
+            padding: 5px 10px; font-size: 0.8rem; border-radius: 4px; color: #495057;
+        }
+        .size-btn:hover { background: #dee2e6; }
+        .size-btn.active { background: #343a40; color: white; border-color: #343a40; }
+
+        .modal-close { background: none; border: none; font-size: 2rem; cursor: pointer; color: #555; line-height: 1; margin-left: 15px; }
+        .modal-close:hover { color: #dc3545; }
+
+        .modal-scroll-area { padding: 30px; overflow-y: auto; flex-grow: 1; }
+        .strategy-box { background: #e9ecef; padding: 20px; border-radius: 8px; border-left: 5px solid #28a745; margin-bottom: 30px; font-size: 1.05rem; line-height: 1.6; }
+        
+        table { width: 100%; border-collapse: collapse; margin-top: 10px; }
+        th, td { padding: 15px; text-align: left; border-bottom: 1px solid #dee2e6; vertical-align: top; }
+        th { background: #343a40; color: white; position: sticky; top: 0; }
+        tr:hover { background-color: #f1f1f1; }
+        .stock-name { font-weight: bold; color: #007bff; font-size: 1.1rem; }
+
+        @keyframes slideUp { from { transform: translateY(50px); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
+    </style>
+</head>
+<body>
+
+    <div class="header">
+        <h1>📊 Market Analysis Feed</h1>
+        <a href="/dashboard.html" class="btn-link">⚙️ Dashboard</a>
+    </div>
+
+    <div id="reports-container"><p>Loading data...</p></div>
+
+    <div id="reportModal" class="modal-overlay" onclick="closeModal(event)">
+        <div id="modalContentBox" class="modal-content width-md" onclick="event.stopPropagation()">
+            
+            <div class="modal-header">
+                <div id="modalTitleArea">
+                    <h2 id="modalTitle" style="margin:0; font-size:1.2rem;">Title</h2>
+                    <span id="modalDate" style="color:#666; font-size:0.9rem;">Date</span>
+                </div>
+
+                <div class="modal-controls">
+                    <span style="font-size:0.8rem; color:#666; margin-right:5px;">View:</span>
+                    <button class="size-btn" onclick="setModalSize('width-sm', this)">S</button>
+                    <button class="size-btn active" onclick="setModalSize('width-md', this)">M</button>
+                    <button class="size-btn" onclick="setModalSize('width-lg', this)">L</button>
+                    <button class="size-btn" onclick="setModalSize('width-full', this)">Full</button>
+                    <button class="modal-close" onclick="closeModal()">×</button>
+                </div>
+            </div>
+
+            <div class="modal-scroll-area">
+                <div id="modalStrategy" class="strategy-box"></div>
+                <h3>Detailed Analysis</h3>
+                <div id="modalTableContainer"></div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let allReports = []; 
+
+        // --- 1. Load Data ---
+        async function loadReports() {
+            try {
+                const response = await fetch('/api/reports');
+                allReports = await response.json();
+                const container = document.getElementById('reports-container');
+                container.innerHTML = '';
+
+                if (allReports.length === 0) {
+                    container.innerHTML = '<p>No reports found.</p>';
+                    return;
+                }
+
+                allReports.forEach((report, index) => {
+                    const dateObj = new Date(report.date);
+                    const dateStr = dateObj.toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' });
+                    
+                    const card = document.createElement('div');
+                    card.className = 'report-card';
+                    card.onclick = () => openModal(index);
+                    card.innerHTML = `
+                        <div class="card-header">
+                            <h2>${report.title}</h2>
+                            <span class="card-date">${dateStr}</span>
+                        </div>
+                        <div class="card-body">
+                            <div class="preview-text">${report.strategy || "No details..."}</div>
+                            <span class="read-more">Click to read full analysis ↗</span>
+                        </div>
+                    `;
+                    container.appendChild(card);
+                });
+            } catch (error) {
+                console.error('Error:', error);
+                document.getElementById('reports-container').innerHTML = '<p style="color:red">Error loading data.</p>';
+            }
+        }
+
+        // --- 2. Modal Logic ---
+        function openModal(index) {
+            const report = allReports[index];
+            const dateObj = new Date(report.date);
+            
+            document.getElementById('modalTitle').innerText = report.title;
+            document.getElementById('modalDate').innerText = dateObj.toLocaleDateString('en-US', { weekday:'long', year:'numeric', month:'long', day:'numeric' });
+            document.getElementById('modalStrategy').innerText = report.strategy;
+
+            const tableContainer = document.getElementById('modalTableContainer');
+            if (report.items.length > 0) {
+                let tableHtml = `
+                    <table>
+                        <thead>
+                            <tr>
+                                <th width="20%">Entity</th>
+                                <th width="40%">Technical/News Details</th>
+                                <th width="40%">Simple Explanation</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                `;
+                report.items.forEach(item => {
+                    tableHtml += `
+                        <tr>
+                            <td class="stock-name">${item.name}</td>
+                            <td>${item.details}</td>
+                            <td>${item.explanation}</td>
+                        </tr>
+                    `;
+                });
+                tableHtml += `</tbody></table>`;
+                tableContainer.innerHTML = tableHtml;
+            } else {
+                tableContainer.innerHTML = '<p>No specific stocks listed.</p>';
+            }
+
+            document.getElementById('reportModal').style.display = 'flex';
+            document.body.style.overflow = 'hidden';
+
+            // Apply saved size preference
+            loadSavedSize();
+        }
+
+        function closeModal(event) {
+            if (event && event.target.id !== 'reportModal' && !event.target.classList.contains('modal-close')) return;
+            document.getElementById('reportModal').style.display = 'none';
+            document.body.style.overflow = 'auto';
+        }
+
+        // --- 3. Resize Logic ---
+        function setModalSize(sizeClass, btnElement) {
+            const modalBox = document.getElementById('modalContentBox');
+            
+            // Remove all width classes
+            modalBox.classList.remove('width-sm', 'width-md', 'width-lg', 'width-full');
+            
+            // Add selected class
+            modalBox.classList.add(sizeClass);
+
+            // Update button styles
+            document.querySelectorAll('.size-btn').forEach(btn => btn.classList.remove('active'));
+            if(btnElement) btnElement.classList.add('active');
+
+            // Save preference
+            localStorage.setItem('modalSizePreference', sizeClass);
+        }
+
+        function loadSavedSize() {
+            const savedSize = localStorage.getItem('modalSizePreference') || 'width-md';
+            
+            // Apply class
+            const modalBox = document.getElementById('modalContentBox');
+            modalBox.classList.remove('width-sm', 'width-md', 'width-lg', 'width-full');
+            modalBox.classList.add(savedSize);
+
+            // Highlight correct button
+            const btnMap = {
+                'width-sm': 'S',
+                'width-md': 'M',
+                'width-lg': 'L',
+                'width-full': 'Full'
+            };
+            
+            // Find button by text and activate it
+            document.querySelectorAll('.size-btn').forEach(btn => {
+                btn.classList.remove('active');
+                if(btn.innerText === btnMap[savedSize]) {
+                    btn.classList.add('active');
+                }
+            });
+        }
+
+        loadReports();
+    </script>
+</body>
+</html>
